@@ -1,0 +1,75 @@
+/* Base container */
+.dramanextdoor-layout {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background: radial-gradient(circle at top, #1f2933, #020617);
+  color: #f9fafb;
+}
+
+/* World variants */
+.dramanextdoor-layout.world-1 {
+  background: radial-gradient(circle at top, #1d3557, #020617);
+}
+
+.dramanextdoor-layout.world-2 {
+  background: radial-gradient(circle at top, #4b5563, #020617);
+}
+
+.dramanextdoor-layout.world-7 {
+  background: radial-gradient(circle at top, #7c2d12, #020617);
+}
+
+/* Trait variants */
+.dramanextdoor-layout.trait-calm {
+  filter: saturate(0.8);
+}
+
+.dramanextdoor-layout.trait-playful {
+  filter: saturate(1.2);
+}
+
+.dramanextdoor-layout.trait-sensitive {
+  box-shadow: 0 0 40px rgba(244, 114, 182, 0.35);
+}
+
+.dramanextdoor-layout.trait-reactive {
+  box-shadow: 0 0 40px rgba(248, 113, 113, 0.4);
+}
+
+/* Scene viewer */
+.drama-scene-viewer {
+  max-width: 640px;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+/* Mood banner */
+.dramanextdoor-mood-banner {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.08);
+  font-size: 0.9rem;
+}
+
+/* Next button */
+.dramanextdoor-next-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.dramanextdoor-next-button:hover {
+  background: rgba(148, 163, 184, 0.15);
+}

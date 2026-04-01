@@ -1,0 +1,84 @@
+/* -------------------------------------------------------
+   IDLYILY – Agent Note Animation
+------------------------------------------------------- */
+.idlyily-agent-note {
+  animation: idlyilyNoteFade 0.4s ease forwards;
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@keyframes idlyilyNoteFade {
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------------------------------------
+   IDLYILY – Romantic Card
+------------------------------------------------------- */
+.idlyily-card {
+  background: rgba(255, 182, 193, 0.15); /* soft romantic pink */
+  border: 1px solid rgba(255, 182, 193, 0.35);
+  padding: 20px;
+  border-radius: 18px;
+  margin: 16px 0;
+  backdrop-filter: blur(8px);
+  color: #fff;
+  animation: idlyilyCardFade 0.45s ease forwards;
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+@keyframes idlyilyCardFade {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Title + Body */
+.idlyily-card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+.idlyily-card-body {
+  opacity: 0.85;
+  line-height: 1.45;
+}
+
+/* -------------------------------------------------------
+   Mood-aware Accents (Optional Hooks)
+------------------------------------------------------- */
+.idlyily-mood-happy { color: #ffecb3; }
+.idlyily-mood-sad { color: #add8ff; }
+.idlyily-mood-angry { color: #ff6b6b; }
+.idlyily-mood-stressed { color: #ffd27f; }
+.idlyily-mood-tired { color: #d7b3ff; }
+.idlyily-mood-excited { color: #fff176; }
+
+.idlyily-mood-romantic { color: #ffb6c1; }
+.idlyily-mood-flirty { color: #ff80ab; }
+.idlyily-mood-overwhelmed { color: #c7a4ff; }
+
+/* -------------------------------------------------------
+   Identity-aware Micro-Motion (Optional Hooks)
+------------------------------------------------------- */
+.idlyily-trait-calm { opacity: 0.95; }
+
+.idlyily-trait-reactive {
+  animation: idlyilyReactivePulse 1.8s infinite ease-in-out;
+}
+
+.idlyily-trait-sensitive {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.idlyily-trait-playful {
+  transform: rotate(-1deg);
+}
+
+@keyframes idlyilyReactivePulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.02); }
+}

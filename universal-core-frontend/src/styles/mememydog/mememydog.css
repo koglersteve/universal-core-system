@@ -1,0 +1,83 @@
+/* -------------------------------------------------------
+   MemeMyDog – Mood Banner
+------------------------------------------------------- */
+.mememydog-mood-banner {
+  background: #222;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  opacity: 0.9;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+}
+
+/* -------------------------------------------------------
+   Template Card
+------------------------------------------------------- */
+.mememydog-template-card {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  transition: 
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    background 0.25s ease;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(4px);
+}
+
+.mememydog-template-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  opacity: 0.92;
+  background: rgba(255,255,255,0.04);
+}
+
+.mememydog-template-img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+/* -------------------------------------------------------
+   Mood-aware Accents (Optional Hooks)
+------------------------------------------------------- */
+.mememydog-mood-happy { color: #4caf50; }
+.mememydog-mood-sad { color: #64b5f6; }
+.mememydog-mood-angry { color: #ef5350; }
+.mememydog-mood-stressed { color: #ffb74d; }
+.mememydog-mood-tired { color: #ba68c8; }
+.mememydog-mood-excited { color: #ffeb3b; }
+
+.mememydog-mood-overwhelmed { color: #9575cd; }
+.mememydog-mood-chaotic { color: #ff7043; }
+.mememydog-mood-dramatic { color: #f06292; }
+.mememydog-mood-annoyed { color: #ff8a65; }
+.mememydog-mood-frustrated { color: #ff7043; }
+.mememydog-mood-playful { color: #ff80ab; }
+
+/* -------------------------------------------------------
+   Identity-aware Micro-Motion (Optional Hooks)
+------------------------------------------------------- */
+.mememydog-trait-calm { opacity: 0.95; }
+
+.mememydog-trait-reactive {
+  animation: mememydogReactivePulse 1.8s infinite ease-in-out;
+}
+
+.mememydog-trait-sensitive {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.mememydog-trait-playful {
+  transform: rotate(-1deg);
+}
+
+@keyframes mememydogReactivePulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.02); }
+}
+

@@ -1,0 +1,96 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #050816;
+  color: #f5f5f5;
+}
+
+.app-container {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 16px;
+  background: radial-gradient(circle at top, #1f2937, #020617);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 2.2rem;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: #9ca3af;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.mood-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mood-button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.mood-button:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.8);
+}
+
+.mood-button-selected {
+  background: linear-gradient(135deg, #3b82f6, #a855f7);
+  border-color: transparent;
+  color: white;
+}
+
+.mood-label {
+  margin: 0 0 8px;
+  color: #e5e7eb;
+}
+
+.mood-output {
+  margin: 0;
+  font-size: 1rem;
+  color: #f9fafb;
+}
+
+.placeholder {
+  color: #6b7280;
+}
+
+.demo-banner {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  font-size: 0.85rem;
+}
+
+.demo-banner code {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.8rem;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 2px 4px;
+  border-radius: 4px;
+}

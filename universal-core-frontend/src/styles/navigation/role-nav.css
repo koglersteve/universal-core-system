@@ -1,0 +1,26 @@
+.role-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 12px 20px;
+  border-bottom: 1px solid #222;
+  color: #fff;
+}
+
+.role-nav-left a {
+  margin-right: 16px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.role-nav-left a:hover {
+  opacity: 0.8;
+}
+
+.role-nav-right {
+  display: flex;
+  align-items: center;
+}

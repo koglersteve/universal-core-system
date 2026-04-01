@@ -1,0 +1,109 @@
+/* MoodCheck Container */
+.moodcheck-container {
+  padding: 32px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.moodcheck-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.moodcheck-subtitle {
+  opacity: 0.7;
+  margin-bottom: 24px;
+}
+
+.moodcheck-button {
+  background: #ff6f61;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.moodcheck-button:hover {
+  background: #ff5a4a;
+}
+
+/* Mood Grid */
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.mood-option {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background 0.15s ease, border 0.15s ease;
+  color: #fff;
+}
+
+.mood-option:hover {
+  background: #222;
+}
+
+.mood-option.selected {
+  border-color: #ff6f61;
+  background: #1a1a1a;
+}
+
+.mood-emoji {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+/* Result */
+.moodcheck-result {
+  padding: 32px;
+  text-align: center;
+}
+
+.moodcheck-result-value {
+  font-size: 48px;
+  margin: 16px 0;
+}
+
+/* History */
+.moodcheck-history {
+  padding: 32px;
+}
+
+.mood-history-panel {
+  margin-top: 20px;
+}
+
+.mood-history-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+}
+
+.mood-history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #222;
+}
+
+.mood-history-mood {
+  font-weight: 600;
+}
+
+.mood-insights {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #111;
+  border-radius: 12px;
+}

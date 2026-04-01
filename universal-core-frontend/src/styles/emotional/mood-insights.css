@@ -1,0 +1,75 @@
+/* -------------------------------------------------------
+   Mood Insights Panel
+------------------------------------------------------- */
+.mood-insights {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+}
+
+/* Title */
+.mood-insights-title {
+  font-size: 20px;
+  margin-bottom: 12px;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+/* Empty State */
+.mood-insights-empty {
+  opacity: 0.7;
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+/* Rows */
+.mood-insights-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.2s ease;
+}
+
+.mood-insights-row:last-child {
+  border-bottom: none;
+}
+
+.mood-insights-row:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Labels + Values */
+.mood-insights-label {
+  opacity: 0.85;
+  font-size: 14px;
+}
+
+.mood-insights-value {
+  font-weight: 600;
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+/* -------------------------------------------------------
+   Mood Colors (Full Emotional OS Palette)
+------------------------------------------------------- */
+.mood-happy { color: #4caf50; }
+.mood-sad { color: #64b5f6; }
+.mood-angry { color: #ef5350; }
+.mood-stressed { color: #ffb74d; }
+.mood-tired { color: #ba68c8; }
+.mood-excited { color: #ffeb3b; }
+
+/* Additional Emotional OS moods */
+.mood-overwhelmed { color: #9575cd; }
+.mood-bored { color: #90a4ae; }
+.mood-chaotic { color: #ff7043; }
+.mood-dramatic { color: #f06292; }
+.mood-annoyed { color: #ff8a65; }
+.mood-frustrated { color: #ff7043; }
+.mood-romantic { color: #f48fb1; }
+.mood-flirty { color: #ff80ab; }

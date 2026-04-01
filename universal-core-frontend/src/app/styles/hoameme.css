@@ -1,0 +1,45 @@
+/* HOA Meme App */
+
+.hoameme-mood-banner {
+  background: #331;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.hoameme-card {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #222;
+  margin-bottom: 20px;
+}
+
+.hoameme-image {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.hoameme-caption {
+  margin-top: 12px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.hoameme-reaction-bar {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.hoameme-reaction {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.15s ease;
+}
+
+.hoameme-reaction:hover {
+  opacity: 1;
+}

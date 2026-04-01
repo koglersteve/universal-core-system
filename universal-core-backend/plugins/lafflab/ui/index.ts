@@ -1,0 +1,2 @@
+export { LaffLabHome } from "./LaffLabHome";
+

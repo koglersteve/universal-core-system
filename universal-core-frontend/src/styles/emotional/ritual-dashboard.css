@@ -1,0 +1,61 @@
+/* -------------------------------------------------------
+   Ritual Dashboard Container
+------------------------------------------------------- */
+.ritual-dashboard {
+  background: #111;
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+}
+
+/* Title */
+.ritual-dashboard-title {
+  font-size: 20px;
+  margin-bottom: 16px;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+/* Grid Layout */
+.ritual-dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* -------------------------------------------------------
+   Ritual Dashboard States (Future-Proof Hooks)
+------------------------------------------------------- */
+.ritual-dashboard-daily {
+  border-left: 3px solid #4caf50;
+}
+
+.ritual-dashboard-weekly {
+  border-left: 3px solid #64b5f6;
+}
+
+.ritual-dashboard-deep {
+  border-left: 3px solid #ba68c8;
+}
+
+.ritual-dashboard-reflection {
+  border-left: 3px solid #ffb74d;
+}
+
+/* -------------------------------------------------------
+   Mood-aware Accents (Matches Ritual + Mood Components)
+------------------------------------------------------- */
+.ritual-dashboard-mood-happy { color: #4caf50; }
+.ritual-dashboard-mood-sad { color: #64b5f6; }
+.ritual-dashboard-mood-angry { color: #ef5350; }
+.ritual-dashboard-mood-stressed { color: #ffb74d; }
+.ritual-dashboard-mood-tired { color: #ba68c8; }
+.ritual-dashboard-mood-excited { color: #ffeb3b; }
+
+.ritual-dashboard-mood-overwhelmed { color: #9575cd; }
+.ritual-dashboard-mood-chaotic { color: #ff7043; }
+.ritual-dashboard-mood-dramatic { color: #f06292; }
+.ritual-dashboard-mood-romantic { color: #f48fb1; }
+.ritual-dashboard-mood-flirty { color: #ff80ab; }

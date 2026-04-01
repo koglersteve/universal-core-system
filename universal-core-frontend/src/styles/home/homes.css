@@ -1,0 +1,125 @@
+/* -------------------------------------------------------
+   Emotional Agent Panel
+------------------------------------------------------- */
+.agent-panel {
+  background: rgba(255,255,255,0.06);
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 24px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.3s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.agent-panel:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------------------------
+   Title
+------------------------------------------------------- */
+.agent-title {
+  font-size: 18px;
+  margin-bottom: 12px;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------
+   Agent List
+------------------------------------------------------- */
+.agent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agent-item {
+  padding: 6px 0;
+  opacity: 0.85;
+  display: flex;
+  justify-content: space-between;
+  transition: opacity 0.2s ease;
+}
+
+.agent-item:hover {
+  opacity: 1;
+}
+
+/* -------------------------------------------------------
+   Agent Role Micro‑Motion (Optional Hooks)
+------------------------------------------------------- */
+.agent-role-guide {
+  animation: agentGuidePulse 2.4s infinite ease-in-out;
+}
+
+.agent-role-protector {
+  animation: agentProtectorGlow 3s infinite ease-in-out;
+}
+
+.agent-role-muse {
+  animation: agentMuseFloat 4s infinite ease-in-out;
+}
+
+/* Guide Pulse */
+@keyframes agentGuidePulse {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+/* Protector Glow */
+@keyframes agentProtectorGlow {
+  0% { box-shadow: 0 0 0px rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  100% { box-shadow: 0 0 0px rgba(255,255,255,0.1); }
+}
+
+/* Muse Float */
+@keyframes agentMuseFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+/* -------------------------------------------------------
+   Mood-aware Accents (Optional Hooks)
+------------------------------------------------------- */
+.agent-mood-happy { color: #4caf50; }
+.agent-mood-sad { color: #64b5f6; }
+.agent-mood-angry { color: #ef5350; }
+.agent-mood-stressed { color: #ffb74d; }
+.agent-mood-tired { color: #ba68c8; }
+.agent-mood-excited { color: #ffeb3b; }
+
+.agent-mood-overwhelmed { color: #9575cd; }
+.agent-mood-annoyed { color: #ff8a65; }
+.agent-mood-frustrated { color: #ff7043; }
+.agent-mood-chaotic { color: #ff7043; }
+.agent-mood-dramatic { color: #f06292; }
+.agent-mood-romantic { color: #f48fb1; }
+.agent-mood-flirty { color: #ff80ab; }
+
+/* -------------------------------------------------------
+   Identity-aware Micro‑Motion (Optional Hooks)
+------------------------------------------------------- */
+.agent-trait-calm { opacity: 0.95; }
+
+.agent-trait-reactive {
+  animation: reactivePulse 1.8s infinite ease-in-out;
+}
+
+.agent-trait-sensitive {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.agent-trait-playful {
+  transform: rotate(-1deg);
+}
+
+@keyframes reactivePulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.02); }
+}

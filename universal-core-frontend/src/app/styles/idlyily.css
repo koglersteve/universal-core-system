@@ -1,0 +1,44 @@
+/* IDLYILY App */
+
+.idlyily-container {
+  padding: 24px;
+}
+
+.idlyily-header {
+  margin-bottom: 24px;
+}
+
+.idlyily-card {
+  background: #111;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #222;
+  margin-bottom: 20px;
+}
+
+.idlyily-mood-banner {
+  background: #222;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.idlyily-agent {
+  margin-top: 12px;
+  opacity: 0.8;
+}
+
+.idlyily-button {
+  padding: 10px 16px;
+  background: #333;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.idlyily-button:hover {
+  background: #444;
+}

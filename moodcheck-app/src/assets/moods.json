@@ -1,0 +1,62 @@
+{
+  "happy": {
+    "messages": [
+      "You’re glowing. The OS noticed.",
+      "Happy logged. Expect good vibes across your apps.",
+      "Sunshine mode: ON."
+    ],
+    "memes": ["happy_meme_1", "happy_meme_2"]
+  },
+  "annoyed": {
+    "messages": [
+      "Noted. The OS will tread lightly.",
+      "Annoyed logged. Expect a little extra sarcasm.",
+      "We logged that. HOA Meme is already sharpening its claws."
+    ],
+    "memes": ["annoyed_meme_1"]
+  },
+  "stressed": {
+    "messages": [
+      "Stress logged. The OS is on your side.",
+      "We see you. Expect softer prompts elsewhere.",
+      "Stressed? The system just went into support mode."
+    ],
+    "memes": ["stressed_meme_1"]
+  },
+  "playful": {
+    "messages": [
+      "Playful logged. Chaos unlocked.",
+      "The OS just flipped into playful mode.",
+      "Playful? Expect mischief across your apps."
+    ],
+    "memes": ["playful_meme_1", "playful_meme_2"]
+  },
+  "tired": {
+    "messages": [
+      "Tired logged. The OS will keep it gentle.",
+      "We got you. Low‑energy mode engaged.",
+      "Tired? The system just dimmed the emotional lights."
+    ],
+    "memes": ["tired_meme_1"]
+  },
+  "romantic": {
+    "messages": [
+      "Romantic logged. IDLYILY is already smiling.",
+      "Love mode: ON. Expect soft prompts.",
+      "Romantic? The OS just lit a candle."
+    ],
+    "memes": ["romantic_meme_1"]
+  },
+  "chaotic": {
+    "messages": [
+      "Chaos logged. DramaNextDoor is thrilled.",
+      "Chaotic mode: engaged. Buckle up.",
+      "The OS just turned the dial to ‘unhinged’."
+    ],
+    "memes": ["chaotic_meme_1", "chaotic_meme_2"]
+  },
+  "default": {
+    "messages": ["Mood logged. The OS is listening."],
+    "memes": []
+  }
+}

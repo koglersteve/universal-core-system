@@ -1,0 +1,37 @@
+.nav-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  width: 220px;
+  color: #fff;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #fff;
+  background: #1a1a1a;
+  border: 1px solid #222;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.nav-item:hover {
+  background: #222;
+  transform: translateX(3px);
+}
+
+.nav-emoji {
+  font-size: 20px;
+}
+
+.nav-label {
+  font-size: 15px;
+  opacity: 0.9;
+}

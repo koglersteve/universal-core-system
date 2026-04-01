@@ -1,0 +1,70 @@
+/* -------------------------------------------------------
+   Ritual Card (Emotional OS)
+------------------------------------------------------- */
+.ritual-card {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, opacity 0.25s ease, background 0.3s ease;
+}
+
+.ritual-card:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+  background: rgba(255,255,255,0.04);
+}
+
+/* -------------------------------------------------------
+   Title + Description
+------------------------------------------------------- */
+.ritual-card-title {
+  font-size: 18px;
+  margin-bottom: 8px;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+.ritual-card-description {
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 1.45;
+}
+
+/* -------------------------------------------------------
+   Ritual States (Future-Proof Hooks)
+------------------------------------------------------- */
+.ritual-state-daily {
+  border-left: 3px solid #4caf50;
+}
+
+.ritual-state-weekly {
+  border-left: 3px solid #64b5f6;
+}
+
+.ritual-state-deep {
+  border-left: 3px solid #ba68c8;
+}
+
+.ritual-state-reflection {
+  border-left: 3px solid #ffb74d;
+}
+
+/* -------------------------------------------------------
+   Mood-aware Ritual Accents
+------------------------------------------------------- */
+.ritual-mood-happy { color: #4caf50; }
+.ritual-mood-sad { color: #64b5f6; }
+.ritual-mood-angry { color: #ef5350; }
+.ritual-mood-stressed { color: #ffb74d; }
+.ritual-mood-tired { color: #ba68c8; }
+.ritual-mood-excited { color: #ffeb3b; }
+
+.ritual-mood-overwhelmed { color: #9575cd; }
+.ritual-mood-chaotic { color: #ff7043; }
+.ritual-mood-dramatic { color: #f06292; }
+.ritual-mood-romantic { color: #f48fb1; }
+.ritual-mood-flirty { color: #ff80ab; }
+

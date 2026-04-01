@@ -1,0 +1,143 @@
+/* -------------------------------------------------------
+   HOA Meme – Home Screen Layout
+------------------------------------------------------- */
+.hoameme-home {
+  padding: 20px;
+  color: #fff;
+}
+
+/* -------------------------------------------------------
+   Mood Banner
+------------------------------------------------------- */
+.hoameme-mood-banner {
+  background: #222;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  opacity: 0.9;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+}
+
+/* -------------------------------------------------------
+   Template Grid
+------------------------------------------------------- */
+.hoameme-template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* -------------------------------------------------------
+   Template Card
+------------------------------------------------------- */
+.hoameme-template-card {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  transition: 
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    background 0.25s ease;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(4px);
+}
+
+.hoameme-template-card:hover {
+  transform: translateY(-3px) scale(1.03);
+  opacity: 0.92;
+  background: rgba(255,255,255,0.04);
+}
+
+.hoameme-template-img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+/* -------------------------------------------------------
+   Buttons
+------------------------------------------------------- */
+.hoameme-button {
+  background: #fff;
+  color: #000;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hoameme-button:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------------------------
+   Section Titles
+------------------------------------------------------- */
+.hoameme-section-title {
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------
+   Micro‑Motion
+------------------------------------------------------- */
+.hoameme-fade-in {
+  animation: hoamemeFadeIn 0.45s ease forwards;
+}
+
+@keyframes hoamemeFadeIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------------------------------------
+   Mood-aware Accents (Optional Hooks)
+------------------------------------------------------- */
+.hoameme-mood-happy { color: #4caf50; }
+.hoameme-mood-sad { color: #64b5f6; }
+.hoameme-mood-angry { color: #ef5350; }
+.hoameme-mood-stressed { color: #ffb74d; }
+.hoameme-mood-tired { color: #ba68c8; }
+.hoameme-mood-excited { color: #ffeb3b; }
+
+.hoameme-mood-overwhelmed { color: #9575cd; }
+.hoameme-mood-annoyed { color: #ff8a65; }
+.hoameme-mood-frustrated { color: #ff7043; }
+.hoameme-mood-chaotic { color: #ff7043; }
+.hoameme-mood-dramatic { color: #f06292; }
+.hoameme-mood-romantic { color: #f48fb1; }
+.hoameme-mood-flirty { color: #ff80ab; }
+
+/* -------------------------------------------------------
+   Identity-aware Micro-Motion (Optional Hooks)
+------------------------------------------------------- */
+.hoameme-trait-calm { opacity: 0.95; }
+
+.hoameme-trait-reactive {
+  animation: reactivePulse 1.8s infinite ease-in-out;
+}
+
+.hoameme-trait-sensitive {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.hoameme-trait-playful {
+  transform: rotate(-1deg);
+}
+
+@keyframes reactivePulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.02); }
+}
+

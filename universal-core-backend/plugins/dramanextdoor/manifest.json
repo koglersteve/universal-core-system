@@ -1,0 +1,11 @@
+{
+  "name": "drama-next-door",
+  "version": "1.0.0",
+  "description": "DramaNextDoor Plugin for Universal Core — short-form neighborhood drama clips",
+  "author": "Steve",
+  "entry": "index.ts",
+  "routes": ["routes/drama.routes.ts"],
+  "services": ["services/drama.service.ts"],
+  "ui": ["ui/index.ts"],
+  "db": ["db/schema.prisma"]
+}

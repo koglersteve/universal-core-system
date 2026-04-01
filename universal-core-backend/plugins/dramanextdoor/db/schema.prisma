@@ -1,0 +1,41 @@
+model DramaPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  mediaUrl  String
+  type      String   // "video" or "audio"
+  duration  Int?
+  userId    Int?
+  createdAt DateTime @default(now())
+
+  comments   Comment[]
+  reactions  Reaction[]
+  reports    Report[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int?
+  text      String
+  createdAt DateTime @default(now())
+
+  post DramaPost @relation(fields: [postId], references: [id])
+}
+
+model Reaction {
+  id     Int @id @default(autoincrement())
+  postId Int
+  userId Int?
+
+  post DramaPost @relation(fields: [postId], references: [id])
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int?
+  reason    String
+  createdAt DateTime @default(now())
+
+  post DramaPost @relation(fields: [postId], references: [id])
+}

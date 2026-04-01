@@ -1,0 +1,49 @@
+/* Emotional Notifications */
+.emotion-notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emotion-notification {
+  background: #111;
+  border: 1px solid #333;
+  padding: 14px 18px;
+  border-radius: 12px;
+  width: 260px;
+  animation: fadeIn 0.3s ease;
+  color: #fff;
+}
+
+.notification-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.notification-action {
+  background: #444;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+}
+
+.notification-action:hover {
+  background: #555;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

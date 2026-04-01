@@ -1,0 +1,72 @@
+/* World Switcher */
+.world-switcher {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.world-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.world-item {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.world-item.active {
+  background: #222;
+}
+
+.world-create {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #333;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+}
+
+/* Diff */
+.world-diff {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+/* Merge */
+.world-merge {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.world-name-input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #222;
+  border: 1px solid #333;
+  color: #fff;
+}
+
+.world-merge-button {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #333;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.world-merge-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -1,0 +1,6 @@
+.auth-happy .auth-card { border: 1px solid #ffd700; }
+.auth-sad .auth-card { border: 1px solid #6495ed; }
+.auth-angry .auth-card { border: 1px solid #ff453a; }
+.auth-stressed .auth-card { border: 1px solid #ff8c00; }
+.auth-romantic .auth-card { border: 1px solid #ffb6c1; }
+.auth-flirty .auth-card { border: 1px solid #ff1493; }
