@@ -1,5 +1,7 @@
-// src/app/idlyily/layout.tsx
+"use client";
+
 import React from "react";
+import { useEffect } from "react";
 
 export default function IdlyilyLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,10 +13,6 @@ export default function IdlyilyLayout({ children }: { children: React.ReactNode 
 }
 
 // --- Client-only watchdog component ---
-"use client";
-
-import { useEffect } from "react";
-
 function StabilityWatchdog() {
   useEffect(() => {
     let last = performance.now();
@@ -36,3 +34,4 @@ function StabilityWatchdog() {
 
   return null;
 }
+
