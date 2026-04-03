@@ -1,17 +1,17 @@
-const meme = await prisma.meme.create({
-  data: {
-    app,
-    mood: mood || null,
-    title: title || null,
-    layers
-  }
-});
+import { db } from "@vercel/postgres";
 
-await prisma.memeEvent.create({
-  data: {
-    memeId: meme.id,
-    app,
-    mood: mood || null,
-    type: "created"
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const result = await db.query(
+      "INSERT INTO memes (data) VALUES ($1) RETURNING id",
+      [body]
+    );
+
+    return Response.json({ id: result.rows[0].id });
+  } catch (err) {
+    console.error("Error saving meme:", err);
+    return new Response("Error", { status: 500 });
   }
-});
+}
