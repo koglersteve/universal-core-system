@@ -101,5 +101,4 @@ if (app === "dramanextdoor" && mood) {
       `/dramanextdoor?mood=${mood}&world=${world}&trait=${trait}&agent=${agent}`
     )
   );
-  return;
 }
