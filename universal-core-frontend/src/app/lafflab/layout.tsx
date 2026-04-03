@@ -1,20 +1,18 @@
-// src/app/idlyily/layout.tsx
-import React from "react";
+"use client";
 
-export default function IdlyilyLayout({ children }: { children: React.ReactNode }) {
+import React from "react";
+import { useEffect } from "react";
+
+export default function LafflabLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="idlyily-layout">
+    <div className="lafflab-layout">
       <StabilityWatchdog />
       {children}
     </div>
   );
 }
 
-// --- client-only watchdog ---
-"use client";
-
-import { useEffect } from "react";
-
+// --- Client-only watchdog component ---
 function StabilityWatchdog() {
   useEffect(() => {
     let last = performance.now();
@@ -36,3 +34,4 @@ function StabilityWatchdog() {
 
   return null;
 }
+
