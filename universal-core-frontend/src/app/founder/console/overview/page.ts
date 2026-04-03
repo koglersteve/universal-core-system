@@ -94,4 +94,5 @@ export default function EmotionalOSOverview() {
       </div>
     </div>
   );
+}
 
