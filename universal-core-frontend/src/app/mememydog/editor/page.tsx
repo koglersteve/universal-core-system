@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import MemeEditor from "@/components/meme-editor/MemeEditor";
 import { useMemeEditor } from "@/context/MemeEditorContext";
-import { getMoodCaption, getMoodStickers } from "@/lib/memeEmotion";
+import { getMoodCaption, getMoodStickers } from "@/lib/memeemotions";
 
 function DogMemeEditorInner() {
   const params = useSearchParams();
