@@ -1,34 +1,58 @@
-// universal-core/src/server.ts
-import express from "express";
-import { postMoodState } from "./routes/moodState";
+"use client";
 
-// New imports
-import pluginHealthRoutes from "./routes/pluginHealth.routes";
-import authRoutes from "./auth/auth.routes";
-import eventTimelineRoutes from "./routes/eventTimeline.routes"; // NEW
+import React, { useEffect, useState } from "react";
 
-export async function createServer() {
-  const app = express();
+interface EventItem {
+  id: string;
+  app: string;
+  type: string;
+  ts: number;
+  mood?: string;
+  world?: string;
+  trait?: string;
+  agent?: string;
+  physics_momentum?: number;
+  identity_profile?: string;
+  payload?: any;
+}
 
-  // Middleware
-  app.use(express.json());
+export default function EventTimeline() {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Core Routes
-  app.post("/api/mood-state", postMoodState);
+  useEffect(() => {
+    async function loadEvents() {
+      try {
+        const res = await fetch("/api/events");
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        console.error("Failed to load events:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  // Health check
-  app.get("/health", (req, res) => {
-    res.json({ ok: true, service: "universal-core" });
-  });
+    loadEvents();
+  }, []);
 
-  // Auth
-  app.use("/auth", authRoutes);
+  if (loading) {
+    return <div>Loading timeline…</div>;
+  }
 
-  // Plugin Health API
-  app.use("/api/plugin-health", pluginHealthRoutes);
-
-  // OS‑Wide Event Timeline API
-  app.use("/api/events", eventTimelineRoutes); // NEW
-
-  return app;
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Event Timeline</h2>
+      <ul style={{ marginTop: "20px" }}>
+        {events.map((ev) => (
+          <li key={ev.id} style={{ marginBottom: "12px" }}>
+            <strong>{ev.type}</strong> — {new Date(ev.ts).toLocaleString()}
+            <div style={{ fontSize: "0.9em", opacity: 0.7 }}>
+              {ev.app} / {ev.mood ?? "no mood"} / {ev.world ?? "no world"}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
