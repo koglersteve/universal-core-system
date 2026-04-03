@@ -1,40 +1,14 @@
-// src/lib/authClient.ts
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-export async function loginRequest(email: string, password: string) {
-  const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+export async function loginRequest(email, password) {
+  const body = { email, password };
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
 
-  try {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      signal: controller.signal,
-      body: JSON.stringify({ email, password })
-    });
-
-    if (!res.ok) {
-      if (res.status === 401) {
-        throw new Error("Invalid credentials");
-      }
-      throw new Error(`Login failed: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    if (process.env.NODE_ENV === "development") {
-      console.log("[loginRequest]", data);
-    }
-
-    return data;
-  } catch (err) {
-    if (err.name === "AbortError") {
-      throw new Error("Login request timed out");
-    }
-    throw err;
-  } finally {
-    clearTimeout(timeout);
-  }
+  return res.json();
 }
