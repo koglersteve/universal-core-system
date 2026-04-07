@@ -27,7 +27,7 @@ export function HoaMemeHome() {
       bored: "Let’s spice up the neighborhood a bit.",
       chaotic: "Perfect — HOA chaos thrives on chaotic energy.",
       petty: "This is your moment. Let the pettiness flow.",
-      dramatic: "Time to turn this HOA moment into a full production."
+      dramatic: "Time to turn this HOA moment into a full production.",
     };
 
     setBanner(moodMessages[mood] || null);
@@ -36,9 +36,9 @@ export function HoaMemeHome() {
   const caption = mood ? getMoodCaption(mood) : null;
 
   return (
-    <div className="hoameme-container">
+    <div className="hoameme-container p-6 space-y-6">
       {banner && (
-        <div className="hoameme-mood-banner">
+        <div className="hoameme-mood-banner p-3 rounded bg-blue-100 text-blue-800 font-medium">
           {banner}
         </div>
       )}
@@ -51,7 +51,7 @@ export function HoaMemeHome() {
       />
 
       {caption && (
-        <p className="hoameme-caption">
+        <p className="hoameme-caption text-gray-700 text-sm">
           {caption}
         </p>
       )}
@@ -59,3 +59,4 @@ export function HoaMemeHome() {
   );
 }
 
+export default HoaMemeHome;

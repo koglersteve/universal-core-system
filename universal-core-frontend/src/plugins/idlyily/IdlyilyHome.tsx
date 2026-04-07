@@ -1,61 +1,69 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { IdlyilyPrompt } from "./IdlyilyPrompt";
-import { getMoodCaption } from "@/lib/memeemotions";
+import { useEffect } from "react";
+import { useIdlyilyStore } from "./state/useIdlyilyStore";
+import { useIdlyilySession } from "./state/useIdlyilySession";
 
-export function IdlyilyHome() {
-  const params = useSearchParams();
+import MoodBadge from "./components/MoodBadge";
+import TemplateSuggestionCard from "./components/TemplateSuggestionCard";
+import PromptDisplay from "./components/PromptDisplay";
+import EntryComposer from "./components/EntryComposer";
 
-  const mood = params.get("mood") || undefined;
-  const world = params.get("world") || undefined;
-  const trait = params.get("trait") || undefined;
-  const agent = params.get("agent") || undefined;
+export default function IdlyilyHome() {
+  const {
+    mood,
+    world,
+    trait,
+    agent,
+    prompt,
+    templates,
+    generatePrompt,
+    fetchTemplates,
+    updateEntryText,
+    saveEntry,
+    getMoodScore,
+  } = useIdlyilyStore();
 
-  const [banner, setBanner] = useState<string | null>(null);
+  const { addEntry, setMoodScore } = useIdlyilySession();
 
   useEffect(() => {
-    if (!mood) return;
+    fetchTemplates();
+    generatePrompt();
+    (async () => {
+      if (mood) {
+        const score = await getMoodScore();
+        setMoodScore(score);
+      }
+    })();
+  }, [mood, world, trait, agent]);
 
-    const moodMessages: Record<string, string> = {
-      excited: "Let’s channel that excitement into something cute.",
-      flirty: "Feeling flirty? Let’s make something fun.",
-      romantic: "Let’s create something sweet and intimate.",
-      happy: "Let’s capture the moment.",
-      tired: "Soft, low‑effort cute prompts coming up.",
-      overwhelmed: "Gentle, grounding prompts coming your way.",
-      bored: "Let’s spark something warm and unexpected.",
-      chaotic: "Perfect — let’s turn that energy into something adorable.",
-      dramatic: "Let’s craft a moment worthy of a love‑story monologue."
-    };
-
-    setBanner(moodMessages[mood] || null);
-  }, [mood]);
-
-  const caption = mood ? getMoodCaption(mood) : null;
+  const handleSave = async (text: string) => {
+    const result = await saveEntry();
+    if (result?.entry) {
+      addEntry(result.entry);
+    }
+  };
 
   return (
-    <div className="idlyily-container">
-      {banner && (
-        <div className="idlyily-mood-banner">
-          {banner}
-        </div>
-      )}
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-bold">IDLYILY</h1>
 
-      <IdlyilyPrompt
-        mood={mood}
-        world={world}
-        trait={trait}
-        agent={agent}
-      />
+      <div className="flex items-center gap-3">
+        <span className="text-gray-600">Current Mood:</span>
+        <MoodBadge mood={mood} />
+      </div>
 
-      {caption && (
-        <p className="idlyily-caption">
-          {caption}
-        </p>
-      )}
+      <PromptDisplay prompt={prompt} />
+
+      <h2 className="text-lg font-semibold">Suggested Templates</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {templates.map((tpl) => (
+          <TemplateSuggestionCard key={tpl.id} template={tpl} />
+        ))}
+      </div>
+
+      <h2 className="text-lg font-semibold">Write Your Entry</h2>
+      <EntryComposer onSubmit={handleSave} />
     </div>
   );
 }
-
