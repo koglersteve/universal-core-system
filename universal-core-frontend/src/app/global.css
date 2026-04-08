@@ -36,16 +36,14 @@ body {
 @import "./styles/dramanextdoor.css";
 
 /* ------------------------------------------------------ */
-/* App-Specific Styles                                     */
+/* App-Specific Styles (FLAT STRUCTURE)                    */
 /* ------------------------------------------------------ */
 @import "./styles/hoameme.css";
-@import "./styles/mememydog/mememydog.css";
-@import "./styles/mememycat/mememycat.css";
-@import "./styles/idlyily/idlyily.css";
+@import "./styles/mememydog.css";
+@import "./styles/mememycat.css";
+@import "./styles/idlyily.css";
 
 /* ------------------------------------------------------ */
 /* Auth Styles                                             */
 /* ------------------------------------------------------ */
-@import "./styles/auth/auth.css";
-
-
+@import "./styles/auth.css";
