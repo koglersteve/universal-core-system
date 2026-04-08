@@ -1,5 +1,6 @@
-// src/app/mememycat/layout.tsx
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 
 export default function MemeMyCatLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,11 +10,6 @@ export default function MemeMyCatLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-
-// --- client-only watchdog ---
-"use client";
-
-import { useEffect } from "react";
 
 function StabilityWatchdog() {
   useEffect(() => {
@@ -36,3 +32,4 @@ function StabilityWatchdog() {
 
   return null;
 }
+
