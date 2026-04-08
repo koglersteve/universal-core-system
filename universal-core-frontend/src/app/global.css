@@ -23,7 +23,7 @@ body {
 /* -------------------------------------------------------
    Emotional Theme Engine (Global)
 ------------------------------------------------------- */
-@import "./styles/emotions.css";
+@import "./styles/auth-emotion.css";
 
 /* -------------------------------------------------------
    OS + Core Styles
@@ -39,14 +39,14 @@ body {
    App-Specific Styles
 ------------------------------------------------------- */
 @import "./styles/hoameme.css";
-@import "./styles/mememydog/mememydog.css";
-@import "./styles/mememycat/mememycat.css";
-@import "./styles/idlyily/idlyily.css";
+@import "./styles/mememydog.css";
+@import "./styles/mememycat.css";
+@import "./styles/idlyily.css";
 
 /* -------------------------------------------------------
    Auth Styles
 ------------------------------------------------------- */
-@import "./styles/auth/auth.css";
+@import "./styles/auth.css";
 
 /* -------------------------------------------------------
    Identity Motion (Global)
