@@ -4,13 +4,15 @@ export function middleware(req) {
   const role = req.cookies.get("role")?.value;
   const url = req.nextUrl.pathname;
 
-  // Extract the first segment of the path: "/founder/settings" → "founder"
+  // Extract first path segment
   const segment = url.split("/")[1];
 
-  // If the segment matches a role name, enforce it
-  if (segment && role && segment !== "" && segment === segment.toLowerCase()) {
-    // If the user tries to access a role‑protected route they don't belong to
-    if (segment !== role) {
+  // List of role-protected segments
+  const protectedRoles = ["founder", "admin", "advertiser", "vendor"];
+
+  // If the segment is a protected role, enforce access
+  if (protectedRoles.includes(segment)) {
+    if (role !== segment) {
       return NextResponse.redirect(new URL("/home", req.url));
     }
   }

@@ -1,24 +1,33 @@
-# Use official Node image
-FROM node:18-alpine
-
-# Set working directory
+# Install dependencies only when needed
+FROM node:18-alpine AS deps
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Install OS deps for sharp (Next.js image optimization)
+RUN apk add --no-cache libc6-compat
 
-# Install dependencies
-RUN npm install
+COPY package.json package-lock.json* ./
+RUN npm install --production=false
 
-# Copy the rest of the frontend code
+# Build the app
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the Next.js app
 RUN npm run build
 
-# Expose port 3000
+# Production image
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Next.js standalone output
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
 EXPOSE 3000
 
-# Start the app
-CMD ["npm", "start"]
-
+CMD ["node", "server.js"]
