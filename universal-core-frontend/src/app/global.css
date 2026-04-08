@@ -39,7 +39,6 @@ body {
    App-Specific Styles
 ------------------------------------------------------- */
 @import "./styles/hoameme.css";
-<<<<<<< HEAD
 @import "./styles/mememydog/mememydog.css";
 @import "./styles/mememycat/mememycat.css";
 @import "./styles/idlyily/idlyily.css";
@@ -48,11 +47,6 @@ body {
    Auth Styles
 ------------------------------------------------------- */
 @import "./styles/auth/auth.css";
-=======
-@import "./styles/mememydog.css";
-@import "./styles/mememycat.css";
-@import "./styles/idlyily.css";
->>>>>>> fc50dec4cb7863d460a9facd708ea394f5827acc
 
 /* -------------------------------------------------------
    Identity Motion (Global)
@@ -119,13 +113,3 @@ body {
 .logout-trait-calm { opacity: 0.9; }
 .logout-trait-reactive { animation: pulse 1.2s infinite; }
 .logout-trait-playful { transform: rotate(-1deg); }
-
-<<<<<<< HEAD
-=======
-/* -------------------------------------------------------
-   Auth Styles
-------------------------------------------------------- */
-@import "./styles/auth.css";
-@import "./styles/auth-emotion.css";
-
->>>>>>> fc50dec4cb7863d460a9facd708ea394f5827acc
