@@ -28,20 +28,20 @@ body {
 /* -------------------------------------------------------
    OS + Core Styles
 ------------------------------------------------------- */
-@import "../styles/os-shell.css";
-@import "../styles/moodcheck.css";
-@import "../styles/notifications.css";
-@import "../styles/multiverse.css";
-@import "../styles/identity.css";
-@import "../styles/dramanextdoor.css";
+@import "./styles/os-shell.css";
+@import "./styles/moodcheck.css";
+@import "./styles/notifications.css";
+@import "./styles/multiverse.css";
+@import "./styles/identity.css";
+@import "./styles/dramanextdoor.css";
 
 /* -------------------------------------------------------
    App-Specific Styles
 ------------------------------------------------------- */
-@import "../styles/hoameme.css";
-@import "../styles/mememydog.css";
-@import "../styles/mememycat.css";
-@import "../styles/idlyily.css";
+@import "./styles/hoameme.css";
+@import "./styles/mememydog.css";
+@import "./styles/mememycat.css";
+@import "./styles/idlyily.css";
 
 /* -------------------------------------------------------
    Identity Motion (Global)
@@ -112,6 +112,6 @@ body {
 /* -------------------------------------------------------
    Auth Styles
 ------------------------------------------------------- */
-@import "../styles/auth/auth.css";
-@import "../styles/auth/auth-emotion.css";
+@import "./styles/auth.css";
+@import "./styles/auth-emotion.css";
 
