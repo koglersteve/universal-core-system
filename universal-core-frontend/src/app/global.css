@@ -23,25 +23,30 @@ body {
 /* -------------------------------------------------------
    Emotional Theme Engine (Global)
 ------------------------------------------------------- */
-@import "./emotion.css";
+@import "./styles/emotions.css";
 
 /* -------------------------------------------------------
    OS + Core Styles
 ------------------------------------------------------- */
-@import "../styles/os-shell.css";
-@import "../styles/moodcheck.css";
-@import "../styles/notifications.css";
-@import "../styles/multiverse.css";
-@import "../styles/identity.css";
-@import "../styles/dramanextdoor.css";
+@import "./styles/os-shell.css";
+@import "./styles/moodcheck.css";
+@import "./styles/notifications.css";
+@import "./styles/multiverse.css";
+@import "./styles/identity.css";
+@import "./styles/dramanextdoor.css";
 
 /* -------------------------------------------------------
    App-Specific Styles
 ------------------------------------------------------- */
-@import "../styles/hoameme.css";
-@import "../styles/mememydog.css";
-@import "../styles/mememycat.css";
-@import "../styles/idlyily.css";
+@import "./styles/hoameme.css";
+@import "./styles/mememydog/mememydog.css";
+@import "./styles/mememycat/mememycat.css";
+@import "./styles/idlyily/idlyily.css";
+
+/* -------------------------------------------------------
+   Auth Styles
+------------------------------------------------------- */
+@import "./styles/auth/auth.css";
 
 /* -------------------------------------------------------
    Identity Motion (Global)
@@ -108,10 +113,4 @@ body {
 .logout-trait-calm { opacity: 0.9; }
 .logout-trait-reactive { animation: pulse 1.2s infinite; }
 .logout-trait-playful { transform: rotate(-1deg); }
-
-/* -------------------------------------------------------
-   Auth Styles
-------------------------------------------------------- */
-@import "../styles/auth/auth.css";
-@import "../styles/auth/auth-emotion.css";
 
