@@ -1,6 +1,11 @@
-/* -------------------------------------------------------
-   Base Reset
-------------------------------------------------------- */
+/* ------------------------------------------------------ */
+/* Global Emotional OS Styles                             */
+/* ------------------------------------------------------ */
+@import "./styles/emotions.css";
+
+/* ------------------------------------------------------ */
+/* Base Reset                                              */
+/* ------------------------------------------------------ */
 *,
 *::before,
 *::after {
@@ -20,14 +25,9 @@ body {
   color: #fff;
 }
 
-/* -------------------------------------------------------
-   Emotional Theme Engine (Global)
-------------------------------------------------------- */
-@import "./styles/emotions.css";
-
-/* -------------------------------------------------------
-   OS + Core Styles
-------------------------------------------------------- */
+/* ------------------------------------------------------ */
+/* OS + Core Styles                                        */
+/* ------------------------------------------------------ */
 @import "./styles/os-shell.css";
 @import "./styles/moodcheck.css";
 @import "./styles/notifications.css";
@@ -35,81 +35,17 @@ body {
 @import "./styles/identity.css";
 @import "./styles/dramanextdoor.css";
 
-/* -------------------------------------------------------
-   App-Specific Styles
-------------------------------------------------------- */
+/* ------------------------------------------------------ */
+/* App-Specific Styles                                     */
+/* ------------------------------------------------------ */
 @import "./styles/hoameme.css";
 @import "./styles/mememydog/mememydog.css";
 @import "./styles/mememycat/mememycat.css";
 @import "./styles/idlyily/idlyily.css";
 
-/* -------------------------------------------------------
-   Auth Styles
-------------------------------------------------------- */
+/* ------------------------------------------------------ */
+/* Auth Styles                                             */
+/* ------------------------------------------------------ */
 @import "./styles/auth/auth.css";
 
-/* -------------------------------------------------------
-   Identity Motion (Global)
-------------------------------------------------------- */
-.identity-motion.trait-calm {
-  transform: translateY(0);
-}
 
-.identity-motion.trait-reactive {
-  animation: reactivePulse 2s infinite ease-in-out;
-}
-
-.identity-motion.trait-sensitive {
-  opacity: 0.95;
-  transition: opacity 0.4s ease;
-}
-
-.identity-motion.trait-playful {
-  animation: playfulBounce 3s infinite ease-in-out;
-}
-
-@keyframes reactivePulse {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.02); }
-}
-
-@keyframes playfulBounce {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
-}
-
-/* -------------------------------------------------------
-   World Backdrop
-------------------------------------------------------- */
-.world-backdrop {
-  padding: 32px;
-  border-radius: 16px;
-  transition: background 0.6s ease;
-}
-
-/* -------------------------------------------------------
-   Logout Button (Mood + Identity Aware)
-------------------------------------------------------- */
-.logout-btn {
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.logout-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  transform: translateY(-2px);
-}
-
-/* Mood-aware */
-.logout-happy { color: #ffd700; }
-.logout-sad { color: #6495ed; }
-.logout-angry { color: #ff453a; }
-
-/* Identity-aware */
-.logout-trait-calm { opacity: 0.9; }
-.logout-trait-reactive { animation: pulse 1.2s infinite; }
-.logout-trait-playful { transform: rotate(-1deg); }
