@@ -1,7 +1,6 @@
 // src/app/layout.tsx
 
 import "./global.css";
-import "./emotion.css";
 
 import RoleNavBar from "@/components/navigation/RoleNavBar";
 import { NavigationDrawer } from "@/components/NavigationDrawer";
