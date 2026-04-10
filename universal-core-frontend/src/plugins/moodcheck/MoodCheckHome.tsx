@@ -25,8 +25,8 @@ export function MoodCheckHome() {
   const handleSubmit = async () => {
     if (!selected) return;
 
-    // Write to backend
-    await submitMood(selected);
+    // Write to backend (canonical payload)
+    await submitMood({ mood: selected });
 
     // Write to OS-level emotional state
     setMood(selected);
@@ -34,8 +34,8 @@ export function MoodCheckHome() {
     // Write to mood history
     addMood(selected);
 
-    // Route to result screen
-    router.push(`/moodcheck?mood=${selected}`);
+    // Canonical plugin route
+    router.push(`/plugins/moodcheck?mood=${selected}`);
   };
 
   return (

@@ -25,14 +25,22 @@ export function MemeMyCatEditor({ mood, world, trait, agent, token }: Props) {
       setError(null);
 
       try {
-        const res = await fetch(
-          `/api/mememycat/meme?mood=${mood || ""}&world=${world || ""}&trait=${trait || ""}&agent=${agent || ""}&et=${token || ""}`
-        );
+        const res = await fetch("/plugins/mememycat/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mood,
+            world,
+            trait,
+            agent,
+            token
+          })
+        });
 
         if (!res.ok) throw new Error("Failed to fetch cat meme");
 
         const data = await res.json();
-        setMemeUrl(data.meme);
+        setMemeUrl(data?.result?.url || null);
       } catch (e) {
         setError("Could not load a cat meme.");
       } finally {

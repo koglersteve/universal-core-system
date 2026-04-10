@@ -10,7 +10,7 @@ export type MoodSubmitPayload = {
 
 export async function submitMood(payload: MoodSubmitPayload) {
   try {
-    const res = await fetch("/api/moodcheck", {
+    const res = await fetch("/plugins/moodcheck/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

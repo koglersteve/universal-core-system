@@ -69,7 +69,7 @@ export function MoodCheckResult({ mood }: { mood: string }) {
       params: { mood: "frustrated" }
     },
     annoyed: {
-      app: "hoa-meme",
+      app: "hoameme", // canonical ID
       label: "Turn that annoyance into a masterpiece",
       params: { mood: "annoyed" }
     }

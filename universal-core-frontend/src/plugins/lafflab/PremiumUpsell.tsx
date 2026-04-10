@@ -31,8 +31,8 @@ export function PremiumUpsell({ mood, world, trait, agent }: PremiumUpsellProps)
         <button
           className="premiumupsell-button"
           onClick={() => {
-            // Safe, App‑Store‑approved navigation
-            window.location.href = "/subscribe/lafflab";
+            // Canonical subscription route
+            window.location.href = "/subscribe?app=lafflab";
           }}
         >
           Upgrade to Premium
@@ -52,3 +52,5 @@ export function PremiumUpsell({ mood, world, trait, agent }: PremiumUpsellProps)
     </div>
   );
 }
+
+export default PremiumUpsell;

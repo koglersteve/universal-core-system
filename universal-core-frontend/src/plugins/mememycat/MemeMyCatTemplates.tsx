@@ -1,9 +1,10 @@
 "use client";
 
-export const memeMyCatTemplates = [
+export const MemeMyCatTemplates = [
   {
-    id: "default",
-    label: "Default Cat Template",
-    description: "Basic layout for MemeMyCat editor."
+    id: "mememycat-default",
+    name: "Default Cat Template",
+    category: "static",
+    preview: "/templates/mememycat/default.png"
   }
 ];
