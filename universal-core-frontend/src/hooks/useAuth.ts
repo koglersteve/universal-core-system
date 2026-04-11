@@ -1,34 +1,36 @@
 "use client";
 
-import { useAuthContext } from "@/context/AuthContext";
+import { useEffect } from "react";
+import { useAuthStore } from "@/state/useAuthStore";
 
 export function useAuth() {
-  const { role, token, user, login, logout, loading } = useAuthContext();
+  const role = useAuthStore((s) => s.role);
+  const token = useAuthStore((s) => s.token);
+  const loading = useAuthStore((s) => s.loading);
+  const login = useAuthStore((s) => s.login);
+  const logout = useAuthStore((s) => s.logout);
+  const hydrate = useAuthStore((s) => s.hydrate);
 
-  const isLoggedIn = !!token;
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
 
   return {
-    // raw values
     role,
     token,
-    user,
     loading,
-
-    // actions
     login,
     logout,
 
-    // derived state
-    isLoggedIn,
+    isLoggedIn: !!token,
     isFounder: role === "founder",
     isAdmin: role === "admin",
     isAdvertiser: role === "advertiser",
     isVendor: role === "vendor",
     isUser: role === "user",
 
-    // future‑proof helpers
     hasRole: (r: string) => role === r,
-    isElevated: role === "founder" || role === "admin"
+    isElevated: role === "founder" || role === "admin",
   };
 }
 

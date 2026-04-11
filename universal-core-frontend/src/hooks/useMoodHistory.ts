@@ -1,24 +1,28 @@
 "use client";
 
-import { useMoodHistoryContext } from "@/context/MoodHistoryContext";
+import { useMemo } from "react";
+import { useMoodHistoryStore } from "@/state/useMoodHistoryStore";
 
 export function useMoodHistory() {
-  const ctx = useMoodHistoryContext();
-  const { history } = ctx;
+  const history = useMoodHistoryStore((s) => s.history);
+  const addMood = useMoodHistoryStore((s) => s.addMood);
 
-  const last = history[history.length - 1] ?? null;
+  const last = history.length > 0 ? history[history.length - 1] : null;
 
-  const mostFrequentMood = (() => {
+  const mostFrequentMood = useMemo(() => {
     if (history.length === 0) return null;
+
     const counts: Record<string, number> = {};
-    history.forEach(h => {
+    history.forEach((h) => {
       counts[h.mood] = (counts[h.mood] || 0) + 1;
     });
+
     return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
-  })();
+  }, [history]);
 
   return {
-    ...ctx,
+    history,
+    addMood,
 
     // Derived helpers
     last,
@@ -27,6 +31,6 @@ export function useMoodHistory() {
     hasHistory: history.length > 0,
     mostFrequentMood,
 
-    recent: (n: number) => history.slice(-n).reverse()
+    recent: (n: number) => history.slice(-n).reverse(),
   };
 }

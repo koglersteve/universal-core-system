@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useAgentStore } from "@/state/useAgentStore";
+import { useAgentEngine } from "@/hooks/useAgentEngine";
 
 export function useEmotionalAgents() {
-  const [agents, setAgents] = useState<any[]>([]);
+  // Activate the agent engine (vector updates + suggestions)
+  useAgentEngine();
 
-  return {
-    agents,
-    setAgents
-  };
+  // Access agent state from Zustand
+  const agents = useAgentStore((s) => s.agents);
+
+  return { agents };
 }

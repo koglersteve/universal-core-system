@@ -1,24 +1,16 @@
 "use client";
 
-import { useMoodContext } from "@/context/MoodContext";
+import { useMoodStore } from "@/state/useMoodStore";
 
 export function useMood() {
-  const ctx = useMoodContext();
-
-  const { mood, intensity, timestamp } = ctx;
+  const mood = useMoodStore((s) => s.mood);
+  const setMood = useMoodStore((s) => s.setMood);
+  const clearMood = useMoodStore((s) => s.clearMood);
 
   return {
-    ...ctx,
-
-    // Derived helpers
-    hasMood: !!mood,
-    isPositive: intensity > 0,
-    isNegative: intensity < 0,
-    isNeutral: intensity === 0,
-
-    // Convenience
     mood,
-    intensity,
-    timestamp
+    setMood,
+    clearMood,
+    hasMood: !!mood,
   };
 }

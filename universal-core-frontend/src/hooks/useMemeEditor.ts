@@ -1,16 +1,25 @@
 "use client";
 
-import { useContext, useMemo } from "react";
-import { MemeEditorContext } from "@/context/MemeEditorContext";
+import { useMemo } from "react";
+import { useMemeEditorStore } from "@/state/useMemeEditorStore";
 
 export function useMemeEditor() {
-  const ctx = useContext(MemeEditorContext);
+  const layers = useMemeEditorStore((s) => s.layers);
+  const selectedId = useMemeEditorStore((s) => s.selectedId);
+  const addLayer = useMemeEditorStore((s) => s.addLayer);
+  const updateLayer = useMemeEditorStore((s) => s.updateLayer);
+  const deleteLayer = useMemeEditorStore((s) => s.deleteLayer);
+  const undo = useMemeEditorStore((s) => s.undo);
+  const redo = useMemeEditorStore((s) => s.redo);
+  const history = useMemeEditorStore((s) => s.history);
+  const future = useMemeEditorStore((s) => s.future);
 
-  if (!ctx) {
-    throw new Error("useMemeEditor must be used within MemeEditorProvider");
-  }
+  const selectedLayer = useMemo(
+    () => layers.find((l) => l.id === selectedId) || null,
+    [layers, selectedId]
+  );
 
-  const {
+  return {
     layers,
     selectedId,
     addLayer,
@@ -19,21 +28,12 @@ export function useMemeEditor() {
     undo,
     redo,
     history,
-    future
-  } = ctx;
-
-  const selectedLayer = useMemo(
-    () => layers.find(l => l.id === selectedId) || null,
-    [layers, selectedId]
-  );
-
-  return {
-    ...ctx,
+    future,
 
     // Derived helpers
     selectedLayer,
     hasSelection: !!selectedId,
     canUndo: history.length > 0,
-    canRedo: future.length > 0
+    canRedo: future.length > 0,
   };
 }
