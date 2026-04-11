@@ -1,59 +1,71 @@
 "use client";
 
-import { useRitualContext } from "@/context/RitualContext";
-import { TodayRitualCard } from "@/components/home/TodayRitualCard";
-import { EmotionalRitualPreview } from "@/components/home/EmotionalRitualPreview";
-import { useMood } from "@/hooks/useMood";
-import { getMoodCaption } from "@/lib/memeemotions";
+import { useRitualStore } from "@/state/useRitualStore";
 
 export function DailyRitualScreen() {
-  const { lastDailyRitual, lastWeeklyRitual } = useRitualContext();
-  const mood = useMood();
+  // Zustand selectors — hydration safe
+  const lastDailyRitual = useRitualStore((s) => s.lastDailyRitual);
+  const lastWeeklyRitual = useRitualStore((s) => s.lastWeeklyRitual);
+  const setLastDailyRitual = useRitualStore((s) => s.setLastDailyRitual);
+  const setLastWeeklyRitual = useRitualStore((s) => s.setLastWeeklyRitual);
 
-  const caption = mood?.mood ? getMoodCaption(mood.mood) : null;
+  // Optional: derived streaks if your store exposes them
+  const dailyStreak = useRitualStore((s) => s.dailyStreak);
+  const weeklyStreak = useRitualStore((s) => s.weeklyStreak);
 
-  const dailyDate = lastDailyRitual
-    ? new Date(lastDailyRitual).toLocaleDateString()
-    : "Not yet";
+  const handleCompleteDaily = () => {
+    setLastDailyRitual(Date.now());
+  };
 
-  const weeklyDate = lastWeeklyRitual
-    ? new Date(lastWeeklyRitual).toLocaleDateString()
-    : "Not yet";
+  const handleCompleteWeekly = () => {
+    setLastWeeklyRitual(Date.now());
+  };
 
   return (
-    <div className="dailyritual-container">
-      <h1 className="dailyritual-title">Daily Ritual</h1>
+    <div className="ritual-screen">
+      <h2 className="ritual-title">Daily Ritual</h2>
 
-      {caption && (
-        <p className="dailyritual-caption">
-          {caption}
+      <div className="ritual-block">
+        <p>
+          <strong>Last Daily Check‑In:</strong>{" "}
+          {lastDailyRitual
+            ? new Date(lastDailyRitual).toLocaleDateString()
+            : "Not yet"}
         </p>
-      )}
 
-      <div className="dailyritual-section">
-        <h3>Today’s Check‑In</h3>
-        <TodayRitualCard />
-        <p className="dailyritual-meta">Last completed: {dailyDate}</p>
+        {dailyStreak !== undefined && (
+          <p>
+            <strong>Daily Streak:</strong> {dailyStreak} days
+          </p>
+        )}
+
+        <button className="ritual-btn" onClick={handleCompleteDaily}>
+          Complete Daily Ritual
+        </button>
       </div>
 
-      <div className="dailyritual-section">
-        <h3>Weekly Reflection</h3>
-        <p className="dailyritual-meta">Last completed: {weeklyDate}</p>
-      </div>
+      <h2 className="ritual-title" style={{ marginTop: "2rem" }}>
+        Weekly Ritual
+      </h2>
 
-      <div className="dailyritual-section">
-        <EmotionalRitualPreview />
-      </div>
+      <div className="ritual-block">
+        <p>
+          <strong>Last Weekly Reflection:</strong>{" "}
+          {lastWeeklyRitual
+            ? new Date(lastWeeklyRitual).toLocaleDateString()
+            : "Not yet"}
+        </p>
 
-      <button
-        className="dailyritual-start-button"
-        onClick={() => {
-          // This is where you’ll route to the ritual flow
-          window.location.href = "/ritual/start";
-        }}
-      >
-        Start Ritual →
-      </button>
+        {weeklyStreak !== undefined && (
+          <p>
+            <strong>Weekly Streak:</strong> {weeklyStreak} weeks
+          </p>
+        )}
+
+        <button className="ritual-btn" onClick={handleCompleteWeekly}>
+          Complete Weekly Ritual
+        </button>
+      </div>
     </div>
   );
 }

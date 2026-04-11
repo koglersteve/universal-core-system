@@ -7,9 +7,9 @@ import { createStabilityTracker } from "@/lib/analytics/stability";
 
 export const dynamic = "force-dynamic";
 
-function DeeplinkPageInner() {
+function HomePageInner() {
   const params = useSearchParams();
-  const stability = createStabilityTracker("deeplink");
+  const stability = createStabilityTracker("home");
 
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;
@@ -36,22 +36,27 @@ function DeeplinkPageInner() {
   }, []);
 
   return (
-    <div className="deeplink-container">
-      <pre style={{ whiteSpace: "pre-wrap" }}>
+    <main className="home-landing">
+      <h1 className="home-title">Welcome to Emotional‑OS</h1>
+      <p className="home-subtitle">
+        Select an app from the navigation to begin.
+      </p>
+
+      <pre style={{ whiteSpace: "pre-wrap", marginTop: "2rem" }}>
         {JSON.stringify(
           { mood, world, trait, agent, emotionalState },
           null,
           2
         )}
       </pre>
-    </div>
+    </main>
   );
 }
 
-export default function DeeplinkPage() {
+export default function HomePage() {
   return (
     <Suspense>
-      <DeeplinkPageInner />
+      <HomePageInner />
     </Suspense>
   );
 }

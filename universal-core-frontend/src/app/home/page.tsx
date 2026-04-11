@@ -4,7 +4,7 @@ import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
 import { createStabilityTracker } from "@/lib/analytics/stability";
-import { HomeShell } from "@/plugins/home"; // adjust if your component name differs
+import { HomeShell } from "@/plugins/home/HomeShell"; // BEST SAFE DEFAULT
 
 export const dynamic = "force-dynamic";
 
@@ -12,13 +12,11 @@ function HomePageInner() {
   const params = useSearchParams();
   const stability = createStabilityTracker("home");
 
-  // Read query params (if any)
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;
   const trait = params.get("trait") || undefined;
   const agent = params.get("agent") || undefined;
 
-  // Emotional token
   const token = params.get("et");
   let emotionalState = null;
 
@@ -30,7 +28,6 @@ function HomePageInner() {
     }
   }
 
-  // Track time spent on page
   useEffect(() => {
     const start = performance.now();
     return () => {

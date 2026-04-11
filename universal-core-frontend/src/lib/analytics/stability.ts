@@ -1,78 +1,60 @@
-import { makeAppTracker } from "./client";
+"use client";
 
-export function createStabilityTracker(app: EmotionalAppId) {
-  const track = makeAppTracker(app);
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { decodeEmotionalState } from "@/lib/emotionalExportToken";
+import { createStabilityTracker } from "@/lib/analytics/stability";
+import { DramaNextDoorHome } from "@/plugins/dramanextdoor";
 
-  const base = () => ({
-    appVersion: window.__AURELIAQ_APP_VERSION__ ?? null,
-    userId: window.__AURELIAQ_USER_ID__ ?? null,
-    sessionId: window.__AURELIAQ_SESSION_ID__ ?? null,
+export const dynamic = "force-dynamic";
 
-    // emotional context (optional)
-    mood: window.__AURELIAQ_LAST_MOOD_PACKET__?.mood ?? null,
-    world: window.__AURELIAQ_ACTIVE_WORLD__ ?? null,
-    trait: window.__AURELIAQ_ACTIVE_TRAIT__ ?? null,
-    agent: window.__AURELIAQ_ACTIVE_AGENT__ ?? null,
+function DramaNextDoorPageInner() {
+  const params = useSearchParams();
+  const stability = createStabilityTracker("dramanextdoor");
 
-    // environment
-    deviceModel: navigator.userAgent,
-    osVersion: navigator.platform,
-    browser: navigator.userAgent,
-    networkType: navigator.connection?.effectiveType ?? null,
-    batteryPct: navigator.getBattery
-      ? navigator.getBattery().then(b => b.level * 100)
-      : null
-  });
+  const mood = params.get("mood") || undefined;
+  const world = params.get("world") || undefined;
+  const trait = params.get("trait") || undefined;
+  const agent = params.get("agent") || undefined;
 
-  return {
-    download: (downloadTimeMs: number, installSuccess: boolean) =>
-      track("download.metrics", {
-        type: "download",
-        payload: { downloadTimeMs, installSuccess },
-        ...base()
-      }),
+  const token = params.get("et");
+  let emotionalState = null;
 
-    crash: (crashType: string, crashMessage?: string) =>
-      track("crash.metrics", {
-        type: "crash",
-        payload: { crashType, crashMessage },
-        ...base()
-      }),
+  if (token) {
+    try {
+      emotionalState = decodeEmotionalState(token);
+    } catch (e) {
+      console.warn("Invalid emotional token", e);
+    }
+  }
 
-    freeze: (freezeDurationMs: number) =>
-      track("freeze.metrics", {
-        type: "freeze",
-        payload: { freezeDurationMs },
-        ...base()
-      }),
+  useEffect(() => {
+    const start = performance.now();
+    return () => {
+      const end = performance.now();
+      stability.download(end - start, true);
+    };
+  }, []);
 
-    anr: () =>
-      track("anr.metrics", {
-        type: "anr",
-        payload: { anrDetected: true },
-        ...base()
-      }),
+  return (
+    <div className="dramanextdoor-container">
+      <DramaNextDoorHome
+        mood={mood}
+        world={world}
+        trait={trait}
+        agent={agent}
+        emotionalState={emotionalState}
+      />
+    </div>
+  );
+}
 
-    performance: (metrics: {
-      ttiMs?: number;
-      apiLatencyMs?: number;
-      droppedFrames?: number;
-      memoryUsageMb?: number;
-      cpuUsagePct?: number;
-    }) =>
-      track("performance.metrics", {
-        type: "performance",
-        payload: metrics,
-        ...base()
-      }),
-
-    stabilityScore: (score: number) =>
-      track("stability.score", {
-        type: "stability-score",
-        payload: { stabilityScore: score },
-        ...base()
-      })
-  };
+export default function DramaNextDoorPage() {
+  return (
+    <Suspense>
+      <DramaNextDoorPageInner />
+    </Suspense>
+  );
 }
 
 
