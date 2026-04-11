@@ -95,3 +95,12 @@ export const plugins: PluginMeta[] = [
   }
 ];
 
+// ✅ Added to satisfy imports in /deeplink/page.tsx
+export const APP_IDS = {
+  "hoa-meme": "hoa-meme",
+  mememydog: "mememydog",
+  mememycat: "mememycat",
+  dramanextdoor: "dramanextdoor",
+  idlyily: "idlyily",
+  lafflab: "lafflab",
+};

@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemeEditorStore } from "@/state/useMemeEditorStore";   // ← FIXED
+import { useMemeEditorStore } from "@/state/useMemeEditorStore";
 import { MemeCanvas } from "@/components/meme-editor/MemeCanvas";
 import { RenderedLayers } from "@/components/meme-editor/RenderedLayers";
 
 export function MemeEditor() {
-  const { layers } = useMemeEditorStore();   // ← FIXED
+  const { layers } = useMemeEditorStore();
   const router = useRouter();
 
   async function handleExport() {
@@ -39,3 +39,5 @@ export function MemeEditor() {
     </div>
   );
 }
+
+export default MemeEditor;

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { createStabilityTracker } from "@/lib/analytics/stability";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const stability = createStabilityTracker("hoa-meme");
 
   useEffect(() => {

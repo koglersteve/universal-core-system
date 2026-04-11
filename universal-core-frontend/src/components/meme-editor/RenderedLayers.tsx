@@ -2,9 +2,9 @@
 
 import React from "react";
 
-export default function RenderedLayers({ layers }: { layers: any[] }) {
+export function RenderedLayers({ layers }: { layers: any[] }) {
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
       {layers.map((layer, i) => (
         <div
           key={i}
@@ -14,7 +14,8 @@ export default function RenderedLayers({ layers }: { layers: any[] }) {
             left: layer.x,
             fontSize: layer.size || 24,
             color: layer.color || "#fff",
-            pointerEvents: "none"
+            pointerEvents: "none",
+            transform: `rotate(${layer.rotation || 0}deg)`
           }}
         >
           {layer.text}
@@ -23,3 +24,5 @@ export default function RenderedLayers({ layers }: { layers: any[] }) {
     </div>
   );
 }
+
+export default RenderedLayers;

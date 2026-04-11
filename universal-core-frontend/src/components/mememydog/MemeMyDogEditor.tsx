@@ -83,3 +83,5 @@ export function MemeMyDogEditor({ mood, world, trait, agent, token }: Props) {
     </div>
   );
 }
+
+export default MemeMyDogEditor;

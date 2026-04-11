@@ -1,9 +1,20 @@
 "use client";
 
-export default function CrossAppLauncher() {
+type CrossAppLauncherProps = {
+  sourceApp?: string;
+  payload?: any;
+};
+
+export function CrossAppLauncher({ sourceApp, payload }: CrossAppLauncherProps) {
+  function handleLaunch() {
+    console.log("Cross‑app launch triggered:", { sourceApp, payload });
+    // TODO: integrate with your real cross‑app router
+  }
+
   return (
     <div>
       <button
+        onClick={handleLaunch}
         style={{
           padding: "10px 16px",
           background: "#333",
@@ -16,3 +27,5 @@ export default function CrossAppLauncher() {
     </div>
   );
 }
+
+export default CrossAppLauncher;

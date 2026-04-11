@@ -1,5 +1,14 @@
 // src/lib/emotionalExportToken.ts
-import { type EmotionalExport } from "@/context/EmotionalExportContext";
+
+// EmotionalExport is now a plain structural type.
+// You no longer import it from the deleted Context system.
+export type EmotionalExport = {
+  mood?: string | null;
+  world?: string | null;
+  trait?: string | null;
+  agent?: string | null;
+  [key: string]: any;
+};
 
 const SECRET =
   process.env.NEXT_PUBLIC_EMOTIONAL_TOKEN_SECRET || "dev-secret";
@@ -40,4 +49,15 @@ export async function encodeEmotionalState(
   const signature = await sign(base);
 
   return `${base}.${signature}`;
+}
+
+// --- Minimal safe decoder (required by multiple pages) ---
+export function decodeEmotionalState(token: string) {
+  try {
+    const [base] = token.split(".");
+    const json = JSON.parse(Buffer.from(base, "base64").toString());
+    return json.payload ?? json;
+  } catch {
+    return { mood: null, world: null, trait: null, agent: null };
+  }
 }

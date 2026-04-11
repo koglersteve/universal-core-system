@@ -40,13 +40,7 @@ export default function HoaMemePage() {
 
   return (
     <div className="hoa-meme-container">
-      <HoaMemeHome
-        mood={mood}
-        world={world}
-        trait={trait}
-        agent={agent}
-        emotionalState={emotionalState}
-      />
+      <HoaMemeHome />
     </div>
   );
 }
