@@ -1,9 +1,9 @@
 "use client";
 
-import { useMood } from "@/context/MoodContext";
+import { useMood } from "@/state/useMoodStore";
 
 export function MoodGreeting() {
-  const mood = useMood(); // e.g. "happy", "stressed"
+  const mood = useMood();
 
   const greetings: Record<string, string> = {
     happy: "You're glowing today.",
