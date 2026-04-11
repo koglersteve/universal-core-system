@@ -1,21 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { createStabilityTracker } from "@/lib/analytics/stability";
+import { MoodCheckHome } from "@/plugins/moodcheck";
 
-import { MoodCheckHome } from "@/plugins/moodcheck/MoodCheckHome";
-import { MoodCheckResult } from "@/plugins/moodcheck/MoodCheckResult";
-import { MoodCheckHistory } from "@/plugins/moodcheck/MoodCheckHistory";
+export const dynamic = "force-dynamic";
 
-export default function MoodCheckPage() {
+function MoodCheckPageInner() {
   const params = useSearchParams();
   const stability = createStabilityTracker("moodcheck");
 
-  const mood = params.get("mood");
-  const history = params.get("history");
+  // Read query params
+  const mood = params.get("mood") || undefined;
+  const world = params.get("world") || undefined;
+  const trait = params.get("trait") || undefined;
+  const agent = params.get("agent") || undefined;
 
-  // Track load → unload time
+  // Track time spent on page
   useEffect(() => {
     const start = performance.now();
     return () => {
@@ -24,16 +26,22 @@ export default function MoodCheckPage() {
     };
   }, []);
 
-  // History view
-  if (history === "1") {
-    return <MoodCheckHistory />;
-  }
+  return (
+    <div className="moodcheck-container">
+      <MoodCheckHome
+        mood={mood}
+        world={world}
+        trait={trait}
+        agent={agent}
+      />
+    </div>
+  );
+}
 
-  // Result view
-  if (mood) {
-    return <MoodCheckResult mood={mood} />;
-  }
-
-  // Default home view
-  return <MoodCheckHome />;
+export default function MoodCheckPage() {
+  return (
+    <Suspense>
+      <MoodCheckPageInner />
+    </Suspense>
+  );
 }

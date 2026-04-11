@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
 import { createStabilityTracker } from "@/lib/analytics/stability";
 import { HoaMemeHome } from "@/plugins/hoa-meme";
 
-export default function HoaMemePage() {
+export const dynamic = "force-dynamic";
+
+function HoaMemePageInner() {
   const params = useSearchParams();
   const stability = createStabilityTracker("hoa-meme");
 
@@ -40,7 +42,22 @@ export default function HoaMemePage() {
 
   return (
     <div className="hoa-meme-container">
-      <HoaMemeHome />
+      <HoaMemeHome
+        mood={mood}
+        world={world}
+        trait={trait}
+        agent={agent}
+        emotionalState={emotionalState}
+      />
     </div>
   );
 }
+
+export default function HoaMemePage() {
+  return (
+    <Suspense>
+      <HoaMemePageInner />
+    </Suspense>
+  );
+}
+

@@ -1,21 +1,61 @@
 "use client";
 
-import { useEffect } from "react";
-import MemeEditor from "@/components/meme-editor/MemeEditor";
-import { useMemeEditorStore } from "@/state/useMemeEditorStore";
-import { getPresetLayers } from "@/lib/memePresets";
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { decodeEmotionalState } from "@/lib/emotionalExportToken";
+import { createStabilityTracker } from "@/lib/analytics/stability";
+import { HoaMemeEditor } from "@/plugins/hoa-meme";
 
-function HOAMemeEditorInner() {
-  const addLayer = useMemeEditorStore((s) => s.addLayer);
+export const dynamic = "force-dynamic";
 
+function HoaMemeEditorInner() {
+  const params = useSearchParams();
+  const stability = createStabilityTracker("hoa-meme-editor");
+
+  // Read query params
+  const mood = params.get("mood") || undefined;
+  const world = params.get("world") || undefined;
+  const trait = params.get("trait") || undefined;
+  const agent = params.get("agent") || undefined;
+
+  // Emotional token
+  const token = params.get("et");
+  let emotionalState = null;
+
+  if (token) {
+    try {
+      emotionalState = decodeEmotionalState(token);
+    } catch (e) {
+      console.warn("Invalid emotional token", e);
+    }
+  }
+
+  // Track time spent on page
   useEffect(() => {
-    const presetLayers = getPresetLayers("hoameme");
-    presetLayers.forEach(addLayer);
-  }, [addLayer]);
+    const start = performance.now();
+    return () => {
+      const end = performance.now();
+      stability.download(end - start, true);
+    };
+  }, []);
 
-  return <MemeEditor />;
+  return (
+    <div className="hoa-meme-editor-container">
+      <HoaMemeEditor
+        mood={mood}
+        world={world}
+        trait={trait}
+        agent={agent}
+        emotionalState={emotionalState}
+      />
+    </div>
+  );
 }
 
-export default function HOAMemeEditorPage() {
-  return <HOAMemeEditorInner />;
+export default function HoaMemeEditorPage() {
+  return (
+    <Suspense>
+      <HoaMemeEditorInner />
+    </Suspense>
+  );
 }

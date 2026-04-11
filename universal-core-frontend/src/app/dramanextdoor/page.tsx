@@ -1,9 +1,12 @@
-// src/app/dramanextdoor/page.tsx
 "use client";
 
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
 import { DramaNextDoorScene } from "@/plugins/dramanextdoor/DramaNextDoorScene";
+import { stability } from "@/lib/stability"; // <-- if this exists in your project
+
+export const dynamic = "force-dynamic";
 
 export default function DramaNextDoorPage() {
   const params = useSearchParams();
@@ -26,6 +29,15 @@ export default function DramaNextDoorPage() {
     }
   }
 
+  // Track time spent on page
+  useEffect(() => {
+    const start = performance.now();
+    return () => {
+      const end = performance.now();
+      stability.download(end - start, true);
+    };
+  }, []);
+
   return (
     <div className="drama-nextdoor-container">
       <DramaNextDoorScene
@@ -38,10 +50,3 @@ export default function DramaNextDoorPage() {
     </div>
   );
 }
-useEffect(() => {
-  const start = performance.now();
-  return () => {
-    const end = performance.now();
-    stability.download(end - start, true);
-  };
-}, []);

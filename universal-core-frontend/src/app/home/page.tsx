@@ -1,29 +1,61 @@
 "use client";
 
-import { EmotionalHomeHeader } from "@/components/home/EmotionalHomeHeader";
-import { EmotionalStateCard } from "@/components/home/EmotionalStateCard";
-import { EmotionalHistoryPreview } from "@/components/home/EmotionalHistoryPreview";
-import { EmotionalRitualPreview } from "@/components/home/EmotionalRitualPreview";
-import { EmotionalWorldSwitcher } from "@/components/EmotionalWorldSwitcher";
-import { EmotionalWorldDiff } from "@/components/EmotionalWorldDiff";
-import { EmotionalWorldMerge } from "@/components/EmotionalWorldMerge";
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { decodeEmotionalState } from "@/lib/emotionalExportToken";
+import { createStabilityTracker } from "@/lib/analytics/stability";
+import { HomeShell } from "@/plugins/home"; // adjust if your component name differs
+
+export const dynamic = "force-dynamic";
+
+function HomePageInner() {
+  const params = useSearchParams();
+  const stability = createStabilityTracker("home");
+
+  // Read query params (if any)
+  const mood = params.get("mood") || undefined;
+  const world = params.get("world") || undefined;
+  const trait = params.get("trait") || undefined;
+  const agent = params.get("agent") || undefined;
+
+  // Emotional token
+  const token = params.get("et");
+  let emotionalState = null;
+
+  if (token) {
+    try {
+      emotionalState = decodeEmotionalState(token);
+    } catch (e) {
+      console.warn("Invalid emotional token", e);
+    }
+  }
+
+  // Track time spent on page
+  useEffect(() => {
+    const start = performance.now();
+    return () => {
+      const end = performance.now();
+      stability.download(end - start, true);
+    };
+  }, []);
+
+  return (
+    <div className="home-container">
+      <HomeShell
+        mood={mood}
+        world={world}
+        trait={trait}
+        agent={agent}
+        emotionalState={emotionalState}
+      />
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
-    <div className="emotional-home">
-      <EmotionalHomeHeader />
-
-      <div className="home-grid">
-        <EmotionalStateCard />
-        <EmotionalHistoryPreview />
-        <EmotionalRitualPreview />
-      </div>
-
-      <div className="home-multiverse">
-        <EmotionalWorldSwitcher />
-        <EmotionalWorldDiff />
-        <EmotionalWorldMerge />
-      </div>
-    </div>
+    <Suspense>
+      <HomePageInner />
+    </Suspense>
   );
 }

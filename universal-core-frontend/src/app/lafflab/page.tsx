@@ -1,21 +1,26 @@
-// src/app/idlyily/page.tsx
 "use client";
 
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
-import { IdlyilyHome } from "@/plugins/idlyily";
-import { useEffect } from "react";
+import { createStabilityTracker } from "@/lib/analytics/stability";
+import { LaffLabHome } from "@/plugins/lafflab";
 
-export default function IdlyilyPage() {
+export const dynamic = "force-dynamic";
+
+function LaffLabPageInner() {
   const params = useSearchParams();
+  const stability = createStabilityTracker("lafflab");
 
+  // Read query params
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;
   const trait = params.get("trait") || undefined;
   const agent = params.get("agent") || undefined;
 
-  let emotionalState = null;
+  // Emotional token
   const token = params.get("et");
+  let emotionalState = null;
 
   if (token) {
     try {
@@ -25,10 +30,18 @@ export default function IdlyilyPage() {
     }
   }
 
+  // Track time spent on page
+  useEffect(() => {
+    const start = performance.now();
+    return () => {
+      const end = performance.now();
+      stability.download(end - start, true);
+    };
+  }, []);
+
   return (
-    <div className="idlyily-container">
-      <SessionDurationTracker />
-      <IdlyilyHome
+    <div className="lafflab-container">
+      <LaffLabHome
         mood={mood}
         world={world}
         trait={trait}
@@ -39,14 +52,10 @@ export default function IdlyilyPage() {
   );
 }
 
-function SessionDurationTracker() {
-  useEffect(() => {
-    const start = performance.now();
-    return () => {
-      const end = performance.now();
-      stability.download(end - start, true);
-    };
-  }, []);
-
-  return null;
+export default function LaffLabPage() {
+  return (
+    <Suspense>
+      <LaffLabPageInner />
+    </Suspense>
+  );
 }
