@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
-import MemeMyDogEditor from "@/components/mememydog/MemeMyDogEditor";
-import { useMemeEditor } from "@/hooks/useMemeEditor";
-import { getPresetLayers } from "@/lib/memePresets";
+import Link from "next/link";
 
-function MemeMyDogEditorInner() {
-  const { addLayer } = useMemeEditor();
+export default function MemeMyDogPage() {
+  return (
+    <main className="mememydog-landing">
+      <div className="mememydog-card">
+        <h1 className="mememydog-title">Meme My Dog</h1>
+        <p className="mememydog-subtitle">
+          Turn your dog&apos;s photos into emotionally aware memes powered by Emotional‑OS.
+        </p>
 
-  useEffect(() => {
-    const presetLayers = getPresetLayers("mememydog");
-    presetLayers.forEach(addLayer);
-  }, [addLayer]);
-
-  return <MemeMyDogEditor />;
-}
-
-export default function MemeMyDogEditorPage() {
-  return <MemeMyDogEditorInner />;
+        <Link href="/mememydog/editor" className="mememydog-start-btn">
+          Open Meme Editor
+        </Link>
+      </div>
+    </main>
+  );
 }
 

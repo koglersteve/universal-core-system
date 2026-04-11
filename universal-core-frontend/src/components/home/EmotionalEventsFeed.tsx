@@ -1,9 +1,9 @@
 "use client";
 
-import { useMoodHistory } from "@/context/MoodHistoryContext";
+import { useMoodHistoryStore } from "@/state/useMoodHistoryStore";   // ← FIXED
 
 export function EmotionalEventsFeed() {
-  const history = useMoodHistory(); // [{ mood, timestamp }]
+  const { history } = useMoodHistoryStore();   // ← FIXED
 
   return (
     <div className="events-feed">
