@@ -4,7 +4,6 @@ import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
 import { createStabilityTracker } from "@/lib/analytics/stability";
-import { HomeShell } from "@/plugins/home/HomeShell"; // BEST SAFE DEFAULT
 
 export const dynamic = "force-dynamic";
 
@@ -37,15 +36,18 @@ function HomePageInner() {
   }, []);
 
   return (
-    <div className="home-container">
-      <HomeShell
-        mood={mood}
-        world={world}
-        trait={trait}
-        agent={agent}
-        emotionalState={emotionalState}
-      />
-    </div>
+    <main className="home-landing">
+      <h1 className="home-title">Welcome to Emotional‑OS</h1>
+      <p className="home-subtitle">Select an app from the navigation to begin.</p>
+
+      <pre style={{ whiteSpace: "pre-wrap", marginTop: "2rem" }}>
+        {JSON.stringify(
+          { mood, world, trait, agent, emotionalState },
+          null,
+          2
+        )}
+      </pre>
+    </main>
   );
 }
 

@@ -38,9 +38,7 @@ function HomePageInner() {
   return (
     <main className="home-landing">
       <h1 className="home-title">Welcome to Emotional‑OS</h1>
-      <p className="home-subtitle">
-        Select an app from the navigation to begin.
-      </p>
+      <p className="home-subtitle">Select an app from the navigation to begin.</p>
 
       <pre style={{ whiteSpace: "pre-wrap", marginTop: "2rem" }}>
         {JSON.stringify(
@@ -60,3 +58,4 @@ export default function HomePage() {
     </Suspense>
   );
 }
+

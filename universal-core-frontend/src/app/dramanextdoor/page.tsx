@@ -1,23 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
 import { DramaNextDoorScene } from "@/plugins/dramanextdoor/DramaNextDoorScene";
-import { stability } from "@/lib/stability"; // <-- if this exists in your project
+import { createStabilityTracker } from "@/lib/analytics/stability";
 
 export const dynamic = "force-dynamic";
 
-export default function DramaNextDoorPage() {
+function DramaNextDoorPageInner() {
   const params = useSearchParams();
+  const stability = createStabilityTracker("dramanextdoor");
 
-  // Read query params
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;
   const trait = params.get("trait") || undefined;
   const agent = params.get("agent") || undefined;
 
-  // Emotional token
   const token = params.get("et");
   let emotionalState = null;
 
@@ -29,7 +28,6 @@ export default function DramaNextDoorPage() {
     }
   }
 
-  // Track time spent on page
   useEffect(() => {
     const start = performance.now();
     return () => {
@@ -48,5 +46,13 @@ export default function DramaNextDoorPage() {
         emotionalState={emotionalState}
       />
     </div>
+  );
+}
+
+export default function DramaNextDoorPage() {
+  return (
+    <Suspense>
+      <DramaNextDoorPageInner />
+    </Suspense>
   );
 }
