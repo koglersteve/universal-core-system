@@ -1,9 +1,9 @@
 "use client";
 
-import { useMood } from "@/state/useMoodStore";
+import { useMoodStore } from "@/state/useMoodStore";
 
 export function MoodGreeting() {
-  const mood = useMood();
+  const mood = useMoodStore((state) => state.mood);
 
   const greetings: Record<string, string> = {
     happy: "You're glowing today.",
