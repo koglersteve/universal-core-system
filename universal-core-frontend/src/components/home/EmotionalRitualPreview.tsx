@@ -1,9 +1,9 @@
 "use client";
 
-import { useRitualContext } from "@/context/RitualContext";
+import { useRitualStore } from "@/state/useRitualStore";   // ← FIXED
 
 export function EmotionalRitualPreview() {
-  const { lastDailyRitual, lastWeeklyRitual } = useRitualContext();
+  const { lastDailyRitual, lastWeeklyRitual } = useRitualStore();   // ← FIXED
 
   return (
     <div className="ritual-preview">
@@ -25,3 +25,4 @@ export function EmotionalRitualPreview() {
     </div>
   );
 }
+

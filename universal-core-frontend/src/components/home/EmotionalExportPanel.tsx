@@ -1,9 +1,9 @@
 "use client";
 
-import { useMoodHistory } from "@/context/MoodHistoryContext";
+import { useMoodHistoryStore } from "@/state/useMoodHistoryStore";   // ← FIXED
 
 export function EmotionalExportPanel() {
-  const history = useMoodHistory();
+  const { history } = useMoodHistoryStore();   // ← FIXED
 
   function exportJSON() {
     const blob = new Blob([JSON.stringify(history, null, 2)], {

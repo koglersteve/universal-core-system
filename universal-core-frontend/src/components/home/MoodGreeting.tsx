@@ -23,3 +23,4 @@ export function MoodGreeting() {
 
   return <div className="mood-greeting">{text}</div>;
 }
+

@@ -1,14 +1,15 @@
 "use client";
 
-import { usePhysics } from "@/context/EmotionalPhysicsContext";
+import { ReactNode } from "react";
+import { useEmotionalPhysics } from "@/hooks/useEmotionalPhysics";  // ← FIXED
 
-export function PhysicsPulse({ children }: { children: React.ReactNode }) {
-  const physics = usePhysics(); // { velocity, intensity }
+export function PhysicsPulse({ children }: { children: ReactNode }) {
+  const { velocity } = useEmotionalPhysics();  // ← FIXED
 
   const className =
-    physics.velocity > 5
+    velocity > 5
       ? "physics-velocity fast"
-      : physics.velocity > 1
+      : velocity > 1
       ? "physics-velocity slow"
       : "physics-velocity idle";
 

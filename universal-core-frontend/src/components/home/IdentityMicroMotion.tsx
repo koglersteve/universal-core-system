@@ -1,13 +1,18 @@
 "use client";
 
-import { useIdentityTrait } from "@/context/EmotionalIdentityContext";
+import { ReactNode } from "react";
+import { useIdentityStore } from "@/state/useIdentityStore";
 
-export function IdentityMicroMotion({ children }: { children: React.ReactNode }) {
-  const trait = useIdentityTrait();
+type IdentityMicroMotionProps = {
+  children: ReactNode;
+};
 
-  return (
-    <div className={`identity-motion ${trait || ""}`}>
-      {children}
-    </div>
-  );
+export function IdentityMicroMotion({ children }: IdentityMicroMotionProps) {
+  const trait = useIdentityStore((s) => s.trait);
+
+  const className = `identity-micromotion identity-trait-${
+    trait || "calm"
+  }`;
+
+  return <div className={className}>{children}</div>;
 }
