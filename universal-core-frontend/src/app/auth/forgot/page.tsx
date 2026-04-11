@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useMood } from "@/context/MoodContext";   // ← ADD THIS
+import { useMood } from "@/hooks/useMood";   // ← FIXED
 import Link from "next/link";
 
 import { AuthCard } from "@/components/auth/AuthCard";
@@ -13,14 +13,14 @@ export default function ForgotPasswordPage() {
   const { resetPassword } = useAuth();
   const [email, setEmail] = useState("");
 
-  const mood = useMood();   // ← READ MOOD HERE
+  const { mood } = useMood();   // ← FIXED
 
   async function handleReset() {
     await resetPassword(email);
   }
 
   return (
-    <div className={`auth-container auth-${mood}`}>   {/* ← WRAP THE CARD HERE */}
+    <div className={`auth-container auth-${mood || "neutral"}`}>
       <AuthCard title="Reset Password">
         <AuthField
           label="Email"
@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
           onChange={setEmail}
         />
 
-        <AuthButton>Send Reset Link</AuthButton>
+        <AuthButton onClick={handleReset}>Send Reset Link</AuthButton>
 
         <div className="auth-links">
           <Link href="/auth/login">Back to login</Link>

@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import { createStabilityTracker } from "@/lib/analytics/stability";
-import { MoodCheckHome } from "@/plugins/moodcheck";
+import MemeMyDogEditor from "@/components/mememydog/MemeMyDogEditor";
+import { useMemeEditor } from "@/hooks/useMemeEditor";
+import { getPresetLayers } from "@/lib/memePresets";
 
-export default function MoodCheckPage() {
-  const stability = createStabilityTracker("moodcheck");
+function MemeMyDogEditorInner() {
+  const { addLayer } = useMemeEditor();
 
-  // Track download / load time
   useEffect(() => {
-    const start = performance.now();
+    const presetLayers = getPresetLayers("mememydog");
+    presetLayers.forEach(addLayer);
+  }, [addLayer]);
 
-    return () => {
-      const end = performance.now();
-      stability.download(end - start, true);
-    };
-  }, []);
+  return <MemeMyDogEditor />;
+}
 
-  return <MoodCheckHome />;
+export default function MemeMyDogEditorPage() {
+  return <MemeMyDogEditorInner />;
 }
 

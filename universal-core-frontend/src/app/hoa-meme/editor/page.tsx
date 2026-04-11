@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import MemeEditor from "@/components/meme-editor/MemeEditor";
-import { useMemeEditor } from "@/context/MemeEditorContext";
+import { useMemeEditor } from "@/hooks/useMemeEditor";   // ← FIXED
 import { getPresetLayers } from "@/lib/memePresets";
 
 function HOAMemeEditorInner() {
@@ -17,5 +17,5 @@ function HOAMemeEditorInner() {
 }
 
 export default function HOAMemeEditorPage() {
-  return <MemeEditor />;
+  return <HOAMemeEditorInner />;   // ← FIXED: use the preset loader
 }

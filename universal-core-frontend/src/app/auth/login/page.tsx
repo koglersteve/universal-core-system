@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useMood } from "@/context/MoodContext";   // ← ADD THIS
+import { useMood } from "@/hooks/useMood";   // ← FIXED
 import Link from "next/link";
 
 import { AuthCard } from "@/components/auth/AuthCard";
@@ -14,14 +14,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const mood = useMood();   // ← READ MOOD HERE
+  const { mood } = useMood();   // ← FIXED
 
   async function handleLogin() {
     await login(email, password);
   }
 
   return (
-    <div className={`auth-container auth-${mood}`}>   {/* ← WRAP THE CARD HERE */}
+    <div className={`auth-container auth-${mood || "neutral"}`}>
       <AuthCard title="Welcome Back">
         <AuthField
           label="Email"
@@ -37,7 +37,7 @@ export default function LoginPage() {
           onChange={setPassword}
         />
 
-        <AuthButton>Login</AuthButton>
+        <AuthButton onClick={handleLogin}>Login</AuthButton>
 
         <div className="auth-links">
           <Link href="/auth/forgot">Forgot password</Link>
