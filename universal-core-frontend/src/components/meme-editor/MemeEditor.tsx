@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemeEditor } from "@/context/MemeEditorContext";
+import { useMemeEditorStore } from "@/state/useMemeEditorStore";   // ← FIXED
 import { MemeCanvas } from "@/components/meme-editor/MemeCanvas";
 import { RenderedLayers } from "@/components/meme-editor/RenderedLayers";
 
 export function MemeEditor() {
-  const { state } = useMemeEditor();
+  const { layers } = useMemeEditorStore();   // ← FIXED
   const router = useRouter();
 
   async function handleExport() {
@@ -14,10 +14,10 @@ export function MemeEditor() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        app: "hoameme",        // you can override per-app
-        mood: "happy",         // or pull from URL/context
+        app: "hoameme",
+        mood: "happy",
         title: "My Meme",
-        layers: state.layers
+        layers
       })
     });
 
