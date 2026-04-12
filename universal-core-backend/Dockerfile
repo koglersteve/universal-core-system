@@ -2,15 +2,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files first for better caching
 COPY package*.json ./
 RUN npm install
 
+# Copy the rest of the backend
 COPY . .
 
-# Generate Prisma client (required for Prisma 7)
+# Ensure DATABASE_URL is available at build time
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+# Generate Prisma client (Prisma 7 requires datasourceUrl)
 RUN npx prisma generate
 
-# Build your backend (if using ts-node or tsc)
+# Build backend
 RUN npm run build
 
 CMD ["npm", "start"]
