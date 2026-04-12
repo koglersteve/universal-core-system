@@ -16,5 +16,3 @@ model Meme {
   layers    Json
   createdAt DateTime @default(now())
 }
-
-
