@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files first for caching
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the backend
+COPY . .
+
+# Ensure DATABASE_URL is available at build time
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+# Generate Prisma client (Prisma 7 requires runtime URL)
+RUN npx prisma generate
+
+# Build backend
+RUN npm run build
+
+CMD ["npm", "start"]
