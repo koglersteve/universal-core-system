@@ -55,3 +55,5 @@ export default function DramaNextDoorPage() {
     </Suspense>
   );
 }
+git commit -m "Clean dramanextdoor page by removing injected metadata and restoring proper client component boundary"
+
