@@ -56,7 +56,7 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: ["emotion", "signal", "state", "identity"],
+    modules: ["emotion", "signal", "state", "identity", "persona"],
   });
 });
 
@@ -175,7 +175,6 @@ os.route("/state", state);
 
 const identity = new Hono();
 
-// Confirms Identity OS is online
 identity.get("/", (c) => {
   return c.json({
     message: "Identity OS online",
@@ -184,7 +183,6 @@ identity.get("/", (c) => {
   });
 });
 
-// Canonical identity snapshot (stubbed for now)
 identity.get("/profile", (c) => {
   return c.json({
     id: "anonymous",
@@ -197,7 +195,6 @@ identity.get("/profile", (c) => {
   });
 });
 
-// Update canonical identity (future: persist to datastore)
 identity.post("/update", async (c) => {
   const body = await c.req.json();
 
@@ -208,8 +205,48 @@ identity.post("/update", async (c) => {
   });
 });
 
-// Mount Identity OS namespace
 os.route("/identity", identity);
+
+// --- Persona OS Namespace (Dynamic, Context-Adaptive) ---
+
+const persona = new Hono();
+
+// Confirms Persona OS is online
+persona.get("/", (c) => {
+  return c.json({
+    message: "Persona OS online",
+    canonical: true,
+    model: "dynamic-context-adaptive",
+  });
+});
+
+// Dynamic persona selection (stubbed logic)
+persona.get("/current", (c) => {
+  // Future: compute persona from emotional + signal + identity
+  const computedPersona = {
+    persona: "neutral-guide",
+    reason: "Default persona for neutral emotional + signal state",
+    adaptive: true,
+    lastComputed: Date.now(),
+  };
+
+  return c.json(computedPersona);
+});
+
+// Manual override
+persona.post("/override", async (c) => {
+  const body = await c.req.json();
+
+  return c.json({
+    received: body,
+    status: "ok",
+    override: true,
+    adaptive: false,
+  });
+});
+
+// Mount Persona OS namespace
+os.route("/persona", persona);
 
 // Mount OS namespace
 app.route("/os", os);
