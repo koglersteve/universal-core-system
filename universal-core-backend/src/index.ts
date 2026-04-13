@@ -26,10 +26,9 @@ kernel.get("/state", (c) => {
   });
 });
 
-// Mount kernel namespace
 app.route("/kernel", kernel);
 
-// --- Root Routes (temporary, will be deprecated later) ---
+// --- Root Routes (temporary) ---
 
 app.get("/health", (c) => {
   return c.json({ status: "ok", message: "Kernel online" });
@@ -49,6 +48,19 @@ app.get("/state", (c) => {
     uptimeHint: "boot-sequence",
   });
 });
+
+// --- OS Namespace ---
+
+const os = new Hono();
+
+os.get("/", (c) => {
+  return c.json({
+    message: "OS namespace online",
+    modules: [],
+  });
+});
+
+app.route("/os", os);
 
 // --- Boot Kernel ---
 
