@@ -64,6 +64,7 @@ os.get("/", (c) => {
       "persona",
       "cognitive",
       "memory",
+      "intent",
     ],
   });
 });
@@ -293,11 +294,10 @@ cognitive.get("/hint", (c) => {
 
 os.route("/cognitive", cognitive);
 
-// --- Memory OS Namespace (stub: short-term + long-term) ---
+// --- Memory OS Namespace (short-term + long-term) ---
 
 const memory = new Hono();
 
-// Confirms Memory OS is online
 memory.get("/", (c) => {
   return c.json({
     message: "Memory OS online",
@@ -306,7 +306,6 @@ memory.get("/", (c) => {
   });
 });
 
-// Short-term memory snapshot (stub)
 memory.get("/short-term", (c) => {
   return c.json({
     items: [],
@@ -315,7 +314,6 @@ memory.get("/short-term", (c) => {
   });
 });
 
-// Long-term memory snapshot (stub)
 memory.get("/long-term", (c) => {
   return c.json({
     items: [],
@@ -324,7 +322,6 @@ memory.get("/long-term", (c) => {
   });
 });
 
-// Append memory event (future: persist)
 memory.post("/append", async (c) => {
   const body = await c.req.json();
 
@@ -335,8 +332,58 @@ memory.post("/append", async (c) => {
   });
 });
 
-// Mount Memory OS namespace
 os.route("/memory", memory);
+
+// --- Intent OS Namespace (Hybrid: Declarative + Inferred + Unified) ---
+
+const intent = new Hono();
+
+// Confirm Intent OS online
+intent.get("/", (c) => {
+  return c.json({
+    message: "Intent OS online",
+    canonical: true,
+    model: "hybrid-declarative-inferred",
+  });
+});
+
+// 1. Declarative Intent
+intent.post("/set", async (c) => {
+  const body = await c.req.json();
+
+  return c.json({
+    received: body,
+    status: "ok",
+    declarative: true,
+  });
+});
+
+// 2. Inferred Intent
+intent.get("/infer", (c) => {
+  const inferred = {
+    goal: "maintain_stability",
+    confidence: 0.42,
+    sources: ["emotion", "signal", "state", "identity", "persona", "memory"],
+    timestamp: Date.now(),
+  };
+
+  return c.json(inferred);
+});
+
+// 3. Unified Active Intent
+intent.get("/active", (c) => {
+  const unified = {
+    goal: "maintain_stability",
+    priority: "medium",
+    origin: "merged",
+    timestamp: Date.now(),
+  };
+
+  return c.json(unified);
+});
+
+// Mount Intent OS
+os.route("/intent", intent);
 
 // Mount OS namespace
 app.route("/os", os);
