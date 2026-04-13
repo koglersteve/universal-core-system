@@ -56,10 +56,48 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: [],
+    modules: ["emotion"],
   });
 });
 
+// --- Emotional OS Namespace (Hybrid Model) ---
+
+const emotion = new Hono();
+
+// Confirms Emotional OS is online
+emotion.get("/", (c) => {
+  return c.json({
+    message: "Emotional OS online",
+    canonical: true,
+    model: "hybrid",
+  });
+});
+
+// Canonical emotional state (backend-owned)
+emotion.get("/state", (c) => {
+  return c.json({
+    mood: "neutral",
+    intensity: 0,
+    lastUpdated: null,
+  });
+});
+
+// Update canonical emotional state
+emotion.post("/update", async (c) => {
+  const body = await c.req.json();
+
+  // Future: write to datastore
+  return c.json({
+    received: body,
+    status: "ok",
+    canonical: true,
+  });
+});
+
+// Mount Emotional OS namespace
+os.route("/emotion", emotion);
+
+// Mount OS namespace
 app.route("/os", os);
 
 // --- Boot Kernel ---
