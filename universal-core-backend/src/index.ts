@@ -3,7 +3,33 @@ import { serve } from "@hono/node-server";
 
 const app = new Hono();
 
-// --- Core Kernel Routes ---
+// --- Kernel Namespace ---
+
+const kernel = new Hono();
+
+kernel.get("/health", (c) => {
+  return c.json({ status: "ok", message: "Kernel online" });
+});
+
+kernel.get("/version", (c) => {
+  return c.json({
+    name: "universal-core-backend",
+    version: "0.0.1",
+  });
+});
+
+kernel.get("/state", (c) => {
+  return c.json({
+    status: "stable",
+    mode: "kernel",
+    uptimeHint: "boot-sequence",
+  });
+});
+
+// Mount kernel namespace
+app.route("/kernel", kernel);
+
+// --- Root Routes (temporary, will be deprecated later) ---
 
 app.get("/health", (c) => {
   return c.json({ status: "ok", message: "Kernel online" });
