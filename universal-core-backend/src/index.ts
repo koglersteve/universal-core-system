@@ -56,7 +56,7 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: ["emotion", "signal"],
+    modules: ["emotion", "signal", "state"],
   });
 });
 
@@ -112,10 +112,8 @@ signal.get("/", (c) => {
 });
 
 // Canonical signal state (backend-owned)
-// Auto-mirrors Emotional OS by default
+// Auto-mirrors Emotional OS by default (simulated for now)
 signal.get("/state", (c) => {
-  // In the future, this will read from datastore.
-  // For now, we simulate auto-mirroring Emotional OS.
   const mirrored = {
     mood: "neutral",
     tone: "soft",
@@ -142,6 +140,50 @@ signal.post("/update", async (c) => {
 
 // Mount Signal OS namespace
 os.route("/signal", signal);
+
+// --- State OS Namespace (auto-mirroring Emotion + Signal) ---
+
+const state = new Hono();
+
+// Lightweight OS snapshot (auto-mirrored)
+state.get("/", (c) => {
+  return c.json({
+    emotional: {
+      mood: "neutral",
+      intensity: 0,
+    },
+    signal: {
+      tone: "soft",
+      intensity: 0,
+    },
+    timestamp: Date.now(),
+  });
+});
+
+// Full OS state (future: pull from datastore)
+state.get("/full", (c) => {
+  return c.json({
+    emotional: {
+      mood: "neutral",
+      intensity: 0,
+      lastUpdated: null,
+    },
+    signal: {
+      tone: "soft",
+      intensity: 0,
+      channel: "default",
+      lastBroadcast: null,
+    },
+    system: {
+      kernel: "stable",
+      uptimeHint: "boot-sequence",
+    },
+    timestamp: Date.now(),
+  });
+});
+
+// Mount State OS namespace
+os.route("/state", state);
 
 // Mount OS namespace
 app.route("/os", os);
