@@ -56,7 +56,7 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: ["emotion"],
+    modules: ["emotion", "signal"],
   });
 });
 
@@ -96,6 +96,52 @@ emotion.post("/update", async (c) => {
 
 // Mount Emotional OS namespace
 os.route("/emotion", emotion);
+
+// --- Signal OS Namespace (Hybrid Model + Auto-Mirror) ---
+
+const signal = new Hono();
+
+// Confirms Signal OS is online
+signal.get("/", (c) => {
+  return c.json({
+    message: "Signal OS online",
+    canonical: true,
+    model: "hybrid",
+    autoMirror: true,
+  });
+});
+
+// Canonical signal state (backend-owned)
+// Auto-mirrors Emotional OS by default
+signal.get("/state", (c) => {
+  // In the future, this will read from datastore.
+  // For now, we simulate auto-mirroring Emotional OS.
+  const mirrored = {
+    mood: "neutral",
+    tone: "soft",
+    intensity: 0,
+    channel: "default",
+    lastBroadcast: null,
+  };
+
+  return c.json(mirrored);
+});
+
+// Update canonical signal state (manual override)
+signal.post("/update", async (c) => {
+  const body = await c.req.json();
+
+  // Future: write to datastore
+  return c.json({
+    received: body,
+    status: "ok",
+    canonical: true,
+    override: true,
+  });
+});
+
+// Mount Signal OS namespace
+os.route("/signal", signal);
 
 // Mount OS namespace
 app.route("/os", os);
