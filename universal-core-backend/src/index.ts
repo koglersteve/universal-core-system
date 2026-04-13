@@ -56,7 +56,7 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: ["emotion", "signal", "state"],
+    modules: ["emotion", "signal", "state", "identity"],
   });
 });
 
@@ -64,7 +64,6 @@ os.get("/", (c) => {
 
 const emotion = new Hono();
 
-// Confirms Emotional OS is online
 emotion.get("/", (c) => {
   return c.json({
     message: "Emotional OS online",
@@ -73,7 +72,6 @@ emotion.get("/", (c) => {
   });
 });
 
-// Canonical emotional state (backend-owned)
 emotion.get("/state", (c) => {
   return c.json({
     mood: "neutral",
@@ -82,11 +80,9 @@ emotion.get("/state", (c) => {
   });
 });
 
-// Update canonical emotional state
 emotion.post("/update", async (c) => {
   const body = await c.req.json();
 
-  // Future: write to datastore
   return c.json({
     received: body,
     status: "ok",
@@ -94,14 +90,12 @@ emotion.post("/update", async (c) => {
   });
 });
 
-// Mount Emotional OS namespace
 os.route("/emotion", emotion);
 
 // --- Signal OS Namespace (Hybrid Model + Auto-Mirror) ---
 
 const signal = new Hono();
 
-// Confirms Signal OS is online
 signal.get("/", (c) => {
   return c.json({
     message: "Signal OS online",
@@ -111,8 +105,6 @@ signal.get("/", (c) => {
   });
 });
 
-// Canonical signal state (backend-owned)
-// Auto-mirrors Emotional OS by default (simulated for now)
 signal.get("/state", (c) => {
   const mirrored = {
     mood: "neutral",
@@ -125,11 +117,9 @@ signal.get("/state", (c) => {
   return c.json(mirrored);
 });
 
-// Update canonical signal state (manual override)
 signal.post("/update", async (c) => {
   const body = await c.req.json();
 
-  // Future: write to datastore
   return c.json({
     received: body,
     status: "ok",
@@ -138,14 +128,12 @@ signal.post("/update", async (c) => {
   });
 });
 
-// Mount Signal OS namespace
 os.route("/signal", signal);
 
 // --- State OS Namespace (auto-mirroring Emotion + Signal) ---
 
 const state = new Hono();
 
-// Lightweight OS snapshot (auto-mirrored)
 state.get("/", (c) => {
   return c.json({
     emotional: {
@@ -160,7 +148,6 @@ state.get("/", (c) => {
   });
 });
 
-// Full OS state (future: pull from datastore)
 state.get("/full", (c) => {
   return c.json({
     emotional: {
@@ -182,8 +169,47 @@ state.get("/full", (c) => {
   });
 });
 
-// Mount State OS namespace
 os.route("/state", state);
+
+// --- Identity OS Namespace (Canonical Identity) ---
+
+const identity = new Hono();
+
+// Confirms Identity OS is online
+identity.get("/", (c) => {
+  return c.json({
+    message: "Identity OS online",
+    canonical: true,
+    model: "persistent",
+  });
+});
+
+// Canonical identity snapshot (stubbed for now)
+identity.get("/profile", (c) => {
+  return c.json({
+    id: "anonymous",
+    displayName: "Guest",
+    roles: [],
+    traits: {
+      mode: "observer",
+    },
+    lastUpdated: null,
+  });
+});
+
+// Update canonical identity (future: persist to datastore)
+identity.post("/update", async (c) => {
+  const body = await c.req.json();
+
+  return c.json({
+    received: body,
+    status: "ok",
+    canonical: true,
+  });
+});
+
+// Mount Identity OS namespace
+os.route("/identity", identity);
 
 // Mount OS namespace
 app.route("/os", os);
