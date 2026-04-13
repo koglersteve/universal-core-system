@@ -56,7 +56,7 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: ["emotion", "signal", "state", "identity", "persona"],
+    modules: ["emotion", "signal", "state", "identity", "persona", "cognitive"],
   });
 });
 
@@ -211,7 +211,6 @@ os.route("/identity", identity);
 
 const persona = new Hono();
 
-// Confirms Persona OS is online
 persona.get("/", (c) => {
   return c.json({
     message: "Persona OS online",
@@ -220,9 +219,7 @@ persona.get("/", (c) => {
   });
 });
 
-// Dynamic persona selection (stubbed logic)
 persona.get("/current", (c) => {
-  // Future: compute persona from emotional + signal + identity
   const computedPersona = {
     persona: "neutral-guide",
     reason: "Default persona for neutral emotional + signal state",
@@ -233,7 +230,6 @@ persona.get("/current", (c) => {
   return c.json(computedPersona);
 });
 
-// Manual override
 persona.post("/override", async (c) => {
   const body = await c.req.json();
 
@@ -245,8 +241,54 @@ persona.post("/override", async (c) => {
   });
 });
 
-// Mount Persona OS namespace
 os.route("/persona", persona);
+
+// --- Cognitive OS Namespace (Hybrid: Rule + Pattern) ---
+
+const cognitive = new Hono();
+
+// Confirms Cognitive OS is online
+cognitive.get("/", (c) => {
+  return c.json({
+    message: "Cognitive OS online",
+    canonical: true,
+    model: "hybrid-rule-pattern",
+  });
+});
+
+// Rule + pattern hybrid reasoning stub
+cognitive.post("/evaluate", async (c) => {
+  const body = await c.req.json();
+
+  // Future: combine rule engine + pattern model
+  const result = {
+    input: body,
+    ruleEngine: {
+      appliedRules: [],
+      decision: "allow",
+    },
+    patternEngine: {
+      confidence: 0.5,
+      notes: "Pattern engine stub",
+    },
+    combinedDecision: "allow",
+    timestamp: Date.now(),
+  };
+
+  return c.json(result);
+});
+
+// Lightweight cognitive hint (for UI)
+cognitive.get("/hint", (c) => {
+  return c.json({
+    hint: "No active cognitive load",
+    level: "low",
+    timestamp: Date.now(),
+  });
+});
+
+// Mount Cognitive OS namespace
+os.route("/cognitive", cognitive);
 
 // Mount OS namespace
 app.route("/os", os);
