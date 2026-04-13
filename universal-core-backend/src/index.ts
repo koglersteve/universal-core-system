@@ -56,7 +56,15 @@ const os = new Hono();
 os.get("/", (c) => {
   return c.json({
     message: "OS namespace online",
-    modules: ["emotion", "signal", "state", "identity", "persona", "cognitive"],
+    modules: [
+      "emotion",
+      "signal",
+      "state",
+      "identity",
+      "persona",
+      "cognitive",
+      "memory",
+    ],
   });
 });
 
@@ -247,7 +255,6 @@ os.route("/persona", persona);
 
 const cognitive = new Hono();
 
-// Confirms Cognitive OS is online
 cognitive.get("/", (c) => {
   return c.json({
     message: "Cognitive OS online",
@@ -256,11 +263,9 @@ cognitive.get("/", (c) => {
   });
 });
 
-// Rule + pattern hybrid reasoning stub
 cognitive.post("/evaluate", async (c) => {
   const body = await c.req.json();
 
-  // Future: combine rule engine + pattern model
   const result = {
     input: body,
     ruleEngine: {
@@ -278,7 +283,6 @@ cognitive.post("/evaluate", async (c) => {
   return c.json(result);
 });
 
-// Lightweight cognitive hint (for UI)
 cognitive.get("/hint", (c) => {
   return c.json({
     hint: "No active cognitive load",
@@ -287,8 +291,52 @@ cognitive.get("/hint", (c) => {
   });
 });
 
-// Mount Cognitive OS namespace
 os.route("/cognitive", cognitive);
+
+// --- Memory OS Namespace (stub: short-term + long-term) ---
+
+const memory = new Hono();
+
+// Confirms Memory OS is online
+memory.get("/", (c) => {
+  return c.json({
+    message: "Memory OS online",
+    canonical: true,
+    model: "hybrid",
+  });
+});
+
+// Short-term memory snapshot (stub)
+memory.get("/short-term", (c) => {
+  return c.json({
+    items: [],
+    capacityHint: "small",
+    lastUpdated: null,
+  });
+});
+
+// Long-term memory snapshot (stub)
+memory.get("/long-term", (c) => {
+  return c.json({
+    items: [],
+    capacityHint: "large",
+    lastConsolidated: null,
+  });
+});
+
+// Append memory event (future: persist)
+memory.post("/append", async (c) => {
+  const body = await c.req.json();
+
+  return c.json({
+    received: body,
+    status: "ok",
+    appended: true,
+  });
+});
+
+// Mount Memory OS namespace
+os.route("/memory", memory);
 
 // Mount OS namespace
 app.route("/os", os);
