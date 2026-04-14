@@ -12,6 +12,9 @@ import { EmotionalEventsFeed } from "@/components/home/EmotionalEventsFeed";
 import { MultiverseSnapshot } from "@/components/home/MultiverseSnapshot";
 import { EmotionalExportPanel } from "@/components/home/EmotionalExportPanel";
 
+import { PersonaAvatar } from "@/components/PersonaAvatar";
+import { HarmonyPulse } from "@/components/HarmonyPulse";
+
 function AppIcon({ emoji, label }: { emoji: string; label: string }) {
   return (
     <div className="app-icon">
@@ -27,6 +30,13 @@ export default function HomePage() {
       <WorldBackdrop>
         <IdentityMicroMotion>
           <PhysicsPulse>
+
+            {/* Kernel UI Layer */}
+            <div className="flex items-center space-x-4 mb-6 px-4 pt-4">
+              <PersonaAvatar />
+              <HarmonyPulse />
+              <h1 className="text-3xl font-bold">Aurelia‑Q OS</h1>
+            </div>
 
             {/* Mood-aware greeting */}
             <MoodGreeting />
