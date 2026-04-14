@@ -1,4 +1,4 @@
-import { os } from "@/src/lib/backend";
+import { os } from "@/lib/backend";
 
 export default async function OSPage() {
   const data = await os("");
