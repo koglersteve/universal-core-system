@@ -66,6 +66,7 @@ os.get("/", (c) => {
       "memory",
       "intent",
       "boundary",
+      "tempo",
     ],
   });
 });
@@ -385,7 +386,6 @@ os.route("/intent", intent);
 
 const boundary = new Hono();
 
-// Confirms Boundary OS is online
 boundary.get("/", (c) => {
   return c.json({
     message: "Boundary OS online",
@@ -394,7 +394,6 @@ boundary.get("/", (c) => {
   });
 });
 
-// List active policies (stub)
 boundary.get("/policies", (c) => {
   return c.json({
     policies: [],
@@ -403,7 +402,6 @@ boundary.get("/policies", (c) => {
   });
 });
 
-// Evaluate an action against boundaries (stub)
 boundary.post("/evaluate", async (c) => {
   const body = await c.req.json();
 
@@ -415,8 +413,44 @@ boundary.post("/evaluate", async (c) => {
   });
 });
 
-// Mount Boundary OS
 os.route("/boundary", boundary);
+
+// --- Tempo OS Namespace (Pacing, Rhythm, Flow) ---
+
+const tempo = new Hono();
+
+// Confirm Tempo OS online
+tempo.get("/", (c) => {
+  return c.json({
+    message: "Tempo OS online",
+    canonical: true,
+    model: "rhythm-flow-pacing",
+  });
+});
+
+// Current tempo state (stub)
+tempo.get("/state", (c) => {
+  return c.json({
+    pace: "steady",
+    urgency: "low",
+    rhythm: "neutral",
+    lastAdjusted: null,
+  });
+});
+
+// Adjust tempo (stub)
+tempo.post("/adjust", async (c) => {
+  const body = await c.req.json();
+
+  return c.json({
+    received: body,
+    status: "ok",
+    adjusted: true,
+  });
+});
+
+// Mount Tempo OS
+os.route("/tempo", tempo);
 
 // Mount OS namespace
 app.route("/os", os);
