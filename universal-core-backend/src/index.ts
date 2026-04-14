@@ -68,6 +68,7 @@ os.get("/", (c) => {
       "boundary",
       "tempo",
       "energy",
+      "attention",
     ],
   });
 });
@@ -416,6 +417,51 @@ energy.post("/adjust", async (c) => {
 });
 
 os.route("/energy", energy);
+
+// --- Attention OS Namespace (Spotlight, Priority, Salience) ---
+
+const attention = new Hono();
+
+// Confirm Attention OS online
+attention.get("/", (c) => {
+  return c.json({
+    message: "Attention OS online",
+    canonical: true,
+    model: "spotlight-priority-salience",
+  });
+});
+
+// Current attention focus (stub)
+attention.get("/focus", (c) => {
+  return c.json({
+    target: "none",
+    priority: "low",
+    salience: 0,
+    lastUpdated: null,
+  });
+});
+
+// Update attention focus (stub)
+attention.post("/focus", async (c) => {
+  const body = await c.req.json();
+  return c.json({
+    received: body,
+    status: "ok",
+    focused: true,
+  });
+});
+
+// List salient items (stub)
+attention.get("/salience", (c) => {
+  return c.json({
+    items: [],
+    mode: "stub",
+    lastComputed: null,
+  });
+});
+
+// Mount Attention OS
+os.route("/attention", attention);
 
 // --- Mount OS namespace ---
 
