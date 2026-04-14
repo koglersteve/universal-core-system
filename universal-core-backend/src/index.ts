@@ -71,6 +71,7 @@ os.get("/", (c) => {
       "attention",
       "ethics",
       "world",
+      "harmony",
     ],
   });
 });
@@ -497,7 +498,7 @@ ethics.get("/alignment", (c) => {
 
 os.route("/ethics", ethics);
 
-// --- World OS Namespace (Environment, State, Action Interface) ---
+// --- World OS Namespace ---
 
 const world = new Hono();
 
@@ -529,6 +530,56 @@ world.post("/act", async (c) => {
 
 os.route("/world", world);
 
+// --- Harmony OS Namespace (Unified Coordination Layer) ---
+
+const harmony = new Hono();
+
+harmony.get("/", (c) => {
+  return c.json({
+    message: "Harmony OS online",
+    canonical: true,
+    model: "cross-system-integrator",
+  });
+});
+
+// Unified system snapshot (stub)
+harmony.get("/state", (c) => {
+  return c.json({
+    harmony: "balanced",
+    confidence: 0.5,
+    sources: [
+      "emotion",
+      "signal",
+      "state",
+      "identity",
+      "persona",
+      "cognitive",
+      "memory",
+      "intent",
+      "boundary",
+      "tempo",
+      "energy",
+      "attention",
+      "ethics",
+      "world",
+    ],
+    timestamp: Date.now(),
+  });
+});
+
+// Harmonization request (stub)
+harmony.post("/synchronize", async (c) => {
+  const body = await c.req.json();
+  return c.json({
+    received: body,
+    status: "ok",
+    synchronized: true,
+    timestamp: Date.now(),
+  });
+});
+
+os.route("/harmony", harmony);
+
 // --- Mount OS namespace ---
 
 app.route("/os", os);
@@ -540,4 +591,5 @@ const port = Number(process.env.PORT) || 3000;
 serve({ fetch: app.fetch, port });
 
 console.log(`Kernel running on port ${port}`);
+
 
