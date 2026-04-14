@@ -69,6 +69,7 @@ os.get("/", (c) => {
       "tempo",
       "energy",
       "attention",
+      "ethics",
     ],
   });
 });
@@ -380,7 +381,7 @@ tempo.post("/adjust", async (c) => {
 
 os.route("/tempo", tempo);
 
-// --- Energy OS Namespace (Hybrid Model) ---
+// --- Energy OS Namespace ---
 
 const energy = new Hono();
 
@@ -418,11 +419,10 @@ energy.post("/adjust", async (c) => {
 
 os.route("/energy", energy);
 
-// --- Attention OS Namespace (Spotlight, Priority, Salience) ---
+// --- Attention OS Namespace ---
 
 const attention = new Hono();
 
-// Confirm Attention OS online
 attention.get("/", (c) => {
   return c.json({
     message: "Attention OS online",
@@ -431,7 +431,6 @@ attention.get("/", (c) => {
   });
 });
 
-// Current attention focus (stub)
 attention.get("/focus", (c) => {
   return c.json({
     target: "none",
@@ -441,17 +440,11 @@ attention.get("/focus", (c) => {
   });
 });
 
-// Update attention focus (stub)
 attention.post("/focus", async (c) => {
   const body = await c.req.json();
-  return c.json({
-    received: body,
-    status: "ok",
-    focused: true,
-  });
+  return c.json({ received: body, status: "ok", focused: true });
 });
 
-// List salient items (stub)
 attention.get("/salience", (c) => {
   return c.json({
     items: [],
@@ -460,8 +453,53 @@ attention.get("/salience", (c) => {
   });
 });
 
-// Mount Attention OS
 os.route("/attention", attention);
+
+// --- Ethics OS Namespace (Principles, Alignment, Moral Reasoning) ---
+
+const ethics = new Hono();
+
+// Confirm Ethics OS online
+ethics.get("/", (c) => {
+  return c.json({
+    message: "Ethics OS online",
+    canonical: true,
+    model: "principle-constraint-hybrid",
+  });
+});
+
+// List ethical principles (stub)
+ethics.get("/principles", (c) => {
+  return c.json({
+    principles: [],
+    mode: "stub",
+    lastUpdated: null,
+  });
+});
+
+// Evaluate an action ethically (stub)
+ethics.post("/evaluate", async (c) => {
+  const body = await c.req.json();
+  return c.json({
+    received: body,
+    ethicalDecision: "allow",
+    confidence: 0.5,
+    reasons: [],
+    status: "ok",
+  });
+});
+
+// Alignment check (stub)
+ethics.get("/alignment", (c) => {
+  return c.json({
+    aligned: true,
+    confidence: 0.5,
+    lastChecked: null,
+  });
+});
+
+// Mount Ethics OS
+os.route("/ethics", ethics);
 
 // --- Mount OS namespace ---
 
@@ -474,3 +512,4 @@ const port = Number(process.env.PORT) || 3000;
 serve({ fetch: app.fetch, port });
 
 console.log(`Kernel running on port ${port}`);
+
