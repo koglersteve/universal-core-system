@@ -3,7 +3,15 @@
 import { os } from "@/lib/backend";
 
 export default async function OSPage() {
-  const data = await os("");
+  let data = { message: "OS offline", modules: [] };
+
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+    try {
+      data = await os("");
+    } catch (e) {
+      console.error("OS fetch failed during runtime:", e);
+    }
+  }
 
   return (
     <div className="p-8 space-y-6">
