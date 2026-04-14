@@ -1,68 +1,26 @@
 "use client";
 
-import Link from "next/link";
-import { plugins } from "@/lib/plugins";
+import { os } from "@/lib/backend";
 
-import { MoodGreeting } from "@/components/home/MoodGreeting";
-import { WorldBackdrop } from "@/components/home/WorldBackdrop";
-import { IdentityMicroMotion } from "@/components/home/IdentityMicroMotion";
-import { PhysicsPulse } from "@/components/home/PhysicsPulse";
-import { TodayRitualCard } from "@/components/home/TodayRitualCard";
-import { EmotionalEventsFeed } from "@/components/home/EmotionalEventsFeed";
-import { MultiverseSnapshot } from "@/components/home/MultiverseSnapshot";
-import { EmotionalExportPanel } from "@/components/home/EmotionalExportPanel";
+export default async function OSPage() {
+  const data = await os("");
 
-import { PersonaAvatar } from "@/components/PersonaAvatar";
-import { HarmonyPulse } from "@/components/HarmonyPulse";
-
-function AppIcon({ emoji, label }: { emoji: string; label: string }) {
   return (
-    <div className="app-icon">
-      <div className="app-emoji">{emoji}</div>
-      <div className="app-label">{label}</div>
+    <div className="p-8 space-y-6">
+      <h1 className="text-3xl font-bold">OS Dashboard</h1>
+      <p className="text-gray-400">{data.message}</p>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {data.modules.map((m: string) => (
+          <div
+            key={m}
+            className="p-4 border border-gray-700 rounded-lg bg-black/30"
+          >
+            <h2 className="text-xl font-semibold">{m}</h2>
+            <p className="text-gray-500 text-sm">Subsystem online</p>
+          </div>
+        ))}
+      </div>
     </div>
-  );
-}
-
-export default function HomePage() {
-  return (
-    <main className="os-home">
-      <WorldBackdrop>
-        <IdentityMicroMotion>
-          <PhysicsPulse>
-
-            {/* Kernel UI Layer */}
-            <div className="flex items-center space-x-4 mb-6 px-4 pt-4">
-              <PersonaAvatar />
-              <HarmonyPulse />
-              <h1 className="text-3xl font-bold">Aurelia‑Q OS</h1>
-            </div>
-
-            {/* Mood-aware greeting */}
-            <MoodGreeting />
-
-            {/* App Launcher Grid */}
-            <div className="app-grid">
-              {plugins.map(app => (
-                <Link key={app.id} href={app.path}>
-                  <AppIcon emoji={app.icon} label={app.name} />
-                </Link>
-              ))}
-            </div>
-
-            {/* Ritual + Emotional Context */}
-            <TodayRitualCard />
-            <EmotionalEventsFeed />
-            <MultiverseSnapshot />
-
-            {/* Export Panel */}
-            <div className="home-export">
-              <EmotionalExportPanel />
-            </div>
-
-          </PhysicsPulse>
-        </IdentityMicroMotion>
-      </WorldBackdrop>
-    </main>
   );
 }
