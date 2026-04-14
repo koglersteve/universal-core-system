@@ -65,6 +65,7 @@ os.get("/", (c) => {
       "cognitive",
       "memory",
       "intent",
+      "boundary",
     ],
   });
 });
@@ -338,7 +339,6 @@ os.route("/memory", memory);
 
 const intent = new Hono();
 
-// Confirm Intent OS online
 intent.get("/", (c) => {
   return c.json({
     message: "Intent OS online",
@@ -347,7 +347,6 @@ intent.get("/", (c) => {
   });
 });
 
-// 1. Declarative Intent
 intent.post("/set", async (c) => {
   const body = await c.req.json();
 
@@ -358,7 +357,6 @@ intent.post("/set", async (c) => {
   });
 });
 
-// 2. Inferred Intent
 intent.get("/infer", (c) => {
   const inferred = {
     goal: "maintain_stability",
@@ -370,7 +368,6 @@ intent.get("/infer", (c) => {
   return c.json(inferred);
 });
 
-// 3. Unified Active Intent
 intent.get("/active", (c) => {
   const unified = {
     goal: "maintain_stability",
@@ -382,8 +379,44 @@ intent.get("/active", (c) => {
   return c.json(unified);
 });
 
-// Mount Intent OS
 os.route("/intent", intent);
+
+// --- Boundary OS Namespace (Policies + Evaluation) ---
+
+const boundary = new Hono();
+
+// Confirms Boundary OS is online
+boundary.get("/", (c) => {
+  return c.json({
+    message: "Boundary OS online",
+    canonical: true,
+    model: "policy-based",
+  });
+});
+
+// List active policies (stub)
+boundary.get("/policies", (c) => {
+  return c.json({
+    policies: [],
+    mode: "stub",
+    lastUpdated: null,
+  });
+});
+
+// Evaluate an action against boundaries (stub)
+boundary.post("/evaluate", async (c) => {
+  const body = await c.req.json();
+
+  return c.json({
+    received: body,
+    decision: "allow",
+    reasons: [],
+    status: "ok",
+  });
+});
+
+// Mount Boundary OS
+os.route("/boundary", boundary);
 
 // Mount OS namespace
 app.route("/os", os);
