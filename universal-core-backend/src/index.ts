@@ -70,6 +70,7 @@ os.get("/", (c) => {
       "energy",
       "attention",
       "ethics",
+      "world",
     ],
   });
 });
@@ -455,11 +456,10 @@ attention.get("/salience", (c) => {
 
 os.route("/attention", attention);
 
-// --- Ethics OS Namespace (Principles, Alignment, Moral Reasoning) ---
+// --- Ethics OS Namespace ---
 
 const ethics = new Hono();
 
-// Confirm Ethics OS online
 ethics.get("/", (c) => {
   return c.json({
     message: "Ethics OS online",
@@ -468,7 +468,6 @@ ethics.get("/", (c) => {
   });
 });
 
-// List ethical principles (stub)
 ethics.get("/principles", (c) => {
   return c.json({
     principles: [],
@@ -477,7 +476,6 @@ ethics.get("/principles", (c) => {
   });
 });
 
-// Evaluate an action ethically (stub)
 ethics.post("/evaluate", async (c) => {
   const body = await c.req.json();
   return c.json({
@@ -489,7 +487,6 @@ ethics.post("/evaluate", async (c) => {
   });
 });
 
-// Alignment check (stub)
 ethics.get("/alignment", (c) => {
   return c.json({
     aligned: true,
@@ -498,8 +495,39 @@ ethics.get("/alignment", (c) => {
   });
 });
 
-// Mount Ethics OS
 os.route("/ethics", ethics);
+
+// --- World OS Namespace (Environment, State, Action Interface) ---
+
+const world = new Hono();
+
+world.get("/", (c) => {
+  return c.json({
+    message: "World OS online",
+    canonical: true,
+    model: "environment-state-action",
+  });
+});
+
+world.get("/state", (c) => {
+  return c.json({
+    environment: "default",
+    conditions: {},
+    timestamp: Date.now(),
+  });
+});
+
+world.post("/act", async (c) => {
+  const body = await c.req.json();
+  return c.json({
+    received: body,
+    status: "ok",
+    effect: "stubbed",
+    timestamp: Date.now(),
+  });
+});
+
+os.route("/world", world);
 
 // --- Mount OS namespace ---
 
