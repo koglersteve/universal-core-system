@@ -8,7 +8,7 @@ export const universes: Record<string, any> = {};
 export const createUniverse = () => ({
   id: crypto.randomUUID(),
   createdAt: Date.now(),
-  parent: null,
+  parent: null as string | null,   // <-- FIXED: allow string or null
   state: {
     emotion: { mood: "neutral", intensity: 0 },
     signal: { tone: "soft", intensity: 0 },
@@ -70,7 +70,7 @@ multiverse.post("/branch/:id", (c) => {
   }
 
   const child = createUniverse();
-  child.parent = id;
+  child.parent = id; // now valid because parent: string | null
 
   // Deep clone parent state
   child.state = JSON.parse(JSON.stringify(parent.state));
