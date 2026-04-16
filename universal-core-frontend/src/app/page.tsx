@@ -5,9 +5,11 @@ import { os } from "@/lib/backend";
 
 export default function OSPage() {
   const [data, setData] = useState({
-    message: "OS offline",
+    message: "Loading OS...",
     modules: [],
   });
+
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -16,6 +18,11 @@ export default function OSPage() {
         setData(result);
       } catch (e) {
         console.error("OS fetch failed:", e);
+        setError(true);
+        setData({
+          message: "OS offline",
+          modules: [],
+        });
       }
     }
 
@@ -25,7 +32,10 @@ export default function OSPage() {
   return (
     <div className="p-8 space-y-6">
       <h1 className="text-3xl font-bold">OS Dashboard</h1>
-      <p className="text-gray-400">{data.message}</p>
+
+      <p className={`text-gray-400 ${error ? "text-red-400" : ""}`}>
+        {data.message}
+      </p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {data.modules.map((m: string) => (
