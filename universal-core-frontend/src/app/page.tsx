@@ -1,17 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { os } from "@/lib/backend";
 
-export default async function OSPage() {
-  let data = { message: "OS offline", modules: [] };
+export default function OSPage() {
+  const [data, setData] = useState({
+    message: "OS offline",
+    modules: [],
+  });
 
-  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-    try {
-      data = await os("");
-    } catch (e) {
-      console.error("OS fetch failed during runtime:", e);
+  useEffect(() => {
+    async function load() {
+      try {
+        const result = await os("");
+        setData(result);
+      } catch (e) {
+        console.error("OS fetch failed:", e);
+      }
     }
-  }
+
+    load();
+  }, []);
 
   return (
     <div className="p-8 space-y-6">
