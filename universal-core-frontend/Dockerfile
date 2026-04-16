@@ -1,20 +1,14 @@
-# Install dependencies only when needed
+# Install dependencies
 FROM node:18-alpine AS deps
 WORKDIR /app
-
-# Install OS deps for sharp (Next.js image optimization)
-RUN apk add --no-cache libc6-compat
-
 COPY package.json package-lock.json* ./
 RUN npm install --production=false
 
 # Build the app
 FROM node:18-alpine AS builder
 WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
+COPY --from=deps /app/node_modules ./node_modules
 RUN npm run build
 
 # Production image
@@ -29,5 +23,5 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 EXPOSE 3000
-
 CMD ["node", "server.js"]
+
