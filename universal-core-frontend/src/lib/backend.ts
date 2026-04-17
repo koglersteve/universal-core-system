@@ -1,9 +1,26 @@
-const API = process.env.NEXT_PUBLIC_BACKEND_URL;
+// FRONTEND — SERVER-SIDE BACKEND URL HELPER
+// This file is used ONLY by server components (like /os)
+
+export function getBackendUrl() {
+  const API = process.env.BACKEND_URL;
+
+  if (!API) {
+    console.error("Missing BACKEND_URL environment variable");
+    return null;
+  }
+
+  return API;
+}
 
 export async function os(path = "") {
+  const API = getBackendUrl();
+
   if (!API) {
-    console.error("Missing NEXT_PUBLIC_BACKEND_URL");
-    return { message: "OS offline (no API)", modules: [], _api: API ?? null };
+    return {
+      message: "OS offline (no API)",
+      modules: [],
+      _api: null
+    };
   }
 
   const url = `${API}/os${path}`;
@@ -12,7 +29,7 @@ export async function os(path = "") {
     const res = await fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      cache: "no-store",
+      cache: "no-store"
     });
 
     if (!res.ok) {
@@ -20,7 +37,7 @@ export async function os(path = "") {
       return {
         message: `OS offline (HTTP ${res.status})`,
         modules: [],
-        _api: API,
+        _api: API
       };
     }
 
@@ -28,6 +45,10 @@ export async function os(path = "") {
     return { ...body, _api: API };
   } catch (err) {
     console.error("OS fetch error:", err);
-    return { message: "OS offline (fetch error)", modules: [], _api: API };
+    return {
+      message: "OS offline (fetch error)",
+      modules: [],
+      _api: API
+    };
   }
 }
