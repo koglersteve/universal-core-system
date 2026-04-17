@@ -3,7 +3,7 @@ const API = process.env.NEXT_PUBLIC_BACKEND_URL;
 export async function os(path = "") {
   if (!API) {
     console.error("Missing NEXT_PUBLIC_BACKEND_URL");
-    return { message: "OS offline", modules: [] };
+    return { message: "OS offline (no API)", modules: [], _api: API ?? null };
   }
 
   const url = `${API}/os${path}`;
@@ -17,12 +17,17 @@ export async function os(path = "") {
 
     if (!res.ok) {
       console.error("OS fetch failed:", res.status, res.statusText);
-      return { message: "OS offline", modules: [] };
+      return {
+        message: `OS offline (HTTP ${res.status})`,
+        modules: [],
+        _api: API,
+      };
     }
 
-    return res.json();
+    const body = await res.json();
+    return { ...body, _api: API };
   } catch (err) {
     console.error("OS fetch error:", err);
-    return { message: "OS offline", modules: [] };
+    return { message: "OS offline (fetch error)", modules: [], _api: API };
   }
 }

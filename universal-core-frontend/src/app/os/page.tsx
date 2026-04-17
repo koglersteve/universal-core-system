@@ -2,27 +2,23 @@ import { os } from "@/lib/backend";
 import OSDashboard from "@/components/OSDashboard";
 
 export default async function OSPage() {
-  let data = { message: "OS offline", modules: [] };
+  const res = await os("");
 
-  try {
-    const res = await os("");
-    data = {
-      message: res.message ?? "OS online",
-      canonical: res.canonical,
-      version: res.version,
-      activeUniverse: res.activeUniverse,
-      modules: res.modules ?? [],
-    };
-  } catch (e) {
-    console.error("OS fetch failed:", e);
-  }
+  const data = {
+    message: res.message ?? "OS online",
+    canonical: res.canonical,
+    version: res.version,
+    activeUniverse: res.activeUniverse,
+    modules: res.modules ?? [],
+    _api: res._api ?? null,
+  };
 
   const modules = (data.modules || []).map((m: any) =>
     typeof m === "string" ? m : m.name ?? "unknown"
   );
 
   return (
-    <div className="p-8">
+    <div className="p-8 space-y-6">
       <OSDashboard
         message={data.message}
         canonical={data.canonical}
@@ -30,6 +26,14 @@ export default async function OSPage() {
         activeUniverse={data.activeUniverse}
         modules={modules}
       />
+
+      {/* Debug block */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold mb-2">OS Debug</h2>
+        <pre className="text-xs bg-black/40 p-4 rounded border border-gray-700 overflow-x-auto">
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      </div>
     </div>
   );
 }
