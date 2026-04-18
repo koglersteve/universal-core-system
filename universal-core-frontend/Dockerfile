@@ -7,8 +7,14 @@ RUN npm install --production=false
 # Build the app
 FROM node:18-alpine AS builder
 WORKDIR /app
+
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+
+# ⭐ Inject NEXT_PUBLIC variables into the build
+ARG NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+
 RUN npm run build
 
 # Production image
@@ -24,4 +30,5 @@ COPY --from=builder /app/public ./public
 
 EXPOSE 8080
 CMD ["node", "server.js"]
+
 
