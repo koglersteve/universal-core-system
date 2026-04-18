@@ -1,50 +1,43 @@
 "use client";
 
+import React from "react";
 import { getBackendUrl } from "@/lib/backend";
 
 export default function OSPage() {
   const API = getBackendUrl();
-
-  if (!API) {
-    return (
-      <pre>
-        {JSON.stringify(
-          {
-            message: "OS offline (no API)",
-            modules: [],
-            _api: null
-          },
-          null,
-          2
-        )}
-      </pre>
-    );
-  }
-
-  async function load() {
-    const res = await fetch(`${API}/os`, { cache: "no-store" });
-    return res.json();
-  }
-
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState<any>(null);
 
   React.useEffect(() => {
-    load().then(setData);
-  }, []);
+    if (!API) {
+      setData({
+        message: "OS offline (no API)",
+        modules: [],
+        _api: null
+      });
+      return;
+    }
 
-  if (!data) return <pre>Loading...</pre>;
-
-  return (
-    <pre>
-      {JSON.stringify(
-        {
-          ...data,
+    async function load() {
+      try {
+        const res = await fetch(`${API}/os`, { cache: "no-store" });
+        const body = await res.json();
+        setData({ ...body, _api: API });
+      } catch (err) {
+        setData({
+          message: "OS offline (fetch error)",
+          modules: [],
           _api: API
-        },
-        null,
-        2
-      )}
-    </pre>
-  );
+        });
+      }
+    }
+
+    load();
+  }, [API]);
+
+  if (!data) {
+    return <pre>Loading...</pre>;
+  }
+
+  return <pre>{JSON.stringify(data, null, 2)}</pre>;
 }
 
