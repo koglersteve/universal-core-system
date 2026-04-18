@@ -3,6 +3,8 @@
 import React from "react";
 import { getBackendUrl } from "@/lib/backend";
 
+console.log("NEXT_PUBLIC_BACKEND_URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+
 export default function OSPage() {
   const API = getBackendUrl();
   const [data, setData] = React.useState<any>(null);
@@ -34,9 +36,7 @@ export default function OSPage() {
     load();
   }, [API]);
 
-  if (!data) {
-    return <pre>Loading...</pre>;
-  }
+  if (!data) return <pre>Loading...</pre>;
 
   return <pre>{JSON.stringify(data, null, 2)}</pre>;
 }
