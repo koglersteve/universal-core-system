@@ -1,6 +1,8 @@
+"use client";
+
 import { getBackendUrl } from "@/lib/backend";
 
-export default async function OSPage() {
+export default function OSPage() {
   const API = getBackendUrl();
 
   if (!API) {
@@ -19,8 +21,18 @@ export default async function OSPage() {
     );
   }
 
-  const res = await fetch(`${API}/os`, { cache: "no-store" });
-  const data = await res.json();
+  async function load() {
+    const res = await fetch(`${API}/os`, { cache: "no-store" });
+    return res.json();
+  }
+
+  const [data, setData] = React.useState(null);
+
+  React.useEffect(() => {
+    load().then(setData);
+  }, []);
+
+  if (!data) return <pre>Loading...</pre>;
 
   return (
     <pre>
