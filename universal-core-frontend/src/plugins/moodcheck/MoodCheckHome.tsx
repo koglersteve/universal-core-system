@@ -34,8 +34,8 @@ export function MoodCheckHome() {
     // Write to mood history
     addMood(selected);
 
-    // Canonical plugin route
-    router.push(`/plugins/moodcheck?mood=${selected}`);
+    // Redirect to the correct frontend result page
+    router.push(`/moodcheck/result?mood=${selected}`);
   };
 
   return (
