@@ -1,93 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getMoodCaption } from "@/lib/memeemotions";
-import { CrossAppLauncher } from "@/components/crossapp/CrossAppLauncher";
+import { useState } from "react";
+import { generateCatMeme } from "@/plugins/mememycat/MemeMyCatApi";
 
-type Props = {
-  mood?: string;
-  world?: string;
-  trait?: string;
-  agent?: string;
-  token?: string; // emotional token
-};
+export default function MemeMyCatEditor() {
+  const [text, setText] = useState("");
+  const [template, setTemplate] = useState("default");
+  const [result, setResult] = useState<string | null>(null);
 
-export function MemeMyCatEditor({ mood, world, trait, agent, token }: Props) {
-  const [memeUrl, setMemeUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const caption = mood ? getMoodCaption(mood) : null;
-
-  useEffect(() => {
-    async function fetchMeme() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const res = await fetch("/plugins/mememycat/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            mood,
-            world,
-            trait,
-            agent,
-            token
-          })
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch cat meme");
-
-        const data = await res.json();
-        setMemeUrl(data?.result?.url || null);
-      } catch (e) {
-        setError("Could not load a cat meme.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchMeme();
-  }, [mood, world, trait, agent, token]);
+  const handleGenerate = async () => {
+    const data = await generateCatMeme({ template, text });
+    setResult(data.url);
+  };
 
   return (
-    <div className="cat-meme-editor">
-      {caption && (
-        <p className="cat-meme-caption">
-          {caption}
-        </p>
-      )}
+    <div className="mememycat-container">
+      <h1>Meme My Cat</h1>
 
-      {loading && (
-        <p className="cat-meme-loading">Summoning your cat’s judgment…</p>
-      )}
+      <input
+        type="text"
+        placeholder="Enter meme text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
 
-      {error && (
-        <p className="cat-meme-error">{error}</p>
-      )}
+      <button onClick={handleGenerate}>Generate</button>
 
-      {memeUrl && !loading && !error && (
-        <div className="cat-meme-viewer">
-          <img
-            src={memeUrl}
-            alt="Cat Meme"
-            className="cat-meme-image"
-          />
+      {result && (
+        <div className="meme-result">
+          <img src={result} alt="Generated Cat Meme" />
         </div>
       )}
-
-      <CrossAppLauncher
-        sourceApp="mememycat"
-        payload={{
-          mood,
-          world,
-          trait,
-          agent,
-          token,
-          memeUrl
-        }}
-      />
     </div>
   );
 }

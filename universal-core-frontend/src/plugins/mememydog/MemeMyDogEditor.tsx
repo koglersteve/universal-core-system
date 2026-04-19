@@ -1,94 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getMoodCaption } from "@/lib/memeemotions";
-import { CrossAppLauncher } from "@/components/crossapp/CrossAppLauncher";
+import { useState } from "react";
+import { generateDogMeme } from "@/plugins/mememydog/MemeMyDogApi";
 
-type Props = {
-  mood?: string;
-  world?: string;
-  trait?: string;
-  agent?: string;
-  token?: string; // emotional token
-};
+export default function MemeMyDogEditor() {
+  const [text, setText] = useState("");
+  const [template, setTemplate] = useState("default");
+  const [result, setResult] = useState<string | null>(null);
 
-export function MemeMyDogEditor({ mood, world, trait, agent, token }: Props) {
-  const [memeUrl, setMemeUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const caption = mood ? getMoodCaption(mood) : null;
-
-  useEffect(() => {
-    async function fetchMeme() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const res = await fetch("/plugins/mememydog/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            mood,
-            world,
-            trait,
-            agent,
-            token
-          })
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch dog meme");
-
-        const data = await res.json();
-        setMemeUrl(data?.result?.url || null);
-      } catch (e) {
-        setError("Could not load a dog meme.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchMeme();
-  }, [mood, world, trait, agent, token]);
+  const handleGenerate = async () => {
+    const data = await generateDogMeme({ template, text });
+    setResult(data.url);
+  };
 
   return (
-    <div className="dog-meme-editor">
-      {caption && (
-        <p className="dog-meme-caption">
-          {caption}
-        </p>
-      )}
+    <div className="mememydog-container">
+      <h1>Meme My Dog</h1>
 
-      {loading && (
-        <p className="dog-meme-loading">Fetching your dog’s vibe…</p>
-      )}
+      <input
+        type="text"
+        placeholder="Enter meme text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
 
-      {error && (
-        <p className="dog-meme-error">{error}</p>
-      )}
+      <button onClick={handleGenerate}>Generate</button>
 
-      {memeUrl && !loading && !error && (
-        <div className="dog-meme-viewer">
-          <img
-            src={memeUrl}
-            alt="Dog Meme"
-            className="dog-meme-image"
-          />
+      {result && (
+        <div className="meme-result">
+          <img src={result} alt="Generated Dog Meme" />
         </div>
       )}
-
-      <CrossAppLauncher
-        sourceApp="mememydog"
-        payload={{
-          mood,
-          world,
-          trait,
-          agent,
-          token,
-          memeUrl
-        }}
-      />
     </div>
   );
 }
-
