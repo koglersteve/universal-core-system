@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 "use client";
 
 import MemeMyDogEditor from "@/components/mememydog/MemeMyDogEditor";
