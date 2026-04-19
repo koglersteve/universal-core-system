@@ -1,5 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,8 +17,11 @@ export default function DramaNextDoorPage() {
   useEffect(() => {
     getDramaScene(mood)
       .then((data) => {
-        if (data.status === "ok") setScene(data.scene);
-        else setError(true);
+        if (data?.status === "ok") {
+          setScene(data.scene);
+        } else {
+          setError(true);
+        }
       })
       .catch(() => setError(true));
   }, [mood]);
@@ -39,10 +44,12 @@ export default function DramaNextDoorPage() {
       <p>{scene.description}</p>
 
       <div className="drama-lines">
-        {scene.lines.map((line: string, i: number) => (
-          <p key={i}>{line}</p>
-        ))}
+        {Array.isArray(scene.lines) &&
+          scene.lines.map((line: string, i: number) => (
+            <p key={i}>{line}</p>
+          ))}
       </div>
     </div>
   );
 }
+
