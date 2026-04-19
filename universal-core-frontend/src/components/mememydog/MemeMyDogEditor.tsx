@@ -1,87 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MemeCanvas } from "@/components/meme-editor/MemeCanvas";
-import { RenderedLayers } from "@/components/meme-editor/RenderedLayers";
-import { useMemeEditorStore } from "@/state/useMemeEditorStore";
-import { CrossAppLauncher } from "@/components/crossapp/CrossAppLauncher";
+import { generateDogMeme } from "@/plugins/mememydog/MemeMyDogApi";
 
-type Props = {
-  mood?: string;
-  world?: string;
-  trait?: string;
-  agent?: string;
-  token?: string; // emotional token
-};
+export default function MemeMyDogEditor() {
+  const [text, setText] = useState("");
+  const [template, setTemplate] = useState("default");
+  const [result, setResult] = useState<string | null>(null);
 
-export function MemeMyDogEditor({ mood, world, trait, agent, token }: Props) {
-  const { layers } = useMemeEditorStore();
-  const [memeUrl, setMemeUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function generateDogMeme() {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/plugins/mememydog/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mood,
-          world,
-          trait,
-          agent,
-          et: token,
-          layers
-        })
-      });
-
-      if (!res.ok) throw new Error("Failed to generate dog meme");
-
-      const data = await res.json();
-      setMemeUrl(data.meme);
-    } catch (e) {
-      setError("Could not load a dog meme.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    generateDogMeme();
-  }, [mood, world, trait, agent, token, layers]);
+  const handleGenerate = async () => {
+    const data = await generateDogMeme({ template, text });
+    setResult(data?.url || null);
+  };
 
   return (
-    <div className="dog-meme-editor">
-      <MemeCanvas>
-        <RenderedLayers />
-      </MemeCanvas>
+    <div className="mememydog-editor">
+      <h1>Meme My Dog</h1>
 
-      {loading && <p className="dog-meme-loading">Fetching your dog’s vibe…</p>}
-      {error && <p className="dog-meme-error">{error}</p>}
+      <input
+        type="text"
+        placeholder="Enter meme text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
 
-      {memeUrl && !loading && !error && (
-        <div className="dog-meme-viewer">
-          <img src={memeUrl} alt="Dog Meme" className="dog-meme-image" />
+      <button onClick={handleGenerate}>Generate</button>
+
+      {result && (
+        <div className="meme-result">
+          <img src={result} alt="Generated Dog Meme" />
         </div>
       )}
-
-      <CrossAppLauncher
-        sourceApp="mememydog"
-        payload={{
-          mood,
-          world,
-          trait,
-          agent,
-          token,
-          memeUrl,
-          layers
-        }}
-      />
     </div>
   );
 }
 
-export default MemeMyDogEditor;
