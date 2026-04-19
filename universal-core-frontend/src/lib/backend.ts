@@ -1,8 +1,24 @@
 "use client";
 
-// CLIENT-SIDE BACKEND URL HELPER
 // Reads NEXT_PUBLIC_BACKEND_URL from the browser environment.
-
 export function getBackendUrl() {
-  return process.env.NEXT_PUBLIC_BACKEND_URL || null;
+  return process.env.NEXT_PUBLIC_BACKEND_URL || "";
+}
+
+// --- OS API ---
+export async function os() {
+  const backend = getBackendUrl();
+  const res = await fetch(`${backend}/os`, { cache: "no-store" });
+  return res.json();
+}
+
+// --- MoodCheck API ---
+export async function submitMood(mood: string) {
+  const backend = getBackendUrl();
+  const res = await fetch(`${backend}/plugins/moodcheck/api/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mood }),
+  });
+  return res.json();
 }
