@@ -5,7 +5,6 @@ import { cors } from "hono/cors";
 import { createKernel } from "./kernel/kernel";
 import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
-import { registerMoodCheckRoutes } from "./routes/moodcheck.routes";
 import { universeMiddleware } from "./middleware/universe";
 
 const app = new Hono();
@@ -29,9 +28,6 @@ registerOSRoutes(app);
 
 // --- Multiverse Namespace ---
 registerMultiverseRoutes(app);
-
-// --- MoodCheck Plugin ---
-registerMoodCheckRoutes(app);
 
 // --- Optional Root Route ---
 app.get("/", (c) =>
