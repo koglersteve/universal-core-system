@@ -7,6 +7,14 @@ import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
 import { universeMiddleware } from "./middleware/universe";
 
+// --- Plugin Routes ---
+import { registerDramaNextDoorRoutes } from "./routes/dramanextdoor.routes";
+import { registerHoaMemeRoutes } from "./routes/hoameme.routes";
+import { registerIDLYILYRoutes } from "./routes/idlyily.routes";
+import { registerLaffLabRoutes } from "./routes/lafflab.routes";
+import { registerMemeMyCatRoutes } from "./routes/mememycat.routes";
+import { registerMemeMyDogRoutes } from "./routes/mememydog.routes";
+
 const app = new Hono();
 
 // --- CORS (must be first middleware) ---
@@ -28,6 +36,14 @@ registerOSRoutes(app);
 
 // --- Multiverse Namespace ---
 registerMultiverseRoutes(app);
+
+// --- Plugin Namespaces ---
+registerDramaNextDoorRoutes(app);
+registerHoaMemeRoutes(app);
+registerIDLYILYRoutes(app);
+registerLaffLabRoutes(app);
+registerMemeMyCatRoutes(app);
+registerMemeMyDogRoutes(app);
 
 // --- Optional Root Route ---
 app.get("/", (c) =>
