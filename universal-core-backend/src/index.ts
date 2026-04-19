@@ -6,6 +6,7 @@ import { createKernel } from "./kernel/kernel";
 import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
 import { universeMiddleware } from "./middleware/universe";
+import { registerMoodCheckRoutes } from "./routes/moodcheck.routes";
 
 const app = new Hono();
 
