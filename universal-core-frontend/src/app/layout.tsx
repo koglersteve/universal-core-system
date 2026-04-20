@@ -1,27 +1,18 @@
-"use client";
+// app/layout.tsx (SERVER COMPONENT)
 
-import RoleNavBar from "@/components/navigation/RoleNavBar";
-import { NavigationDrawer } from "@/components/NavigationDrawer";
-import { EmotionalTransitionLayer } from "@/components/EmotionalTransitionLayer";
-import { EmotionalNotificationCenter } from "@/components/EmotionalNotificationCenter";
+import "./global.css";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export const metadata = {
+  title: "Emotional OS",
+  description: "A constellation of emotional apps stitched into one intentional system."
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <RoleNavBar />
-      <EmotionalTransitionLayer />
-      <EmotionalNotificationCenter />
-
-      <div className="os-shell">
-        <aside className="os-nav">
-          <NavigationDrawer />
-        </aside>
-
-        <main className="os-main">
-          {children}
-        </main>
-      </div>
-    </>
+    <html lang="en">
+      <body>{children}</body>
+    </html>
   );
 }
+
 
