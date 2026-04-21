@@ -1,88 +1,70 @@
 "use client";
 
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+
 import { useMood } from "@/hooks/useMood";
 import { useEmotionalIdentity } from "@/hooks/useEmotionalIdentity";
 import { useEmotionalPhysics } from "@/hooks/useEmotionalPhysics";
 import { useEmotionalMultiverse } from "@/hooks/useEmotionalMultiverse";
 import { useCrossApp } from "@/hooks/useCrossApp";
 
+import { runScene } from "@/lib/dramanextdoor/runScene";
+import { scenes } from "@/lib/dramanextdoor/scenes";
+
 export default function DramaNextDoorStart() {
   const router = useRouter();
   const token = router.query.token;
 
-  // Core Emotional OS hooks
+  // Emotional OS hooks
   const mood = useMood();
   const identity = useEmotionalIdentity();
   const physics = useEmotionalPhysics();
   const multiverse = useEmotionalMultiverse();
   const crossApp = useCrossApp();
 
-  // Derived “maximum mode” signals
-  const moodValue = mood?.value ?? 50;
-  const identityState = identity?.state ?? "stable";
-  const tension = physics?.tension ?? 0;
-  const worldName = multiverse?.currentWorld?.name ?? "default";
+  // Scene engine state
+  const [currentSceneId, setCurrentSceneId] = useState("intro");
+  const [currentBeatIndex, setCurrentBeatIndex] = useState(0);
+  const [sceneOutput, setSceneOutput] = useState(null);
 
-  function routeToLafflab(reason: string) {
-    crossApp.route("lafflab", {
-      from: "dramanextdoor",
-      reason,
-      mood: moodValue,
-      identityState,
-      tension,
-      worldName,
-    });
-  }
+  // Build the emotional context for the scene engine
+  const ctx = {
+    mood: mood?.value ?? 50,
+    tension: physics?.tension ?? 0,
+    identityState: identity?.state ?? "stable",
+    worldName: multiverse?.currentWorld?.name ?? "default",
+  };
 
-  function routeToMoodCheck(reason: string) {
-    crossApp.route("moodcheck", {
-      from: "dramanextdoor",
-      reason,
-      mood: moodValue,
-      identityState,
-      tension,
-      worldName,
-    });
-  }
+  // Run the scene when sceneId changes
+  useEffect(() => {
+    const result = runScene(currentSceneId, ctx);
+    setSceneOutput(result);
+    setCurrentBeatIndex(0);
 
-  function routeToHoaMeme(reason: string) {
-    crossApp.route("hoa-meme", {
-      from: "dramanextdoor",
-      reason,
-      mood: moodValue,
-      identityState,
-      tension,
-      worldName,
-    });
-  }
-
-  function routeToIdlyily(reason: string) {
-    crossApp.route("idlyily", {
-      from: "dramanextdoor",
-      reason,
-      mood: moodValue,
-      identityState,
-      tension,
-      worldName,
-    });
-  }
-
-  // Example “maximum OS” emotional routing helpers
-  function handleChaosSpike() {
-    if (tension > 0.7) {
-      routeToHoaMeme("high_tension_in_neighborhood");
-    } else {
-      routeToLafflab("light_defuse_before_full_chaos");
+    // Auto‑transition if a cross‑app route is triggered
+    if (result?.crossApp) {
+      crossApp.route(result.crossApp.appId, result.crossApp.payload || {});
     }
+  }, [currentSceneId]);
+
+  if (!sceneOutput) {
+    return <div style={{ padding: "2rem", color: "#fff" }}>Loading scene…</div>;
   }
 
-  function handleIdentityBreak() {
-    routeToMoodCheck("identity_break_detected");
-  }
+  const { scene, nextSceneId, updatedCtx } = sceneOutput;
+  const beats = scene.beats;
+  const currentBeat = beats[currentBeatIndex];
 
-  function handleRomanticSpillover() {
-    routeToIdlyily("romantic_thread_detected_in_drama");
+  function nextBeat() {
+    if (currentBeatIndex < beats.length - 1) {
+      setCurrentBeatIndex(currentBeatIndex + 1);
+    } else {
+      // End of scene → move to next scene (Hybrid Mode)
+      if (nextSceneId) {
+        setCurrentSceneId(nextSceneId);
+      }
+    }
   }
 
   return (
@@ -92,96 +74,52 @@ export default function DramaNextDoorStart() {
         Token: <span style={{ fontFamily: "monospace" }}>{String(token ?? "")}</span>
       </p>
 
-      <p style={{ marginBottom: "1.5rem" }}>
-        DramaNextDoor is now running in <strong>Pages Router</strong> mode and fully wired into the
-        Emotional OS.
-      </p>
+      <h2 style={{ marginBottom: "1rem" }}>{scene.title}</h2>
 
-      <section style={{ marginBottom: "2rem" }}>
-        <h3 style={{ marginBottom: "0.5rem" }}>Emotional Engine Status</h3>
-        <pre
-          style={{
-            background: "#111",
-            padding: "1rem",
-            borderRadius: "8px",
-            fontSize: "0.85rem",
-            overflowX: "auto",
-          }}
-        >
-{JSON.stringify(
-  {
-    mood: moodValue,
-    identityState,
-    tension,
-    worldName,
-  },
-  null,
-  2
-)}
-        </pre>
-      </section>
+      <div
+        style={{
+          background: "#111",
+          padding: "1rem",
+          borderRadius: "8px",
+          marginBottom: "1.5rem",
+          fontSize: "1rem",
+        }}
+      >
+        {currentBeat.text}
+        {currentBeat.agent && (
+          <div style={{ opacity: 0.6, marginTop: "0.5rem", fontSize: "0.85rem" }}>
+            ({currentBeat.agent} agent)
+          </div>
+        )}
+      </div>
 
-      <section style={{ marginBottom: "2rem" }}>
-        <h3 style={{ marginBottom: "0.5rem" }}>Emotional Routes Out of DramaNextDoor</h3>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-          <button
-            onClick={() => routeToLafflab("manual_escape_to_comedy")}
-            style={buttonStyle}
-          >
-            Send to LAFFlab (Comedy Relief)
-          </button>
+      <button
+        onClick={nextBeat}
+        style={{
+          padding: "0.6rem 1rem",
+          background: "#1b1b22",
+          borderRadius: "999px",
+          border: "1px solid #333",
+          color: "#fff",
+          cursor: "pointer",
+          marginBottom: "2rem",
+        }}
+      >
+        Next
+      </button>
 
-          <button
-            onClick={() => routeToMoodCheck("manual_check_in")}
-            style={buttonStyle}
-          >
-            Send to MoodCheck (Emotional Scan)
-          </button>
-
-          <button
-            onClick={() => routeToHoaMeme("manual_neighborhood_escalation")}
-            style={buttonStyle}
-          >
-            Send to HOA Meme (Neighborhood Chaos)
-          </button>
-
-          <button
-            onClick={() => routeToIdlyily("manual_romantic_branch")}
-            style={buttonStyle}
-          >
-            Send to IDLYILY (Romantic Thread)
-          </button>
-        </div>
-      </section>
-
-      <section>
-        <h3 style={{ marginBottom: "0.5rem" }}>Maximum OS Triggers</h3>
-        <p style={{ fontSize: "0.9rem", opacity: 0.85, marginBottom: "0.75rem" }}>
-          These simulate DramaNextDoor reacting to emotional physics, identity, and world state.
-        </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-          <button onClick={handleChaosSpike} style={buttonStyle}>
-            Chaos Spike (tension-based routing)
-          </button>
-          <button onClick={handleIdentityBreak} style={buttonStyle}>
-            Identity Break (route to MoodCheck)
-          </button>
-          <button onClick={handleRomanticSpillover} style={buttonStyle}>
-            Romantic Spillover (route to IDLYILY)
-          </button>
-        </div>
-      </section>
+      <h3 style={{ marginBottom: "0.5rem" }}>Emotional Engine Status</h3>
+      <pre
+        style={{
+          background: "#111",
+          padding: "1rem",
+          borderRadius: "8px",
+          fontSize: "0.85rem",
+          overflowX: "auto",
+        }}
+      >
+{JSON.stringify(updatedCtx, null, 2)}
+      </pre>
     </div>
   );
 }
-
-const buttonStyle: React.CSSProperties = {
-  padding: "0.6rem 0.9rem",
-  background: "#1b1b22",
-  borderRadius: "999px",
-  border: "1px solid #333",
-  color: "#fff",
-  fontSize: "0.85rem",
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-};
