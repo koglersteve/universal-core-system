@@ -12,6 +12,7 @@ import { useCrossApp } from "@/hooks/useCrossApp";
 import { runScene } from "@/lib/dramanextdoor/runScene";
 import { getAgentMeta } from "@/lib/dramanextdoor/agents";
 import { useRitualEngine } from "@/lib/dramanextdoor/useRitualEngine";
+import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine";
 
 export default function DramaNextDoorStart() {
   const router = useRouter();
@@ -26,6 +27,9 @@ export default function DramaNextDoorStart() {
 
   // Ritual Engine
   const ritualEngine = useRitualEngine();
+
+  // Notification Engine
+  const notificationEngine = useNotificationEngine();
 
   // Scene engine state
   const [currentSceneId, setCurrentSceneId] = useState("intro");
@@ -49,6 +53,25 @@ export default function DramaNextDoorStart() {
     // Auto‑transition if a cross‑app route is triggered
     if (result?.crossApp) {
       crossApp.route(result.crossApp.appId, result.crossApp.payload || {});
+    }
+
+    // Emotional Notification Trigger (local)
+    if (ctx.tension > 0.6) {
+      notificationEngine.pushNotification(
+        "Tension Rising",
+        "Your emotional tension is increasing. Scenes may escalate.",
+        undefined,
+        +0.05
+      );
+    }
+
+    if (ctx.mood < 25) {
+      notificationEngine.pushNotification(
+        "Low Mood Detected",
+        "Your mood is dipping. Consider a grounding ritual.",
+        +2,
+        undefined
+      );
     }
   }, [currentSceneId]);
 
@@ -168,6 +191,26 @@ export default function DramaNextDoorStart() {
             </div>
           );
         })}
+      </div>
+
+      {/* Notifications Section */}
+      <h3 style={{ marginBottom: "0.5rem" }}>Emotional Notifications</h3>
+
+      <div style={{ marginBottom: "2rem" }}>
+        {notificationEngine.notifications.map((n) => (
+          <div
+            key={n.id}
+            style={{
+              marginBottom: "0.75rem",
+              padding: "0.75rem",
+              background: "#111",
+              borderRadius: "8px",
+            }}
+          >
+            <strong>{n.title}</strong>
+            <div style={{ opacity: 0.8 }}>{n.message}</div>
+          </div>
+        ))}
       </div>
 
       <h3 style={{ marginBottom: "0.5rem" }}>Emotional Engine Status</h3>
