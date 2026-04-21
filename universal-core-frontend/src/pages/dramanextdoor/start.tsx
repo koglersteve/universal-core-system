@@ -14,6 +14,9 @@ import { getAgentMeta } from "@/lib/dramanextdoor/agents";
 import { useRitualEngine } from "@/lib/dramanextdoor/useRitualEngine";
 import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine";
 
+import { diffWorlds } from "@/lib/dramanextdoor/worldDiff";
+import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
+
 export default function DramaNextDoorStart() {
   const router = useRouter();
   const token = router.query.token;
@@ -36,6 +39,12 @@ export default function DramaNextDoorStart() {
   const [currentBeatIndex, setCurrentBeatIndex] = useState(0);
   const [sceneOutput, setSceneOutput] = useState(null);
 
+  // World Diff/Merge state
+  const [worldA, setWorldA] = useState<string | null>(null);
+  const [worldB, setWorldB] = useState<string | null>(null);
+  const [mergeName, setMergeName] = useState("");
+  const [diffResult, setDiffResult] = useState(null);
+
   // Build the emotional context for the scene engine
   const ctx = {
     mood: mood?.value ?? 50,
@@ -50,12 +59,10 @@ export default function DramaNextDoorStart() {
     setSceneOutput(result);
     setCurrentBeatIndex(0);
 
-    // Auto‑transition if a cross‑app route is triggered
     if (result?.crossApp) {
       crossApp.route(result.crossApp.appId, result.crossApp.payload || {});
     }
 
-    // Emotional Notification Trigger (local)
     if (ctx.tension > 0.6) {
       notificationEngine.pushNotification(
         "Tension Rising",
@@ -83,22 +90,35 @@ export default function DramaNextDoorStart() {
   const beats = scene.beats;
   const currentBeat = beats[currentBeatIndex];
 
-  // Agent metadata
   const agentMeta = getAgentMeta(currentBeat.agent);
 
   function nextBeat() {
     if (currentBeatIndex < beats.length - 1) {
       setCurrentBeatIndex(currentBeatIndex + 1);
-    } else {
-      if (nextSceneId) {
-        setCurrentSceneId(nextSceneId);
-      }
+    } else if (nextSceneId) {
+      setCurrentSceneId(nextSceneId);
     }
+  }
+
+  // World Diff
+  function computeDiff() {
+    const a = multiverse.worlds.find((w) => w.id === worldA);
+    const b = multiverse.worlds.find((w) => w.id === worldB);
+    setDiffResult(diffWorlds(a, b));
+  }
+
+  // World Merge
+  function performMerge() {
+    const a = multiverse.worlds.find((w) => w.id === worldA);
+    const b = multiverse.worlds.find((w) => w.id === worldB);
+    const merged = mergeWorlds(a, b, mergeName || "Merged World");
+    multiverse.addWorld(merged);
   }
 
   return (
     <div style={{ padding: "2rem", color: "#fff", background: "#050509", minHeight: "100vh" }}>
       <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>DramaNextDoor</h1>
+
       <p style={{ opacity: 0.8, marginBottom: "1rem" }}>
         Token: <span style={{ fontFamily: "monospace" }}>{String(token ?? "")}</span>
       </p>
@@ -146,13 +166,11 @@ export default function DramaNextDoorStart() {
         Next
       </button>
 
-      {/* Rituals Section */}
-      <h3 style={{ marginBottom: "0.5rem" }}>Emotional Rituals</h3>
-
+      {/* Rituals */}
+      <h3>Emotional Rituals</h3>
       <div style={{ marginBottom: "2rem" }}>
         {ritualEngine.rituals.map((r) => {
           const done = ritualEngine.completed[r.id];
-
           return (
             <div
               key={r.id}
@@ -193,9 +211,8 @@ export default function DramaNextDoorStart() {
         })}
       </div>
 
-      {/* Notifications Section */}
-      <h3 style={{ marginBottom: "0.5rem" }}>Emotional Notifications</h3>
-
+      {/* Notifications */}
+      <h3>Emotional Notifications</h3>
       <div style={{ marginBottom: "2rem" }}>
         {notificationEngine.notifications.map((n) => (
           <div
@@ -213,7 +230,96 @@ export default function DramaNextDoorStart() {
         ))}
       </div>
 
-      <h3 style={{ marginBottom: "0.5rem" }}>Emotional Engine Status</h3>
+      {/* World Diff / Merge */}
+      <h3>Emotional World Diff / Merge</h3>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <select
+          value={worldA || ""}
+          onChange={(e) => setWorldA(e.target.value)}
+          style={{ marginRight: "1rem" }}
+        >
+          <option value="">Select World A</option>
+          {multiverse.worlds.map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={worldB || ""}
+          onChange={(e) => setWorldB(e.target.value)}
+        >
+          <option value="">Select World B</option>
+          {multiverse.worlds.map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          ))}
+        </select>
+
+        <button
+          onClick={computeDiff}
+          style={{
+            marginLeft: "1rem",
+            padding: "0.4rem 0.8rem",
+            background: "#1b1b22",
+            borderRadius: "999px",
+            border: "1px solid #333",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Diff
+        </button>
+      </div>
+
+      {diffResult && (
+        <pre
+          style={{
+            background: "#111",
+            padding: "1rem",
+            borderRadius: "8px",
+            marginBottom: "1.5rem",
+            fontSize: "0.85rem",
+          }}
+        >
+{JSON.stringify(diffResult, null, 2)}
+        </pre>
+      )}
+
+      <div style={{ marginBottom: "2rem" }}>
+        <input
+          type="text"
+          placeholder="Merged world name"
+          value={mergeName}
+          onChange={(e) => setMergeName(e.target.value)}
+          style={{
+            padding: "0.4rem",
+            marginRight: "1rem",
+            background: "#111",
+            border: "1px solid #333",
+            color: "#fff",
+          }}
+        />
+
+        <button
+          onClick={performMerge}
+          style={{
+            padding: "0.4rem 0.8rem",
+            background: "#1b1b22",
+            borderRadius: "999px",
+            border: "1px solid #333",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Merge Worlds
+        </button>
+      </div>
+
+      <h3>Emotional Engine Status</h3>
       <pre
         style={{
           background: "#111",
