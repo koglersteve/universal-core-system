@@ -18,6 +18,8 @@ import { diffWorlds } from "@/lib/dramanextdoor/worldDiff";
 import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
 import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
 
+import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
+
 export default function DramaNextDoorStart() {
   const router = useRouter();
   const token = router.query.token;
@@ -37,6 +39,9 @@ export default function DramaNextDoorStart() {
 
   // World Transition Engine
   const worldTransition = useWorldTransition();
+
+  // Identity Continuity Engine
+  const identityContinuity = useIdentityContinuity();
 
   // Scene engine state
   const [currentSceneId, setCurrentSceneId] = useState("intro");
@@ -129,6 +134,8 @@ export default function DramaNextDoorStart() {
     const target = multiverse.worlds.find((w) => w.id === selectedWorldId);
     if (!target) return;
 
+    identityContinuity.evaluate(target.id, identity);
+
     worldTransition.startTransition(() => {
       multiverse.setWorld(target.id);
     });
@@ -136,7 +143,6 @@ export default function DramaNextDoorStart() {
 
   return (
     <div style={{ padding: "2rem", color: "#fff", background: "#050509", minHeight: "100vh", position: "relative" }}>
-      {/* Cinematic Fade Overlay */}
       {worldTransition.isTransitioning && (
         <div
           style={{
@@ -299,6 +305,21 @@ export default function DramaNextDoorStart() {
           </div>
         ))}
       </div>
+
+      {/* Identity Continuity */}
+      <h3>Identity Continuity</h3>
+      <pre
+        style={{
+          background: "#111",
+          padding: "1rem",
+          borderRadius: "8px",
+          fontSize: "0.85rem",
+          overflowX: "auto",
+          marginBottom: "2rem",
+        }}
+      >
+{JSON.stringify(identityContinuity.report, null, 2)}
+      </pre>
 
       {/* World Diff / Merge */}
       <h3>Emotional World Diff / Merge</h3>
