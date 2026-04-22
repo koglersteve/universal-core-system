@@ -16,6 +16,7 @@ import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine
 
 import { diffWorlds } from "@/lib/dramanextdoor/worldDiff";
 import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
+import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
 
 export default function DramaNextDoorStart() {
   const router = useRouter();
@@ -34,6 +35,9 @@ export default function DramaNextDoorStart() {
   // Notification Engine
   const notificationEngine = useNotificationEngine();
 
+  // World Transition Engine
+  const worldTransition = useWorldTransition();
+
   // Scene engine state
   const [currentSceneId, setCurrentSceneId] = useState("intro");
   const [currentBeatIndex, setCurrentBeatIndex] = useState(0);
@@ -44,6 +48,9 @@ export default function DramaNextDoorStart() {
   const [worldB, setWorldB] = useState<string | null>(null);
   const [mergeName, setMergeName] = useState("");
   const [diffResult, setDiffResult] = useState(null);
+
+  // World Switching state
+  const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
 
   // Build the emotional context for the scene engine
   const ctx = {
@@ -115,8 +122,33 @@ export default function DramaNextDoorStart() {
     multiverse.addWorld(merged);
   }
 
+  // World Switch
+  function switchWorld() {
+    if (!selectedWorldId) return;
+
+    const target = multiverse.worlds.find((w) => w.id === selectedWorldId);
+    if (!target) return;
+
+    worldTransition.startTransition(() => {
+      multiverse.setWorld(target.id);
+    });
+  }
+
   return (
-    <div style={{ padding: "2rem", color: "#fff", background: "#050509", minHeight: "100vh" }}>
+    <div style={{ padding: "2rem", color: "#fff", background: "#050509", minHeight: "100vh", position: "relative" }}>
+      {/* Cinematic Fade Overlay */}
+      {worldTransition.isTransitioning && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(0,0,0,0.85)",
+            transition: "opacity 0.6s",
+            zIndex: 999,
+          }}
+        />
+      )}
+
       <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>DramaNextDoor</h1>
 
       <p style={{ opacity: 0.8, marginBottom: "1rem" }}>
@@ -165,6 +197,44 @@ export default function DramaNextDoorStart() {
       >
         Next
       </button>
+
+      {/* World Switching */}
+      <h3>Emotional World Switching</h3>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <select
+          value={selectedWorldId || ""}
+          onChange={(e) => setSelectedWorldId(e.target.value)}
+          style={{
+            padding: "0.4rem",
+            background: "#111",
+            border: "1px solid #333",
+            color: "#fff",
+            marginRight: "1rem",
+          }}
+        >
+          <option value="">Select a world</option>
+          {multiverse.worlds.map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          ))}
+        </select>
+
+        <button
+          onClick={switchWorld}
+          style={{
+            padding: "0.4rem 0.8rem",
+            background: "#1b1b22",
+            borderRadius: "999px",
+            border: "1px solid #333",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Switch World
+        </button>
+      </div>
 
       {/* Rituals */}
       <h3>Emotional Rituals</h3>
