@@ -19,6 +19,7 @@ import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
 import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
 
 import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
+import { useCanonicalization } from "@/lib/dramanextdoor/useCanonicalization";
 
 export default function DramaNextDoorStart() {
   const router = useRouter();
@@ -42,6 +43,9 @@ export default function DramaNextDoorStart() {
 
   // Identity Continuity Engine
   const identityContinuity = useIdentityContinuity();
+
+  // Canonicalization Engine
+  const canonicalization = useCanonicalization();
 
   // Scene engine state
   const [currentSceneId, setCurrentSceneId] = useState("intro");
@@ -70,6 +74,9 @@ export default function DramaNextDoorStart() {
     const result = runScene(currentSceneId, ctx);
     setSceneOutput(result);
     setCurrentBeatIndex(0);
+
+    // Canonicalize emotional state on scene change
+    canonicalization.record(ctx, identity, multiverse.currentWorld);
 
     if (result?.crossApp) {
       crossApp.route(result.crossApp.appId, result.crossApp.payload || {});
@@ -134,10 +141,17 @@ export default function DramaNextDoorStart() {
     const target = multiverse.worlds.find((w) => w.id === selectedWorldId);
     if (!target) return;
 
+    // Identity continuity evaluation
     identityContinuity.evaluate(target.id, identity);
+
+    // Canonicalize BEFORE switching
+    canonicalization.record(ctx, identity, multiverse.currentWorld);
 
     worldTransition.startTransition(() => {
       multiverse.setWorld(target.id);
+
+      // Canonicalize AFTER switching
+      canonicalization.record(ctx, identity, target);
     });
   }
 
@@ -319,6 +333,21 @@ export default function DramaNextDoorStart() {
         }}
       >
 {JSON.stringify(identityContinuity.report, null, 2)}
+      </pre>
+
+      {/* Canonical Emotional Timeline */}
+      <h3>Canonical Emotional Timeline</h3>
+      <pre
+        style={{
+          background: "#111",
+          padding: "1rem",
+          borderRadius: "8px",
+          fontSize: "0.85rem",
+          overflowX: "auto",
+          marginBottom: "2rem",
+        }}
+      >
+{JSON.stringify(canonicalization.history, null, 2)}
       </pre>
 
       {/* World Diff / Merge */}
