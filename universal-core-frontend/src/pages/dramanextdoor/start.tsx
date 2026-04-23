@@ -10,20 +10,26 @@ import { useEmotionalMultiverse } from "@/hooks/useEmotionalMultiverse";
 import { useCrossApp } from "@/hooks/useCrossApp";
 
 import { runScene } from "@/lib/dramanextdoor/runScene";
-import { getAgentMeta } from "@/lib/dramanextdoor/agents";
 import { useRitualEngine } from "@/lib/dramanextdoor/useRitualEngine";
 import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine";
-
 import { diffWorlds } from "@/lib/dramanextdoor/worldDiff";
 import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
 import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
-
 import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
 import { useCanonicalization } from "@/lib/dramanextdoor/useCanonicalization";
 
+import { SceneViewer } from "@/components/dramanextdoor/SceneViewer";
+import { WorldSwitcher } from "@/components/dramanextdoor/WorldSwitcher";
+import { RitualPanel } from "@/components/dramanextdoor/RitualPanel";
+import { NotificationPanel } from "@/components/dramanextdoor/NotificationPanel";
+import { IdentityContinuityPanel } from "@/components/dramanextdoor/IdentityContinuityPanel";
+import { CanonicalTimelinePanel } from "@/components/dramanextdoor/CanonicalTimelinePanel";
+import { WorldDiffMergePanel } from "@/components/dramanextdoor/WorldDiffMergePanel";
+import { EmotionalEngineStatus } from "@/components/dramanextdoor/EmotionalEngineStatus";
+
 export default function DramaNextDoorStart() {
   const router = useRouter();
-  const token = router.query.token;
+  const token = router.query.token as string | undefined;
 
   // Emotional OS hooks
   const mood = useMood();
@@ -32,36 +38,28 @@ export default function DramaNextDoorStart() {
   const multiverse = useEmotionalMultiverse();
   const crossApp = useCrossApp();
 
-  // Ritual Engine
+  // Engines
   const ritualEngine = useRitualEngine();
-
-  // Notification Engine
   const notificationEngine = useNotificationEngine();
-
-  // World Transition Engine
   const worldTransition = useWorldTransition();
-
-  // Identity Continuity Engine
   const identityContinuity = useIdentityContinuity();
-
-  // Canonicalization Engine
   const canonicalization = useCanonicalization();
 
-  // Scene engine state
+  // Scene state
   const [currentSceneId, setCurrentSceneId] = useState("intro");
   const [currentBeatIndex, setCurrentBeatIndex] = useState(0);
-  const [sceneOutput, setSceneOutput] = useState(null);
+  const [sceneOutput, setSceneOutput] = useState<any>(null);
 
-  // World Diff/Merge state
+  // World diff/merge state
   const [worldA, setWorldA] = useState<string | null>(null);
   const [worldB, setWorldB] = useState<string | null>(null);
   const [mergeName, setMergeName] = useState("");
-  const [diffResult, setDiffResult] = useState(null);
+  const [diffResult, setDiffResult] = useState<any>(null);
 
-  // World Switching state
+  // World switching state
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
 
-  // Build the emotional context for the scene engine
+  // Emotional context
   const ctx = {
     mood: mood?.value ?? 50,
     tension: physics?.tension ?? 0,
@@ -69,13 +67,13 @@ export default function DramaNextDoorStart() {
     worldName: multiverse?.currentWorld?.name ?? "default",
   };
 
-  // Run the scene when sceneId changes
+  // Scene engine
   useEffect(() => {
     const result = runScene(currentSceneId, ctx);
     setSceneOutput(result);
     setCurrentBeatIndex(0);
 
-    // Canonicalize emotional state on scene change
+    // Canonicalize on scene change
     canonicalization.record(ctx, identity, multiverse.currentWorld);
 
     if (result?.crossApp) {
@@ -106,351 +104,95 @@ export default function DramaNextDoorStart() {
   }
 
   const { scene, nextSceneId, updatedCtx } = sceneOutput;
-  const beats = scene.beats;
-  const currentBeat = beats[currentBeatIndex];
 
-  const agentMeta = getAgentMeta(currentBeat.agent);
-
-  function nextBeat() {
+  function handleNextBeat() {
+    const beats = scene.beats || [];
     if (currentBeatIndex < beats.length - 1) {
-      setCurrentBeatIndex(currentBeatIndex + 1);
+      setCurrentBeatIndex((i) => i + 1);
     } else if (nextSceneId) {
       setCurrentSceneId(nextSceneId);
     }
   }
 
-  // World Diff
-  function computeDiff() {
+  function handleComputeDiff() {
     const a = multiverse.worlds.find((w) => w.id === worldA);
     const b = multiverse.worlds.find((w) => w.id === worldB);
     setDiffResult(diffWorlds(a, b));
   }
 
-  // World Merge
-  function performMerge() {
+  function handleMergeWorlds() {
     const a = multiverse.worlds.find((w) => w.id === worldA);
     const b = multiverse.worlds.find((w) => w.id === worldB);
     const merged = mergeWorlds(a, b, mergeName || "Merged World");
     multiverse.addWorld(merged);
   }
 
-  // World Switch
-  function switchWorld() {
+  function handleSwitchWorld() {
     if (!selectedWorldId) return;
 
     const target = multiverse.worlds.find((w) => w.id === selectedWorldId);
     if (!target) return;
 
-    // Identity continuity evaluation
     identityContinuity.evaluate(target.id, identity);
-
-    // Canonicalize BEFORE switching
     canonicalization.record(ctx, identity, multiverse.currentWorld);
 
     worldTransition.startTransition(() => {
       multiverse.setWorld(target.id);
-
-      // Canonicalize AFTER switching
       canonicalization.record(ctx, identity, target);
     });
   }
 
   return (
-    <div style={{ padding: "2rem", color: "#fff", background: "#050509", minHeight: "100vh", position: "relative" }}>
-      {worldTransition.isTransitioning && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(0,0,0,0.85)",
-            transition: "opacity 0.6s",
-            zIndex: 999,
-          }}
-        />
-      )}
+    <div
+      style={{
+        padding: "2rem",
+        color: "#fff",
+        background: "#050509",
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
+      <SceneViewer
+        scene={scene}
+        currentBeatIndex={currentBeatIndex}
+        onNextBeat={handleNextBeat}
+        token={token ?? null}
+      />
 
-      <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>DramaNextDoor</h1>
+      <WorldSwitcher
+        worlds={multiverse.worlds}
+        selectedWorldId={selectedWorldId}
+        onSelectWorld={setSelectedWorldId}
+        onSwitchWorld={handleSwitchWorld}
+        isTransitioning={worldTransition.isTransitioning}
+      />
 
-      <p style={{ opacity: 0.8, marginBottom: "1rem" }}>
-        Token: <span style={{ fontFamily: "monospace" }}>{String(token ?? "")}</span>
-      </p>
+      <RitualPanel
+        rituals={ritualEngine.rituals}
+        completed={ritualEngine.completed}
+        onComplete={ritualEngine.completeRitual}
+      />
 
-      <h2 style={{ marginBottom: "1rem" }}>{scene.title}</h2>
+      <NotificationPanel notifications={notificationEngine.notifications} />
 
-      <div
-        style={{
-          background: "#111",
-          padding: "1rem",
-          borderRadius: "8px",
-          marginBottom: "1.5rem",
-          fontSize: "1rem",
-        }}
-      >
-        {currentBeat.text}
+      <IdentityContinuityPanel report={identityContinuity.report} />
 
-        {agentMeta && (
-          <div
-            style={{
-              marginTop: "0.5rem",
-              fontSize: "0.85rem",
-              color: agentMeta.color,
-              opacity: 0.9,
-            }}
-          >
-            {agentMeta.name}:{" "}
-            <span style={{ opacity: 0.75 }}>{agentMeta.description}</span>
-          </div>
-        )}
-      </div>
+      <CanonicalTimelinePanel history={canonicalization.history} />
 
-      <button
-        onClick={nextBeat}
-        style={{
-          padding: "0.6rem 1rem",
-          background: "#1b1b22",
-          borderRadius: "999px",
-          border: "1px solid #333",
-          color: "#fff",
-          cursor: "pointer",
-          marginBottom: "2rem",
-        }}
-      >
-        Next
-      </button>
+      <WorldDiffMergePanel
+        worlds={multiverse.worlds}
+        worldA={worldA}
+        worldB={worldB}
+        onSelectWorldA={setWorldA}
+        onSelectWorldB={setWorldB}
+        onDiff={handleComputeDiff}
+        diffResult={diffResult}
+        mergeName={mergeName}
+        onChangeMergeName={setMergeName}
+        onMerge={handleMergeWorlds}
+      />
 
-      {/* World Switching */}
-      <h3>Emotional World Switching</h3>
-
-      <div style={{ marginBottom: "2rem" }}>
-        <select
-          value={selectedWorldId || ""}
-          onChange={(e) => setSelectedWorldId(e.target.value)}
-          style={{
-            padding: "0.4rem",
-            background: "#111",
-            border: "1px solid #333",
-            color: "#fff",
-            marginRight: "1rem",
-          }}
-        >
-          <option value="">Select a world</option>
-          {multiverse.worlds.map((w) => (
-            <option key={w.id} value={w.id}>
-              {w.name}
-            </option>
-          ))}
-        </select>
-
-        <button
-          onClick={switchWorld}
-          style={{
-            padding: "0.4rem 0.8rem",
-            background: "#1b1b22",
-            borderRadius: "999px",
-            border: "1px solid #333",
-            color: "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Switch World
-        </button>
-      </div>
-
-      {/* Rituals */}
-      <h3>Emotional Rituals</h3>
-      <div style={{ marginBottom: "2rem" }}>
-        {ritualEngine.rituals.map((r) => {
-          const done = ritualEngine.completed[r.id];
-          return (
-            <div
-              key={r.id}
-              style={{
-                marginBottom: "0.75rem",
-                padding: "0.75rem",
-                background: "#111",
-                borderRadius: "8px",
-                opacity: done ? 0.5 : 1,
-              }}
-            >
-              <strong>{r.name}</strong>
-              <div style={{ opacity: 0.8, marginBottom: "0.5rem" }}>{r.description}</div>
-
-              {!done && (
-                <button
-                  onClick={() => ritualEngine.completeRitual(r.id)}
-                  style={{
-                    padding: "0.4rem 0.8rem",
-                    background: "#1b1b22",
-                    borderRadius: "999px",
-                    border: "1px solid #333",
-                    color: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Complete Ritual
-                </button>
-              )}
-
-              {done && (
-                <div style={{ color: "#7dd3fc", fontSize: "0.85rem" }}>
-                  Ritual completed
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Notifications */}
-      <h3>Emotional Notifications</h3>
-      <div style={{ marginBottom: "2rem" }}>
-        {notificationEngine.notifications.map((n) => (
-          <div
-            key={n.id}
-            style={{
-              marginBottom: "0.75rem",
-              padding: "0.75rem",
-              background: "#111",
-              borderRadius: "8px",
-            }}
-          >
-            <strong>{n.title}</strong>
-            <div style={{ opacity: 0.8 }}>{n.message}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Identity Continuity */}
-      <h3>Identity Continuity</h3>
-      <pre
-        style={{
-          background: "#111",
-          padding: "1rem",
-          borderRadius: "8px",
-          fontSize: "0.85rem",
-          overflowX: "auto",
-          marginBottom: "2rem",
-        }}
-      >
-{JSON.stringify(identityContinuity.report, null, 2)}
-      </pre>
-
-      {/* Canonical Emotional Timeline */}
-      <h3>Canonical Emotional Timeline</h3>
-      <pre
-        style={{
-          background: "#111",
-          padding: "1rem",
-          borderRadius: "8px",
-          fontSize: "0.85rem",
-          overflowX: "auto",
-          marginBottom: "2rem",
-        }}
-      >
-{JSON.stringify(canonicalization.history, null, 2)}
-      </pre>
-
-      {/* World Diff / Merge */}
-      <h3>Emotional World Diff / Merge</h3>
-
-      <div style={{ marginBottom: "2rem" }}>
-        <select
-          value={worldA || ""}
-          onChange={(e) => setWorldA(e.target.value)}
-          style={{ marginRight: "1rem" }}
-        >
-          <option value="">Select World A</option>
-          {multiverse.worlds.map((w) => (
-            <option key={w.id} value={w.id}>
-              {w.name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={worldB || ""}
-          onChange={(e) => setWorldB(e.target.value)}
-        >
-          <option value="">Select World B</option>
-          {multiverse.worlds.map((w) => (
-            <option key={w.id} value={w.id}>
-              {w.name}
-            </option>
-          ))}
-        </select>
-
-        <button
-          onClick={computeDiff}
-          style={{
-            marginLeft: "1rem",
-            padding: "0.4rem 0.8rem",
-            background: "#1b1b22",
-            borderRadius: "999px",
-            border: "1px solid #333",
-            color: "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Diff
-        </button>
-      </div>
-
-      {diffResult && (
-        <pre
-          style={{
-            background: "#111",
-            padding: "1rem",
-            borderRadius: "8px",
-            marginBottom: "1.5rem",
-            fontSize: "0.85rem",
-          }}
-        >
-{JSON.stringify(diffResult, null, 2)}
-        </pre>
-      )}
-
-      <div style={{ marginBottom: "2rem" }}>
-        <input
-          type="text"
-          placeholder="Merged world name"
-          value={mergeName}
-          onChange={(e) => setMergeName(e.target.value)}
-          style={{
-            padding: "0.4rem",
-            marginRight: "1rem",
-            background: "#111",
-            border: "1px solid #333",
-            color: "#fff",
-          }}
-        />
-
-        <button
-          onClick={performMerge}
-          style={{
-            padding: "0.4rem 0.8rem",
-            background: "#1b1b22",
-            borderRadius: "999px",
-            border: "1px solid #333",
-            color: "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Merge Worlds
-        </button>
-      </div>
-
-      <h3>Emotional Engine Status</h3>
-      <pre
-        style={{
-          background: "#111",
-          padding: "1rem",
-          borderRadius: "8px",
-          fontSize: "0.85rem",
-          overflowX: "auto",
-        }}
-      >
-{JSON.stringify(updatedCtx, null, 2)}
-      </pre>
+      <EmotionalEngineStatus updatedCtx={updatedCtx} />
     </div>
   );
 }
