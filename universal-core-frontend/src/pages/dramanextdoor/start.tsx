@@ -200,7 +200,7 @@ export default function DramaNextDoorStart() {
 
       <CanonicalTimelinePanel history={canonicalization.history} />
 
-      {/* ⭐ NEW SAFETY DASHBOARD */}
+      {/* ⭐ SAFETY DASHBOARD */}
       <SafetyDashboard
         mood={ctx.mood}
         tension={ctx.tension}
@@ -210,7 +210,7 @@ export default function DramaNextDoorStart() {
         safetyEvents={safety.events}
       />
 
-      {/* ⭐ EXISTING SAFETY PANEL */}
+      {/* ⭐ SAFETY PANEL (event log) */}
       <SafetyPanel events={safety.events} />
 
       <WorldDiffMergePanel
