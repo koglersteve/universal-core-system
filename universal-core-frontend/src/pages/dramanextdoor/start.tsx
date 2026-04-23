@@ -18,6 +18,11 @@ import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
 import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
 import { useCanonicalization } from "@/lib/dramanextdoor/useCanonicalization";
 
+// ⭐ SAFETY LAYER IMPORTS
+import { useEmotionalSafetyLayer } from "@/lib/dramanextdoor/useEmotionalSafetyLayer";
+import { SafetyPanel } from "@/components/dramanextdoor/SafetyPanel";
+import { SafetyDashboard } from "@/components/dramanextdoor/SafetyDashboard";
+
 import { SceneViewer } from "@/components/dramanextdoor/SceneViewer";
 import { WorldSwitcher } from "@/components/dramanextdoor/WorldSwitcher";
 import { RitualPanel } from "@/components/dramanextdoor/RitualPanel";
@@ -44,6 +49,9 @@ export default function DramaNextDoorStart() {
   const worldTransition = useWorldTransition();
   const identityContinuity = useIdentityContinuity();
   const canonicalization = useCanonicalization();
+
+  // ⭐ NEW: track world switch count for safety layer
+  const [worldSwitchCount, setWorldSwitchCount] = useState(0);
 
   // Scene state
   const [currentSceneId, setCurrentSceneId] = useState("intro");
@@ -136,11 +144,24 @@ export default function DramaNextDoorStart() {
     identityContinuity.evaluate(target.id, identity);
     canonicalization.record(ctx, identity, multiverse.currentWorld);
 
+    // ⭐ increment world switch count for safety layer
+    setWorldSwitchCount((c) => c + 1);
+
     worldTransition.startTransition(() => {
       multiverse.setWorld(target.id);
       canonicalization.record(ctx, identity, target);
     });
   }
+
+  // ⭐ SAFETY LAYER HOOK
+  const safety = useEmotionalSafetyLayer({
+    mood: ctx.mood,
+    tension: ctx.tension,
+    identityReport: identityContinuity.report,
+    canonicalHistory: canonicalization.history,
+    worldSwitchCount,
+    pushNotification: notificationEngine.pushNotification,
+  });
 
   return (
     <div
@@ -178,6 +199,19 @@ export default function DramaNextDoorStart() {
       <IdentityContinuityPanel report={identityContinuity.report} />
 
       <CanonicalTimelinePanel history={canonicalization.history} />
+
+      {/* ⭐ NEW SAFETY DASHBOARD */}
+      <SafetyDashboard
+        mood={ctx.mood}
+        tension={ctx.tension}
+        identityReport={identityContinuity.report}
+        canonicalHistory={canonicalization.history}
+        worldSwitchCount={worldSwitchCount}
+        safetyEvents={safety.events}
+      />
+
+      {/* ⭐ EXISTING SAFETY PANEL */}
+      <SafetyPanel events={safety.events} />
 
       <WorldDiffMergePanel
         worlds={multiverse.worlds}
