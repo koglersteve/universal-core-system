@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model DramaClip {
+  id          String   @id @default(cuid())
+  type        String   // "video" | "audio" | "image" | "meme"
+  url         String
+  thumbnail   String?
+  duration    Int?
+  createdAt   DateTime @default(now())
+
+  laugh       Int      @default(0)
+  smile       Int      @default(0)
+  shock       Int      @default(0)
+  sad         Int      @default(0)
+  angry       Int      @default(0)
+  mindblown   Int      @default(0)
+  chaos       Int      @default(0)
+
+  favorites   DramaFavorite[]
+  views       DramaView[]
+}
+
+model DramaFavorite {
+  id        String   @id @default(cuid())
+  clipId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  clip      DramaClip @relation(fields: [clipId], references: [id])
+}
+
+model DramaView {
+  id        String   @id @default(cuid())
+  clipId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  clip      DramaClip @relation(fields: [clipId], references: [id])
+}
