@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy-900: #0b1120;
+  --navy-800: #0f172a;
+  --navy-700: #1e293b;
+  --navy-600: #334155;
+  --teal-500: #14b8a6;
+  --teal-400: #2dd4bf;
+  --teal-300: #5eead4;
+}
+
+body {
+  color: #e2e8f0;
+  background-color: var(--navy-900);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+a {
+  color: var(--teal-400);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--teal-300);
+}
