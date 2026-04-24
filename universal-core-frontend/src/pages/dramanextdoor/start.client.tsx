@@ -1,6 +1,9 @@
 "use client";
 
-export const dynamic = "force-dynamic";
+export const config = {
+  runtime: "edge",
+  unstable_runtimeJS: false,
+};
 
 import { useState, useEffect } from "react";
 

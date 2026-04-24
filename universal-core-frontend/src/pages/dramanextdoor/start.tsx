@@ -1,9 +1,11 @@
-// universal-core-frontend/src/pages/dramanextdoor/start.tsx
+export const config = {
+  runtime: "edge",
+  unstable_runtimeJS: false,
+};
 
 import dynamic from "next/dynamic";
 
-// This disables ALL SSR for this page.
-// Next.js will ONLY load the component on the client.
+// Load the client-only component
 const StartClient = dynamic(() => import("./start.client"), {
   ssr: false,
 });
