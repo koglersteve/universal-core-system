@@ -1,0 +1,1 @@
+{\n  "version": 2,\n  "build": {\n    "env": {\n      "NEXT_PUBLIC_API_URL": "https://api.example.com"\n    },\n    "dockerfile": "Dockerfile"\n  },\n  "deploy": {\n    "type": "node","platform": "railway"\n  },\n  "routes": {\n    "/": {\n      "path": "./src/index.js"\n    }\n  }\n}
