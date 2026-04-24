@@ -2,63 +2,65 @@
 
 import { useEffect } from "react";
 
-// --- Emotional OS Engines ---
+// --- Emotional OS Context ---
+import { useEmotionalContext } from "@/lib/emotionalOS/EmotionalContext";
+
+// --- Emotional OS Pillars (your new engines) ---
 import { useAdaptationEngine } from "@/lib/emotionalOS/adaptation/useAdaptationEngine";
 import { useContinuityEngine } from "@/lib/emotionalOS/continuity/useContinuityEngine";
 import { useIntentEngine } from "@/lib/emotionalOS/intent/useIntentEngine";
 
-// --- Core OS Context Providers ---
-import { useEmotionalContext } from "@/lib/emotionalOS/context/EmotionalContext";
-import { useWorldEngine } from "@/lib/emotionalOS/worlds/useWorldEngine";
-import { useSafetyEngine } from "@/lib/emotionalOS/safety/useSafetyEngine";
-import { useIdentityContinuity } from "@/lib/emotionalOS/identity/useIdentityContinuity";
-import { useReactionEngine } from "@/lib/emotionalOS/reactions/useReactionEngine";
-import { useRitualEngine } from "@/lib/emotionalOS/rituals/useRitualEngine";
-import { useHistoryEngine } from "@/lib/emotionalOS/history/useHistoryEngine";
-import { usePacingEngine } from "@/lib/emotionalOS/pacing/usePacingEngine";
-import { useFeedEngine } from "@/lib/emotionalOS/feed/useFeedEngine";
+// --- DramaNextDoor Engines (your existing real files) ---
+import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
+import { useEmotionalSafetyLayer } from "@/lib/dramanextdoor/useEmotionalSafetyLayer";
+import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
+import { useRitualEngine } from "@/lib/dramanextdoor/useRitualEngine";
+import { useCanonicalization } from "@/lib/dramanextdoor/useCanonicalization";
+import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine";
+
+// --- New Reaction Engine we generated ---
+import { useReactionEngine } from "@/lib/dramanextdoor/useReactionEngine";
 
 export default function Start() {
-  // Core emotional context
+  // Emotional OS base state
   const ctx = useEmotionalContext();
 
-  // Engines
-  const world = useWorldEngine();
-  const safety = useSafetyEngine();
+  // DramaNextDoor engines
+  const world = useWorldTransition();
+  const safety = useEmotionalSafetyLayer();
   const identity = useIdentityContinuity();
-  const reactions = useReactionEngine();
   const rituals = useRitualEngine();
-  const history = useHistoryEngine();
-  const pacing = usePacingEngine();
-  const feed = useFeedEngine();
+  const canonical = useCanonicalization();
+  const notifications = useNotificationEngine();
+  const reactions = useReactionEngine();
 
-  // --- 1. Adaptation Engine ---
+  // --- Adaptation Engine ---
   const adaptation = useAdaptationEngine({
     mood: ctx.mood,
     tension: ctx.tension,
-    identityDrift: identity.drift,
-    worldSwitchCount: world.switchCount,
-    volatility: safety.volatility,
+    identityDrift: identity.drift ?? 0,
+    worldSwitchCount: world.isTransitioning ? 1 : 0,
+    volatility: safety.volatility ?? 0,
     reactions: reactions.totals,
-    viewHistory: history.items,
-    ritualsCompleted: rituals.completed.length,
-    safetyEvents: safety.events,
+    viewHistory: [], // you can wire this later
+    ritualsCompleted: rituals.completed?.length ?? 0,
+    safetyEvents: safety.events ?? [],
   });
 
-  // --- 2. Continuity+ Engine ---
+  // --- Continuity+ Engine ---
   const continuity = useContinuityEngine({
     mood: ctx.mood,
     tension: ctx.tension,
-    worldName: world.current?.name ?? "default",
+    worldName: "DramaNextDoor",
     reactionSignature: reactions.signature,
-    volatility: safety.volatility,
+    volatility: safety.volatility ?? 0,
   });
 
-  // --- 3. Intent Engine ---
+  // --- Intent Engine ---
   const intent = useIntentEngine({
     chaosAffinity: adaptation?.metrics?.chaosAffinity ?? 0,
     comfortSeeking: adaptation?.metrics?.comfortSeeking ?? 0,
-    volatility: safety.volatility,
+    volatility: safety.volatility ?? 0,
     emotionalSlope: adaptation?.metrics?.emotionalSlope ?? 0,
     worldStability: adaptation?.metrics?.worldStability ?? 1,
     reactionSignature: reactions.signature,
@@ -70,15 +72,19 @@ export default function Start() {
   useEffect(() => {
     if (!intent) return;
 
-    feed.setBias(intent.projection.feedBias);
-    world.setVolatilityBias(intent.projection.worldBias);
-    pacing.set(intent.projection.pacing);
-    safety.setSensitivity(intent.projection.safetySensitivity);
+    // Safety sensitivity
+    safety.setSensitivity?.(intent.projection.safetySensitivity);
 
+    // Ritual recommendations
     if (intent.projection.ritualRecommendation) {
       rituals.recommend("stabilize");
     }
-  }, [intent, feed, world, pacing, safety, rituals]);
+
+    // Notifications (optional)
+    if (intent.intent.category === "chaos") {
+      notifications.push("System detecting rising chaos intent.");
+    }
+  }, [intent, safety, rituals, notifications]);
 
   return (
     <div
@@ -93,7 +99,7 @@ export default function Start() {
 
       <p>Mood: {ctx.mood}</p>
       <p>Tension: {ctx.tension}</p>
-      <p>World: {world.current?.name}</p>
+      <p>World Transitioning: {world.isTransitioning ? "yes" : "no"}</p>
       <p>Volatility: {safety.volatility}</p>
 
       {intent && (
