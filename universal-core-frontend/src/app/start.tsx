@@ -18,9 +18,8 @@ import { useHistoryEngine } from "@/lib/emotionalOS/history/useHistoryEngine";
 import { usePacingEngine } from "@/lib/emotionalOS/pacing/usePacingEngine";
 import { useFeedEngine } from "@/lib/emotionalOS/feed/useFeedEngine";
 
-// --- UI Root ---
 export default function Start() {
-  // Core emotional context (mood, tension, etc.)
+  // Core emotional context
   const ctx = useEmotionalContext();
 
   // Engines
@@ -33,7 +32,7 @@ export default function Start() {
   const pacing = usePacingEngine();
   const feed = useFeedEngine();
 
-  // --- 1. Adaptation Engine (Pillar 6) ---
+  // --- 1. Adaptation Engine ---
   const adaptation = useAdaptationEngine({
     mood: ctx.mood,
     tension: ctx.tension,
@@ -46,7 +45,7 @@ export default function Start() {
     safetyEvents: safety.events,
   });
 
-  // --- 2. Continuity+ Engine (Pillar 7) ---
+  // --- 2. Continuity+ Engine ---
   const continuity = useContinuityEngine({
     mood: ctx.mood,
     tension: ctx.tension,
@@ -55,13 +54,13 @@ export default function Start() {
     volatility: safety.volatility,
   });
 
-  // --- 3. Intent Engine (Pillar 8) ---
+  // --- 3. Intent Engine ---
   const intent = useIntentEngine({
-    chaosAffinity: adaptation?.metrics?.chaosAffinity,
-    comfortSeeking: adaptation?.metrics?.comfortSeeking,
+    chaosAffinity: adaptation?.metrics?.chaosAffinity ?? 0,
+    comfortSeeking: adaptation?.metrics?.comfortSeeking ?? 0,
     volatility: safety.volatility,
-    emotionalSlope: adaptation?.metrics?.emotionalSlope,
-    worldStability: adaptation?.metrics?.worldStability,
+    emotionalSlope: adaptation?.metrics?.emotionalSlope ?? 0,
+    worldStability: adaptation?.metrics?.worldStability ?? 1,
     reactionSignature: reactions.signature,
     continuityArcs: continuity?.arcs ?? [],
     adaptationOutputs: adaptation?.outputs ?? {},
@@ -71,27 +70,39 @@ export default function Start() {
   useEffect(() => {
     if (!intent) return;
 
-    // Feed bias (chaos / comfort / neutral)
     feed.setBias(intent.projection.feedBias);
-
-    // World volatility bias
     world.setVolatilityBias(intent.projection.worldBias);
-
-    // Emotional pacing
     pacing.set(intent.projection.pacing);
-
-    // Safety sensitivity
     safety.setSensitivity(intent.projection.safetySensitivity);
 
-    // Ritual recommendation
     if (intent.projection.ritualRecommendation) {
       rituals.recommend("stabilize");
     }
-  }, [intent]);
+  }, [intent, feed, world, pacing, safety, rituals]);
 
   return (
-    <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
-      {/* Your app UI goes here */}
+    <div
+      style={{
+        padding: "2rem",
+        color: "#fff",
+        background: "#000",
+        minHeight: "100vh",
+      }}
+    >
+      <h1>DramaNextDoor Emotional OS</h1>
+
+      <p>Mood: {ctx.mood}</p>
+      <p>Tension: {ctx.tension}</p>
+      <p>World: {world.current?.name}</p>
+      <p>Volatility: {safety.volatility}</p>
+
+      {intent && (
+        <div style={{ marginTop: "2rem" }}>
+          <h2>Intent</h2>
+          <p>Category: {intent.intent.category}</p>
+          <p>Confidence: {intent.intent.confidence}</p>
+        </div>
+      )}
     </div>
   );
 }
