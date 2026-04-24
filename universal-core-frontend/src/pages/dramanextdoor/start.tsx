@@ -1,402 +1,108 @@
 "use client";
 
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-import { useMood } from "@/hooks/useMood";
-import { useEmotionalIdentity } from "@/hooks/useEmotionalIdentity";
-import { useEmotionalPhysics } from "@/hooks/useEmotionalPhysics";
-import { useEmotionalMultiverse } from "@/hooks/useEmotionalMultiverse";
-import { useCrossApp } from "@/hooks/useCrossApp";
+// --- Emotional OS Engines ---
+import { useAdaptationEngine } from "@/lib/emotionalOS/adaptation/useAdaptationEngine";
+import { useContinuityEngine } from "@/lib/emotionalOS/continuity/useContinuityEngine";
+import { useIntentEngine } from "@/lib/emotionalOS/intent/useIntentEngine";
 
-import { runScene } from "@/lib/dramanextdoor/runScene";
-import { useRitualEngine } from "@/lib/dramanextdoor/useRitualEngine";
-import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine";
-import { diffWorlds } from "@/lib/dramanextdoor/worldDiff";
-import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
-import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
-import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
-import { useCanonicalization } from "@/lib/dramanextdoor/useCanonicalization";
+// --- Core OS Context Providers ---
+import { useEmotionalContext } from "@/lib/emotionalOS/context/EmotionalContext";
+import { useWorldEngine } from "@/lib/emotionalOS/worlds/useWorldEngine";
+import { useSafetyEngine } from "@/lib/emotionalOS/safety/useSafetyEngine";
+import { useIdentityContinuity } from "@/lib/emotionalOS/identity/useIdentityContinuity";
+import { useReactionEngine } from "@/lib/emotionalOS/reactions/useReactionEngine";
+import { useRitualEngine } from "@/lib/emotionalOS/rituals/useRitualEngine";
+import { useHistoryEngine } from "@/lib/emotionalOS/history/useHistoryEngine";
+import { usePacingEngine } from "@/lib/emotionalOS/pacing/usePacingEngine";
+import { useFeedEngine } from "@/lib/emotionalOS/feed/useFeedEngine";
 
-// ⭐ SAFETY LAYER IMPORTS
-import { useEmotionalSafetyLayer } from "@/lib/dramanextdoor/useEmotionalSafetyLayer";
-import { SafetyPanel } from "@/components/dramanextdoor/SafetyPanel";
-import { SafetyDashboard } from "@/components/dramanextdoor/SafetyDashboard";
-
-import { SceneViewer } from "@/components/dramanextdoor/SceneViewer";
-import { WorldSwitcher } from "@/components/dramanextdoor/WorldSwitcher";
-import { RitualPanel } from "@/components/dramanextdoor/RitualPanel";
-import { NotificationPanel } from "@/components/dramanextdoor/NotificationPanel";
-import { IdentityContinuityPanel } from "@/components/dramanextdoor/IdentityContinuityPanel";
-import { CanonicalTimelinePanel } from "@/components/dramanextdoor/CanonicalTimelinePanel";
-import { WorldDiffMergePanel } from "@/components/dramanextdoor/WorldDiffMergePanel";
-import { EmotionalEngineStatus } from "@/components/dramanextdoor/EmotionalEngineStatus";
-
-export default function DramaNextDoorStart() {
-  const router = useRouter();
-  const token = router.query.token as string | undefined;
-
-  // Emotional OS hooks
-  const mood = useMood();
-  const identity = useEmotionalIdentity();
-  const physics = useEmotionalPhysics();
-  const multiverse = useEmotionalMultiverse();
-  const crossApp = useCrossApp();
+export default function Start() {
+  // Core emotional context
+  const ctx = useEmotionalContext();
 
   // Engines
-  const ritualEngine = useRitualEngine();
-  const notificationEngine = useNotificationEngine();
-  const worldTransition = useWorldTransition();
-  const identityContinuity = useIdentityContinuity();
-  const canonicalization = useCanonicalization();
+  const world = useWorldEngine();
+  const safety = useSafetyEngine();
+  const identity = useIdentityContinuity();
+  const reactions = useReactionEngine();
+  const rituals = useRitualEngine();
+  const history = useHistoryEngine();
+  const pacing = usePacingEngine();
+  const feed = useFeedEngine();
 
-  // ⭐ NEW: track world switch count for safety layer
-  const [worldSwitchCount, setWorldSwitchCount] = useState(0);
-
-  // Scene state
-  const [currentSceneId, setCurrentSceneId] = useState("intro");
-  const [currentBeatIndex, setCurrentBeatIndex] = useState(0);
-  const [sceneOutput, setSceneOutput] = useState<any>(null);
-
-  // World diff/merge state
-  const [worldA, setWorldA] = useState<string | null>(null);
-  const [worldB, setWorldB] = useState<string | null>(null);
-  const [mergeName, setMergeName] = useState("");
-  const [diffResult, setDiffResult] = useState<any>(null);
-
-  // World switching state
-  const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
-
-  // Emotional context
-  const ctx = {
-    mood: mood?.value ?? 50,
-    tension: physics?.tension ?? 0,
-    identityState: identity?.state ?? "stable",
-    worldName: multiverse?.currentWorld?.name ?? "default",
-  };
-
-  // Scene engine
-  useEffect(() => {
-    const result = runScene(currentSceneId, ctx);
-    setSceneOutput(result);
-    setCurrentBeatIndex(0);
-
-    // Canonicalize on scene change
-    canonicalization.record(ctx, identity, multiverse.currentWorld);
-
-    if (result?.crossApp) {
-      crossApp.route(result.crossApp.appId, result.crossApp.payload || {});
-    }
-
-    if (ctx.tension > 0.6) {
-      notificationEngine.pushNotification(
-        "Tension Rising",
-        "Your emotional tension is increasing. Scenes may escalate.",
-        undefined,
-        +0.05
-      );
-    }
-
-    if (ctx.mood < 25) {
-      notificationEngine.pushNotification(
-        "Low Mood Detected",
-        "Your mood is dipping. Consider a grounding ritual.",
-        +2,
-        undefined
-      );
-    }
-  }, [currentSceneId]);
-
-  if (!sceneOutput) {
-    return <div style={{ padding: "2rem", color: "#fff" }}>Loading scene…</div>;
-  }
-
-  const { scene, nextSceneId, updatedCtx } = sceneOutput;
-
-  function handleNextBeat() {
-    const beats = scene.beats || [];
-    if (currentBeatIndex < beats.length - 1) {
-      setCurrentBeatIndex((i) => i + 1);
-    } else if (nextSceneId) {
-      setCurrentSceneId(nextSceneId);
-    }
-  }
-
-  function handleComputeDiff() {
-    const a = multiverse.worlds.find((w) => w.id === worldA);
-    const b = multiverse.worlds.find((w) => w.id === worldB);
-    setDiffResult(diffWorlds(a, b));
-  }
-
-  function handleMergeWorlds() {
-    const a = multiverse.worlds.find((w) => w.id === worldA);
-    const b = multiverse.worlds.find((w) => w.id === worldB);
-    const merged = mergeWorlds(a, b, mergeName || "Merged World");
-    multiverse.addWorld(merged);
-  }
-
-  function handleSwitchWorld() {
-    if (!selectedWorldId) return;
-
-    const target = multiverse.worlds.find((w) => w.id === selectedWorldId);
-    if (!target) return;
-
-    identityContinuity.evaluate(target.id, identity);
-    canonicalization.record(ctx, identity, multiverse.currentWorld);
-
-    // ⭐ increment world switch count for safety layer
-    setWorldSwitchCount((c) => c + 1);
-
-    worldTransition.startTransition(() => {
-      multiverse.setWorld(target.id);
-      canonicalization.record(ctx, identity, target);
-    });
-  }
-
-  // ⭐ SAFETY LAYER HOOK
-  const safety = useEmotionalSafetyLayer({
+  // --- 1. Adaptation Engine ---
+  const adaptation = useAdaptationEngine({
     mood: ctx.mood,
     tension: ctx.tension,
-    identityReport: identityContinuity.report,
-    canonicalHistory: canonicalization.history,
-    worldSwitchCount,
-    pushNotification: notificationEngine.pushNotification,
+    identityDrift: identity.drift,
+    worldSwitchCount: world.switchCount,
+    volatility: safety.volatility,
+    reactions: reactions.totals,
+    viewHistory: history.items,
+    ritualsCompleted: rituals.completed.length,
+    safetyEvents: safety.events,
   });
+
+  // --- 2. Continuity+ Engine ---
+  const continuity = useContinuityEngine({
+    mood: ctx.mood,
+    tension: ctx.tension,
+    worldName: world.current?.name ?? "default",
+    reactionSignature: reactions.signature,
+    volatility: safety.volatility,
+  });
+
+  // --- 3. Intent Engine ---
+  const intent = useIntentEngine({
+    chaosAffinity: adaptation?.metrics?.chaosAffinity ?? 0,
+    comfortSeeking: adaptation?.metrics?.comfortSeeking ?? 0,
+    volatility: safety.volatility,
+    emotionalSlope: adaptation?.metrics?.emotionalSlope ?? 0,
+    worldStability: adaptation?.metrics?.worldStability ?? 1,
+    reactionSignature: reactions.signature,
+    continuityArcs: continuity?.arcs ?? [],
+    adaptationOutputs: adaptation?.outputs ?? {},
+  });
+
+  // --- OS-Level Behavior Modulation ---
+  useEffect(() => {
+    if (!intent) return;
+
+    feed.setBias(intent.projection.feedBias);
+    world.setVolatilityBias(intent.projection.worldBias);
+    pacing.set(intent.projection.pacing);
+    safety.setSensitivity(intent.projection.safetySensitivity);
+
+    if (intent.projection.ritualRecommendation) {
+      rituals.recommend("stabilize");
+    }
+  }, [intent, feed, world, pacing, safety, rituals]);
 
   return (
     <div
       style={{
         padding: "2rem",
         color: "#fff",
-  "use client";
-
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-
-import { useMood } from "@/hooks/useMood";
-import { useEmotionalIdentity } from "@/hooks/useEmotionalIdentity";
-import { useEmotionalPhysics } from "@/hooks/useEmotionalPhysics";
-import { useEmotionalMultiverse } from "@/hooks/useEmotionalMultiverse";
-import { useCrossApp } from "@/hooks/useCrossApp";
-
-import { runScene } from "@/lib/dramanextdoor/runScene";
-import { useRitualEngine } from "@/lib/dramanextdoor/useRitualEngine";
-import { useNotificationEngine } from "@/lib/dramanextdoor/useNotificationEngine";
-import { diffWorlds } from "@/lib/dramanextdoor/worldDiff";
-import { mergeWorlds } from "@/lib/dramanextdoor/worldMerge";
-import { useWorldTransition } from "@/lib/dramanextdoor/useWorldTransition";
-import { useIdentityContinuity } from "@/lib/dramanextdoor/useIdentityContinuity";
-import { useCanonicalization } from "@/lib/dramanextdoor/useCanonicalization";
-
-// ⭐ SAFETY LAYER IMPORTS
-import { useEmotionalSafetyLayer } from "@/lib/dramanextdoor/useEmotionalSafetyLayer";
-import { SafetyPanel } from "@/components/dramanextdoor/SafetyPanel";
-import { SafetyDashboard } from "@/components/dramanextdoor/SafetyDashboard";
-
-import { SceneViewer } from "@/components/dramanextdoor/SceneViewer";
-import { WorldSwitcher } from "@/components/dramanextdoor/WorldSwitcher";
-import { RitualPanel } from "@/components/dramanextdoor/RitualPanel";
-import { NotificationPanel } from "@/components/dramanextdoor/NotificationPanel";
-import { IdentityContinuityPanel } from "@/components/dramanextdoor/IdentityContinuityPanel";
-import { CanonicalTimelinePanel } from "@/components/dramanextdoor/CanonicalTimelinePanel";
-import { WorldDiffMergePanel } from "@/components/dramanextdoor/WorldDiffMergePanel";
-import { EmotionalEngineStatus } from "@/components/dramanextdoor/EmotionalEngineStatus";
-
-export default function DramaNextDoorStart() {
-  const router = useRouter();
-  const token = router.query.token as string | undefined;
-
-  // Emotional OS hooks
-  const mood = useMood();
-  const identity = useEmotionalIdentity();
-  const physics = useEmotionalPhysics();
-  const multiverse = useEmotionalMultiverse();
-  const crossApp = useCrossApp();
-
-  // Engines
-  const ritualEngine = useRitualEngine();
-  const notificationEngine = useNotificationEngine();
-  const worldTransition = useWorldTransition();
-  const identityContinuity = useIdentityContinuity();
-  const canonicalization = useCanonicalization();
-
-  // ⭐ NEW: track world switch count for safety layer
-  const [worldSwitchCount, setWorldSwitchCount] = useState(0);
-
-  // Scene state
-  const [currentSceneId, setCurrentSceneId] = useState("intro");
-  const [currentBeatIndex, setCurrentBeatIndex] = useState(0);
-  const [sceneOutput, setSceneOutput] = useState<any>(null);
-
-  // World diff/merge state
-  const [worldA, setWorldA] = useState<string | null>(null);
-  const [worldB, setWorldB] = useState<string | null>(null);
-  const [mergeName, setMergeName] = useState("");
-  const [diffResult, setDiffResult] = useState<any>(null);
-
-  // World switching state
-  const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
-
-  // Emotional context
-  const ctx = {
-    mood: mood?.value ?? 50,
-    tension: physics?.tension ?? 0,
-    identityState: identity?.state ?? "stable",
-    worldName: multiverse?.currentWorld?.name ?? "default",
-  };
-
-  // Scene engine
-  useEffect(() => {
-    const result = runScene(currentSceneId, ctx);
-    setSceneOutput(result);
-    setCurrentBeatIndex(0);
-
-    // Canonicalize on scene change
-    canonicalization.record(ctx, identity, multiverse.currentWorld);
-
-    if (result?.crossApp) {
-      crossApp.route(result.crossApp.appId, result.crossApp.payload || {});
-    }
-
-    if (ctx.tension > 0.6) {
-      notificationEngine.pushNotification(
-        "Tension Rising",
-        "Your emotional tension is increasing. Scenes may escalate.",
-        undefined,
-        +0.05
-      );
-    }
-
-    if (ctx.mood < 25) {
-      notificationEngine.pushNotification(
-        "Low Mood Detected",
-        "Your mood is dipping. Consider a grounding ritual.",
-        +2,
-        undefined
-      );
-    }
-  }, [currentSceneId]);
-
-  if (!sceneOutput) {
-    return <div style={{ padding: "2rem", color: "#fff" }}>Loading scene…</div>;
-  }
-
-  const { scene, nextSceneId, updatedCtx } = sceneOutput;
-
-  function handleNextBeat() {
-    const beats = scene.beats || [];
-    if (currentBeatIndex < beats.length - 1) {
-      setCurrentBeatIndex((i) => i + 1);
-    } else if (nextSceneId) {
-      setCurrentSceneId(nextSceneId);
-    }
-  }
-
-  function handleComputeDiff() {
-    const a = multiverse.worlds.find((w) => w.id === worldA);
-    const b = multiverse.worlds.find((w) => w.id === worldB);
-    setDiffResult(diffWorlds(a, b));
-  }
-
-  function handleMergeWorlds() {
-    const a = multiverse.worlds.find((w) => w.id === worldA);
-    const b = multiverse.worlds.find((w) => w.id === worldB);
-    const merged = mergeWorlds(a, b, mergeName || "Merged World");
-    multiverse.addWorld(merged);
-  }
-
-  function handleSwitchWorld() {
-    if (!selectedWorldId) return;
-
-    const target = multiverse.worlds.find((w) => w.id === selectedWorldId);
-    if (!target) return;
-
-    identityContinuity.evaluate(target.id, identity);
-    canonicalization.record(ctx, identity, multiverse.currentWorld);
-
-    // ⭐ increment world switch count for safety layer
-    setWorldSwitchCount((c) => c + 1);
-
-    worldTransition.startTransition(() => {
-      multiverse.setWorld(target.id);
-      canonicalization.record(ctx, identity, target);
-    });
-  }
-
-  // ⭐ SAFETY LAYER HOOK
-  const safety = useEmotionalSafetyLayer({
-    mood: ctx.mood,
-    tension: ctx.tension,
-    identityReport: identityContinuity.report,
-    canonicalHistory: canonicalization.history,
-    worldSwitchCount,
-    pushNotification: notificationEngine.pushNotification,
-  });
-
-  return (
-    <div
-      style={{
-        padding: "2rem",
-        color: "#fff",
-        background: "#050509",
+        background: "#000",
         minHeight: "100vh",
-        position: "relative",
       }}
     >
-      <SceneViewer
-        scene={scene}
-        currentBeatIndex={currentBeatIndex}
-        onNextBeat={handleNextBeat}
-        token={token ?? null}
-      />
+      <h1>DramaNextDoor Emotional OS</h1>
 
-      <WorldSwitcher
-        worlds={multiverse.worlds}
-        selectedWorldId={selectedWorldId}
-        onSelectWorld={setSelectedWorldId}
-        onSwitchWorld={handleSwitchWorld}
-        isTransitioning={worldTransition.isTransitioning}
-      />
+      <p>Mood: {ctx.mood}</p>
+      <p>Tension: {ctx.tension}</p>
+      <p>World: {world.current?.name}</p>
+      <p>Volatility: {safety.volatility}</p>
 
-      <RitualPanel
-        rituals={ritualEngine.rituals}
-        completed={ritualEngine.completed}
-        onComplete={ritualEngine.completeRitual}
-      />
-
-      <NotificationPanel notifications={notificationEngine.notifications} />
-
-      <IdentityContinuityPanel report={identityContinuity.report} />
-
-      <CanonicalTimelinePanel history={canonicalization.history} />
-
-      {/* ⭐ SAFETY DASHBOARD */}
-      <SafetyDashboard
-        mood={ctx.mood}
-        tension={ctx.tension}
-        identityReport={identityContinuity.report}
-        canonicalHistory={canonicalization.history}
-        worldSwitchCount={worldSwitchCount}
-        safetyEvents={safety.events}
-      />
-
-      {/* ⭐ SAFETY PANEL (event log) */}
-      <SafetyPanel events={safety.events} />
-
-      <WorldDiffMergePanel
-        worlds={multiverse.worlds}
-        worldA={worldA}
-        worldB={worldB}
-        onSelectWorldA={setWorldA}
-        onSelectWorldB={setWorldB}
-        onDiff={handleComputeDiff}
-        diffResult={diffResult}
-        mergeName={mergeName}
-        onChangeMergeName={setMergeName}
-        onMerge={handleMergeWorlds}
-      />
-
-      <EmotionalEngineStatus updatedCtx={updatedCtx} />
+      {intent && (
+        <div style={{ marginTop: "2rem" }}>
+          <h2>Intent</h2>
+          <p>Category: {intent.intent.category}</p>
+          <p>Confidence: {intent.intent.confidence}</p>
+        </div>
+      )}
     </div>
   );
 }
