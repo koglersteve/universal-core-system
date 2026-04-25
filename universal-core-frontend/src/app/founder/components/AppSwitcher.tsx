@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 
-const trackFounder = makeAppTracker("founder");
 
 const apps = [
   { name: "HOA Meme", route: "/hoa-meme", id: "hoa-meme" },
@@ -17,7 +16,6 @@ export default function AppSwitcher() {
   const router = useRouter();
 
   const openApp = (app: { id: string; route: string }) => {
-    trackFounder("app.switch", {
       payload: {
         targetApp: app.id
       }
