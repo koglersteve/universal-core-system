@@ -1,26 +1,28 @@
-import { NextResponse } from "next/server";
-
-const CATEGORIES = [
-  { id: "general", name: "General" },
-  { id: "math", name: "Math" },
-  { id: "tech", name: "Tech" },
-  { id: "animals", name: "Animals" }
-];
+import { NextRequest, NextResponse } from "next/server";
+import { ENDPOINTS } from "@/lib/api/endpoints";
 
 export async function GET(
-  req: Request,
+  request: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
 
-  const category = CATEGORIES.find((c) => c.id === id);
+  try {
+    const res = await fetch(ENDPOINTS.CATEGORY_BY_ID(id), {
+      method: "GET",
+      cache: "no-store",
+    });
 
-  if (!category) {
+    if (!res.ok) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    }
+
+    const data = await res.json();
+    return NextResponse.json(data);
+  } catch (err) {
     return NextResponse.json(
-      { error: "Category not found" },
-      { status: 404 }
+      { error: "Failed to fetch category" },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json(category);
 }
