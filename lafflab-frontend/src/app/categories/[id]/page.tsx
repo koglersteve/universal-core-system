@@ -18,7 +18,7 @@ export default function CategoryDetailPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`/api/categories/${id}`);
+        const res = await fetch(`/api/categories/${id}`, { cache: "no-store" });
         const data = await res.json();
         setCategory(data);
       } catch (err) {
