@@ -21,7 +21,6 @@ export const scenes: Record<string, Scene> = {
         id: "t2",
         condition: (ctx) => ctx.mood < 25,
         targetScene: "comicRelief",
-        crossApp: { appId: "lafflab", payload: { reason: "low_mood" } },
       },
     ],
   },

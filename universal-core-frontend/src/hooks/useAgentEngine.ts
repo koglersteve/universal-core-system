@@ -40,7 +40,6 @@ export function useAgentEngine() {
           title: "Trickster Suggestion",
           message: "Want to shake things up?",
           mood: dominantMood,
-          app: "lafflab",
         });
       }
 

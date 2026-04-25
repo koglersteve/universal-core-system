@@ -24,16 +24,6 @@ export const plugins: PluginMeta[] = [
     enabled: true
   },
   {
-    id: "lafflab",
-    name: "LAFFlab",
-    path: "/lafflab",
-    icon: "😂",
-    category: "meme",
-    description: "Generate humor, memes, and comedic emotional reactions.",
-    order: 2,
-    enabled: true
-  },
-  {
     id: "mememydog",
     name: "MemeMyDog",
     path: "/mememydog",

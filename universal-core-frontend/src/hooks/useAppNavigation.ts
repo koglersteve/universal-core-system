@@ -24,7 +24,6 @@ export function useAppNavigation() {
 
     // App-specific helpers (optional)
     openMoodCheck: () => openApp("moodcheck"),
-    openLaffLab: () => openApp("lafflab"),
     openDramaNextDoor: () => openApp("dramanextdoor"),
     openHoaMeme: () => openApp("hoa-meme"),
   };

@@ -3,7 +3,6 @@
 // All first-class Emotional OS apps + system surfaces
 export type AppId =
   | "moodcheck"
-  | "lafflab"
   | "mememydog"
   | "mememycat"
   | "idlyily"

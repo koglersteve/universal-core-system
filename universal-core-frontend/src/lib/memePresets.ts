@@ -7,7 +7,6 @@ export type MemePresetKey =
   | "mememydog"
   | "mememycat"
   | "dramanextdoor"
-  | "lafflab"
   | "generic";
 
 export function getPresetLayers(
@@ -133,19 +132,6 @@ export function getPresetLayers(
       ...stickerLayers
     ];
   }
-
-  if (preset === "lafflab") {
-    return [
-      {
-        id: baseId(),
-        type: "image",
-        content: "/images/lafflab-default.jpg",
-        x: 0,
-        y: 0,
-        width: 400,
-        height: 400,
-        rotation: 0
-      },
       {
         id: baseId(),
         type: "text",

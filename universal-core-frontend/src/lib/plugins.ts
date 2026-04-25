@@ -20,14 +20,6 @@ export const plugins: PluginMeta[] = [
     description: "Scan, detect, and route emotional state across apps."
   },
   {
-    id: "lafflab",
-    name: "LAFFlab",
-    path: "/lafflab",
-    icon: "😂",
-    category: "humor",
-    description: "Short‑form comedy, chaotic energy, and meme reactions."
-  },
-  {
     id: "mememydog",
     name: "MemeMyDog",
     path: "/mememydog",
@@ -102,5 +94,4 @@ export const APP_IDS = {
   mememycat: "mememycat",
   dramanextdoor: "dramanextdoor",
   idlyily: "idlyily",
-  lafflab: "lafflab",
 };

@@ -53,11 +53,6 @@ export function MoodCheckResult({ mood }: { mood: string }) {
     },
 
     // Stress / tension
-    stressed: {
-      app: "lafflab",
-      label: "A calming laugh might help",
-      params: { mood: "stressed" }
-    },
     angry: {
       app: "dramanextdoor",
       label: "Let’s dramatize this safely",

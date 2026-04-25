@@ -24,7 +24,7 @@ export function EmotionalNotificationCenter() {
   // Mood → app mapping
   const appSuggestions: Record<string, string> = {
     sad: "mememydog",
-    stressed: "lafflab",
+    stressed: "home",
     angry: "dramanextdoor",
     tired: "mememycat",
     excited: "idlyily"

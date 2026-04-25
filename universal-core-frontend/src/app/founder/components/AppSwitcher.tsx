@@ -10,7 +10,6 @@ const apps = [
   { name: "DramaNextDoor", route: "/dramanextdoor", id: "dramanextdoor" },
   { name: "MemeMyDog", route: "/mememydog", id: "mememydog" },
   { name: "MemeMyCat", route: "/mememycat", id: "mememycat" },
-  { name: "LaffLab", route: "/lafflab", id: "lafflab" },
   { name: "MoodCheck", route: "/moodcheck", id: "moodcheck" }
 ];
 

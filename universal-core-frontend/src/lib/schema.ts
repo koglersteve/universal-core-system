@@ -6,7 +6,6 @@ export type EmotionalAppId =
   | "hoa-meme"
   | "mememydog"
   | "mememycat"
-  | "lafflab"
   | "moodcheck";
 
 export type EmotionalEvent = {
