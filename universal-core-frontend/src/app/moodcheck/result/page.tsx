@@ -3,7 +3,6 @@
 import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
-import { createStabilityTracker } from "@/lib/analytics/stability";
 import { MoodCheckResult } from "@/plugins/moodcheck";
 
 export const dynamic = "force-dynamic";

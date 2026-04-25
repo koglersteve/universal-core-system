@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { createStabilityTracker } from "@/lib/analytics/stability";
 
 export default function MemeMyDogLayout({ children }) {
   const stability = createStabilityTracker("mememydog");

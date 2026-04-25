@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { createStabilityTracker } from "@/lib/analytics/stability";
 import { MoodCheckHome } from "@/plugins/moodcheck";
 
 export const dynamic = "force-dynamic";
