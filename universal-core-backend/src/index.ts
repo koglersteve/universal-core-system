@@ -44,6 +44,7 @@ registerIDLYILYRoutes(app);
 registerLaffLabRoutes(app);
 registerMemeMyCatRoutes(app);
 registerMemeMyDogRoutes(app);
+registerHistoryRoutes(app);
 
 // --- Optional Root Route ---
 app.get("/", (c) =>

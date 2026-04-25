@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
-import { getHistory } from "../store";
+import { getHistory } from "@/app/history/store";
 
 export async function GET() {
-  return NextResponse.json(
-    getHistory().map((id) => ({
-      id,
-      text: `History joke placeholder for ${id}`,
-      category: "general",
-    }))
-  );
+  try {
+    const history = await getHistory(); // fetch from backend
+    return NextResponse.json(history);
+  } catch (err) {
+    console.error("History fetch failed:", err);
+    return NextResponse.json(
+      { error: "Failed to load history" },
+      { status: 500 }
+    );
+  }
 }
+
