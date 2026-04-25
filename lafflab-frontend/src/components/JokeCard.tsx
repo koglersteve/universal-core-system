@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useHistoryStore } from "@/store/historyStore";
 
-export function JokeCard({ joke }: { joke: { id: string; text: string } }) {
-  const { history } = useHistoryStore();
-  const viewed = history.includes(joke.id);
-
+export function JokeCard({
+  joke,
+  viewed = false,
+}: {
+  joke: { id: string; text: string };
+  viewed?: boolean;
+}) {
   return (
     <Link
       href={`/joke/${joke.id}`}
