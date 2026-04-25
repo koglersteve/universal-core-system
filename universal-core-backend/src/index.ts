@@ -14,6 +14,7 @@ import { registerIDLYILYRoutes } from "./routes/idlyily.routes";
 import { registerLaffLabRoutes } from "./routes/lafflab.routes";
 import { registerMemeMyCatRoutes } from "./routes/mememycat.routes";
 import { registerMemeMyDogRoutes } from "./routes/mememydog.routes";
+import { registerHistoryRoutes } from "./routes/history.routes";   // ✅ FIXED IMPORT
 
 const app = new Hono();
 
@@ -44,7 +45,7 @@ registerIDLYILYRoutes(app);
 registerLaffLabRoutes(app);
 registerMemeMyCatRoutes(app);
 registerMemeMyDogRoutes(app);
-registerHistoryRoutes(app);
+registerHistoryRoutes(app);   // ✅ FIXED REGISTRATION
 
 // --- Optional Root Route ---
 app.get("/", (c) =>
@@ -62,6 +63,5 @@ const port = Number(process.env.PORT) || 8080;
 serve({ fetch: app.fetch, port });
 
 console.log(`Universal Core Backend running on port ${port}`);
-
 
 
