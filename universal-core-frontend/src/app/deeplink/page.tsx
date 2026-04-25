@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 function DeeplinkPageInner() {
   const params = useSearchParams();
-  const stability = createStabilityTracker("deeplink");
 
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;

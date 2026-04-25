@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 function HomePageInner() {
   const params = useSearchParams();
-  const stability = createStabilityTracker("home");
 
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;

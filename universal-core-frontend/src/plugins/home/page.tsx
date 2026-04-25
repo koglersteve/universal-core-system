@@ -3,13 +3,11 @@
 import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeEmotionalState } from "@/lib/emotionalExportToken";
-import { createStabilityTracker } from "@/lib/analytics/stability";
 
 export const dynamic = "force-dynamic";
 
 function HomePageInner() {
   const params = useSearchParams();
-  const stability = createStabilityTracker("home");
 
   const mood = params.get("mood") || undefined;
   const world = params.get("world") || undefined;

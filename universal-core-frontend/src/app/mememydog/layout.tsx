@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 export default function MemeMyDogLayout({ children }) {
-  const stability = createStabilityTracker("mememydog");
 
   useEffect(() => {
     let last = performance.now();

@@ -9,7 +9,6 @@ export const dynamic = "force-dynamic";
 
 function MoodCheckResultInner() {
   const params = useSearchParams();
-  const stability = createStabilityTracker("moodcheck-result");
 
   // Read query params
   const mood = params.get("mood") || undefined;

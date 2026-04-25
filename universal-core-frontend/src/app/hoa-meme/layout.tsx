@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const stability = createStabilityTracker("hoa-meme");
 
   useEffect(() => {
     let last = performance.now();
