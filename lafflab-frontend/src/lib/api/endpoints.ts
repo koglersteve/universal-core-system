@@ -1,15 +1,22 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
-
 export const ENDPOINTS = {
-  RANDOM_JOKE: `${API_BASE_URL}/jokes/random`,
-  JOKE_BY_ID: (id: string) => `${API_BASE_URL}/jokes/${id}`,
-  JOKES_BY_CATEGORY: (id: string) => `${API_BASE_URL}/jokes/by-category?id=${id}`,
-  CATEGORIES: `${API_BASE_URL}/categories`,
-  CATEGORY_BY_ID: (id: string) => `${API_BASE_URL}/categories/${id}`,
-  DAILY_RITUAL: `${API_BASE_URL}/daily-ritual/generate`,
-  FAVORITES_LIST: `${API_BASE_URL}/favorites/list`,
-  FAVORITES_ADD: `${API_BASE_URL}/favorites/add`,
-  FAVORITES_REMOVE: `${API_BASE_URL}/favorites/remove`,
-  HISTORY_LIST: `${API_BASE_URL}/history/list`,
+  // Jokes
+  RANDOM_JOKE: "/api/jokes/random",
+  JOKE_BY_ID: (id: string) => `/api/jokes/${id}`,
+  JOKES_BY_CATEGORY: (id: string) => `/api/jokes/by-category/${id}`,
+
+  // Categories
+  CATEGORIES: "/api/categories",
+  CATEGORY_BY_ID: (id: string) => `/api/categories/${id}`,
+  CATEGORIES_LIST: "/api/categories", // ← REQUIRED
+
+  // Ritual
+  DAILY_RITUAL: "/api/daily-ritual",
+
+  // Favorites
+  FAVORITES_LIST: "/api/favorites",
+  FAVORITES_ADD: "/api/favorites/add",
+  FAVORITES_REMOVE: "/api/favorites/remove",
+
+  // History
+  HISTORY_LIST: "/api/history",
 };
