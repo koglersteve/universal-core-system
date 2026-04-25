@@ -1,21 +1,27 @@
-import { create } from "zustand";
+// Backend‑driven favorites module (no Zustand)
 
-interface FavoritesState {
-  favorites: string[]; // joke IDs
-  addFavorite: (id: string) => void;
-  removeFavorite: (id: string) => void;
+export async function getFavorites() {
+  const res = await fetch("/api/favorites", { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load favorites");
+  return res.json();
 }
 
-export const useFavoritesStore = create<FavoritesState>((set) => ({
-  favorites: [],
-  addFavorite: (id) =>
-    set((state) =>
-      state.favorites.includes(id)
-        ? state.favorites
-        : { favorites: [...state.favorites, id] }
-    ),
-  removeFavorite: (id) =>
-    set((state) => ({
-      favorites: state.favorites.filter((jokeId) => jokeId !== id),
-    })),
-}));
+export async function addFavorite(id: string) {
+  const res = await fetch("/api/favorites/add", {
+    method: "POST",
+    body: JSON.stringify({ id }),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error("Failed to add favorite");
+  return res.json();
+}
+
+export async function removeFavorite(id: string) {
+  const res = await fetch(`/api/favorites/remove`, {
+    method: "POST",
+    body: JSON.stringify({ id }),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error("Failed to remove favorite");
+  return res.json();
+}
