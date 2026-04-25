@@ -1,7 +1,7 @@
-import { HISTORY_LIST } from "@/lib/api/endpoints";
+import { ENDPOINTS } from "@/lib/api/endpoints";
 
 export async function getHistory() {
-  const res = await fetch(HISTORY_LIST, {
+  const res = await fetch(ENDPOINTS.HISTORY_LIST, {
     method: "GET",
     cache: "no-store",
   });
