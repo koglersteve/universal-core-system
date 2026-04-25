@@ -1,26 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
-
-const apps = [
-  { name: "HOA Meme", route: "/hoa-meme", id: "hoa-meme" },
-  { name: "IDLYILY", route: "/idlyily", id: "idlyily" },
-  { name: "DramaNextDoor", route: "/dramanextdoor", id: "dramanextdoor" },
-  { name: "MemeMyDog", route: "/mememydog", id: "mememydog" },
-  { name: "MemeMyCat", route: "/mememycat", id: "mememycat" },
-  { name: "MoodCheck", route: "/moodcheck", id: "moodcheck" }
-];
+import { plugins } from "@/lib/plugins";
 
 export default function AppSwitcher() {
   const router = useRouter();
 
   const openApp = (app: { id: string; route: string }) => {
-      payload: {
-        targetApp: app.id
-      }
-    });
-
     router.push(app.route);
   };
 
@@ -30,7 +16,7 @@ export default function AppSwitcher() {
       <p>Jump between apps instantly during demos.</p>
 
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        {apps.map(app => (
+        {plugins.map(app => (
           <button
             key={app.route}
             onClick={() => openApp(app)}
