@@ -1,7 +1,5 @@
 "use client";
 
-import { createStabilityTracker } from "@/lib/analytics/stability";
-
 export default function GlobalError({
   error,
   reset
@@ -9,11 +7,6 @@ export default function GlobalError({
   error: Error;
   reset: () => void;
 }) {
-  const stability = createStabilityTracker("dramanextdoor");
-
-  // Log crash
-  stability.crash("unhandled", error.message);
-
   return (
     <html>
       <body className="os-shell" style={{ padding: "40px" }}>
@@ -42,3 +35,4 @@ export default function GlobalError({
     </html>
   );
 }
+

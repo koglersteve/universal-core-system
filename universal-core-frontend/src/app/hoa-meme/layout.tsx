@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { createStabilityTracker } from "@/lib/analytics/stability";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const stability = createStabilityTracker("hoa-meme");

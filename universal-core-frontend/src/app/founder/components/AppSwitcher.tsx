@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { makeAppTracker } from "@/lib/analytics/client";
 
 const trackFounder = makeAppTracker("founder");
 
