@@ -4,7 +4,8 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "prisma generate && tsc",
+    "prisma:clean": "rm -rf .prisma node_modules/.prisma",
+    "build": "npm run prisma:clean && prisma generate && tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {
