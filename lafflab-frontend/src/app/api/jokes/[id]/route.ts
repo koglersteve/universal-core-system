@@ -3,9 +3,9 @@ import { getJokeByIdServer } from "@/lib/server/jokes";
 
 export async function GET(
   _req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
 
   try {
     const joke = await getJokeByIdServer(id);
