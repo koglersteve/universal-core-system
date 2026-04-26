@@ -25,6 +25,12 @@ export const LaffLabApi = {
     return res.json();
   },
 
+  async getJokes() {
+    const res = await fetch("/api/jokes", { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch jokes");
+    return res.json();
+  },
+
   async generateRitual() {
     const res = await fetch(ENDPOINTS.DAILY_RITUAL);
     if (!res.ok) throw new Error("Failed to generate ritual");

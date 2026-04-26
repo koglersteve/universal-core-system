@@ -1,25 +1,34 @@
 import { NextResponse } from "next/server";
 import { getJokesByCategoryServer } from "@/lib/server/jokes";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const categoryId = searchParams.get("id");
+export async function GET(
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
 
-  if (!categoryId) {
+  if (!id) {
     return NextResponse.json(
       { error: "Missing category id" },
       { status: 400 }
     );
   }
 
-  const jokes = await getJokesByCategoryServer(categoryId);
+  try {
+    const jokes = await getJokesByCategoryServer(id);
 
-  if (!jokes) {
+    if (!jokes || jokes.length === 0) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(jokes, { status: 200 });
+  } catch (error) {
     return NextResponse.json(
-      { error: "Category not found" },
-      { status: 404 }
+      { error: "Server error" },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json(jokes);
 }
