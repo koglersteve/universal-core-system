@@ -1,31 +1,27 @@
-// src/hooks/useJokes.ts
-"use client";
+""use client";
 
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api/LaffLabApi";
-import { useJokeStore } from "@/store/jokeStore";
 
 export function useJokes() {
-  const { jokes, setJokes } = useJokeStore();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [jokes, setJokes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  async function loadRandom() {
-    try {
-      setLoading(true);
-      const joke = await LaffLabApi.getRandomJoke();
-      setJokes([joke]);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await LaffLabApi.jokes.list(); // backend-driven
+        setJokes(data);
+      } catch (err) {
+        console.error("Failed to load jokes", err);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
 
-  return {
-    jokes,
-    loadRandom,
-    loading,
-    error,
-  };
+    load();
+  }, []);
+
+  return { jokes, loading };
 }
+
