@@ -10,7 +10,7 @@ export function useJokes() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await LaffLabApi.jokes.list(); // backend-driven
+        const data = await LaffLabApi.getJokes(); // <-- correct call
         setJokes(data);
       } catch (err) {
         console.error("Failed to load jokes", err);
