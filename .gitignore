@@ -57,6 +57,8 @@ Thumbs.db
 # -------------------------
 prisma/migrations/*/steps.json
 prisma/migrations/*/migration.sql
+.prisma/
+node_modules/.prisma/
 
 # -------------------------
 # Next.js cache
