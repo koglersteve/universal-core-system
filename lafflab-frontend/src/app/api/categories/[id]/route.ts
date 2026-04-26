@@ -1,13 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { getCategoryById } from "@/lib/data";
 
 export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  _req: Request,
+  context: { params: { id: string } }
 ) {
-  const { id } = await context.params;
+  const { id } = context.params;
 
-  return NextResponse.json({
-    id,
-    message: "Category loaded successfully",
-  });
+  try {
+    const category = getCategoryById(id);
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(category, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
+  }
 }
