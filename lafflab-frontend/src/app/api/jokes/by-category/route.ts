@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import { getJokesByCategoryServer } from "@/lib/server/jokes";
 
-export async function GET(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
-) {
-  const { id } = await context.params;
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
 
   if (!id) {
     return NextResponse.json(
