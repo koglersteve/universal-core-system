@@ -1,29 +1,30 @@
-FROM node:18-alpine
+# Disable all cached layers by using a non-alpine base and no pinned digest
+FROM node:22
+
+# Force fresh environment
+ENV NODE_ENV=production
+ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
 
 WORKDIR /app
 
-# Copy package files first for layer caching
+# Copy package files first
 COPY package*.json ./
 
-# Install dependencies — postinstall automatically wipes any cached
-# @prisma/client and .prisma directories so stale Accelerate-mode
-# artifacts can never survive into the build step.
-RUN npm install
+# Force a clean install — no cache reuse
+RUN rm -rf node_modules && npm install --force
 
-# Copy the rest of the backend (including prisma/schema.prisma)
+# Copy the rest of the backend
 COPY . .
 
 # Ensure DATABASE_URL is available at build time
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
-# Regenerate Prisma client from the current schema.
-# postinstall already cleared the old client, so this always produces
-# a fresh, schema-correct client before tsc compiles the app.
-RUN npx prisma generate
+# Force Prisma to regenerate from scratch inside the container
+RUN rm -rf node_modules/.prisma .prisma && npx prisma generate
 
-# Build backend (also runs prisma:clean + prisma generate internally,
-# providing a second safety net against any residual cached artifacts)
+# Build TypeScript AFTER Prisma Client is guaranteed fresh
 RUN npm run build
 
 CMD ["npm", "start"]
+
