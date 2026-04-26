@@ -84,5 +84,6 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ ok: true });
   });
 
+  // Mount namespace
   app.route("/api/dramanextdoor", route);
 }
