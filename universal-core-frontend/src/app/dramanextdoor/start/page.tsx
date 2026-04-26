@@ -20,7 +20,7 @@ import State from "@/components/dramanextdoor/State";
 export default function DramaNextDoorStart() {
   const { emotion, setEmotion } = useEmotionalState();
   const { identity } = useIdentityState();
-  const { tension, increaseTension, decreaseTension } = useTension();
+  const { tension } = useTension();
 
   const {
     scene,
@@ -33,7 +33,6 @@ export default function DramaNextDoorStart() {
 
   const [ready, setReady] = useState(false);
 
-  // Boot the Drama Engine once identity + emotional OS are ready
   useEffect(() => {
     if (!identity) return;
 
@@ -60,16 +59,9 @@ export default function DramaNextDoorStart() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
-      {/* Current Scene */}
       <Scene scene={scene} />
-
-      {/* Emotional + Tension State */}
       <State emotion={emotion} tension={tension} />
-
-      {/* Next Scene Button */}
       <Next onNext={nextScene} />
-
-      {/* Drama Feed */}
       <Feed items={feed} />
     </div>
   );

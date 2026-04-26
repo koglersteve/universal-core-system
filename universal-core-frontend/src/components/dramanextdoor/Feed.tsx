@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import FeedItem from "./FeedItem";
 import AdBanner from "./AdBanner";
+import TopBanner from "./TopBanner";
 
 export default function Feed() {
   const [items, setItems] = useState<any[]>([]);
@@ -40,6 +41,8 @@ export default function Feed() {
 
   return (
     <div style={{ width: "100%", maxWidth: 600, margin: "0 auto" }}>
+      <TopBanner />
+
       {items.map((item, index) => (
         <div key={item.id}>
           {/* Insert ad every 8 posts */}
@@ -57,17 +60,6 @@ export default function Feed() {
           Loading chaos…
         </div>
       )}
-    </div>
-  );
-}
-import TopBanner from "./TopBanner";
-
-export default function Feed() {
-  return (
-    <div style={{ width: "100%", maxWidth: 600, margin: "0 auto" }}>
-      <TopBanner />
-
-      {/* existing feed code */}
     </div>
   );
 }

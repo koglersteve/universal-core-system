@@ -2,7 +2,7 @@
 
 export default function State({ emotion, tension }) {
   return (
-    <div className="mt-6 p-4 border rounded bg-white shadow">
+    <div className="p-4 border rounded bg-white shadow">
       <h3 className="text-lg font-semibold mb-2">Current State</h3>
 
       <p className="text-gray-700">
