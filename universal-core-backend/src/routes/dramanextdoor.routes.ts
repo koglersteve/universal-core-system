@@ -4,7 +4,7 @@ import { prisma } from "../lib/prisma";
 export function registerDramaNextDoorRoutes(app: Hono) {
   const route = new Hono();
 
-  // --- FEED ---
+  // FEED
   route.get("/feed", async (c) => {
     const clips = await prisma.dramaClip.findMany({
       orderBy: { createdAt: "desc" },
@@ -13,14 +13,14 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ items: clips });
   });
 
-  // --- FAVORITE ---
+  // FAVORITE
   route.post("/favorite", async (c) => {
     const { userId, clipId } = await c.req.json();
     await prisma.dramaFavorite.create({ data: { userId, clipId } });
     return c.json({ ok: true });
   });
 
-  // --- FAVORITES LIST ---
+  // FAVORITES LIST
   route.get("/favorites", async (c) => {
     const userId = c.req.query("userId") || "anon";
     const items = await prisma.dramaFavorite.findMany({
@@ -28,10 +28,10 @@ export function registerDramaNextDoorRoutes(app: Hono) {
       orderBy: { createdAt: "desc" },
       include: { clip: true },
     });
-    return c.json({ items: items.map((f) => f.clip) });
+    return c.json({ items: items.map((f: any) => f.clip) });
   });
 
-  // --- HISTORY ---
+  // HISTORY
   route.get("/history", async (c) => {
     const userId = c.req.query("userId") || "anon";
     const views = await prisma.dramaView.findMany({
@@ -39,10 +39,10 @@ export function registerDramaNextDoorRoutes(app: Hono) {
       orderBy: { createdAt: "desc" },
       include: { clip: true },
     });
-    return c.json({ items: views.map((v) => v.clip) });
+    return c.json({ items: views.map((v: any) => v.clip) });
   });
 
-  // --- POST CLIP ---
+  // POST CLIP
   route.post("/post", async (c) => {
     const { type, url, thumbnail, duration } = await c.req.json();
 
@@ -58,7 +58,7 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ clip });
   });
 
-  // --- REACT ---
+  // REACT
   route.post("/react", async (c) => {
     const { clipId, reaction } = await c.req.json();
 
@@ -84,6 +84,5 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ ok: true });
   });
 
-  // Mount under namespace
   app.route("/api/dramanextdoor", route);
 }
