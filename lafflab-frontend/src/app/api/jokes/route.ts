@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { jokes } from "@/lib/data"; // your in-memory data source
+import { JOKES } from "@/lib/data";
 
 export async function GET() {
   try {
-    return NextResponse.json(jokes, { status: 200 });
+    return NextResponse.json(JOKES, { status: 200 });
   } catch (err) {
     return NextResponse.json(
       { error: "Failed to load jokes" },

@@ -1,5 +1,8 @@
 import { Joke, Category } from "./models";
 
+// ---------------------------------------------
+// Categories
+// ---------------------------------------------
 export const CATEGORIES: Category[] = [
   { id: "general", name: "General" },
   { id: "math", name: "Math" },
@@ -7,6 +10,9 @@ export const CATEGORIES: Category[] = [
   { id: "animals", name: "Animals" },
 ];
 
+// ---------------------------------------------
+// Jokes
+// ---------------------------------------------
 export const JOKES: Joke[] = [
   {
     id: "1",
@@ -30,12 +36,22 @@ export const JOKES: Joke[] = [
   },
 ];
 
+// ---------------------------------------------
+// Category → Jokes mapping
+// ---------------------------------------------
 export const CATEGORY_JOKES: Record<string, Joke[]> = {
   general: [JOKES[0], JOKES[1]],
   math: [JOKES[2]],
   tech: [JOKES[3]],
   animals: [JOKES[4]],
 };
+
+// ---------------------------------------------
+// Data access helpers
+// ---------------------------------------------
+export function getAllJokes(): Joke[] {
+  return JOKES;
+}
 
 export function getRandomJoke(): Joke {
   const idx = Math.floor(Math.random() * JOKES.length);
