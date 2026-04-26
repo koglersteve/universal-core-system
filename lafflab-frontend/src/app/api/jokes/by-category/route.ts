@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { getJokesByCategoryServer } from "@/lib/server/jokes";
 
 export async function GET(
-  _req: Request,
-  context: { params: Promise<{ id: string }> }
+  req: Request,
+  context: { params: { id: string } }
 ) {
-  const { id } = await context.params;
+  const { id } = context.params;
 
   if (!id) {
     return NextResponse.json(
