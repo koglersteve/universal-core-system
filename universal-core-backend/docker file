@@ -2,21 +2,28 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files first for caching
+# Copy package files first for layer caching
 COPY package*.json ./
+
+# Install dependencies — postinstall automatically wipes any cached
+# @prisma/client and .prisma directories so stale Accelerate-mode
+# artifacts can never survive into the build step.
 RUN npm install
 
-# Copy the rest of the backend
+# Copy the rest of the backend (including prisma/schema.prisma)
 COPY . .
 
 # Ensure DATABASE_URL is available at build time
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
-# Generate Prisma client (Prisma 7 requires runtime URL)
+# Regenerate Prisma client from the current schema.
+# postinstall already cleared the old client, so this always produces
+# a fresh, schema-correct client before tsc compiles the app.
 RUN npx prisma generate
 
-# Build backend
+# Build backend (also runs prisma:clean + prisma generate internally,
+# providing a second safety net against any residual cached artifacts)
 RUN npm run build
 
 CMD ["npm", "start"]
