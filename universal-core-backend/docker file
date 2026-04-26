@@ -1,17 +1,13 @@
-# Disable all cached layers by using a non-alpine base and no pinned digest
-FROM node:22
-
-# Force fresh environment
-ENV NODE_ENV=production
-ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
+# Use the exact Node version Prisma 7.8.0 requires
+FROM node:22.12.0
 
 WORKDIR /app
 
 # Copy package files first
 COPY package*.json ./
 
-# Force a clean install — no cache reuse
-RUN rm -rf node_modules && npm install --force
+# Clean install
+RUN npm install --force
 
 # Copy the rest of the backend
 COPY . .
@@ -20,10 +16,10 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
-# Force Prisma to regenerate from scratch inside the container
-RUN rm -rf node_modules/.prisma .prisma && npx prisma generate
+# Regenerate Prisma Client cleanly
+RUN npx prisma generate
 
-# Build TypeScript AFTER Prisma Client is guaranteed fresh
+# Build TypeScript
 RUN npm run build
 
 CMD ["npm", "start"]
