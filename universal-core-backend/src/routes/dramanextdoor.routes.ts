@@ -1,56 +1,89 @@
 import { Hono } from "hono";
+import { prisma } from "../lib/prisma";
 
 export function registerDramaNextDoorRoutes(app: Hono) {
-  const router = new Hono();
+  const route = new Hono();
 
-  // --- Start the drama engine ---
-  router.get("/start", (c) => {
-    return c.json({
-      status: "ok",
-      message: "Drama engine initialized",
-      token: "drama-session-" + Date.now(),
+  // --- FEED ---
+  route.get("/feed", async (c) => {
+    const clips = await prisma.dramaClip.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
     });
+    return c.json({ items: clips });
   });
 
-  // --- Get the current scene ---
-  router.get("/scene", (c) => {
-    const mood = c.req.query("mood") || "neutral";
-
-    return c.json({
-      status: "ok",
-      scene: {
-        title: `Dramatic Scene: ${mood.toUpperCase()}`,
-        description: `A dramatized neighborhood moment based on your mood: ${mood}.`,
-        lines: [
-          `The neighborhood senses your ${mood} energy.`,
-          `Karen 2.0 adjusts her sunglasses dramatically.`,
-          `A digital breeze blows through the HOA bylaws.`,
-          `Someone whispers: "Oh… it’s happening again."`
-        ]
-      }
-    });
+  // --- FAVORITE ---
+  route.post("/favorite", async (c) => {
+    const { userId, clipId } = await c.req.json();
+    await prisma.dramaFavorite.create({ data: { userId, clipId } });
+    return c.json({ ok: true });
   });
 
-  // --- Move to the next scene ---
-  router.post("/next", async (c) => {
-    const body = await c.req.json().catch(() => ({}));
-    const tension = body.tension || 1;
-
-    return c.json({
-      status: "ok",
-      next: {
-        title: "Escalation",
-        description: `The tension rises to level ${tension}.`,
-        lines: [
-          `A neighbor peeks through the blinds.`,
-          `Karen 2.0 gasps dramatically.`,
-          `Someone drops a casserole.`,
-          `The HOA president mutters: "Not again…"`,
-        ]
-      }
+  // --- FAVORITES LIST ---
+  route.get("/favorites", async (c) => {
+    const userId = c.req.query("userId") || "anon";
+    const items = await prisma.dramaFavorite.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: { clip: true },
     });
+    return c.json({ items: items.map((f) => f.clip) });
   });
 
-  // Mount router under /dramanextdoor
-  app.route("/dramanextdoor", router);
+  // --- HISTORY ---
+  route.get("/history", async (c) => {
+    const userId = c.req.query("userId") || "anon";
+    const views = await prisma.dramaView.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: { clip: true },
+    });
+    return c.json({ items: views.map((v) => v.clip) });
+  });
+
+  // --- POST CLIP ---
+  route.post("/post", async (c) => {
+    const { type, url, thumbnail, duration } = await c.req.json();
+
+    const valid = ["video", "audio", "image", "meme"];
+    if (!valid.includes(type)) {
+      return c.json({ error: "Invalid type" }, 400);
+    }
+
+    const clip = await prisma.dramaClip.create({
+      data: { type, url, thumbnail, duration },
+    });
+
+    return c.json({ clip });
+  });
+
+  // --- REACT ---
+  route.post("/react", async (c) => {
+    const { clipId, reaction } = await c.req.json();
+
+    const valid = [
+      "laugh",
+      "smile",
+      "shock",
+      "sad",
+      "angry",
+      "mindblown",
+      "chaos",
+    ];
+
+    if (!valid.includes(reaction)) {
+      return c.json({ error: "Invalid reaction" }, 400);
+    }
+
+    await prisma.dramaClip.update({
+      where: { id: clipId },
+      data: { [reaction]: { increment: 1 } },
+    });
+
+    return c.json({ ok: true });
+  });
+
+  // Mount under namespace
+  app.route("/api/dramanextdoor", route);
 }

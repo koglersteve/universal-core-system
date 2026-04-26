@@ -42,7 +42,7 @@ registerOSRoutes(app);
 registerMultiverseRoutes(app);
 
 // --- Plugin Namespaces ---
-registerDramaNextDoorRoutes(app);
+registerDramaNextDoorRoutes(app);   // <-- Your new backend API routes
 registerHoaMemeRoutes(app);
 registerIDLYILYRoutes(app);
 registerLaffLabRoutes(app);
