@@ -2,20 +2,19 @@ FROM node:22.12.0
 
 WORKDIR /app
 
-# Copy package files first
+# Install dependencies first
 COPY package*.json ./
-
-# Copy prisma schema BEFORE npm install so postinstall can see it
-COPY prisma ./prisma
-
-# Install dependencies (postinstall will now succeed)
 RUN npm install --force
 
-# Copy the rest of the backend
+# Copy schema BEFORE build
+COPY prisma ./prisma
+
+# Copy the rest of the source
 COPY . .
 
-# Build TypeScript
+# Force clean build
+RUN rm -rf dist
+RUN npx prisma generate
 RUN npm run build
 
-CMD ["npm", "start"]
-
+CMD ["node", "dist/index.js"]
