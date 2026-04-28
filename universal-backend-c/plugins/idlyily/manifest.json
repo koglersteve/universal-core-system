@@ -1,0 +1,26 @@
+{
+  "name": "idlyily-meme",
+  "version": "1.0.0",
+  "description": "IDLYILY Meme App Plugin for Universal Core",
+  "author": "Steve",
+  "entry": "index.ts",
+  "routes": [
+    "routes/meme.routes.ts",
+    "routes/templates.routes.ts",
+    "routes/creations.routes.ts",
+    "routes/prompts.routes.ts"
+  ],
+  "services": [
+    "services/meme.services.ts",
+    "services/template.services.ts",
+    "services/creation.services.ts",
+    "services/prompts.services.ts"
+  ],
+  "ui": [
+    "ui/index.ts"
+  ],
+  "db": [
+    "db/schema.prisma"
+  ]
+}
+
