@@ -1,5 +1,5 @@
 {
-  "name": "universal-core-backend",
+  "name": "universal-backend-new",
   "version": "1.0.1",
   "private": true,
   "main": "dist/index.js",
