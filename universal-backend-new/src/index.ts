@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
 
+import { config } from "./config";
+
 import { createKernel } from "./kernel/kernel";
 import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
@@ -22,10 +24,7 @@ const app = new Hono();
 app.use(
   "*",
   cors({
-    origin: [
-      "http://localhost:3000", // Local Next.js frontend
-      "https://universal-core-frontend-production-8ae4.up.railway.app" // Production frontend
-    ],
+    origin: config.cors.origin,
   })
 );
 
@@ -42,7 +41,7 @@ registerOSRoutes(app);
 registerMultiverseRoutes(app);
 
 // --- Plugin Namespaces ---
-registerDramaNextDoorRoutes(app);   // <-- Your new backend API routes
+registerDramaNextDoorRoutes(app);
 registerHoaMemeRoutes(app);
 registerIDLYILYRoutes(app);
 registerLaffLabRoutes(app);
@@ -62,7 +61,8 @@ app.get("/", (c) =>
 );
 
 // --- Boot Kernel ---
-const port = Number(process.env.PORT) || 8080;
+const port = Number(config.port) || 8080;
+
 serve({ fetch: app.fetch, port });
 
 console.log(`Universal Core Backend running on port ${port}`);
