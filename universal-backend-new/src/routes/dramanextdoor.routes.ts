@@ -44,7 +44,7 @@ export function registerDramaNextDoorRoutes(app: Hono) {
 
   // POST CLIP
   route.post("/post", async (c) => {
-    const { type, url, thumbnail, duration } = await c.req.json();
+    const { type, url, title } = await c.req.json();
 
     const valid = ["video", "audio", "image", "meme"];
     if (!valid.includes(type)) {
@@ -52,7 +52,11 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     }
 
     const clip = await prisma.dramaClip.create({
-      data: { type, url, thumbnail, duration },
+      data: {
+        type,
+        title: title ?? "Untitled",
+        videoUrl: url
+      },
     });
 
     return c.json({ clip });
@@ -87,3 +91,4 @@ export function registerDramaNextDoorRoutes(app: Hono) {
   // Mount namespace
   app.route("/api/dramanextdoor", route);
 }
+
