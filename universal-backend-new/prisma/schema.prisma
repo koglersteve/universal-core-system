@@ -6,3 +6,27 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model DramaClip {
+  id        Int      @id @default(autoincrement())
+  title     String
+  videoUrl  String
+  createdAt DateTime @default(now())
+  favorites DramaFavorite[]
+  views     DramaView[]
+}
+
+model DramaFavorite {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  clipId    Int
+  clip      DramaClip @relation(fields: [clipId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model DramaView {
+  id        Int      @id @default(autoincrement())
+  clipId    Int
+  clip      DramaClip @relation(fields: [clipId], references: [id])
+  createdAt DateTime @default(now())
+}
