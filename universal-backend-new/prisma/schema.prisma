@@ -7,26 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// Represents a dramatic clip with its associated metadata.
 model DramaClip {
   id        Int      @id @default(autoincrement())
   title     String
-  videoUrl  String
+  videoUrl  String   @db.VarChar(2048) // Increased length for URLs
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // Added for tracking updates
+
   favorites DramaFavorite[]
   views     DramaView[]
-}
-
-model DramaFavorite {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  clipId    Int
-  clip      DramaClip @relation(fields: [clipId], references: [id])
-  createdAt DateTime @default(now())
-}
-
-model DramaView {
-  id        Int      @id @default(autoincrement())
-  clipId    Int
-  clip      DramaClip @relation(fields: [clipId], references: [id])
-  createdAt DateTime @default(now())
 }
