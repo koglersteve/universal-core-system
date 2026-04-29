@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
 
-import { config } from "./config";
+import { config } from "./config/config";
 
 import { createKernel } from "./kernel/kernel";
 import { registerOSRoutes } from "./routes/os.routes";
