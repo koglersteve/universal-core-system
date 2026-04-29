@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.14",
+    "@prisma/adapter-pg": "^5.22.0",
     "@prisma/client": "^7.8.0",
-    "@prisma/adapter-pg": "^5.0.0",
     "fastify": "^4.26.2",
     "hono": "^4.12.12",
+    "pg": "^8.20.0",
     "prisma": "^7.8.0"
   },
   "devDependencies": {
@@ -22,5 +23,3 @@
   },
   "cacheBust": "2"
 }
-
-
