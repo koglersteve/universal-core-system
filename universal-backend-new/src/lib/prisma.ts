@@ -1,9 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
+import { PrismaNodePostgres } from "@prisma/adapter-node-postgres";
 
-const adapter = new PrismaPg({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL!,
 });
+
+const adapter = new PrismaNodePostgres(pool);
 
 export const prisma = new PrismaClient({
   adapter,
