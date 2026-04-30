@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 
 export async function POST(req, { params }) {
@@ -5,6 +7,7 @@ export async function POST(req, { params }) {
 
   const res = await fetch(`${backend}/persona/switch/${params.id}`, {
     method: "POST",
+    cache: "no-store",
   });
 
   const data = await res.json();
