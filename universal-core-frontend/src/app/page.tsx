@@ -48,6 +48,14 @@ export default function OSPage() {
           </div>
         </Link>
 
+        {/* Persona OS Tile */}
+        <Link href="/persona">
+          <div className="p-4 border border-gray-700 rounded-lg bg-black/30 cursor-pointer">
+            <h2 className="text-xl font-semibold">Persona OS</h2>
+            <p className="text-gray-500 text-sm">Emotional identity</p>
+          </div>
+        </Link>
+
         {/* OS Modules */}
         {data.modules.map((m: string) => (
           <div

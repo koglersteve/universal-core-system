@@ -8,6 +8,7 @@ import { createKernel } from "./kernel/kernel";
 import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
 import { registerMultiverseSwitchRoutes } from "./routes/multiverse.switch.routes";
+import { registerPersonaRoutes } from "./routes/persona.routes";
 import { universeMiddleware } from "./middleware/universe";
 
 // --- Plugin Routes ---
@@ -38,11 +39,14 @@ app.use("*", universeMiddleware);
 // --- OS Namespace ---
 registerOSRoutes(app);
 
-// --- Multiverse Routes ---
+// --- Multiverse ---
 registerMultiverseRoutes(app);
 registerMultiverseSwitchRoutes(app);
 
-// --- Plugin Namespaces ---
+// --- Persona OS ---
+registerPersonaRoutes(app);
+
+// --- Plugins ---
 registerDramaNextDoorRoutes(app);
 registerHoaMemeRoutes(app);
 registerIDLYILYRoutes(app);
@@ -51,13 +55,14 @@ registerMemeMyCatRoutes(app);
 registerMemeMyDogRoutes(app);
 registerHistoryRoutes(app);
 
-// --- Root Route ---
+// --- Root ---
 app.get("/", (c) =>
   c.json({
     message: "Universal Core Backend Online",
     kernel: "/kernel/health",
     os: "/os",
     multiverse: "/multiverse/list",
+    persona: "/persona/list",
     version: "1.0.0",
   })
 );
