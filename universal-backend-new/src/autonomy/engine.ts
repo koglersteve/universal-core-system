@@ -33,10 +33,7 @@ export class AutonomyEngine {
       if (decision.status === "execute") {
         console.log("[Autonomy] Executing:", decision.action.name);
         await decision.action.run(decision.args);
-
-        if (decision.goalId) {
-          globalThis.goals.complete(decision.goalId);
-        }
+        globalThis.goals.complete(decision.goalId);
       } else {
         console.log("[Autonomy] Idle:", decision.reason);
       }

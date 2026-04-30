@@ -1,9 +1,9 @@
 export async function getSystemState() {
   return {
-    memory: await globalThis.memory.getSnapshot(),
-    mood: await globalThis.mood.getCurrent(),
-    persona: await globalThis.persona.getActive(),
-    kernel: await globalThis.kernel.getStatus(),
-    goals: await globalThis.goals.getActiveGoals(),
+    memory: globalThis.memory?.getSnapshot?.() ?? null,
+    mood: globalThis.emotion?.getCurrent?.() ?? null,
+    persona: globalThis.persona?.getActive?.() ?? null,
+    kernel: globalThis.kernel?.getStatus?.() ?? null,
+    goals: globalThis.goals.list(),
   };
 }

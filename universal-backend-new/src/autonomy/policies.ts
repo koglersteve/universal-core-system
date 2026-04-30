@@ -1,11 +1,11 @@
 export class AutonomyPolicies {
-  constructor(private config = {}) {}
+  constructor(private config: any = {}) {}
 
-  filterActions(goal, state) {
+  filterActions(goal: any, state: any) {
     return globalThis.actions
       .list()
-      .filter(a => a.preconditions(goal, state))
-      .filter(a => !a.risk?.high);
+      .filter((a: any) => a.preconditions(goal, state))
+      .filter((a: any) => !a.risk?.high);
   }
 }
 
