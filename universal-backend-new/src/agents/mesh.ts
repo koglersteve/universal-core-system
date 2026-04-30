@@ -4,16 +4,13 @@ import { eventBus } from "../eventbus/bus";
 
 class AgentMesh {
   async startAll() {
+    // Start all agents
     for (const agent of agentRegistry.list()) {
-      if (agent.start) {
-        await agent.start();
-      }
+      if (agent.start) await agent.start();
     }
 
-    // Fan-out events to agents that implement onEvent
-    eventBus.on("any", async (payload: { event: string; data: any }) => {
-      const { event, data } = payload;
-
+    // Fan-out: kernel health warnings → all agents with onEvent
+    eventBus.on("kernel:health_warning", async (payload) => {
       for (const agent of agentRegistry.list()) {
         if (!agent.onEvent) continue;
 
@@ -22,7 +19,7 @@ class AgentMesh {
           role: agent.role,
         };
 
-        await agent.onEvent(event, data, ctx);
+        await agent.onEvent("kernel:health_warning", payload, ctx);
       }
     });
   }

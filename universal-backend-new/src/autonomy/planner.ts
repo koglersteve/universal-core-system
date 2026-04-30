@@ -2,9 +2,10 @@ import { pluginAutonomyActions } from "./pluginActions";
 import { pluginCapabilityRouter } from "../plugins/runtime/capabilityRouter";
 
 export async function planNextAction(state: any, policies: any) {
-  // existing logic…
+  // Core actions placeholder (restore later if needed)
+  const coreActions: any[] = [];
 
-  // Add plugin autonomy actions
+  // Plugin autonomy actions
   const pluginActions = pluginAutonomyActions.list().map((pa) => ({
     name: pa.actionName,
     priority: pa.priority,
@@ -19,5 +20,18 @@ export async function planNextAction(state: any, policies: any) {
 
   const allActions = [...coreActions, ...pluginActions];
 
-  // choose best action…
+  if (allActions.length === 0) {
+    return { status: "idle" };
+  }
+
+  // Pick highest priority action
+  const best = allActions.sort((a, b) => b.priority - a.priority)[0];
+
+  return {
+    status: "ready",
+    action: best.name,
+    args: {},
+    goalId: null,
+    run: best.run,
+  };
 }
