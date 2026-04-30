@@ -5,5 +5,6 @@ declare module "hono" {
     universeId: string;
     universe: any;
     universeState: any;
+    personaId: string;
   }
 }
