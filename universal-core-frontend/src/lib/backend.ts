@@ -1,8 +1,8 @@
 "use client";
 
-// Reads NEXT_PUBLIC_BACKEND_URL from the browser environment.
+// Reads NEXT_PUBLIC_API_BASE_URL from the browser environment.
 export function getBackendUrl() {
-  return process.env.NEXT_PUBLIC_BACKEND_URL || "";
+  return process.env.NEXT_PUBLIC_API_BASE_URL || "";
 }
 
 // --- OS API ---
