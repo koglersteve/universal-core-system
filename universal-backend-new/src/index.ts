@@ -7,6 +7,7 @@ import { config } from "./config/config";
 import { createKernel } from "./kernel/kernel";
 import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
+import { registerMultiverseSwitchRoutes } from "./routes/multiverse.switch.routes";
 import { universeMiddleware } from "./middleware/universe";
 
 // --- Plugin Routes ---
@@ -20,7 +21,7 @@ import { registerHistoryRoutes } from "./routes/history.routes";
 
 const app = new Hono();
 
-// --- CORS (must be first middleware) ---
+// --- CORS ---
 app.use(
   "*",
   cors({
@@ -28,17 +29,18 @@ app.use(
   })
 );
 
-// --- Kernel (always mount first) ---
+// --- Kernel ---
 app.route("/kernel", createKernel());
 
-// --- Universe-Aware Middleware (must come before OS + Multiverse) ---
+// --- Universe Middleware ---
 app.use("*", universeMiddleware);
 
 // --- OS Namespace ---
 registerOSRoutes(app);
 
-// --- Multiverse Namespace ---
+// --- Multiverse Routes ---
 registerMultiverseRoutes(app);
+registerMultiverseSwitchRoutes(app);
 
 // --- Plugin Namespaces ---
 registerDramaNextDoorRoutes(app);
@@ -49,7 +51,7 @@ registerMemeMyCatRoutes(app);
 registerMemeMyDogRoutes(app);
 registerHistoryRoutes(app);
 
-// --- Optional Root Route ---
+// --- Root Route ---
 app.get("/", (c) =>
   c.json({
     message: "Universal Core Backend Online",
@@ -60,9 +62,8 @@ app.get("/", (c) =>
   })
 );
 
-// --- Boot Kernel ---
+// --- Boot ---
 const port = Number(config.port) || 8080;
-
 serve({ fetch: app.fetch, port });
 
 console.log(`Universal Core Backend running on port ${port}`);

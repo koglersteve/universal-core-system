@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { os } from "@/lib/backend";
 
 export default function OSPage() {
@@ -38,6 +39,16 @@ export default function OSPage() {
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+        {/* Multiverse Tile */}
+        <Link href="/multiverse">
+          <div className="p-4 border border-gray-700 rounded-lg bg-black/30 cursor-pointer">
+            <h2 className="text-xl font-semibold">Multiverse</h2>
+            <p className="text-gray-500 text-sm">Switch universes</p>
+          </div>
+        </Link>
+
+        {/* OS Modules */}
         {data.modules.map((m: string) => (
           <div
             key={m}

@@ -1,18 +1,14 @@
 import { MiddlewareHandler } from "hono";
-import { universes } from "../os/multiverse"; // we will expose this
+import { universes } from "../os/multiverse";
 
 export const universeMiddleware: MiddlewareHandler = async (c, next) => {
-  // 1. Determine active universe ID
-  const headerId = c.req.header("x-universe-id");
-  const queryId = c.req.query("universe");
+  // Read cookie
+  const cookie = c.req.header("Cookie") || "";
+  const match = cookie.match(/universeId=([^;]+)/);
+  const universeId = match ? match[1] : "default";
 
-  const universeId = headerId || queryId || "default";
-
-  // 2. Load universe state
-  const universe = universes[universeId];
-
-  if (!universe) {
-    // If universe doesn't exist, create a default one
+  // Ensure universe exists
+  if (!universes[universeId]) {
     universes[universeId] = {
       id: universeId,
       createdAt: Date.now(),
@@ -36,11 +32,10 @@ export const universeMiddleware: MiddlewareHandler = async (c, next) => {
     };
   }
 
-  // 3. Attach universe context to request
+  // Attach context
   c.set("universeId", universeId);
   c.set("universe", universes[universeId]);
   c.set("universeState", universes[universeId].state);
 
-  // 4. Continue to next handler
   await next();
 };
