@@ -1,23 +1,35 @@
-# Install dependencies
+# -----------------------------
+# 1. Install dependencies
+# -----------------------------
 FROM node:18-alpine AS deps
 WORKDIR /app
+
 COPY package.json package-lock.json* ./
 RUN npm install --production=false
 
-# Build the app
+
+# -----------------------------
+# 2. Build the Next.js app
+# -----------------------------
 FROM node:18-alpine AS builder
 WORKDIR /app
 
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 
-# ⭐ Inject NEXT_PUBLIC variables into the build
-ARG NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+# ⭐ Inject the correct NEXT_PUBLIC variables
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
+ARG NEXT_PUBLIC_URL
+ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 
 RUN npm run build
 
-# Production image
+
+# -----------------------------
+# 3. Production runtime
+# -----------------------------
 FROM node:18-alpine AS runner
 WORKDIR /app
 
@@ -30,5 +42,4 @@ COPY --from=builder /app/public ./public
 
 EXPOSE 8080
 CMD ["node", "server.js"]
-
 
