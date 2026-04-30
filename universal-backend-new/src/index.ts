@@ -37,10 +37,25 @@ import { loadPolicies } from "./autonomy/policies";
 import { ActionRegistry, listActions } from "./autonomy/actions";
 import { goalManager } from "./autonomy/goals";
 
+// --- Event Bus ---
+import { eventBus } from "./eventbus/bus";
+import { registerAutonomyEventHandlers } from "./eventbus/handlers/autonomy.handler";
+
+// --- Health Monitor ---
+import { KernelHealthMonitor } from "./health/monitor";
+
+// --- Dashboard Aggregator ---
+import { dashboardAggregator } from "./dashboard/aggregator";
+import { registerDashboardRoutes } from "./dashboard/routes";
+
+// --- Insight Engine ---
+import { insightEngine } from "./insight/engine";
+import { registerInsightEventHandlers } from "./insight/handlers";
+
 const app = new Hono();
 
 // -----------------------------------------------------
-// Global Bindings (must be BEFORE Autonomy Engine starts)
+// Global Bindings (must be BEFORE engines start)
 // -----------------------------------------------------
 globalThis.actions = {
   registry: ActionRegistry,
@@ -53,6 +68,13 @@ globalThis.goals = {
   top: goalManager.getTopGoal.bind(goalManager),
   complete: goalManager.completeGoal.bind(goalManager),
 };
+
+(globalThis as any).eventBus = eventBus;
+(globalThis as any).dashboardAggregator = dashboardAggregator;
+(globalThis as any).insightEngine = insightEngine;
+
+registerAutonomyEventHandlers();
+registerInsightEventHandlers();
 
 // -----------------------------------------------------
 // CORS
@@ -98,6 +120,17 @@ registerMemeMyDogRoutes(app);
 registerHistoryRoutes(app);
 
 // -----------------------------------------------------
+// Dashboard Routes
+// -----------------------------------------------------
+registerDashboardRoutes(app);
+
+// -----------------------------------------------------
+// Insight Routes
+// -----------------------------------------------------
+import { registerInsightRoutes } from "./insight/routes";
+registerInsightRoutes(app);
+
+// -----------------------------------------------------
 // Root Endpoint
 // -----------------------------------------------------
 app.get("/", (c) =>
@@ -111,6 +144,8 @@ app.get("/", (c) =>
     cognitive: "/cognitive/state",
     emotion: "/emotion/state",
     behavior: "/behavior/state",
+    insights: "/insights/recent",
+    dashboard: "/os/dashboard/state",
     version: "1.0.0",
   })
 );
@@ -120,11 +155,21 @@ app.get("/", (c) =>
 // -----------------------------------------------------
 const autonomy = new AutonomyEngine({
   policies: loadPolicies(),
-  tickInterval: 1000, // 1 second heartbeat
+  tickInterval: 1000,
 });
 
 autonomy.start();
 console.log("Autonomy Engine v1 online");
+
+// -----------------------------------------------------
+// Kernel Health Monitor Boot
+// -----------------------------------------------------
+const healthMonitor = new KernelHealthMonitor({
+  interval: 5000,
+});
+
+healthMonitor.start();
+console.log("Kernel Health Monitor online");
 
 // -----------------------------------------------------
 // Server Boot

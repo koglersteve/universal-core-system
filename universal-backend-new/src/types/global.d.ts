@@ -26,8 +26,7 @@ declare global {
 
   //
   // ────────────────────────────────────────────────
-  //  CORE SUBSYSTEMS (Persona, Memory, Emotion, etc.)
-  //  These match your existing backend route systems.
+  //  CORE SUBSYSTEMS
   // ────────────────────────────────────────────────
   //
   var memory: {
@@ -57,7 +56,7 @@ declare global {
 
   //
   // ────────────────────────────────────────────────
-  //  KERNEL + OS (Your system-level modules)
+  //  KERNEL + OS
   // ────────────────────────────────────────────────
   //
   var kernel: {
@@ -68,5 +67,39 @@ declare global {
   var os: {
     sync?: () => Promise<any>;
     getState?: () => Promise<any>;
+  };
+
+  //
+  // ────────────────────────────────────────────────
+  //  EVENT BUS
+  // ────────────────────────────────────────────────
+  //
+  var eventBus: {
+    on: (event: string, handler: (payload: any) => void | Promise<void>) => void;
+    off: (event: string, handler: (payload: any) => void | Promise<void>) => void;
+    emit: (event: string, payload?: any) => Promise<void>;
+  };
+
+  //
+  // ────────────────────────────────────────────────
+  //  DASHBOARD AGGREGATOR
+  // ────────────────────────────────────────────────
+  //
+  var dashboardAggregator: {
+    refresh: () => Promise<void>;
+    getState: () => any;
+    setAutonomyDecision: (action: string, goalId?: string) => void;
+  };
+
+  //
+  // ────────────────────────────────────────────────
+  //  INSIGHT ENGINE
+  // ────────────────────────────────────────────────
+  //
+  var insightEngine: {
+    recordKernelHealthWarning: (message: string) => Promise<void>;
+    recordKernelHealthCritical: (message: string) => Promise<void>;
+    recordAutonomyDecision: (action: string, goalId?: string) => Promise<void>;
+    listRecent: (limit?: number) => any[];
   };
 }

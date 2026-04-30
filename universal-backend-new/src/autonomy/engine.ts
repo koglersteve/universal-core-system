@@ -1,6 +1,8 @@
 import { getSystemState } from "./state";
 import { planNextAction } from "./planner";
 import { AutonomyPolicies } from "./policies";
+import { dashboardAggregator } from "../dashboard/aggregator";
+import { eventBus } from "../eventbus/bus";
 
 export class AutonomyEngine {
   private interval: NodeJS.Timeout | null = null;
@@ -32,8 +34,19 @@ export class AutonomyEngine {
 
       if (decision.status === "execute") {
         console.log("[Autonomy] Executing:", decision.action.name);
+
         await decision.action.run(decision.args);
         globalThis.goals.complete(decision.goalId);
+
+        dashboardAggregator.setAutonomyDecision(
+          decision.action.name,
+          decision.goalId
+        );
+
+        await eventBus.emit("autonomy:decision_executed", {
+          action: decision.action.name,
+          goalId: decision.goalId,
+        });
       } else {
         console.log("[Autonomy] Idle:", decision.reason);
       }
