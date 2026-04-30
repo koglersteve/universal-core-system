@@ -4,7 +4,13 @@ import { cors } from "hono/cors";
 
 import { config } from "./config/config";
 
+// --- Kernel ---
 import { createKernel } from "./kernel/kernel";
+
+// --- Middleware ---
+import { universeMiddleware } from "./middleware/universe";
+
+// --- Core Routes ---
 import { registerOSRoutes } from "./routes/os.routes";
 import { registerMultiverseRoutes } from "./routes/multiverse.routes";
 import { registerMultiverseSwitchRoutes } from "./routes/multiverse.switch.routes";
@@ -13,7 +19,6 @@ import { registerMemoryRoutes } from "./routes/memory.routes";
 import { registerCognitiveRoutes } from "./routes/cognitive.routes";
 import { registerEmotionRoutes } from "./routes/emotion.routes";
 import { registerBehaviorRoutes } from "./routes/behavior.routes";
-import { universeMiddleware } from "./middleware/universe";
 
 // --- Plugin Routes ---
 import { registerDramaNextDoorRoutes } from "./routes/dramanextdoor.routes";
@@ -24,9 +29,34 @@ import { registerMemeMyCatRoutes } from "./routes/mememycat.routes";
 import { registerMemeMyDogRoutes } from "./routes/mememydog.routes";
 import { registerHistoryRoutes } from "./routes/history.routes";
 
+// --- Autonomy Engine ---
+import { AutonomyEngine } from "./autonomy/engine";
+import { loadPolicies } from "./autonomy/policies";
+
+// --- Global Registries ---
+import { ActionRegistry, listActions } from "./autonomy/actions";
+import { goalManager } from "./autonomy/goals";
+
 const app = new Hono();
 
-// --- CORS ---
+// -----------------------------------------------------
+// Global Bindings (must be BEFORE Autonomy Engine starts)
+// -----------------------------------------------------
+globalThis.actions = {
+  registry: ActionRegistry,
+  list: listActions,
+};
+
+globalThis.goals = {
+  add: goalManager.addGoal.bind(goalManager),
+  list: goalManager.getActiveGoals.bind(goalManager),
+  top: goalManager.getTopGoal.bind(goalManager),
+  complete: goalManager.completeGoal.bind(goalManager),
+};
+
+// -----------------------------------------------------
+// CORS
+// -----------------------------------------------------
 app.use(
   "*",
   cors({
@@ -34,35 +64,31 @@ app.use(
   })
 );
 
-// --- Kernel ---
+// -----------------------------------------------------
+// Kernel
+// -----------------------------------------------------
 app.route("/kernel", createKernel());
 
-// --- Universe Middleware ---
+// -----------------------------------------------------
+// Universe Middleware (global)
+// -----------------------------------------------------
 app.use("*", universeMiddleware);
 
-// --- OS Namespace ---
+// -----------------------------------------------------
+// Core System Routes
+// -----------------------------------------------------
 registerOSRoutes(app);
-
-// --- Multiverse ---
 registerMultiverseRoutes(app);
 registerMultiverseSwitchRoutes(app);
-
-// --- Persona OS ---
 registerPersonaRoutes(app);
-
-// --- Memory Engine ---
 registerMemoryRoutes(app);
-
-// --- Cognitive Engine ---
 registerCognitiveRoutes(app);
-
-// --- Emotional Engine ---
 registerEmotionRoutes(app);
-
-// --- Behavior Engine ---
 registerBehaviorRoutes(app);
 
-// --- Plugins ---
+// -----------------------------------------------------
+// Plugin Routes
+// -----------------------------------------------------
 registerDramaNextDoorRoutes(app);
 registerHoaMemeRoutes(app);
 registerIDLYILYRoutes(app);
@@ -71,7 +97,9 @@ registerMemeMyCatRoutes(app);
 registerMemeMyDogRoutes(app);
 registerHistoryRoutes(app);
 
-// --- Root ---
+// -----------------------------------------------------
+// Root Endpoint
+// -----------------------------------------------------
 app.get("/", (c) =>
   c.json({
     message: "Universal Core Backend Online",
@@ -87,7 +115,20 @@ app.get("/", (c) =>
   })
 );
 
-// --- Boot ---
+// -----------------------------------------------------
+// Autonomy Engine v1 Boot
+// -----------------------------------------------------
+const autonomy = new AutonomyEngine({
+  policies: loadPolicies(),
+  tickInterval: 1000, // 1 second heartbeat
+});
+
+autonomy.start();
+console.log("Autonomy Engine v1 online");
+
+// -----------------------------------------------------
+// Server Boot
+// -----------------------------------------------------
 const port = Number(config.port) || 8080;
 serve({ fetch: app.fetch, port });
 
