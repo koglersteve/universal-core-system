@@ -1,7 +1,20 @@
+export type AutonomyDecision =
+  | { status: "idle" }
+  | {
+      status: "ready";
+      action: string;
+      args: any;
+      goalId?: string | null;
+      run?: () => Promise<any>;
+    };
+
 import { pluginAutonomyActions } from "./pluginActions";
 import { pluginCapabilityRouter } from "../plugins/runtime/capabilityRouter";
 
-export async function planNextAction(state: any, policies: any) {
+export async function planNextAction(
+  state: any,
+  policies: any
+): Promise<AutonomyDecision> {
   // Core actions placeholder (restore later if needed)
   const coreActions: any[] = [];
 

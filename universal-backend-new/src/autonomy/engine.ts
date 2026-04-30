@@ -1,14 +1,4 @@
-import { planNextAction } from "./planner";
-
-type AutonomyDecision =
-  | { status: "idle" }
-  | {
-      status: "ready";
-      action: string;
-      args: any;
-      goalId?: string | null;
-      run?: () => Promise<any>;
-    };
+import { planNextAction, AutonomyDecision } from "./planner";
 
 export class AutonomyEngine {
   private running = false;
