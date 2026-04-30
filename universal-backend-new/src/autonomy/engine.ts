@@ -1,5 +1,15 @@
 import { planNextAction } from "./planner";
 
+type AutonomyDecision =
+  | { status: "idle" }
+  | {
+      status: "ready";
+      action: string;
+      args: any;
+      goalId?: string | null;
+      run?: () => Promise<any>;
+    };
+
 export class AutonomyEngine {
   private running = false;
   private interval: any;
@@ -26,20 +36,22 @@ export class AutonomyEngine {
   async tick() {
     const state = {}; // TODO: real state later
 
-    const decision = await planNextAction(state, this.policies);
+    const decision: AutonomyDecision = await planNextAction(
+      state,
+      this.policies
+    );
 
-    // If idle, nothing to do
+    // Idle path
     if (decision.status === "idle") {
       console.log("[Autonomy] Idle");
       return;
     }
 
-    // If we have a goal to complete
+    // Ready path
     if (decision.goalId) {
       globalThis.goals.complete(decision.goalId);
     }
 
-    // Execute the action
     if (decision.run) {
       try {
         const result = await decision.run();
