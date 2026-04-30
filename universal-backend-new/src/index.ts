@@ -10,6 +10,7 @@ import { registerMultiverseRoutes } from "./routes/multiverse.routes";
 import { registerMultiverseSwitchRoutes } from "./routes/multiverse.switch.routes";
 import { registerPersonaRoutes } from "./routes/persona.routes";
 import { registerMemoryRoutes } from "./routes/memory.routes";
+import { registerCognitiveRoutes } from "./routes/cognitive.routes";
 import { universeMiddleware } from "./middleware/universe";
 
 // --- Plugin Routes ---
@@ -50,6 +51,9 @@ registerPersonaRoutes(app);
 // --- Memory Engine ---
 registerMemoryRoutes(app);
 
+// --- Cognitive Engine ---
+registerCognitiveRoutes(app);
+
 // --- Plugins ---
 registerDramaNextDoorRoutes(app);
 registerHoaMemeRoutes(app);
@@ -68,6 +72,7 @@ app.get("/", (c) =>
     multiverse: "/multiverse/list",
     persona: "/persona/list",
     memory: "/memory/recent",
+    cognitive: "/cognitive/state",
     version: "1.0.0",
   })
 );
