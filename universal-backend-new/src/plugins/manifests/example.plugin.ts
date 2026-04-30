@@ -77,4 +77,3 @@ const examplePlugin: PluginManifest = {
 };
 
 export default examplePlugin;
-port default examplePlugin;
