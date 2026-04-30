@@ -102,4 +102,26 @@ declare global {
     recordAutonomyDecision: (action: string, goalId?: string) => Promise<void>;
     listRecent: (limit?: number) => any[];
   };
+
+  //
+  // ────────────────────────────────────────────────
+  //  PLUGIN RUNTIME
+  // ────────────────────────────────────────────────
+  //
+  var plugins: {
+    list: () => any[];
+    get: (id: string) => any;
+    register: (manifest: any) => void;
+    activate: (id: string) => void;
+  };
+
+  //
+  // ────────────────────────────────────────────────
+  //  PLUGIN CAPABILITY ROUTER
+  // ────────────────────────────────────────────────
+  //
+  var pluginCapabilities: {
+    call: (pluginId: string, capability: string, args?: any) => Promise<any>;
+    listCapabilities: (pluginId: string) => string[];
+  };
 }

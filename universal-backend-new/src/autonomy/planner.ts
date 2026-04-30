@@ -1,25 +1,23 @@
-import { AutonomyPolicies } from "./policies";
+import { pluginAutonomyActions } from "./pluginActions";
+import { pluginCapabilityRouter } from "../plugins/runtime/capabilityRouter";
 
-export async function planNextAction(
-  state: any,
-  policies: AutonomyPolicies
-): Promise<
-  | { status: "idle"; reason: string }
-  | { status: "execute"; action: any; args: any; goalId: string }
-> {
-  const goal = globalThis.goals.top();
-  if (!goal) return { status: "idle", reason: "no_goals" };
+export async function planNextAction(state: any, policies: any) {
+  // existing logic…
 
-  const allowed = policies.filterActions(goal, state);
-  if (!allowed.length)
-    return { status: "idle", reason: "no_allowed_actions" };
+  // Add plugin autonomy actions
+  const pluginActions = pluginAutonomyActions.list().map((pa) => ({
+    name: pa.actionName,
+    priority: pa.priority,
+    run: async () => {
+      return pluginCapabilityRouter.call(
+        pa.pluginId,
+        pa.capability,
+        pa.defaultArgs ?? {}
+      );
+    },
+  }));
 
-  const best = allowed[0];
+  const allActions = [...coreActions, ...pluginActions];
 
-  return {
-    status: "execute",
-    action: best,
-    args: best.defaultArgs || {},
-    goalId: goal.id,
-  };
+  // choose best action…
 }

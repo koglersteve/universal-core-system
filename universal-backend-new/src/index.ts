@@ -29,9 +29,18 @@ import { registerMemeMyCatRoutes } from "./routes/mememycat.routes";
 import { registerMemeMyDogRoutes } from "./routes/mememydog.routes";
 import { registerHistoryRoutes } from "./routes/history.routes";
 
+// --- Plugin Runtime ---
+import { loadAllPlugins } from "./plugins/runtime/loader";
+import { initializePlugins } from "./plugins/runtime/lifecycle";
+import { pluginRegistry } from "./plugins/runtime/registry";
+import { registerPluginRoutes } from "./plugins/routes/plugin.routes";
+import { pluginCapabilityRouter } from "./plugins/runtime/capabilityRouter";
+import { registerPluginUIRoutes } from "./plugins/ui/routes";
+
 // --- Autonomy Engine ---
 import { AutonomyEngine } from "./autonomy/engine";
 import { loadPolicies } from "./autonomy/policies";
+import { pluginAutonomyActions } from "./autonomy/pluginActions";
 
 // --- Global Registries ---
 import { ActionRegistry, listActions } from "./autonomy/actions";
@@ -51,6 +60,9 @@ import { registerDashboardRoutes } from "./dashboard/routes";
 // --- Insight Engine ---
 import { insightEngine } from "./insight/engine";
 import { registerInsightEventHandlers } from "./insight/handlers";
+
+// --- Agent Mesh ---
+import { agentMesh } from "./agents/mesh";
 
 const app = new Hono();
 
@@ -72,9 +84,25 @@ globalThis.goals = {
 (globalThis as any).eventBus = eventBus;
 (globalThis as any).dashboardAggregator = dashboardAggregator;
 (globalThis as any).insightEngine = insightEngine;
+(globalThis as any).plugins = pluginRegistry;
+(globalThis as any).pluginCapabilities = pluginCapabilityRouter;
 
 registerAutonomyEventHandlers();
 registerInsightEventHandlers();
+
+// -----------------------------------------------------
+// Load + Initialize Plugins
+// -----------------------------------------------------
+loadAllPlugins();
+initializePlugins();
+pluginAutonomyActions.loadFromPlugins();
+
+// -----------------------------------------------------
+// Start Agent Mesh
+// -----------------------------------------------------
+agentMesh.startAll().then(() => {
+  console.log("Agent Mesh v1 online");
+});
 
 // -----------------------------------------------------
 // CORS
@@ -118,6 +146,8 @@ registerLaffLabRoutes(app);
 registerMemeMyCatRoutes(app);
 registerMemeMyDogRoutes(app);
 registerHistoryRoutes(app);
+registerPluginRoutes(app);
+registerPluginUIRoutes(app);
 
 // -----------------------------------------------------
 // Dashboard Routes
@@ -146,6 +176,8 @@ app.get("/", (c) =>
     behavior: "/behavior/state",
     insights: "/insights/recent",
     dashboard: "/os/dashboard/state",
+    plugins: "/plugins/list",
+    pluginsUI: "/plugins/ui",
     version: "1.0.0",
   })
 );
