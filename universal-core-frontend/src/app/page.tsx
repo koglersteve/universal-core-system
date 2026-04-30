@@ -56,6 +56,14 @@ export default function OSPage() {
           </div>
         </Link>
 
+        {/* Memory Engine Tile */}
+        <Link href="/memory">
+          <div className="p-4 border border-gray-700 rounded-lg bg-black/30 cursor-pointer">
+            <h2 className="text-xl font-semibold">Memory Engine</h2>
+            <p className="text-gray-500 text-sm">Recent events</p>
+          </div>
+        </Link>
+
         {/* OS Modules */}
         {data.modules.map((m: string) => (
           <div
