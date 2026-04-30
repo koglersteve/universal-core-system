@@ -1,57 +1,52 @@
-import { getSystemState } from "./state";
 import { planNextAction } from "./planner";
-import { AutonomyPolicies } from "./policies";
-import { dashboardAggregator } from "../dashboard/aggregator";
-import { eventBus } from "../eventbus/bus";
 
 export class AutonomyEngine {
-  private interval: NodeJS.Timeout | null = null;
+  private running = false;
+  private interval: any;
+  private tickInterval: number;
+  private policies: any;
 
-  constructor(
-    private config: {
-      policies: AutonomyPolicies;
-      tickInterval: number;
-    }
-  ) {}
+  constructor(opts: { tickInterval: number; policies: any }) {
+    this.tickInterval = opts.tickInterval;
+    this.policies = opts.policies;
+  }
 
   start() {
-    console.log("[Autonomy] Starting engine...");
-    this.interval = setInterval(() => this.tick(), this.config.tickInterval);
+    if (this.running) return;
+    this.running = true;
+
+    this.interval = setInterval(() => this.tick(), this.tickInterval);
   }
 
   stop() {
-    if (this.interval) {
-      clearInterval(this.interval);
-      this.interval = null;
-      console.log("[Autonomy] Engine stopped.");
-    }
+    this.running = false;
+    clearInterval(this.interval);
   }
 
-  private async tick() {
-    try {
-      const state = await getSystemState();
-      const decision = await planNextAction(state, this.config.policies);
+  async tick() {
+    const state = {}; // TODO: real state later
 
-      if (decision.status === "execute") {
-        console.log("[Autonomy] Executing:", decision.action.name);
+    const decision = await planNextAction(state, this.policies);
 
-        await decision.action.run(decision.args);
-        globalThis.goals.complete(decision.goalId);
+    // If idle, nothing to do
+    if (decision.status === "idle") {
+      console.log("[Autonomy] Idle");
+      return;
+    }
 
-        dashboardAggregator.setAutonomyDecision(
-          decision.action.name,
-          decision.goalId
-        );
+    // If we have a goal to complete
+    if (decision.goalId) {
+      globalThis.goals.complete(decision.goalId);
+    }
 
-        await eventBus.emit("autonomy:decision_executed", {
-          action: decision.action.name,
-          goalId: decision.goalId,
-        });
-      } else {
-        console.log("[Autonomy] Idle:", decision.reason);
+    // Execute the action
+    if (decision.run) {
+      try {
+        const result = await decision.run();
+        console.log("[Autonomy] Action executed:", decision.action, result);
+      } catch (err) {
+        console.error("[Autonomy] Action failed:", decision.action, err);
       }
-    } catch (err) {
-      console.error("[Autonomy] Tick error:", err);
     }
   }
 }
