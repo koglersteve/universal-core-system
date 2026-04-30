@@ -72,6 +72,22 @@ export default function OSPage() {
           </div>
         </Link>
 
+        {/* Emotional Engine Tile */}
+        <Link href="/emotion">
+          <div className="p-4 border border-gray-700 rounded-lg bg-black/30 cursor-pointer">
+            <h2 className="text-xl font-semibold">Emotional Engine</h2>
+            <p className="text-gray-500 text-sm">Mood + reactions</p>
+          </div>
+        </Link>
+
+        {/* Behavior Engine Tile */}
+        <Link href="/behavior">
+          <div className="p-4 border border-gray-700 rounded-lg bg-black/30 cursor-pointer">
+            <h2 className="text-xl font-semibold">Behavior Engine</h2>
+            <p className="text-gray-500 text-sm">Actions + modes</p>
+          </div>
+        </Link>
+
         {/* OS Modules */}
         {data.modules.map((m: string) => (
           <div
