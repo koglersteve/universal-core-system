@@ -36,10 +36,10 @@ export const LaffLabApi = {
     return api("/history/list");
   },
 
-  addHistory(id: string): Promise<void> {
+  addHistory(jokeId: string): Promise<void> {
     return api("/history/add", {
       method: "POST",
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ jokeId })
     });
   },
 

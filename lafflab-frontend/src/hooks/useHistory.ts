@@ -1,39 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { LaffLabApi, type HistoryItem } from "@/lib/api";
+import { useState, useEffect } from "react";
+import {
+  fetchHistory,
+  addToHistory,
+  clearHistory as clearHistoryApi
+} from "@/store/useHistoryStore";
 
 export function useHistory() {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  async function loadHistory() {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await LaffLabApi.getHistory();
-      setHistory(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to load history");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function clearHistory() {
-    try {
-      await LaffLabApi.clearHistory();
-      setHistory([]);
-    } catch (err) {
-      console.error("Failed to clear history", err);
-    }
-  }
 
   useEffect(() => {
-    loadHistory();
+    async function load() {
+      const data = await fetchHistory();
+      setHistory(data);
+      setLoading(false);
+    }
+    load();
   }, []);
 
-  return { history, loading, error, reload: loadHistory, clearHistory };
+  async function add(jokeId: string) {
+    await addToHistory(jokeId);
+    setHistory(await fetchHistory());
+  }
+
+  async function clear() {
+    await clearHistoryApi();
+    setHistory([]);
+  }
+
+  return { history, loading, add, clear };
 }
 
