@@ -1,54 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/api/LaffLabApi";
-import type { Joke, Category } from "@/lib/api/types";
+import { create } from "zustand";
 
-export function useJokeStore() {
-  const [jokes, setJokes] = useState<Joke[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+type JokeStore = {
+  jokes: any[];
+  loading: boolean;
+  error: string | null;
+  loadJokes: () => Promise<void>;
+};
 
-  async function loadJokes() {
+export const useJokeStore = create<JokeStore>((set) => ({
+  jokes: [],
+  loading: false,
+  error: null,
+
+  loadJokes: async () => {
     try {
-      setLoading(true);
-      setError(null);
+      set({ loading: true, error: null });
 
-      const data = await LaffLabApi.jokes.list();
-      setJokes(data);
+      const data = await LaffLabApi.getJokes(); // correct API call
+      set({ jokes: data });
     } catch (err: any) {
-      setError(err.message || "Failed to load jokes");
+      set({ error: err.message || "Failed to load jokes" });
     } finally {
-      setLoading(false);
+      set({ loading: false });
     }
   }
-
-  async function loadCategories() {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const data = await LaffLabApi.getCategories();
-      setCategories(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to load categories");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    // Load both in parallel
-    Promise.all([loadJokes(), loadCategories()]);
-  }, []);
-
-  return {
-    jokes,
-    categories,
-    loading,
-    error,
-    reloadJokes: loadJokes,
-    reloadCategories: loadCategories,
-  };
-}
+}));
