@@ -1,28 +1,32 @@
 "use client";
 
-import { LaffLabApi } from "@/lib/api";
-import { useRitualStore } from "@/store/useRitualStore";
+import { useState, useEffect } from "react";
+import {
+  fetchDailyRitual,
+  setDailyRitualMessage
+} from "@/store/useRitualStore";
+import type { Ritual } from "@/lib/api";
 
 export function useRitual() {
-  const ritual = useRitualStore((s) => s.ritual);
-  const loading = useRitualStore((s) => s.loading);
-  const error = useRitualStore((s) => s.error);
-  const setRitual = useRitualStore((s) => s.setRitual);
-  const setLoading = useRitualStore((s) => s.setLoading);
-  const setError = useRitualStore((s) => s.setError);
+  const [ritual, setRitual] = useState<Ritual | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  async function generateRitual() {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await LaffLabApi.generateRitual();
-      setRitual(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to generate ritual");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await fetchDailyRitual();
+        setRitual(data);
+      } finally {
+        setLoading(false);
+      }
     }
+    load();
+  }, []);
+
+  async function updateMessage(message: string) {
+    const updated = await setDailyRitualMessage(message);
+    setRitual(updated);
   }
 
-  return { ritual, loading, error, generateRitual };
+  return { ritual, loading, updateMessage };
 }
