@@ -2,9 +2,9 @@
 
 export default function ErrorPage({ error }: { error: Error }) {
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Error</h1>
-      <p>{error.message}</p>
-    </div>
+    <main className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-3xl font-bold mb-4">Something went wrong</h1>
+      <p className="text-red-600">{error.message}</p>
+    </main>
   );
 }
