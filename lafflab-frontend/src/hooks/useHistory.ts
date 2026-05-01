@@ -1,44 +1,41 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HistoryItem } from "@/lib/models";
-import { LAFFLAB_HISTORY_KEY } from "@/lib/constants";
 import { computeStreak } from "@/lib/time";
+import { LaffLabApi } from "@/lib/api/LaffLabApi";
 
 export function useHistory() {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(LAFFLAB_HISTORY_KEY);
-    if (stored) setHistory(JSON.parse(stored));
+  async function loadHistory() {
+    setLoading(true);
+    const data = await LaffLabApi.history.list();
+    setHistory(data);
     setLoading(false);
+  }
+
+  async function addToHistory(id: string) {
+    await LaffLabApi.history.add(id);
+    await loadHistory();
+  }
+
+  async function clearHistory() {
+    await LaffLabApi.history.clear();
+    await loadHistory();
+  }
+
+  useEffect(() => {
+    loadHistory();
   }, []);
-
-  function save(list: HistoryItem[]) {
-    const sorted = [...list].sort((a, b) => b.viewedAt - a.viewedAt);
-    setHistory(sorted);
-    localStorage.setItem(LAFFLAB_HISTORY_KEY, JSON.stringify(sorted));
-  }
-
-  function addToHistory(id: string) {
-    const exists = history.find((h) => h.id === id);
-    if (exists) return;
-
-    const updated = [...history, { id, viewedAt: Date.now() }];
-    save(updated);
-  }
-
-  function loadHistory() {
-    const stored = localStorage.getItem(LAFFLAB_HISTORY_KEY);
-    if (stored) setHistory(JSON.parse(stored));
-  }
 
   return {
     history,
     addToHistory,
+    clearHistory,
     loadHistory,
     loading,
     streak: computeStreak(history),
   };
 }
+

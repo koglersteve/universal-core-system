@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { getHistory } from "@/app/history/store";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const history = await getHistory(); // fetch from backend
-    return NextResponse.json(history);
+    const items = await prisma.history.findMany({
+      orderBy: { viewedAt: "desc" }
+    });
+
+    return NextResponse.json(items);
   } catch (err) {
-    console.error("History fetch failed:", err);
-    return NextResponse.json(
-      { error: "Failed to load history" },
-      { status: 500 }
-    );
+    console.error("Error loading history:", err);
+    return NextResponse.json([], { status: 500 });
   }
 }
 

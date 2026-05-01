@@ -32,3 +32,9 @@ model DramaView {
   clip      DramaClip  @relation(fields: [clipId], references: [id])
   createdAt DateTime   @default(now())
 }
+
+model History {
+  id        String   @id
+  userId    String
+  viewedAt  BigInt
+}
