@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getFavorites, addFavorite, removeFavorite } from "@/store/useFavoritesStore";
+import {
+  getFavorites,
+  addFavorite,
+  removeFavorite
+} from "@/store/useFavoritesStore";
 import type { Joke } from "@/lib/api";
 
 export function useFavorites() {
@@ -22,18 +26,18 @@ export function useFavorites() {
 
   async function add(joke: Joke) {
     await addFavorite(joke.id);
-    setFavorites((prev) =>
-      prev.some((f) => f.id === joke.id) ? prev : [...prev, joke]
+    setFavorites(prev =>
+      prev.some(f => f.id === joke.id) ? prev : [...prev, joke]
     );
   }
 
   async function remove(id: string) {
     await removeFavorite(id);
-    setFavorites((prev) => prev.filter((f) => f.id !== id));
+    setFavorites(prev => prev.filter(f => f.id !== id));
   }
 
   function isFavorite(id: string) {
-    return favorites.some((f) => f.id === id);
+    return favorites.some(f => f.id === id);
   }
 
   return { favorites, add, remove, isFavorite, loading };
