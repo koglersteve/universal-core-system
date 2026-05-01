@@ -12,7 +12,6 @@ export function useCategories() {
     try {
       setLoading(true);
       setError(null);
-
       const data = await LaffLabApi.getCategories();
       setCategories(data);
     } catch (err: any) {
@@ -26,10 +25,5 @@ export function useCategories() {
     loadCategories();
   }, []);
 
-  return {
-    categories,
-    loading,
-    error,
-    reload: loadCategories,
-  };
+  return { categories, loading, error, reload: loadCategories };
 }

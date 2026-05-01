@@ -1,18 +1,34 @@
 "use client";
 
-import { useCategories } from "./useCategories";
+import { useEffect, useState } from "react";
+import { LaffLabApi, type Category } from "@/lib/api";
 
 export function useRandomCategory() {
-  const { categories, loading } = useCategories();
+  const [category, setCategory] = useState<Category | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  function getRandomCategory() {
-    if (categories.length === 0) return null;
-    const index = Math.floor(Math.random() * categories.length);
-    return categories[index];
+  async function loadRandomCategory() {
+    try {
+      setLoading(true);
+      setError(null);
+      const categories = await LaffLabApi.getCategories();
+      if (categories.length === 0) {
+        setCategory(null);
+        return;
+      }
+      const idx = Math.floor(Math.random() * categories.length);
+      setCategory(categories[idx]);
+    } catch (err: any) {
+      setError(err.message || "Failed to load random category");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  return {
-    loading,
-    getRandomCategory,
-  };
+  useEffect(() => {
+    loadRandomCategory();
+  }, []);
+
+  return { category, loading, error, reload: loadRandomCategory };
 }

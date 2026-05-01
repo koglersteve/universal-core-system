@@ -1,25 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { LaffLabApi } from "@/lib/api/LaffLabApi";
+import { create } from "zustand";
+import type { Ritual } from "@/lib/api";
 
-export function useRitualStore() {
-  const [ritualMessage, setRitualMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function generateRitual() {
-    try {
-      setLoading(true);
-      const data = await LaffLabApi.generateRitual();
-      setRitualMessage(data.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return {
-    ritualMessage,
-    generateRitual,
-    loading,
-  };
+interface RitualState {
+  ritual: Ritual | null;
+  loading: boolean;
+  error: string | null;
+  setRitual: (ritual: Ritual | null) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
 }
+
+export const useRitualStore = create<RitualState>((set) => ({
+  ritual: null,
+  loading: false,
+  error: null,
+  setRitual: (ritual) => set({ ritual }),
+  setLoading: (loading) => set({ loading }),
+  setError: (error) => set({ error }),
+}));

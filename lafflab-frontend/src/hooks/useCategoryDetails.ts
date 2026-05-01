@@ -1,24 +1,30 @@
 "use client";
 
-import { useCategories } from "./useCategories";
-import { useJokesByCategory } from "./useJokesByCategory";
+import { useEffect, useState } from "react";
+import { LaffLabApi, type Category } from "@/lib/api";
 
-export function useCategoryDetails(categoryId: string | null) {
-  const { categories, loading: loadingCategories } = useCategories();
-  const {
-    jokes,
-    loading: loadingJokes,
-    error,
-    reload,
-  } = useJokesByCategory(categoryId);
+export function useCategoryDetails(id: string | null) {
+  const [category, setCategory] = useState<Category | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const category = categories.find((c) => c.id === categoryId) || null;
+  async function loadCategory() {
+    if (!id) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await LaffLabApi.getCategory(id);
+      setCategory(data);
+    } catch (err: any) {
+      setError(err.message || "Failed to load category");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  return {
-    category,
-    jokes,
-    loading: loadingCategories || loadingJokes,
-    error,
-    reload,
-  };
+  useEffect(() => {
+    loadCategory();
+  }, [id]);
+
+  return { category, loading, error, reload: loadCategory };
 }

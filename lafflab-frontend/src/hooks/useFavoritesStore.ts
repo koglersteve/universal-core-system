@@ -1,41 +1,27 @@
 "use client";
 
 import { create } from "zustand";
+import type { Joke } from "@/lib/api";
 
-type FavoritesStore = {
-  favorites: string[];
-  loading: boolean;
-  loadFavorites: () => void;
-  toggleFavorite: (id: string) => void;
-};
+interface FavoritesState {
+  favorites: Joke[];
+  addFavorite: (joke: Joke) => void;
+  removeFavorite: (id: string) => void;
+  isFavorite: (id: string) => boolean;
+}
 
-export const useFavoritesStore = create<FavoritesStore>((set) => ({
+export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   favorites: [],
-  loading: false,
-
-  loadFavorites: () => {
-    set({ loading: true });
-
-    try {
-      const stored = localStorage.getItem("favorites");
-      const parsed = stored ? JSON.parse(stored) : [];
-      set({ favorites: parsed });
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  toggleFavorite: (id: string) => {
-    set((state) => {
-      const exists = state.favorites.includes(id);
-      const updated = exists
-        ? state.favorites.filter((x) => x !== id)
-        : [...state.favorites, id];
-
-      localStorage.setItem("favorites", JSON.stringify(updated));
-
-      return { favorites: updated };
-    });
-  }
+  addFavorite: (joke) =>
+    set((state) =>
+      state.favorites.some((f) => f.id === joke.id)
+        ? state
+        : { favorites: [...state.favorites, joke] }
+    ),
+  removeFavorite: (id) =>
+    set((state) => ({
+      favorites: state.favorites.filter((f) => f.id !== id),
+    })),
+  isFavorite: (id) => get().favorites.some((f) => f.id === id),
 }));
 

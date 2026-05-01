@@ -1,44 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FavoriteItem } from "@/lib/models";
-import { LAFFLAB_FAVORITES_KEY } from "@/lib/constants";
+import { useFavoritesStore } from "@/store/useFavoritesStore";
+import type { Joke } from "@/lib/api";
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const favorites = useFavoritesStore((s) => s.favorites);
+  const addFavorite = useFavoritesStore((s) => s.addFavorite);
+  const removeFavorite = useFavoritesStore((s) => s.removeFavorite);
+  const isFavorite = useFavoritesStore((s) => s.isFavorite);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(LAFFLAB_FAVORITES_KEY);
-    if (stored) setFavorites(JSON.parse(stored));
-    setLoading(false);
-  }, []);
-
-  function save(list: FavoriteItem[]) {
-    const sorted = [...list].sort((a, b) => b.favoritedAt - a.favoritedAt);
-    setFavorites(sorted);
-    localStorage.setItem(LAFFLAB_FAVORITES_KEY, JSON.stringify(sorted));
+  function toggleFavorite(joke: Joke) {
+    if (isFavorite(joke.id)) {
+      removeFavorite(joke.id);
+    } else {
+      addFavorite(joke);
+    }
   }
 
-  function toggleFavorite(id: string) {
-    const exists = favorites.find((f) => f.id === id);
-
-    const updated = exists
-      ? favorites.filter((f) => f.id !== id)
-      : [...favorites, { id, favoritedAt: Date.now() }];
-
-    save(updated);
-  }
-
-  function loadFavorites() {
-    const stored = localStorage.getItem(LAFFLAB_FAVORITES_KEY);
-    if (stored) setFavorites(JSON.parse(stored));
-  }
-
-  return {
-    favorites,
-    toggleFavorite,
-    loadFavorites,
-    loading,
-  };
+  return { favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite };
 }
