@@ -1,7 +1,7 @@
 "use client";
 
-import { useCategories } from "@/src/hooks/useCategories";
-import CategoryCard from "@/src/components/CategoryCard";
+import { useCategories } from "@/hooks/useCategories";
+import CategoryCard from "@/components/CategoryCard";
 
 export default function ExploreHumor() {
   const { categories, loading } = useCategories();

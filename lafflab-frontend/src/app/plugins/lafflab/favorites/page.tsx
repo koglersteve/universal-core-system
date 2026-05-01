@@ -1,7 +1,7 @@
 "use client";
 
-import { useFavoritesStore } from "@/src/hooks/useFavoritesStore";
-import JokeCard from "@/src/components/JokeCard";
+import { useFavoritesStore } from "@/hooks/useFavoritesStore";
+import JokeCard from "@/components/JokeCard";
 
 export default function FavoritesPage() {
   const { favorites } = useFavoritesStore();
