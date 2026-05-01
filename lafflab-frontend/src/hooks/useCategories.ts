@@ -1,29 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LaffLabApi, type Category } from "@/lib/api";
+import { LaffLabApi } from "@/lib/api";
+import type { Category } from "@/types/category";
 
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  async function loadCategories() {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await LaffLabApi.getCategories();
-      setCategories(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to load categories");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   useEffect(() => {
-    loadCategories();
+    async function load() {
+      const data = await LaffLabApi.getCategories();
+      setCategories(data);
+      setLoading(false);
+    }
+    load();
   }, []);
 
-  return { categories, loading, error, reload: loadCategories };
+  return { categories, loading };
 }
