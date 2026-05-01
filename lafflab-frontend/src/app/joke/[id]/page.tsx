@@ -38,7 +38,7 @@ export default function JokePage() {
   }, [id, addToHistory]);
 
   if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorView message="Failed to load joke." />;
+  if (error) return <ErrorView error="Failed to load joke." />;
   if (!joke) return <EmptyState message="Joke not found." />;
 
   return (
