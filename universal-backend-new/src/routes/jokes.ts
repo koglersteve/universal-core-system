@@ -8,16 +8,31 @@ import {
 
 export const jokesRoute = new Hono();
 
-jokesRoute.get("/", async (c) => c.json(await getAllJokes()));
-
-jokesRoute.get("/:id", async (c) => {
-  const id = c.req.param("id");
-  return c.json(await getJokeById(id));
+// GET /jokes
+jokesRoute.get("/", async (c) => {
+  const jokes = await getAllJokes();
+  return c.json(jokes);
 });
 
-jokesRoute.get("/random", async (c) => c.json(await getRandomJoke()));
+// GET /jokes/:id
+jokesRoute.get("/:id", async (c) => {
+  const id = c.req.param("id");
+  const joke = await getJokeById(id);
+  return c.json(joke);
+});
 
+// GET /jokes/random
+jokesRoute.get("/random", async (c) => {
+  const joke = await getRandomJoke();
+  return c.json(joke);
+});
+
+// GET /jokes/by-category?categoryId=...
 jokesRoute.get("/by-category", async (c) => {
   const categoryId = c.req.query("categoryId");
-  return c.json(await getJokesByCategory(categoryId));
+  if (!categoryId) {
+    return c.json([]);
+  }
+  const jokes = await getJokesByCategory(categoryId);
+  return c.json(jokes);
 });
