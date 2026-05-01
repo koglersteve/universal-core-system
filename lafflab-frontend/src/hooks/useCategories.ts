@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/api/LaffLabApi";
-import type { Category } from "@/lib/api/types";
+import { LaffLabApi, type Category } from "@/lib/api";
 
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
