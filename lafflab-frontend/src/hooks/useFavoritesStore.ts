@@ -2,8 +2,15 @@
 
 import { create } from "zustand";
 
-export const useFavoritesStore = create((set) => ({
-  favorites: [] as string[],
+type FavoritesStore = {
+  favorites: string[];
+  loading: boolean;
+  loadFavorites: () => void;
+  toggleFavorite: (id: string) => void;
+};
+
+export const useFavoritesStore = create<FavoritesStore>((set) => ({
+  favorites: [],
   loading: false,
 
   loadFavorites: () => {
@@ -19,10 +26,10 @@ export const useFavoritesStore = create((set) => ({
   },
 
   toggleFavorite: (id: string) => {
-    set((state: any) => {
+    set((state) => {
       const exists = state.favorites.includes(id);
       const updated = exists
-        ? state.favorites.filter((x: string) => x !== id)
+        ? state.favorites.filter((x) => x !== id)
         : [...state.favorites, id];
 
       localStorage.setItem("favorites", JSON.stringify(updated));
