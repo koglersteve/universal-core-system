@@ -7,22 +7,22 @@ export const lafflabPlugin: PluginManifest = {
 
   capabilities: {
     generateJoke: async (args, context) => {
-      return context.call("generateJoke", args);
+      return {};
     },
     getCategories: async (args, context) => {
-      return context.call("getCategories", args);
+      return {};
     },
     getJokeById: async (args, context) => {
-      return context.call("getJokeById", args);
+      return {};
     },
     recordView: async (args, context) => {
-      return context.call("recordView", args);
+      return {};
     },
     toggleFavorite: async (args, context) => {
-      return context.call("toggleFavorite", args);
+      return {};
     },
     generateDailyRitual: async (args, context) => {
-      return context.call("generateDailyRitual", args);
+      return {};
     }
   },
 
@@ -46,9 +46,9 @@ export const lafflabPlugin: PluginManifest = {
   agents: [
     {
       id: "lafflab-curator",
-      role: "system",
+      role: "user",
       onEvent: async (event, payload) => {
-        // placeholder for Step E
+        // placeholder
       }
     }
   ]
