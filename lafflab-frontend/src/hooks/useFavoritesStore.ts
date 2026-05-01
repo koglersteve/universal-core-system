@@ -1,27 +1,40 @@
 "use client";
 
-import { create } from "zustand";
+import { useState, useEffect } from "react";
+import { getFavorites, addFavorite, removeFavorite } from "@/store/useFavoritesStore";
 import type { Joke } from "@/lib/api";
 
-interface FavoritesState {
-  favorites: Joke[];
-  addFavorite: (joke: Joke) => void;
-  removeFavorite: (id: string) => void;
-  isFavorite: (id: string) => boolean;
+export function useFavorites() {
+  const [favorites, setFavorites] = useState<Joke[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getFavorites();
+        setFavorites(data);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  async function add(joke: Joke) {
+    await addFavorite(joke.id);
+    setFavorites((prev) =>
+      prev.some((f) => f.id === joke.id) ? prev : [...prev, joke]
+    );
+  }
+
+  async function remove(id: string) {
+    await removeFavorite(id);
+    setFavorites((prev) => prev.filter((f) => f.id !== id));
+  }
+
+  function isFavorite(id: string) {
+    return favorites.some((f) => f.id === id);
+  }
+
+  return { favorites, add, remove, isFavorite, loading };
 }
-
-export const useFavoritesStore = create<FavoritesState>((set, get) => ({
-  favorites: [],
-  addFavorite: (joke) =>
-    set((state) =>
-      state.favorites.some((f) => f.id === joke.id)
-        ? state
-        : { favorites: [...state.favorites, joke] }
-    ),
-  removeFavorite: (id) =>
-    set((state) => ({
-      favorites: state.favorites.filter((f) => f.id !== id),
-    })),
-  isFavorite: (id) => get().favorites.some((f) => f.id === id),
-}));
-
