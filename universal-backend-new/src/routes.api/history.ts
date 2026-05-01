@@ -9,6 +9,7 @@ router.get("/list", async (c) => {
     const items = await prisma.history.findMany({
       orderBy: { viewedAt: "desc" },
     });
+
     return c.json(items);
   } catch (err) {
     console.error("History list error:", err);
@@ -16,20 +17,22 @@ router.get("/list", async (c) => {
   }
 });
 
-// POST /history/add
+// POST /history/add  { jokeId: string }
 router.post("/add", async (c) => {
   try {
     const body = await c.req.json();
-    const { id } = body;
+    const { jokeId } = body;
 
-    if (!id) return c.json({ error: "Missing id" }, 400);
+    if (!jokeId) {
+      return c.json({ error: "Missing jokeId" }, 400);
+    }
 
     const userId = "anonymous";
 
     const item = await prisma.history.create({
       data: {
-        id,
         userId,
+        jokeId,
         viewedAt: BigInt(Date.now()),
       },
     });
@@ -46,7 +49,9 @@ router.post("/clear", async (c) => {
   try {
     const userId = "anonymous";
 
-    await prisma.history.deleteMany({ where: { userId } });
+    await prisma.history.deleteMany({
+      where: { userId },
+    });
 
     return c.json({ success: true });
   } catch (err) {
