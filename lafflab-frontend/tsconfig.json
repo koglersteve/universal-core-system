@@ -36,7 +36,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-, "src/app/api/health/route.ts", "src/app/api/daily-ritual/generate/route.ts", "src/app/api/history/list/route.ts", "src/app/api/jokes/[id]/route.ts", "src/app/api/jokes/by-category/route.ts", "src/app/api/jokes/random/route.ts"  ],
+, "../universal-backend-new/src/app/api/health/route.ts", "../universal-backend-new/src/app/api/daily-ritual/generate/route.ts", "../universal-backend-new/src/app/api/history/list/route.ts", "../universal-backend-new/src/app/api/jokes/[id]/route.ts", "../universal-backend-new/src/app/api/jokes/by-category/route.ts", "../universal-backend-new/src/app/api/jokes/random/route.ts"  ],
   "exclude": [
     "node_modules"
   ]
