@@ -11,7 +11,7 @@ import { useHistory } from "@/hooks/useHistory";
 
 export default function JokePage() {
   const { id } = useParams();
-  const { record } = useHistory();
+  const { addToHistory } = useHistory();
 
   const [joke, setJoke] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ export default function JokePage() {
           setError(true);
         } else {
           setJoke(data);
-          record(data.id);
+          addToHistory(data.id);
         }
       } catch (err) {
         setError(true);
@@ -35,7 +35,7 @@ export default function JokePage() {
     }
 
     load();
-  }, [id, record]);
+  }, [id, addToHistory]);
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorView message="Failed to load joke." />;
