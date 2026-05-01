@@ -1,21 +1,44 @@
 "use client";
 
-import { useFavoritesStore } from "@/store/useFavoritesStore";
+import { useState, useEffect } from "react";
+import {
+  getFavorites,
+  addFavorite,
+  removeFavorite
+} from "@/store/useFavoritesStore";
 import type { Joke } from "@/lib/api";
 
 export function useFavorites() {
-  const favorites = useFavoritesStore((s) => s.favorites);
-  const addFavorite = useFavoritesStore((s) => s.addFavorite);
-  const removeFavorite = useFavoritesStore((s) => s.removeFavorite);
-  const isFavorite = useFavoritesStore((s) => s.isFavorite);
+  const [favorites, setFavorites] = useState<Joke[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  function toggleFavorite(joke: Joke) {
-    if (isFavorite(joke.id)) {
-      removeFavorite(joke.id);
-    } else {
-      addFavorite(joke);
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getFavorites();
+        setFavorites(data);
+      } finally {
+        setLoading(false);
+      }
     }
+    load();
+  }, []);
+
+  async function add(joke: Joke) {
+    await addFavorite(joke.id);
+    setFavorites(prev =>
+      prev.some(f => f.id === joke.id) ? prev : [...prev, joke]
+    );
   }
 
-  return { favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite };
+  async function remove(id: string) {
+    await removeFavorite(id);
+    setFavorites(prev => prev.filter(f => f.id !== id));
+  }
+
+  function isFavorite(id: string) {
+    return favorites.some(f => f.id === id);
+  }
+
+  return { favorites, add, remove, isFavorite, loading };
 }
