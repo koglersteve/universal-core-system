@@ -6,38 +6,27 @@ export const lafflabPlugin: PluginManifest = {
   version: "2.0.0",
 
   capabilities: {
-    generateJoke: {},
-    getCategories: {},
-    getJokeById: {},
-    recordView: {},
-    toggleFavorite: {},
-    generateDailyRitual: {}
+    generateJoke: async (args, context) => {
+      return context.call("generateJoke", args);
+    },
+    getCategories: async (args, context) => {
+      return context.call("getCategories", args);
+    },
+    getJokeById: async (args, context) => {
+      return context.call("getJokeById", args);
+    },
+    recordView: async (args, context) => {
+      return context.call("recordView", args);
+    },
+    toggleFavorite: async (args, context) => {
+      return context.call("toggleFavorite", args);
+    },
+    generateDailyRitual: async (args, context) => {
+      return context.call("generateDailyRitual", args);
+    }
   },
 
-  ui: {
-    routes: [
-      {
-        id: "lafflab-dashboard",
-        name: "LAFFlab Dashboard",
-        route: "/plugins/lafflab"
-      },
-      {
-        id: "lafflab-explore",
-        name: "Explore Humor",
-        route: "/plugins/lafflab/explore"
-      },
-      {
-        id: "lafflab-favorites",
-        name: "Favorites",
-        route: "/plugins/lafflab/favorites"
-      },
-      {
-        id: "lafflab-settings",
-        name: "LAFFlab Settings",
-        route: "/plugins/lafflab/settings"
-      }
-    ]
-  },
+  ui: {},
 
   autonomy: {
     actions: [
@@ -57,7 +46,7 @@ export const lafflabPlugin: PluginManifest = {
   agents: [
     {
       id: "lafflab-curator",
-      role: "assistant", // valid AgentRole
+      role: "system",
       onEvent: async (event, payload) => {
         // placeholder for Step E
       }
