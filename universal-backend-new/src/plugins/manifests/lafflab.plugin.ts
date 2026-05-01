@@ -41,15 +41,7 @@ export const lafflabPlugin: PluginManifest = {
         priority: 2
       }
     ]
-  },
+  }
 
-  agents: [
-    {
-      id: "lafflab-curator",
-      role: "user",
-      onEvent: async (event, payload) => {
-        // placeholder
-      }
-    }
-  ]
+  // ❌ agents removed — backend does not accept any AgentRole
 };
