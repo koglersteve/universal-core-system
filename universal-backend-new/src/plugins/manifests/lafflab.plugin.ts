@@ -6,39 +6,16 @@ export const lafflabPlugin: PluginManifest = {
   version: "2.0.0",
 
   capabilities: {
-    generateJoke: {
-      args: {
-        category: "string?",
-        mood: "string?"
-      }
-    },
-    getCategories: {
-      args: {}
-    },
-    getJokeById: {
-      args: {
-        id: "string"
-      }
-    },
-    recordView: {
-      args: {
-        id: "string"
-      }
-    },
-    toggleFavorite: {
-      args: {
-        id: "string"
-      }
-    },
-    generateDailyRitual: {
-      args: {
-        mood: "string?"
-      }
-    }
+    generateJoke: {},
+    getCategories: {},
+    getJokeById: {},
+    recordView: {},
+    toggleFavorite: {},
+    generateDailyRitual: {}
   },
 
   ui: {
-    pages: [
+    routes: [
       {
         id: "lafflab-dashboard",
         name: "LAFFlab Dashboard",
@@ -67,14 +44,12 @@ export const lafflabPlugin: PluginManifest = {
       {
         actionName: "lafflab.autonomy.generateDailyRitual",
         capability: "generateDailyRitual",
-        priority: 5,
-        defaultArgs: {}
+        priority: 5
       },
       {
         actionName: "lafflab.autonomy.refreshCategories",
         capability: "getCategories",
-        priority: 2,
-        defaultArgs: {}
+        priority: 2
       }
     ]
   },
@@ -82,7 +57,7 @@ export const lafflabPlugin: PluginManifest = {
   agents: [
     {
       id: "lafflab-curator",
-      role: "system", // valid AgentRole
+      role: "assistant", // valid AgentRole
       onEvent: async (event, payload) => {
         // placeholder for Step E
       }

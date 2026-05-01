@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export function JokeCard({
+export default function JokeCard({
   joke,
   viewed = false,
 }: {
@@ -51,3 +51,4 @@ export function JokeCard({
     </Link>
   );
 }
+

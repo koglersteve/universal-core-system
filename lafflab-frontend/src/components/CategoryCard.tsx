@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export function CategoryCard({
+export default function CategoryCard({
   category,
 }: {
   category: { id: string; name: string };
