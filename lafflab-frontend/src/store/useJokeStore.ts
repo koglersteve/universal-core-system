@@ -1,4 +1,4 @@
-// Backend‑driven jokes module (no Zustand)
+"use client";
 
 import type { Joke, Category } from "@/lib/api/types";
 
@@ -22,7 +22,7 @@ export async function fetchRandomJoke(): Promise<Joke> {
 
 export async function fetchJokesByCategory(id: string): Promise<Joke[]> {
   const res = await fetch(`/api/jokes/by-category/${id}`, {
-    cache: "no-store",
+    cache: "no-store"
   });
   if (!res.ok) throw new Error("Failed to load jokes by category");
   return res.json();

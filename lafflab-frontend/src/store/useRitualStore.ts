@@ -1,4 +1,4 @@
-// Backend‑driven ritual module (no Zustand)
+"use client";
 
 export async function fetchDailyRitual() {
   const res = await fetch("/api/daily-ritual", { cache: "no-store" });
@@ -10,7 +10,7 @@ export async function setDailyRitualMessage(msg: string) {
   const res = await fetch("/api/daily-ritual", {
     method: "POST",
     body: JSON.stringify({ message: msg }),
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }
   });
 
   if (!res.ok) throw new Error("Failed to update ritual message");
