@@ -1,107 +1,59 @@
-export interface Category {
-  id: string;
-  name: string;
-}
-
-export interface Joke {
-  id: string;
-  text: string;
-  categoryId: string;
-}
-
-export interface HistoryItem {
-  id: string;
-  userId: string;
-  viewedAt: number;
-}
-
-export interface Ritual {
-  id: string;
-  title: string;
-  steps: string[];
-  createdAt: string;
-}
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
-    : "https://universal-core-backend-production.up.railway.app");
+import { api } from "@/lib/client";
+import type { Category } from "@/types/category";
+import type { Joke } from "@/types/jokes";
+import type { HistoryItem } from "@/types/history";
+import type { Ritual } from "@/types/ritual";
 
 export const LaffLabApi = {
   // Categories
-  async getCategories(): Promise<Category[]> {
-    const res = await fetch(`${API_URL}/categories`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch categories");
-    return res.json();
+  getCategories(): Promise<Category[]> {
+    return api("/categories");
   },
 
-  async getCategory(id: string): Promise<Category> {
-    const res = await fetch(`${API_URL}/categories/${id}`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch category");
-    return res.json();
+  getCategory(id: string): Promise<Category> {
+    return api(`/categories/${id}`);
   },
 
   // Jokes
-  async getJokes(): Promise<Joke[]> {
-    const res = await fetch(`${API_URL}/jokes`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch jokes");
-    return res.json();
+  getJokes(): Promise<Joke[]> {
+    return api("/jokes");
   },
 
-  async getJoke(id: string): Promise<Joke> {
-    const res = await fetch(`${API_URL}/jokes/${id}`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch joke");
-    return res.json();
+  getJoke(id: string): Promise<Joke> {
+    return api(`/jokes/${id}`);
   },
 
-  async getRandomJoke(): Promise<Joke> {
-    const res = await fetch(`${API_URL}/jokes/random`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch random joke");
-    return res.json();
+  getRandomJoke(): Promise<Joke> {
+    return api("/jokes/random");
   },
 
-  async getJokesByCategory(categoryId: string): Promise<Joke[]> {
-    const res = await fetch(
-      `${API_URL}/jokes/by-category?categoryId=${categoryId}`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) throw new Error("Failed to fetch jokes by category");
-    return res.json();
+  getJokesByCategory(categoryId: string): Promise<Joke[]> {
+    return api(`/jokes/by-category?categoryId=${categoryId}`);
   },
 
   // History
-  async getHistory(): Promise<HistoryItem[]> {
-    const res = await fetch(`${API_URL}/history/list`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch history");
-    return res.json();
+  getHistory(): Promise<HistoryItem[]> {
+    return api("/history/list");
   },
 
-  async addHistory(id: string): Promise<void> {
-    await fetch(`${API_URL}/history/add`, {
+  addHistory(id: string): Promise<void> {
+    return api("/history/add", {
       method: "POST",
-      body: JSON.stringify({ id }),
-      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id })
     });
   },
 
-  async clearHistory(): Promise<void> {
-    await fetch(`${API_URL}/history/clear`, { method: "POST" });
+  clearHistory(): Promise<void> {
+    return api("/history/clear", { method: "POST" });
   },
 
   // Ritual
-  async generateRitual(): Promise<Ritual> {
-    const res = await fetch(`${API_URL}/daily-ritual/generate`, {
-      method: "POST",
-    });
-    if (!res.ok) throw new Error("Failed to generate ritual");
-    return res.json();
+  generateRitual(): Promise<Ritual> {
+    return api("/daily-ritual/generate", { method: "POST" });
   },
 
   // Health
-  async health(): Promise<{ status: string }> {
-    const res = await fetch(`${API_URL}/health`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Health check failed");
-    return res.json();
-  },
+  health(): Promise<{ status: string }> {
+    return api("/health");
+  }
 };

@@ -14,7 +14,7 @@
   "include": [
     "src/**/*",
     "src/types/hono.d.ts"
-  ]
+, "../lafflab-frontend/src/store/useHistoryStore.ts"  ]
 }
 
 
