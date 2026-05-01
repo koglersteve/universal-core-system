@@ -60,14 +60,22 @@ import { registerDashboardRoutes } from "./dashboard/routes";
 // --- Insight Engine ---
 import { insightEngine } from "./insight/engine";
 import { registerInsightEventHandlers } from "./insight/handlers";
+import { registerInsightRoutes } from "./insight/routes";
 
 // --- Agent Mesh ---
 import { agentMesh } from "./agents/mesh";
 
+// --- NEW BACKEND API ROUTES (converted from Next.js) ---
+import jokesRouter from "./routes.api/jokes";
+import categoriesRouter from "./routes.api/categories";
+import historyApiRouter from "./routes.api/history";
+import dailyRitualRouter from "./routes.api/dailyRitual";
+import healthApiRouter from "./routes.api/health";
+
 const app = new Hono();
 
 // -----------------------------------------------------
-// Global Bindings (must be BEFORE engines start)
+// Global Bindings
 // -----------------------------------------------------
 globalThis.actions = {
   registry: ActionRegistry,
@@ -120,7 +128,7 @@ app.use(
 app.route("/kernel", createKernel());
 
 // -----------------------------------------------------
-// Universe Middleware (global)
+// Universe Middleware
 // -----------------------------------------------------
 app.use("*", universeMiddleware);
 
@@ -157,8 +165,16 @@ registerDashboardRoutes(app);
 // -----------------------------------------------------
 // Insight Routes
 // -----------------------------------------------------
-import { registerInsightRoutes } from "./insight/routes";
 registerInsightRoutes(app);
+
+// -----------------------------------------------------
+// NEW BACKEND API ROUTES (Express → Hono)
+// -----------------------------------------------------
+app.route("/jokes", jokesRouter);
+app.route("/categories", categoriesRouter);
+app.route("/history", historyApiRouter);
+app.route("/daily-ritual", dailyRitualRouter);
+app.route("/health", healthApiRouter);
 
 // -----------------------------------------------------
 // Root Endpoint
@@ -183,7 +199,7 @@ app.get("/", (c) =>
 );
 
 // -----------------------------------------------------
-// Autonomy Engine v1 Boot
+// Autonomy Engine Boot
 // -----------------------------------------------------
 const autonomy = new AutonomyEngine({
   policies: loadPolicies(),
