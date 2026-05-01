@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { LaffLabApi } from "@/lib/api/LaffLabApi";
 
 type JokeStore = {
   jokes: any[];
@@ -18,7 +19,7 @@ export const useJokeStore = create<JokeStore>((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const data = await LaffLabApi.getJokes(); // correct API call
+      const data = await LaffLabApi.getJokes();
       set({ jokes: data });
     } catch (err: any) {
       set({ error: err.message || "Failed to load jokes" });
