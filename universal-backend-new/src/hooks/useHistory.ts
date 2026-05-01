@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   fetchHistory,
   addToHistory,
-  clearHistory
+  clearHistory as clearHistoryApi
 } from "@/store/useHistoryStore";
 import type { Joke } from "@/types/jokes";
 
@@ -31,7 +31,7 @@ export function useHistory() {
   }
 
   async function clear() {
-    await clearHistory();
+    await clearHistoryApi();
     setHistory([]);
   }
 
