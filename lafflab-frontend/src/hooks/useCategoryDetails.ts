@@ -8,7 +8,7 @@ export function useCategoryDetails(id: string | null) {
   useEffect(() => {
     if (!id) return;
 
-    LaffLabApi.getCategoryDetails(id)
+    LaffLabApi.getCategory(id)
       .then((data) => setCategory(data))
       .catch(() => setCategory(null));
   }, [id]);
