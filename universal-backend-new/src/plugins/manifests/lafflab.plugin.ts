@@ -26,22 +26,5 @@ export const lafflabPlugin: PluginManifest = {
     }
   },
 
-  ui: {},
-
-  autonomy: {
-    actions: [
-      {
-        actionName: "lafflab.autonomy.generateDailyRitual",
-        capability: "generateDailyRitual",
-        priority: 5
-      },
-      {
-        actionName: "lafflab.autonomy.refreshCategories",
-        capability: "getCategories",
-        priority: 2
-      }
-    ]
-  }
-
-  // ❌ agents removed — backend does not accept any AgentRole
+  ui: {}
 };
