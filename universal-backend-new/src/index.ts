@@ -65,12 +65,12 @@ import { registerInsightRoutes } from "./insight/routes";
 // --- Agent Mesh ---
 import { agentMesh } from "./agents/mesh";
 
-// --- NEW BACKEND API ROUTES (converted from Next.js) ---
+// --- NEW BACKEND API ROUTES ---
 import jokesRouter from "./routes.api/jokes";
 import categoriesRouter from "./routes.api/categories";
 import historyApiRouter from "./routes.api/history";
 import dailyRitualRouter from "./routes.api/dailyRitual";
-import healthApiRouter from "./routes.api/health";
+// ❌ REMOVED: import healthApiRouter from "./routes.api/health";
 
 const app = new Hono();
 
@@ -168,13 +168,13 @@ registerDashboardRoutes(app);
 registerInsightRoutes(app);
 
 // -----------------------------------------------------
-// NEW BACKEND API ROUTES (Express → Hono)
+// NEW BACKEND API ROUTES
 // -----------------------------------------------------
 app.route("/jokes", jokesRouter);
 app.route("/categories", categoriesRouter);
 app.route("/history", historyApiRouter);
 app.route("/daily-ritual", dailyRitualRouter);
-app.route("/health", healthApiRouter);
+// ❌ REMOVED: app.route("/health", healthApiRouter);
 
 // -----------------------------------------------------
 // Root Endpoint
