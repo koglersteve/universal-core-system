@@ -1,18 +1,22 @@
 import { prisma } from "@/lib/prisma";
 
-export async function getHistory(userId: string) {
-  return prisma.history.findMany({
-    where: { userId },
-    orderBy: { viewedAt: "desc" }
+export async function getAllJokes() {
+  return prisma.joke.findMany();
+}
+
+export async function getJokeById(id: string) {
+  return prisma.joke.findUnique({
+    where: { id }
   });
 }
 
-export async function addHistory(userId: string, jokeId: string) {
-  return prisma.history.create({
-    data: { userId, jokeId, viewedAt: Date.now() }
-  });
+export async function getRandomJoke() {
+  const jokes = await prisma.joke.findMany();
+  return jokes[Math.floor(Math.random() * jokes.length)];
 }
 
-export async function clearHistory(userId: string) {
-  return prisma.history.deleteMany({ where: { userId } });
+export async function getJokesByCategory(categoryId: string) {
+  return prisma.joke.findMany({
+    where: { categoryId }
+  });
 }

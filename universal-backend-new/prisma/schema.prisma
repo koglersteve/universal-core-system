@@ -36,5 +36,9 @@ model DramaView {
 model History {
   id        String   @id
   userId    String
+  jokeId    String
   viewedAt  BigInt
+
+  // Relation to Joke model (must exist in your schema)
+  joke      Joke     @relation(fields: [jokeId], references: [id])
 }
