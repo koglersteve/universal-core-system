@@ -1,41 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { LaffLabApi } from "@/lib/api/LaffLabApi";
+import { create } from "zustand";
 
-export function useFavoritesStore() {
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useFavoritesStore = create((set) => ({
+  favorites: [] as string[],
+  loading: false,
 
-  async function loadFavorites() {
+  loadFavorites: () => {
+    set({ loading: true });
+
     try {
-      setLoading(true);
-      const data = await LaffLabApi.getFavorites();
-      setFavorites(data);
+      const stored = localStorage.getItem("favorites");
+      const parsed = stored ? JSON.parse(stored) : [];
+      set({ favorites: parsed });
     } finally {
-      setLoading(false);
+      set({ loading: false });
     }
+  },
+
+  toggleFavorite: (id: string) => {
+    set((state: any) => {
+      const exists = state.favorites.includes(id);
+      const updated = exists
+        ? state.favorites.filter((x: string) => x !== id)
+        : [...state.favorites, id];
+
+      localStorage.setItem("favorites", JSON.stringify(updated));
+
+      return { favorites: updated };
+    });
   }
+}));
 
-  async function addFavorite(id: string) {
-    await LaffLabApi.addFavorite(id);
-    await loadFavorites();
-  }
-
-  async function removeFavorite(id: string) {
-    await LaffLabApi.removeFavorite(id);
-    await loadFavorites();
-  }
-
-  useEffect(() => {
-    loadFavorites();
-  }, []);
-
-  return {
-    favorites,
-    loading,
-    addFavorite,
-    removeFavorite,
-    reload: loadFavorites,
-  };
-}
