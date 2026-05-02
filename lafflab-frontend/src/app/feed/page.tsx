@@ -2,57 +2,37 @@
 
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
-import type { Joke } from "@/types/jokes";
+import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
 import { motion } from "framer-motion";
 
 export default function FeedPage() {
-  const [items, setItems] = useState<Joke[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-
-  async function loadMore() {
-    setLoading(true);
-
-    const all = await LaffLabApi.getJokes();
-
-    // simulate pagination by chunking
-    const chunk = all.slice((page - 1) * 10, page * 10);
-
-    setItems((prev) => [...prev, ...chunk]);
-    setPage((p) => p + 1);
-    setLoading(false);
-  }
 
   useEffect(() => {
-    loadMore();
+    async function load() {
+      const data = await LaffLabApi.getPosts();
+      setPosts(data);
+      setLoading(false);
+    }
+    load();
   }, []);
 
-  // infinite scroll trigger
-  useEffect(() => {
-    function onScroll() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-        loadMore();
-      }
-    }
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [page]);
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="space-y-6">
-      {items.map((joke) => (
+      {posts.map((post) => (
         <motion.div
-          key={joke.id}
+          key={post.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
         >
-          <JokeCard joke={joke} />
+          <JokeCard post={post} active={false} />
         </motion.div>
       ))}
-
-      {loading && <p className="text-center opacity-70">Loading…</p>}
     </div>
   );
 }
