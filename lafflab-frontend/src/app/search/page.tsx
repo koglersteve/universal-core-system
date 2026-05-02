@@ -15,8 +15,13 @@ export default function SearchPage() {
 
     setLoading(true);
     try {
-      const data = await LaffLabApi.searchJokes(query);
-      setResults(data);
+      const all = await LaffLabApi.getJokes();
+
+      const filtered = all.filter((j) =>
+        j.text.toLowerCase().includes(query.toLowerCase())
+      );
+
+      setResults(filtered);
     } finally {
       setLoading(false);
     }
