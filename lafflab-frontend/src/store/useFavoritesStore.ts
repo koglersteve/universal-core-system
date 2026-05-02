@@ -1,49 +1,72 @@
+// src/store/useFavoritesStore.ts
+
 "use client";
 
 import { create } from "zustand";
-import type { Post } from "@/types/jokes";
-import { LaffLabApi } from "@/lib/api";
+import { LaffLabApi } from "@/lib/LaffLabApi";
 
 interface FavoritesState {
-  favorites: Post[];
+  favorites: Set<string>;
   loading: boolean;
-  hydrated: boolean;
-  hydrate: () => Promise<void>;
-  toggleFavorite: (post: Post) => Promise<void>;
+  initialized: boolean;
+
+  init: () => Promise<void>;
   isFavorite: (id: string) => boolean;
+  toggleFavorite: (id: string) => Promise<void>;
 }
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
-  favorites: [],
+  favorites: new Set(),
   loading: false,
-  hydrated: false,
+  initialized: false,
 
-  async hydrate() {
-    if (get().hydrated) return;
-    set({ loading: true });
-    const favorites = await LaffLabApi.getFavorites();
-    set({ favorites, loading: false, hydrated: true });
-  },
+  // --- Load from server + merge with local cache ---
+  init: async () => {
+    if (get().initialized) return;
 
-  async toggleFavorite(post) {
-    const { favorites } = get();
-    const exists = favorites.some((p) => p.id === post.id);
+    try {
+      const server = await LaffLabApi.getFavorites();
+      const local = JSON.parse(localStorage.getItem("favorites") || "[]");
 
-    // optimistic update
-    if (exists) {
-      set({
-        favorites: favorites.filter((p) => p.id !== post.id),
-      });
-      await LaffLabApi.removeFavorite(post.id);
-    } else {
-      set({
-        favorites: [...favorites, post],
-      });
-      await LaffLabApi.addFavorite(post.id);
+      const merged = new Set([...server.favorites, ...local]);
+
+      set({ favorites: merged, initialized: true });
+
+      localStorage.setItem("favorites", JSON.stringify([...merged]));
+    } catch (err) {
+      console.error("Failed to load favorites:", err);
+      set({ initialized: true });
     }
   },
 
-  isFavorite(id) {
-    return get().favorites.some((p) => p.id === id);
+  isFavorite: (id) => get().favorites.has(id),
+
+  // --- Optimistic toggle with rollback ---
+  toggleFavorite: async (id) => {
+    const { favorites } = get();
+    const isFav = favorites.has(id);
+
+    const updated = new Set(favorites);
+    if (isFav) updated.delete(id);
+    else updated.add(id);
+
+    // Optimistic update
+    set({ favorites: updated });
+    localStorage.setItem("favorites", JSON.stringify([...updated]));
+
+    try {
+      if (isFav) {
+        await LaffLabApi.removeFavorite(id);
+      } else {
+        await LaffLabApi.addFavorite(id);
+      }
+    } catch (err) {
+      console.error("Favorite toggle failed, rolling back:", err);
+
+      // Rollback
+      const rollback = new Set(favorites);
+      set({ favorites: rollback });
+      localStorage.setItem("favorites", JSON.stringify([...rollback]));
+    }
   },
 }));

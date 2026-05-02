@@ -1,104 +1,100 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/api";
+import JokeCard from "@/components/JokeCard";
+import { LaffLabApi } from "@/lib/LaffLabApi";
 import type { HistoryItem } from "@/types/history";
 import type { Post } from "@/types/jokes";
-import JokeCard from "@/components/JokeCard";
 
 export default function HistoryPage() {
-  const [items, setItems] = useState<HistoryItem[]>([]);
-  const [posts, setPosts] = useState<Record<string, Post>>({});
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Extract ANY possible ID field from a history item
-  function extractId(item: HistoryItem): string | null {
-    const possibleKeys = [
-      "postId",
-      "jokeId",
-      "id",
-      "post_id",
-      "joke_id",
-      "contentId",
-      "content_id",
-    ];
-
-    for (const key of possibleKeys) {
-      if (key in item) {
-        const value = (item as any)[key];
-        if (typeof value === "string" && value.trim().length > 0) {
-          return value;
-        }
-      }
-    }
-
-    return null;
-  }
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     async function load() {
-      setLoading(true);
+      try {
+        setLoading(true);
 
-      const history = await LaffLabApi.getHistory();
-      setItems(history);
+        // --- Fetch history ---
+        const historyData = await LaffLabApi.getHistory();
+        if (!mounted) return;
 
-      const ids = history
-        .map((item) => extractId(item))
-        .filter(Boolean) as string[];
+        setHistory(historyData);
 
-      const uniqueIds = [...new Set(ids)];
+        // --- Extract IDs ---
+        const ids = historyData
+          .map((h: HistoryItem) => h.postId || h.jokeId || h.contentId)
+          .filter(Boolean);
 
-      const fetched: Record<string, Post> = {};
-
-      for (const id of uniqueIds) {
-        try {
-          fetched[id] = await LaffLabApi.getPost(id);
-        } catch {
-          // ignore missing posts
+        if (ids.length === 0) {
+          setPosts([]);
+          return;
         }
-      }
 
-      setPosts(fetched);
-      setLoading(false);
+        // --- Fetch posts in parallel ---
+        const results = await Promise.allSettled(
+          ids.map((id: string) => LaffLabApi.getPost(id))
+        );
+
+        if (!mounted) return;
+
+        const validPosts = results
+          .filter((r) => r.status === "fulfilled")
+          .map((r: any) => r.value);
+
+        setPosts(validPosts);
+      } catch (err: any) {
+        console.error("History load failed:", err);
+        if (mounted) setError("Failed to load history");
+      } finally {
+        if (mounted) setLoading(false);
+      }
     }
 
     load();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
+  // --- UI States ---
   if (loading) {
     return (
-      <p className="text-center opacity-70 pt-10">
-        Loading history…
-      </p>
+      <div className="p-6 text-white/70">
+        Loading your history…
+      </div>
     );
   }
 
-  if (items.length === 0) {
+  if (error) {
     return (
-      <p className="text-center opacity-70 pt-10">
-        No history yet. Posts you view will appear here.
-      </p>
+      <div className="p-6 text-red-400">
+        {error}
+      </div>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <div className="p-6 text-white/70">
+        You haven’t viewed any posts yet.
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-10">
-      {items.map((item) => {
-        const id = extractId(item);
-        if (!id) return null;
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-bold text-white">History</h1>
 
-        const post = posts[id];
-        if (!post) return null;
-
-        return (
-          <JokeCard
-            key={item.id}
-            post={post}
-            active={false}
-          />
-        );
-      })}
+      <div className="space-y-4">
+        {posts.map((post) => (
+          <JokeCard key={post.id} post={post} />
+        ))}
+      </div>
     </div>
   );
 }
-

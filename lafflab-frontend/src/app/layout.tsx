@@ -1,5 +1,6 @@
 import Link from "next/link";
 import "./globals.css";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export default function RootLayout({
   children,
@@ -16,6 +17,9 @@ export default function RootLayout({
             <Link href="/creator">Creator</Link>
           </nav>
         </header>
+
+        <AnalyticsTracker />
+
         <main className="app-main">{children}</main>
       </body>
     </html>
