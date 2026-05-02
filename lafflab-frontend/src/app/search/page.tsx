@@ -2,55 +2,50 @@
 
 import { useState } from "react";
 import { LaffLabApi } from "@/lib/api";
-import type { Joke } from "@/types/jokes";
+import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Joke[]>([]);
+  const [results, setResults] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
+  async function search() {
     if (!query.trim()) return;
 
     setLoading(true);
-    try {
-      const all = await LaffLabApi.getJokes();
-      const filtered = all.filter((j) =>
-        j.text.toLowerCase().includes(query.toLowerCase())
-      );
-      setResults(filtered);
-    } finally {
-      setLoading(false);
-    }
+    const all = await LaffLabApi.getPosts();
+
+    const filtered = all.filter((p) =>
+      (p.text ?? "").toLowerCase().includes(query.toLowerCase())
+    );
+
+    setResults(filtered);
+    setLoading(false);
   }
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSearch} className="flex gap-2">
+      <div className="flex gap-2">
         <input
-          type="text"
-          placeholder="Search jokes..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 border rounded px-3 py-2 text-black"
+          className="flex-1 p-2 rounded bg-white/10 border border-white/20"
+          placeholder="Search posts…"
         />
         <button
-          type="submit"
-          className="px-4 py-2 rounded-full bg-brand-pink text-white font-semibold shadow-md
-                     hover:bg-brand-purple hover:-translate-y-0.5 active:scale-95
-                     transition-transform transition-colors"
+          onClick={search}
+          className="px-4 py-2 bg-brand-yellow text-black rounded"
         >
-          Go
+          Search
         </button>
-      </form>
+      </div>
 
-      {loading && <p>Searching…</p>}
+      {loading && <p className="opacity-70">Searching…</p>}
 
       <div className="space-y-4">
-        {results.map((joke) => (
-          <JokeCard key={joke.id} joke={joke} />
+        {results.map((post) => (
+          <JokeCard key={post.id} post={post} active={false} />
         ))}
       </div>
     </div>
