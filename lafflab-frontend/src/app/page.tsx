@@ -14,10 +14,15 @@ export default function HomeFeedPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const touchStartY = useRef<number | null>(null);
   const pulling = useRef(false);
 
+  // -----------------------------
+  // INITIAL LOAD (preload first 10)
+  // -----------------------------
   async function loadInitial() {
     const all = await LaffLabApi.getPosts();
     const sorted = [...all].sort(
@@ -31,6 +36,9 @@ export default function HomeFeedPage() {
     setActiveIndex(0);
   }
 
+  // -----------------------------
+  // LOAD MORE POSTS
+  // -----------------------------
   async function loadMore() {
     if (loadingMore) return;
     setLoadingMore(true);
@@ -51,32 +59,44 @@ export default function HomeFeedPage() {
     setLoadingMore(false);
   }
 
+  // -----------------------------
+  // PULL TO REFRESH
+  // -----------------------------
   async function refresh() {
     setRefreshing(true);
     await loadInitial();
     setRefreshing(false);
+
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
+  // -----------------------------
+  // SCROLL TO INDEX
+  // -----------------------------
   function scrollToIndex(index: number) {
     if (!scrollRef.current) return;
     const container = scrollRef.current;
     const child = container.children[index] as HTMLElement | undefined;
     if (!child) return;
+
     container.scrollTo({
       top: child.offsetTop,
       behavior: "smooth",
     });
   }
 
-  // Initial preload
+  // -----------------------------
+  // INITIAL LOAD
+  // -----------------------------
   useEffect(() => {
     loadInitial();
   }, []);
 
-  // Auto‑advance when a joke "finishes"
+  // -----------------------------
+  // AUTO‑ADVANCE WHEN JOKE FINISHES
+  // -----------------------------
   useEffect(() => {
     if (!items[activeIndex]) return;
 
@@ -88,11 +108,11 @@ export default function HomeFeedPage() {
 
     const timer = setTimeout(() => {
       const nextIndex = activeIndex + 1;
+
       if (nextIndex < items.length) {
         setActiveIndex(nextIndex);
         scrollToIndex(nextIndex);
       } else {
-        // End of loaded items: try to load more, then advance if possible
         loadMore().then(() => {
           setTimeout(() => {
             setActiveIndex((idx) =>
@@ -107,22 +127,29 @@ export default function HomeFeedPage() {
     return () => clearTimeout(timer);
   }, [activeIndex, items]);
 
-  // Track active index based on scroll position
+  // -----------------------------
+  // TRACK ACTIVE INDEX ON SCROLL
+  // -----------------------------
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
     function onScroll() {
-      const { scrollTop, clientHeight } = container;
+      if (!scrollRef.current) return;
+      const el = scrollRef.current;
+
+      const scrollTop = el.scrollTop;
+      const clientHeight = el.clientHeight;
+
       const index = Math.round(scrollTop / clientHeight);
+
       if (index !== activeIndex && index >= 0 && index < items.length) {
         setActiveIndex(index);
       }
 
-      // Load more when near bottom
       if (
         scrollTop + clientHeight >=
-        container.scrollHeight - clientHeight * 0.5
+        el.scrollHeight - clientHeight * 0.5
       ) {
         loadMore();
       }
@@ -132,7 +159,9 @@ export default function HomeFeedPage() {
     return () => container.removeEventListener("scroll", onScroll);
   }, [activeIndex, items.length]);
 
-  // Pull‑to‑refresh handlers
+  // -----------------------------
+  // PULL‑TO‑REFRESH TOUCH HANDLERS
+  // -----------------------------
   function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
     if (!scrollRef.current) return;
     if (scrollRef.current.scrollTop === 0) {
@@ -144,6 +173,7 @@ export default function HomeFeedPage() {
   function handleTouchMove(e: React.TouchEvent<HTMLDivElement>) {
     if (!pulling.current || touchStartY.current == null) return;
     const delta = e.touches[0].clientY - touchStartY.current;
+
     if (delta > 80 && !refreshing) {
       refresh();
       pulling.current = false;
@@ -156,12 +186,72 @@ export default function HomeFeedPage() {
     touchStartY.current = null;
   }
 
+  // -----------------------------
+  // FULL SLIDE‑DOWN MENU
+  // -----------------------------
+  const menuItems = [
+    { label: "Creator Dashboard", href: "/creator" },
+    { label: "Upload", href: "/upload" },
+    { label: "Favorites", href: "/favorites" },
+    { label: "History", href: "/history" },
+    { label: "Settings", href: "/settings" },
+  ];
+
   return (
     <div className="h-screen flex flex-col bg-black text-white">
+
+      {/* ----------------------------- */}
+      {/* FLOATING TOP‑RIGHT ICON MENU */}
+      {/* ----------------------------- */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={() => setMenuOpen((v) => !v)}
+          className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 text-white"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* ----------------------------- */}
+      {/* SLIDE‑DOWN MENU */}
+      {/* ----------------------------- */}
+      {menuOpen && (
+        <div className="fixed top-0 right-0 w-56 bg-black/90 border-l border-white/10 backdrop-blur z-40 p-4 space-y-3 animate-slideDown">
+          {menuItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="block px-3 py-2 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 transition"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {/* ----------------------------- */}
+      {/* PULL‑TO‑REFRESH HEADER */}
+      {/* ----------------------------- */}
       <div className="h-10 flex items-center justify-center text-xs text-white/70 border-b border-white/10 bg-black/80 backdrop-blur">
         {refreshing ? "Refreshing…" : "Pull down to refresh · LaffLab"}
       </div>
 
+      {/* ----------------------------- */}
+      {/* TIKTOK‑STYLE VERTICAL FEED */}
+      {/* ----------------------------- */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-scroll snap-y snap-mandatory"
@@ -169,7 +259,7 @@ export default function HomeFeedPage() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {items.map((post, index) => (
+        {items.map((post) => (
           <div
             key={post.id}
             className="h-screen snap-start flex items-center justify-center px-2"
