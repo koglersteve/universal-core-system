@@ -18,19 +18,24 @@ export default function HistoryPage() {
       const history = await LaffLabApi.getHistory();
       setItems(history);
 
-      // Fetch all posts referenced in history
-      const uniqueIds = [...new Set(history.map((h) => h.postId))];
+      // Determine the correct ID field
+      const ids = history
+        .map((h) => h.postId || h.jokeId || null)
+        .filter(Boolean) as string[];
 
-      const fetchedPosts: Record<string, Post> = {};
+      const uniqueIds = [...new Set(ids)];
+
+      const fetched: Record<string, Post> = {};
+
       for (const id of uniqueIds) {
         try {
-          fetchedPosts[id] = await LaffLabApi.getPost(id);
+          fetched[id] = await LaffLabApi.getPost(id);
         } catch {
           // ignore missing posts
         }
       }
 
-      setPosts(fetchedPosts);
+      setPosts(fetched);
       setLoading(false);
     }
 
@@ -56,7 +61,10 @@ export default function HistoryPage() {
   return (
     <div className="space-y-6 pb-10">
       {items.map((item) => {
-        const post = posts[item.postId];
+        const id = item.postId || item.jokeId;
+        if (!id) return null;
+
+        const post = posts[id];
         if (!post) return null;
 
         return (
