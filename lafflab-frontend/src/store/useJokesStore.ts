@@ -1,9 +1,9 @@
 import { LaffLabApi } from "@/lib/api";
 
-export async function fetchJokes() {
-  return LaffLabApi.getJokes();
+export async function fetchPosts() {
+  return LaffLabApi.getPosts();
 }
 
-export async function fetchJoke(id: string) {
-  return LaffLabApi.getJoke(id);
+export async function fetchPost(id: string) {
+  return LaffLabApi.getPost(id);
 }

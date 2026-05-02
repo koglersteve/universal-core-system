@@ -1,22 +1,24 @@
 "use client";
 
 import { create } from "zustand";
-import type { Joke } from "@/types/jokes";
+import type { Post } from "@/types/jokes";
 
 interface FavoritesState {
-  favorites: Joke[];
-  addFavorite: (joke: Joke) => void;
+  favorites: Post[];
+  addFavorite: (post: Post) => void;
   removeFavorite: (id: string) => void;
 }
 
 export const useFavoritesStore = create<FavoritesState>((set) => ({
   favorites: [],
-  addFavorite: (joke) =>
+
+  addFavorite: (post) =>
     set((state) => ({
-      favorites: [...state.favorites, joke],
+      favorites: [...state.favorites, post],
     })),
+
   removeFavorite: (id) =>
     set((state) => ({
-      favorites: state.favorites.filter((j) => j.id !== id),
+      favorites: state.favorites.filter((p) => p.id !== id),
     })),
 }));
