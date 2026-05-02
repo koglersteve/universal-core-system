@@ -11,6 +11,8 @@ export default function HomeFeedPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Array of refs for scroll snapping
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   async function loadMore() {
@@ -38,6 +40,7 @@ export default function HomeFeedPage() {
         loadMore();
       }
     }
+
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [page]);
@@ -59,7 +62,9 @@ export default function HomeFeedPage() {
       {items.map((post, index) => (
         <div
           key={post.id}
-          ref={(el) => (itemRefs.current[index] = el)}
+          ref={(el) => {
+            itemRefs.current[index] = el; // ✅ FIXED: callback returns void
+          }}
           className="space-y-3"
         >
           {index !== 0 && index % 8 === 0 && (
