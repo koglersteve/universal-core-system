@@ -41,7 +41,7 @@ export default function JokeCard({ post, active = false }: JokeCardProps) {
       {/* Media */}
       <PostMedia post={post} active={active} />
 
-      {/* Footer / Metadata */}
+      {/* Footer */}
       <div className="mt-3 flex items-center justify-between text-xs text-white/50">
         <span>{new Date(post.createdAt).toLocaleDateString()}</span>
 

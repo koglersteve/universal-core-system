@@ -11,25 +11,34 @@ interface Props {
 export default function PostMedia({ post, active }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
-
-  const isImage = post.mediaType === "image";
-  const isVideo = post.mediaType === "video";
-  const isAudio = post.mediaType === "audio";
 
   // --- TEXT LENGTH ENFORCEMENT (150 chars max) ---
   if (post.text && post.text.length > 150) {
     post.text = post.text.slice(0, 150);
   }
 
+  // --- MEDIA TYPE DETECTION ---
+  const isImage = post.type === "image" || post.type === "meme";
+  const isVideo = post.type === "video";
+  const isAudio = post.type === "audio";
+
+  const mediaUrl =
+    post.imageUrl ||
+    post.videoUrl ||
+    post.audioUrl ||
+    null;
+
+  if (!mediaUrl) return null;
+
   // --- MEDIA LENGTH ENFORCEMENT (30 sec max) ---
-  const enforceMediaDuration = (el: HTMLMediaElement | null) => {
+  const enforceDuration = (el: HTMLMediaElement | null) => {
     if (!el) return;
     if (el.duration > 30) {
-      el.currentTime = 0;
       el.pause();
-      el.src = ""; // disable playback
+      el.src = "";
       setError(true);
     }
   };
@@ -46,7 +55,7 @@ export default function PostMedia({ post, active }: Props) {
     }
   }, [active]);
 
-  // --- Pause when off-screen (IntersectionObserver) ---
+  // --- Pause when off-screen ---
   useEffect(() => {
     const media = videoRef.current || audioRef.current;
     if (!media) return;
@@ -68,13 +77,8 @@ export default function PostMedia({ post, active }: Props) {
     return () => observer.disconnect();
   }, [active]);
 
-  if (!post.mediaUrl) return null;
-
   return (
-    <div
-      className="relative w-full overflow-hidden rounded-xl bg-black/20"
-      style={{ aspectRatio: post.aspectRatio ?? "1 / 1" }}
-    >
+    <div className="relative w-full overflow-hidden rounded-xl bg-black/20">
       {/* Skeleton Loader */}
       {!loaded && !error && (
         <div className="absolute inset-0 animate-pulse bg-white/10 rounded-xl" />
@@ -87,14 +91,14 @@ export default function PostMedia({ post, active }: Props) {
         </div>
       )}
 
-      {/* IMAGE */}
+      {/* IMAGE / MEME */}
       {isImage && !error && (
         <img
-          src={post.mediaUrl}
+          src={post.imageUrl!}
           alt=""
           onLoad={() => setLoaded(true)}
           onError={() => setError(true)}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
+          className={`w-full h-auto object-cover transition-opacity duration-300 ${
             loaded ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -104,16 +108,17 @@ export default function PostMedia({ post, active }: Props) {
       {isVideo && !error && (
         <video
           ref={videoRef}
-          src={post.mediaUrl}
+          src={post.videoUrl!}
+          poster={post.thumbnailUrl}
           playsInline
           muted
           loop
           onLoadedData={(e) => {
-            enforceMediaDuration(e.currentTarget);
+            enforceDuration(e.currentTarget);
             setLoaded(true);
           }}
           onError={() => setError(true)}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
+          className={`w-full h-auto object-cover transition-opacity duration-300 ${
             loaded ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -123,10 +128,10 @@ export default function PostMedia({ post, active }: Props) {
       {isAudio && !error && (
         <audio
           ref={audioRef}
-          src={post.mediaUrl}
+          src={post.audioUrl!}
           controls
           onLoadedData={(e) => {
-            enforceMediaDuration(e.currentTarget);
+            enforceDuration(e.currentTarget);
             setLoaded(true);
           }}
           onError={() => setError(true)}
