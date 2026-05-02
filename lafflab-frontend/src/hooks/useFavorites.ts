@@ -7,14 +7,10 @@ export function useFavorites() {
   const favorites = useFavoritesStore((s) => s.favorites);
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
   const isFavorite = useFavoritesStore((s) => s.isFavorite);
-  const hydrate = useFavoritesStore((s) => s.hydrate);
-  const loading = useFavoritesStore((s) => s.loading);
 
   return {
-    favorites: favorites as Post[],
+    favorites,
     toggleFavorite,
     isFavorite,
-    hydrate,
-    loading,
   };
 }
