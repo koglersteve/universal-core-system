@@ -1,30 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LaffLabApi, type Joke } from "@/lib/api";
+import { LaffLabApi } from "@/lib/api";
+import type { Joke } from "@/types/jokes";
 
 export function useJokesByCategory(categoryId: string | null) {
   const [jokes, setJokes] = useState<Joke[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadJokes() {
-    if (!categoryId) return;
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await LaffLabApi.getJokesByCategory(categoryId);
-      setJokes(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to load jokes by category");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadJokes();
+    if (!categoryId) return;
+
+    async function load() {
+      try {
+        const data = await LaffLabApi.getJokesByCategory(categoryId);
+        setJokes(data);
+      } catch (err) {
+        setError("Failed to load jokes");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
   }, [categoryId]);
 
-  return { jokes, loading, error, reload: loadJokes };
+  return { jokes, loading, error };
 }
