@@ -1,25 +1,39 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LaffLabApi } from "@/lib/api";
+import { LaffLabApi } from "@/lib/LaffLabApi";
 import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
-import { motion } from "framer-motion";
+
+const PAGE_SIZE = 10;
 
 export default function HomeFeedPage() {
   const [items, setItems] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Scroll snapping refs
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const pulling = useRef(false);
 
-  // Infinite scroll sentinel
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  async function loadInitial() {
+    const all = await LaffLabApi.getPosts();
+    const sorted = [...all].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
+    );
+    const first = sorted.slice(0, PAGE_SIZE);
+    setItems(first);
+    setPage(2);
+    setActiveIndex(0);
+  }
 
   async function loadMore() {
-    setLoading(true);
+    if (loadingMore) return;
+    setLoadingMore(true);
 
     const all = await LaffLabApi.getPosts();
     const sorted = [...all].sort(
@@ -28,89 +42,150 @@ export default function HomeFeedPage() {
         new Date(a.createdAt).getTime()
     );
 
-    const chunk = sorted.slice((page - 1) * 10, page * 10);
+    const chunk = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    if (chunk.length > 0) {
+      setItems((prev) => [...prev, ...chunk]);
+      setPage((p) => p + 1);
+    }
 
-    setItems((prev) => [...prev, ...chunk]);
-    setPage((p) => p + 1);
-    setLoading(false);
+    setLoadingMore(false);
   }
 
-  // Initial load
-  useEffect(() => {
-    loadMore();
-  }, []);
-
-  // Infinite scroll via IntersectionObserver
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (first.isIntersecting) {
-          loadMore();
-        }
-      },
-      { rootMargin: "200px" }
-    );
-
-    observer.observe(sentinelRef.current);
-
-    return () => observer.disconnect();
-  }, [sentinelRef.current, page]);
-
-  function scrollToIndex(index: number) {
-    const el = itemRefs.current[index];
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      setActiveIndex(index);
+  async function refresh() {
+    setRefreshing(true);
+    await loadInitial();
+    setRefreshing(false);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
+  function scrollToIndex(index: number) {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const child = container.children[index] as HTMLElement | undefined;
+    if (!child) return;
+    container.scrollTo({
+      top: child.offsetTop,
+      behavior: "smooth",
+    });
+  }
+
+  // Initial preload
+  useEffect(() => {
+    loadInitial();
+  }, []);
+
+  // Auto‑advance when a joke "finishes"
+  useEffect(() => {
+    if (!items[activeIndex]) return;
+
+    const post = items[activeIndex] as any;
+    const durationSeconds =
+      typeof post.duration === "number" && post.duration > 0
+        ? post.duration
+        : 8;
+
+    const timer = setTimeout(() => {
+      const nextIndex = activeIndex + 1;
+      if (nextIndex < items.length) {
+        setActiveIndex(nextIndex);
+        scrollToIndex(nextIndex);
+      } else {
+        // End of loaded items: try to load more, then advance if possible
+        loadMore().then(() => {
+          setTimeout(() => {
+            setActiveIndex((idx) =>
+              idx + 1 < items.length ? idx + 1 : idx
+            );
+            scrollToIndex(activeIndex + 1);
+          }, 200);
+        });
+      }
+    }, durationSeconds * 1000);
+
+    return () => clearTimeout(timer);
+  }, [activeIndex, items]);
+
+  // Track active index based on scroll position
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    function onScroll() {
+      const { scrollTop, clientHeight } = container;
+      const index = Math.round(scrollTop / clientHeight);
+      if (index !== activeIndex && index >= 0 && index < items.length) {
+        setActiveIndex(index);
+      }
+
+      // Load more when near bottom
+      if (
+        scrollTop + clientHeight >=
+        container.scrollHeight - clientHeight * 0.5
+      ) {
+        loadMore();
+      }
+    }
+
+    container.addEventListener("scroll", onScroll);
+    return () => container.removeEventListener("scroll", onScroll);
+  }, [activeIndex, items.length]);
+
+  // Pull‑to‑refresh handlers
+  function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
+    if (!scrollRef.current) return;
+    if (scrollRef.current.scrollTop === 0) {
+      touchStartY.current = e.touches[0].clientY;
+      pulling.current = true;
+    }
+  }
+
+  function handleTouchMove(e: React.TouchEvent<HTMLDivElement>) {
+    if (!pulling.current || touchStartY.current == null) return;
+    const delta = e.touches[0].clientY - touchStartY.current;
+    if (delta > 80 && !refreshing) {
+      refresh();
+      pulling.current = false;
+      touchStartY.current = null;
+    }
+  }
+
+  function handleTouchEnd() {
+    pulling.current = false;
+    touchStartY.current = null;
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="sticky top-0 z-30 bg-brand-dark/80 backdrop-blur border-b border-white/10 p-3 text-center text-sm text-white">
-        Sponsored: Upgrade your day with a laugh 😄
+    <div className="h-screen flex flex-col bg-black text-white">
+      <div className="h-10 flex items-center justify-center text-xs text-white/70 border-b border-white/10 bg-black/80 backdrop-blur">
+        {refreshing ? "Refreshing…" : "Pull down to refresh · LaffLab"}
       </div>
 
-      {items.map((post, index) => (
-        <div
-          key={post.id}
-          ref={(el) => {
-            itemRefs.current[index] = el;
-          }}
-          className="space-y-3"
-        >
-          {index !== 0 && index % 8 === 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="p-3 text-center text-sm bg-white/10 border border-white/20 rounded-xl backdrop-blur"
-            >
-              Ad Space — Promote your brand here
-            </motion.div>
-          )}
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25 }}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-scroll snap-y snap-mandatory"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {items.map((post, index) => (
+          <div
+            key={post.id}
+            className="h-screen snap-start flex items-center justify-center px-2"
           >
-            <JokeCard
-              post={post}
-              active={index === activeIndex}
-            />
-          </motion.div>
-        </div>
-      ))}
+            <div className="w-full max-w-md">
+              <JokeCard post={post} />
+            </div>
+          </div>
+        ))}
 
-      {/* Infinite scroll sentinel */}
-      <div ref={sentinelRef} className="h-1" />
-
-      {loading && (
-        <p className="text-center opacity-70 pb-10">Loading…</p>
-      )}
+        {loadingMore && (
+          <div className="h-20 flex items-center justify-center text-sm text-white/60">
+            Loading more…
+          </div>
+        )}
+      </div>
     </div>
   );
 }
