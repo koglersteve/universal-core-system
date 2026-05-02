@@ -1,7 +1,10 @@
 // src/lib/LaffLabApi.ts
 
+import type { Post } from "@/types/jokes";
+
 export class LaffLabApi {
-  private static BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.lafflab.app";
+  private static BASE =
+    process.env.NEXT_PUBLIC_API_URL || "https://api.lafflab.app";
 
   // --- Core fetch wrapper with retries, timeouts, and unified errors ---
   private static async request<T>(
@@ -33,7 +36,11 @@ export class LaffLabApi {
     } catch (err: any) {
       clearTimeout(timeout);
 
-      if (retries > 0 && (err.name === "AbortError" || err.message.includes("Failed"))) {
+      // Retry on network errors or timeouts
+      if (
+        retries > 0 &&
+        (err.name === "AbortError" || err.message.includes("Failed"))
+      ) {
         return this.request<T>(path, options, retries - 1);
       }
 
@@ -43,15 +50,15 @@ export class LaffLabApi {
   }
 
   // --- Posts ---
-  static async getPost(id: string) {
-    return this.request(`/posts/${id}`);
+  static async getPost(id: string): Promise<Post> {
+    return this.request<Post>(`/posts/${id}`);
   }
 
-  static async getPosts() {
-    return this.request(`/posts`);
+  static async getPosts(): Promise<Post[]> {
+    return this.request<Post[]>(`/posts`);
   }
 
-  static async createPost(form: FormData) {
+  static async createPost(form: FormData): Promise<Post> {
     const res = await fetch(`${this.BASE}/posts`, {
       method: "POST",
       body: form,
@@ -71,7 +78,7 @@ export class LaffLabApi {
   }
 
   // --- Favorites ---
-  static async getFavorites() {
+  static async getFavorites(): Promise<{ favorites: string[] }> {
     return this.request<{ favorites: string[] }>(`/favorites`);
   }
 
