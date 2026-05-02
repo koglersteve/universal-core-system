@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchHistory, clearHistory } from "@/lib/api";
+import { LaffLabApi } from "@/lib/api";
 import type { HistoryItem } from "@/types/history";
 
 export function useHistory() {
@@ -12,7 +12,7 @@ export function useHistory() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchHistory();
+        const data = await LaffLabApi.getHistory();
         setHistory(data);
       } catch (err) {
         setError("Failed to load history");
@@ -24,12 +24,12 @@ export function useHistory() {
   }, []);
 
   async function reload() {
-    const data = await fetchHistory();
+    const data = await LaffLabApi.getHistory();
     setHistory(data);
   }
 
   async function clear() {
-    await clearHistory();
+    await LaffLabApi.clearHistory();
     setHistory([]);
   }
 
