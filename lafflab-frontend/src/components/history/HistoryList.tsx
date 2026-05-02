@@ -18,11 +18,9 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
           key={entry.id}
           className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
         >
-          <p className="text-sm opacity-80">Viewed Post ID:</p>
+          <p className="text-sm opacity-80">History Entry ID:</p>
 
-          <p className="text-lg font-semibold">
-            {entry.postId ?? entry.jokeId ?? "Unknown"}
-          </p>
+          <p className="text-lg font-semibold">{entry.id}</p>
 
           <p className="text-xs opacity-60 mt-1">
             {new Date(Number(entry.viewedAt)).toLocaleString()}
