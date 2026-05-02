@@ -1,35 +1,38 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  fetchHistory,
-  addToHistory,
-  clearHistory as clearHistoryApi
-} from "@/store/useHistoryStore";
+import { fetchHistory, clearHistory } from "@/lib/api";
+import type { HistoryItem } from "@/types/history";
 
 export function useHistory() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
-      const data = await fetchHistory();
-      setHistory(data);
-      setLoading(false);
+      try {
+        const data = await fetchHistory();
+        setHistory(data);
+      } catch (err) {
+        setError("Failed to load history");
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
 
-  async function add(jokeId: string) {
-    await addToHistory(jokeId);
-    setHistory(await fetchHistory());
+  async function reload() {
+    const data = await fetchHistory();
+    setHistory(data);
   }
 
   async function clear() {
-    await clearHistoryApi();
+    await clearHistory();
     setHistory([]);
   }
 
-  return { history, loading, add, clear };
+  return { history, loading, error, reload, clear };
 }
 
