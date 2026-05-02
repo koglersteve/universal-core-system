@@ -36,7 +36,6 @@ export class LaffLabApi {
     } catch (err: any) {
       clearTimeout(timeout);
 
-      // Retry on network errors or timeouts
       if (
         retries > 0 &&
         (err.name === "AbortError" || err.message.includes("Failed"))
@@ -88,6 +87,14 @@ export class LaffLabApi {
 
   static async removeFavorite(postId: string) {
     return this.request(`/favorites/${postId}`, { method: "DELETE" });
+  }
+
+  // --- Semantic search (embeddings) ---
+  static async searchSemantic(query: string): Promise<Post[]> {
+    return this.request<Post[]>(`/search/semantic`, {
+      method: "POST",
+      body: JSON.stringify({ query }),
+    });
   }
 }
 
