@@ -1,23 +1,49 @@
 "use client";
 
-import { useHistory } from "@/hooks/useHistory";
-import { HistoryList } from "@/components/history/HistoryList";
+import { useEffect, useState } from "react";
+import { LaffLabApi } from "@/lib/api";
+import type { HistoryItem } from "@/types/history";
+import JokeCard from "@/components/JokeCard";
 
 export default function HistoryPage() {
-  const { history, loading, clear } = useHistory();
+  const [items, setItems] = useState<HistoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (loading) return <p>Loading...</p>;
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      const data = await LaffLabApi.getHistory();
+      setItems(data);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <p className="text-center opacity-70 pt-10">
+        Loading history…
+      </p>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <p className="text-center opacity-70 pt-10">
+        No history yet. Posts you view will appear here.
+      </p>
+    );
+  }
 
   return (
-    <div className="p-6 space-y-4">
-      <button
-        onClick={clear}
-        className="px-4 py-2 bg-red-500 text-white rounded"
-      >
-        Clear History
-      </button>
-
-      <HistoryList items={history} />
+    <div className="space-y-6 pb-10">
+      {items.map((item) => (
+        <JokeCard
+          key={item.id}
+          post={item.post}
+          active={false}
+        />
+      ))}
     </div>
   );
 }

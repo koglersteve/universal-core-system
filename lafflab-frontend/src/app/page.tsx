@@ -12,13 +12,16 @@ export default function HomeFeedPage() {
   const [page, setPage] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Array of refs for scroll snapping
+  // Scroll snapping refs
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Infinite scroll sentinel
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   async function loadMore() {
     setLoading(true);
 
-    const all = await LaffLabApi.getPosts(); // must return Post[]
+    const all = await LaffLabApi.getPosts();
     const sorted = [...all].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() -
@@ -32,23 +35,29 @@ export default function HomeFeedPage() {
     setLoading(false);
   }
 
+  // Initial load
   useEffect(() => {
     loadMore();
   }, []);
 
+  // Infinite scroll via IntersectionObserver
   useEffect(() => {
-    function onScroll() {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 200
-      ) {
-        loadMore();
-      }
-    }
+    if (!sentinelRef.current) return;
 
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [page]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(sentinelRef.current);
+
+    return () => observer.disconnect();
+  }, [sentinelRef.current, page]);
 
   function scrollToIndex(index: number) {
     const el = itemRefs.current[index];
@@ -68,7 +77,7 @@ export default function HomeFeedPage() {
         <div
           key={post.id}
           ref={(el) => {
-            itemRefs.current[index] = el; // callback returns void
+            itemRefs.current[index] = el;
           }}
           className="space-y-3"
         >
@@ -95,6 +104,9 @@ export default function HomeFeedPage() {
           </motion.div>
         </div>
       ))}
+
+      {/* Infinite scroll sentinel */}
+      <div ref={sentinelRef} className="h-1" />
 
       {loading && (
         <p className="text-center opacity-70 pb-10">Loading…</p>
