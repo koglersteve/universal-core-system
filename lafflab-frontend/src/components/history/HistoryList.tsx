@@ -19,7 +19,14 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
           className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
         >
           <p className="text-sm opacity-80">Viewed:</p>
-          <p className="text-lg font-semibold">{entry.joke?.text ?? "Unknown"}</p>
+
+          <p className="text-lg font-semibold">
+            {entry.post?.text ??
+              entry.post?.imageUrl ??
+              entry.post?.videoUrl ??
+              "Unknown post"}
+          </p>
+
           <p className="text-xs opacity-60 mt-1">
             {new Date(Number(entry.viewedAt)).toLocaleString()}
           </p>
