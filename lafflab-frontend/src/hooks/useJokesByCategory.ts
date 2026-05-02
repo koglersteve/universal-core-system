@@ -2,29 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
-import type { Joke } from "@/types/jokes";
+import type { Post } from "@/types/jokes";
 
 export function useJokesByCategory(categoryId: string | null) {
-  const [jokes, setJokes] = useState<Joke[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function load() {
-      if (!categoryId) return; // TS narrowing happens here
+    if (!categoryId) return;
 
-      try {
-        const data = await LaffLabApi.getJokesByCategory(categoryId);
-        setJokes(data);
-      } catch (err) {
-        setError("Failed to load jokes");
-      } finally {
-        setLoading(false);
-      }
+    async function load() {
+      setLoading(true);
+
+      const all = await LaffLabApi.getPosts();
+
+      const filtered = all.filter(
+        (p) => p.categoryId === categoryId // ← adjust if your schema uses a different field
+      );
+
+      setPosts(filtered);
+      setLoading(false);
     }
 
     load();
   }, [categoryId]);
 
-  return { jokes, loading, error };
+  return { posts, loading };
 }
