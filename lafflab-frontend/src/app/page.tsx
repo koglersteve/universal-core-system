@@ -20,7 +20,9 @@ export default function HomeFeedPage() {
 
     const all = await LaffLabApi.getPosts(); // must return Post[]
     const sorted = [...all].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
     );
 
     const chunk = sorted.slice((page - 1) * 10, page * 10);
@@ -36,7 +38,10 @@ export default function HomeFeedPage() {
 
   useEffect(() => {
     function onScroll() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 200
+      ) {
         loadMore();
       }
     }
@@ -63,7 +68,7 @@ export default function HomeFeedPage() {
         <div
           key={post.id}
           ref={(el) => {
-            itemRefs.current[index] = el; // ✅ FIXED: callback returns void
+            itemRefs.current[index] = el; // callback returns void
           }}
           className="space-y-3"
         >
@@ -86,18 +91,14 @@ export default function HomeFeedPage() {
             <JokeCard
               post={post}
               active={index === activeIndex}
-              onSwipeUp={() => {
-                if (index < items.length - 1) scrollToIndex(index + 1);
-              }}
-              onSwipeDown={() => {
-                if (index > 0) scrollToIndex(index - 1);
-              }}
             />
           </motion.div>
         </div>
       ))}
 
-      {loading && <p className="text-center opacity-70 pb-10">Loading…</p>}
+      {loading && (
+        <p className="text-center opacity-70 pb-10">Loading…</p>
+      )}
     </div>
   );
 }
