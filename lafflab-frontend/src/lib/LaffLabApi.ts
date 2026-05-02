@@ -47,6 +47,10 @@ export class LaffLabApi {
     return this.request(`/posts/${id}`);
   }
 
+  static async getPosts() {
+    return this.request(`/posts`);
+  }
+
   static async createPost(form: FormData) {
     const res = await fetch(`${this.BASE}/posts`, {
       method: "POST",
@@ -79,3 +83,4 @@ export class LaffLabApi {
     return this.request(`/favorites/${postId}`, { method: "DELETE" });
   }
 }
+
