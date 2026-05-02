@@ -18,13 +18,10 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
           key={entry.id}
           className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
         >
-          <p className="text-sm opacity-80">Viewed:</p>
+          <p className="text-sm opacity-80">Viewed Post ID:</p>
 
           <p className="text-lg font-semibold">
-            {entry.post?.text ??
-              entry.post?.imageUrl ??
-              entry.post?.videoUrl ??
-              "Unknown post"}
+            {entry.postId ?? entry.jokeId ?? "Unknown"}
           </p>
 
           <p className="text-xs opacity-60 mt-1">
