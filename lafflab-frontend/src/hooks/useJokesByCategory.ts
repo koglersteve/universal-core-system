@@ -9,18 +9,14 @@ export function useJokesByCategory(categoryId: string | null) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!categoryId) return;
-
     async function load() {
       setLoading(true);
 
       const all = await LaffLabApi.getPosts();
 
-      const filtered = all.filter(
-        (p) => p.categoryId === categoryId // ← adjust if your schema uses a different field
-      );
+      // No category filtering — Post has no category field
+      setPosts(all);
 
-      setPosts(filtered);
       setLoading(false);
     }
 
