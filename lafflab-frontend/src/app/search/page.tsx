@@ -26,9 +26,12 @@ export default function SearchPage() {
         setResults(semanticResults);
       } else {
         const all = await LaffLabApi.getPosts();
+
+        // SAFE keyword search — handles undefined text
         const filtered = all.filter((p) =>
-          p.text.toLowerCase().includes(query.toLowerCase())
+          (p.text ?? "").toLowerCase().includes(query.toLowerCase())
         );
+
         setResults(filtered);
       }
     } catch (err: any) {
@@ -43,6 +46,7 @@ export default function SearchPage() {
     <div className="p-6 space-y-6 text-white">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Search</h1>
+
         <div className="flex items-center gap-2 text-xs">
           <button
             onClick={() => setMode("keyword")}
@@ -54,6 +58,7 @@ export default function SearchPage() {
           >
             Keyword
           </button>
+
           <button
             onClick={() => setMode("semantic")}
             className={`px-2 py-1 rounded border text-xs ${
@@ -74,11 +79,12 @@ export default function SearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={
             mode === "semantic"
-              ? "Search by idea, vibe, or topic…"
+              ? "Search by idea, vibe, or meaning…"
               : "Search by exact words…"
           }
           className="flex-1 px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/40"
         />
+
         <button
           onClick={search}
           className="px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition"
@@ -89,8 +95,7 @@ export default function SearchPage() {
 
       {mode === "semantic" && (
         <p className="text-xs text-white/60">
-          AI semantic search uses embeddings to find jokes that match the meaning of your query,
-          not just the exact words.
+          AI semantic search finds jokes by meaning, not just keywords.
         </p>
       )}
 
