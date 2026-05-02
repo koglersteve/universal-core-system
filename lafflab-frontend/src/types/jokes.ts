@@ -1,5 +1,12 @@
-export interface Joke {
+export type PostType = "text" | "image" | "meme" | "video" | "audio";
+
+export interface Post {
   id: string;
-  text: string;
-  category?: string;
+  type: PostType;
+  text?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  audioUrl?: string;
+  thumbnailUrl?: string;
+  createdAt: string;
 }

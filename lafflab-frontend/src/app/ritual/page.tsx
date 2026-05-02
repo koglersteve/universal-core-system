@@ -1,21 +1,24 @@
 "use client";
 
-import { useRitual } from "@/hooks/useRitual";
+import { useEffect, useState } from "react";
+import { LaffLabApi } from "@/lib/api";
 
 export default function RitualPage() {
-  const { ritual, loading } = useRitual();
+  const [ritual, setRitual] = useState("");
+
+  useEffect(() => {
+    async function load() {
+      const data = await LaffLabApi.getRitual();
+      setRitual(data.message);
+    }
+    load();
+  }, []);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Daily Ritual</h1>
-
-      {loading && <p>Loading…</p>}
-
-      {ritual && (
-        <div className="p-4 border rounded bg-white shadow-sm">
-          <p className="text-lg">{ritual.message}</p>
-        </div>
-      )}
+      <div className="p-4 rounded-2xl bg-white shadow-md border border-brand-yellow/40 text-black">
+        {ritual}
+      </div>
     </div>
   );
 }

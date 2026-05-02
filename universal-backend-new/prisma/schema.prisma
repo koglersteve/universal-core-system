@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// ------------------------------
+// Existing Drama Models
+// ------------------------------
+//
+
 model DramaClip {
   id        Int             @id @default(autoincrement())
   title     String
@@ -33,6 +39,12 @@ model DramaView {
   createdAt DateTime   @default(now())
 }
 
+//
+// ------------------------------
+// Existing Joke + History Models
+// ------------------------------
+//
+
 model Joke {
   id          String   @id @default(cuid())
   text        String
@@ -50,3 +62,23 @@ model History {
 
   joke      Joke     @relation(fields: [jokeId], references: [id])
 }
+
+//
+// ------------------------------
+// NEW UNIVERSAL MEDIA POST MODEL
+// ------------------------------
+//
+
+model Post {
+  id           String   @id @default(cuid())
+  type         String   // "text" | "image" | "meme" | "video" | "audio"
+  text         String?  @db.Text
+  imageUrl     String?
+  videoUrl     String?
+  audioUrl     String?
+  thumbnailUrl String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt, type])
+}
+

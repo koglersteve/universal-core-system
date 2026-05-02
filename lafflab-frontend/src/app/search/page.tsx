@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 import type { Joke } from "@/types/jokes";
-import { motion } from "framer-motion";
+import JokeCard from "@/components/JokeCard";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -17,11 +17,9 @@ export default function SearchPage() {
     setLoading(true);
     try {
       const all = await LaffLabApi.getJokes();
-
       const filtered = all.filter((j) =>
         j.text.toLowerCase().includes(query.toLowerCase())
       );
-
       setResults(filtered);
     } finally {
       setLoading(false);
@@ -30,8 +28,6 @@ export default function SearchPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Search</h1>
-
       <form onSubmit={handleSearch} className="flex gap-2">
         <input
           type="text"
@@ -54,15 +50,7 @@ export default function SearchPage() {
 
       <div className="space-y-4">
         {results.map((joke) => (
-          <motion.div
-            key={joke.id}
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.25 }}
-            className="p-4 rounded-2xl bg-white shadow-md border border-brand-yellow/40"
-          >
-            <p className="text-black">{joke.text}</p>
-          </motion.div>
+          <JokeCard key={joke.id} joke={joke} />
         ))}
       </div>
     </div>

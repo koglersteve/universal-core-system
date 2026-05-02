@@ -2,15 +2,13 @@
 
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import { motion } from "framer-motion";
+import JokeCard from "@/components/JokeCard";
 
 export default function FavoritesPage() {
   const favorites = useFavoritesStore((state) => state.favorites);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Favorites</h1>
-
-      {/* Playful Empty State */}
       {favorites.length === 0 && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -33,18 +31,9 @@ export default function FavoritesPage() {
         </motion.div>
       )}
 
-      {/* Favorite Jokes */}
       <div className="space-y-4">
         {favorites.map((joke) => (
-          <motion.div
-            key={joke.id}
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.25 }}
-            className="p-4 rounded-2xl bg-white shadow-md border border-brand-yellow/40"
-          >
-            <p className="text-black">{joke.text}</p>
-          </motion.div>
+          <JokeCard key={joke.id} joke={joke} />
         ))}
       </div>
     </div>
