@@ -29,6 +29,7 @@ export const LaffLabApi = {
     await api("/history", {
       method: "POST",
       body: JSON.stringify({ postId }),
+      headers: { "Content-Type": "application/json" },
     });
   },
 
@@ -41,13 +42,8 @@ export const LaffLabApi = {
   async generateRitual(): Promise<Ritual> {
     return api("/daily-ritual/generate");
   },
-};
-import type { Post } from "@/types/jokes";
-// ...existing imports and LaffLabApi methods...
 
-export const LaffLabApi = {
-  // ...existing methods...
-
+  // ⭐ Favorites system
   async getFavorites(): Promise<Post[]> {
     return api("/favorites");
   },
