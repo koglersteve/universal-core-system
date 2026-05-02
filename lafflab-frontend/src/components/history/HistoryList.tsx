@@ -21,10 +21,6 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
           <p className="text-sm opacity-80">History Entry ID:</p>
 
           <p className="text-lg font-semibold">{entry.id}</p>
-
-          <p className="text-xs opacity-60 mt-1">
-            {new Date(Number(entry.viewedAt)).toLocaleString()}
-          </p>
         </div>
       ))}
     </div>
