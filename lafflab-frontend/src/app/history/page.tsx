@@ -3,19 +3,37 @@
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 import type { HistoryItem } from "@/types/history";
+import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
 
 export default function HistoryPage() {
   const [items, setItems] = useState<HistoryItem[]>([]);
+  const [posts, setPosts] = useState<Record<string, Post>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const data = await LaffLabApi.getHistory();
-      setItems(data);
+
+      const history = await LaffLabApi.getHistory();
+      setItems(history);
+
+      // Fetch all posts referenced in history
+      const uniqueIds = [...new Set(history.map((h) => h.postId))];
+
+      const fetchedPosts: Record<string, Post> = {};
+      for (const id of uniqueIds) {
+        try {
+          fetchedPosts[id] = await LaffLabApi.getPost(id);
+        } catch {
+          // ignore missing posts
+        }
+      }
+
+      setPosts(fetchedPosts);
       setLoading(false);
     }
+
     load();
   }, []);
 
@@ -37,13 +55,18 @@ export default function HistoryPage() {
 
   return (
     <div className="space-y-6 pb-10">
-      {items.map((item) => (
-        <JokeCard
-          key={item.id}
-          post={item.post}
-          active={false}
-        />
-      ))}
+      {items.map((item) => {
+        const post = posts[item.postId];
+        if (!post) return null;
+
+        return (
+          <JokeCard
+            key={item.id}
+            post={post}
+            active={false}
+          />
+        );
+      })}
     </div>
   );
 }
