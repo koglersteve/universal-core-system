@@ -1,29 +1,22 @@
 "use client";
 
-export async function getFavorites() {
-  const res = await fetch("/api/favorites", { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to load favorites");
-  return res.json();
+import { create } from "zustand";
+import type { Joke } from "@/types/jokes";
+
+interface FavoritesState {
+  favorites: Joke[];
+  addFavorite: (joke: Joke) => void;
+  removeFavorite: (id: string) => void;
 }
 
-export async function addFavorite(id: string) {
-  const res = await fetch("/api/favorites/add", {
-    method: "POST",
-    body: JSON.stringify({ id }),
-    headers: { "Content-Type": "application/json" }
-  });
-
-  if (!res.ok) throw new Error("Failed to add favorite");
-  return res.json();
-}
-
-export async function removeFavorite(id: string) {
-  const res = await fetch("/api/favorites/remove", {
-    method: "POST",
-    body: JSON.stringify({ id }),
-    headers: { "Content-Type": "application/json" }
-  });
-
-  if (!res.ok) throw new Error("Failed to remove favorite");
-  return res.json();
-}
+export const useFavoritesStore = create<FavoritesState>((set) => ({
+  favorites: [],
+  addFavorite: (joke) =>
+    set((state) => ({
+      favorites: [...state.favorites, joke],
+    })),
+  removeFavorite: (id) =>
+    set((state) => ({
+      favorites: state.favorites.filter((j) => j.id !== id),
+    })),
+}));
