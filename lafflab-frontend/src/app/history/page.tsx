@@ -11,6 +11,30 @@ export default function HistoryPage() {
   const [posts, setPosts] = useState<Record<string, Post>>({});
   const [loading, setLoading] = useState(true);
 
+  // Extract ANY possible ID field from a history item
+  function extractId(item: HistoryItem): string | null {
+    const possibleKeys = [
+      "postId",
+      "jokeId",
+      "id",
+      "post_id",
+      "joke_id",
+      "contentId",
+      "content_id",
+    ];
+
+    for (const key of possibleKeys) {
+      if (key in item) {
+        const value = (item as any)[key];
+        if (typeof value === "string" && value.trim().length > 0) {
+          return value;
+        }
+      }
+    }
+
+    return null;
+  }
+
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -18,9 +42,8 @@ export default function HistoryPage() {
       const history = await LaffLabApi.getHistory();
       setItems(history);
 
-      // Determine the correct ID field
       const ids = history
-        .map((h) => h.postId || h.jokeId || null)
+        .map((item) => extractId(item))
         .filter(Boolean) as string[];
 
       const uniqueIds = [...new Set(ids)];
@@ -61,7 +84,7 @@ export default function HistoryPage() {
   return (
     <div className="space-y-6 pb-10">
       {items.map((item) => {
-        const id = item.postId || item.jokeId;
+        const id = extractId(item);
         if (!id) return null;
 
         const post = posts[id];
