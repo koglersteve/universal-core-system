@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import JokeCard from "@/components/JokeCard";
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import type { HistoryItem } from "@/types/history";
 import type { Post } from "@/types/jokes";
+import JokeCard from "@/components/JokeCard";
+import LoadingState from "@/components/ui/LoadingState";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ui/ErrorState";
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,41 +18,17 @@ export default function HistoryPage() {
 
     async function load() {
       try {
-        setLoading(true);
-
-        // --- Fetch history ---
-        const historyData = await LaffLabApi.getHistory();
-        if (!mounted) return;
-
-        setHistory(historyData);
-
-        // --- Extract IDs ---
-        const ids = historyData
-          .map((h: HistoryItem) => h.postId || h.jokeId || h.contentId)
-          .filter(Boolean);
-
-        if (ids.length === 0) {
-          setPosts([]);
-          return;
+        const data = await LaffLabApi.getHistory();
+        if (mounted) {
+          setPosts(data);
+          setLoading(false);
         }
-
-        // --- Fetch posts in parallel ---
-        const results = await Promise.allSettled(
-          ids.map((id: string) => LaffLabApi.getPost(id))
-        );
-
-        if (!mounted) return;
-
-        const validPosts = results
-          .filter((r) => r.status === "fulfilled")
-          .map((r: any) => r.value);
-
-        setPosts(validPosts);
-      } catch (err: any) {
-        console.error("History load failed:", err);
-        if (mounted) setError("Failed to load history");
-      } finally {
-        if (mounted) setLoading(false);
+      } catch (err) {
+        console.error("Failed to load history:", err);
+        if (mounted) {
+          setError("Failed to load your history.");
+          setLoading(false);
+        }
       }
     }
 
@@ -61,28 +38,15 @@ export default function HistoryPage() {
     };
   }, []);
 
-  // --- UI States ---
-  if (loading) {
-    return (
-      <div className="p-6 text-white/70">
-        Loading your history…
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-6 text-red-400">
-        {error}
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message="Loading history…" />;
+  if (error) return <ErrorState message={error} />;
 
   if (posts.length === 0) {
     return (
-      <div className="p-6 text-white/70">
-        You haven’t viewed any posts yet.
-      </div>
+      <EmptyState
+        title="No history yet"
+        description="Posts you view will appear here."
+      />
     );
   }
 

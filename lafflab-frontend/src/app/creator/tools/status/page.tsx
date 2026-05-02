@@ -1,8 +1,16 @@
-export default function ProcessingStatus() {
+"use client";
+
+import EmptyState from "@/components/ui/EmptyState";
+
+export default function ProcessingStatusTool() {
   return (
     <div className="p-6 text-white">
-      <h2 className="text-xl font-bold mb-4">Processing Status</h2>
-      <p>Track video rendering, audio cleanup, and scheduled posts.</p>
+      <h1 className="text-2xl font-bold mb-4">Processing Status</h1>
+
+      <EmptyState
+        title="No active jobs"
+        description="Your processing queue will appear here."
+      />
     </div>
   );
 }
