@@ -6,34 +6,39 @@ import type { Post } from "@/types/jokes";
 
 export const LaffLabApi = {
   async getCategories(): Promise<Category[]> {
-    return api.get("/categories");
+    return api("/categories");
   },
 
   async getCategory(id: string): Promise<Category> {
-    return api.get(`/categories/${id}`);
+    return api(`/categories/${id}`);
   },
 
   async getPosts(): Promise<Post[]> {
-    return api.get("/posts");
+    return api("/posts");
   },
 
   async getPost(id: string): Promise<Post> {
-    return api.get(`/posts/${id}`);
+    return api(`/posts/${id}`);
   },
 
   async getHistory(): Promise<HistoryItem[]> {
-    return api.get("/history");
+    return api("/history");
   },
 
   async addHistory(postId: string): Promise<void> {
-    await api.post("/history", { postId });
+    await api("/history", {
+      method: "POST",
+      body: JSON.stringify({ postId }),
+    });
   },
 
   async clearHistory(): Promise<void> {
-    await api.delete("/history");
+    await api("/history", {
+      method: "DELETE",
+    });
   },
 
   async generateRitual(): Promise<Ritual> {
-    return api.get("/daily-ritual/generate");
+    return api("/daily-ritual/generate");
   },
 };
