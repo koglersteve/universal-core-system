@@ -42,3 +42,27 @@ export const LaffLabApi = {
     return api("/daily-ritual/generate");
   },
 };
+import type { Post } from "@/types/jokes";
+// ...existing imports and LaffLabApi methods...
+
+export const LaffLabApi = {
+  // ...existing methods...
+
+  async getFavorites(): Promise<Post[]> {
+    return api("/favorites");
+  },
+
+  async addFavorite(postId: string): Promise<void> {
+    await api("/favorites", {
+      method: "POST",
+      body: JSON.stringify({ postId }),
+      headers: { "Content-Type": "application/json" },
+    });
+  },
+
+  async removeFavorite(postId: string): Promise<void> {
+    await api(`/favorites/${postId}`, {
+      method: "DELETE",
+    });
+  },
+};

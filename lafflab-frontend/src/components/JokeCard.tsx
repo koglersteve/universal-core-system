@@ -1,41 +1,37 @@
 "use client";
 
 import type { Post } from "@/types/jokes";
-import { MediaAutoPlayer } from "./MediaAutoPlayer";
-import { ReactionBar } from "./ReactionBar";
-import { recordReaction } from "@/lib/FeedAnalytics";
-import { motion } from "framer-motion";
+import Link from "next/link";
+// add:
+import { useFavoritesStore } from "@/store/useFavoritesStore";
 
 interface JokeCardProps {
   post: Post;
-  active: boolean;
-  onSwipeUp?: () => void;
-  onSwipeDown?: () => void;
+  active?: boolean;
 }
 
-export default function JokeCard({ post, active, onSwipeUp, onSwipeDown }: JokeCardProps) {
-  function handleReact(postId: string, reactionKey: string) {
-    recordReaction(postId, reactionKey);
-  }
-
-  function handleDragEnd(_: any, info: { offset: { y: number } }) {
-    if (info.offset.y < -80) onSwipeUp?.();
-    if (info.offset.y > 80) onSwipeDown?.();
-  }
+export default function JokeCard({ post, active = false }: JokeCardProps) {
+  const { isFavorite, toggleFavorite } = useFavoritesStore();
+  const favorite = isFavorite(post.id);
 
   return (
-    <motion.div
-      drag="y"
-      dragConstraints={{ top: 0, bottom: 0 }}
-      onDragEnd={handleDragEnd}
-      className="space-y-2"
-    >
-      <MediaAutoPlayer post={post} active={active} />
-      {post.text && post.type !== "text" && (
-        <p className="mt-2 text-sm text-white/90">{post.text}</p>
-      )}
-      <ReactionBar postId={post.id} onReact={handleReact} />
-    </motion.div>
+    <div className="relative rounded-xl border border-white/20 bg-white/5 p-4">
+      <button
+        type="button"
+        onClick={() => toggleFavorite(post)}
+        className="absolute right-3 top-3 text-xl"
+        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+      >
+        <span className={favorite ? "text-yellow-400" : "text-white/40"}>
+          {favorite ? "★" : "☆"}
+        </span>
+      </button>
+
+      <Link href={`/post/${post.id}`} className="block space-y-2">
+        <p className="text-lg font-semibold">{post.text ?? "View post"}</p>
+        {/* existing media / meta rendering here */}
+      </Link>
+    </div>
   );
 }
 
