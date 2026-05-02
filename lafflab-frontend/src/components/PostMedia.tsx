@@ -16,9 +16,10 @@ export default function PostMedia({ post, active }: Props) {
   const [error, setError] = useState(false);
 
   // --- TEXT LENGTH ENFORCEMENT (150 chars max) ---
-  if (post.text && post.text.length > 150) {
-    post.text = post.text.slice(0, 150);
-  }
+  const safeText =
+    post.text && post.text.length > 150
+      ? post.text.slice(0, 150)
+      : post.text;
 
   // --- MEDIA TYPE DETECTION ---
   const isImage = post.type === "image" || post.type === "meme";
@@ -31,7 +32,7 @@ export default function PostMedia({ post, active }: Props) {
     post.audioUrl ||
     null;
 
-  if (!mediaUrl) return null;
+  if (!mediaUrl) return safeText ? <p>{safeText}</p> : null;
 
   // --- MEDIA LENGTH ENFORCEMENT (30 sec max) ---
   const enforceDuration = (el: HTMLMediaElement | null) => {
