@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 import type { Category } from "@/types/category";

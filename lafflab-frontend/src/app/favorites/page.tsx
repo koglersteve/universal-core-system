@@ -18,7 +18,7 @@ export default function FavoritesPage() {
         >
           <p className="text-lg font-semibold mb-2">No favorites yet!</p>
           <p className="text-sm opacity-80">
-            Go explore and tap the heart to save jokes you love.
+            Go explore and tap the reaction bar to save posts you love.
           </p>
 
           <motion.div
@@ -26,14 +26,14 @@ export default function FavoritesPage() {
             transition={{ repeat: Infinity, duration: 1.5 }}
             className="text-4xl mt-4"
           >
-            💖
+            😂
           </motion.div>
         </motion.div>
       )}
 
       <div className="space-y-4">
-        {favorites.map((joke) => (
-          <JokeCard key={joke.id} joke={joke} />
+        {favorites.map((post) => (
+          <JokeCard key={post.id} post={post} active={false} />
         ))}
       </div>
     </div>

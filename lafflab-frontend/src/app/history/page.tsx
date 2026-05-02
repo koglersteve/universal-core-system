@@ -9,12 +9,10 @@ export default function HistoryPage() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">History</h1>
-
+    <div className="p-6 space-y-4">
       <button
         onClick={clear}
-        className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
+        className="px-4 py-2 bg-red-500 text-white rounded"
       >
         Clear History
       </button>
@@ -23,3 +21,4 @@ export default function HistoryPage() {
     </div>
   );
 }
+

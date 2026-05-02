@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
+import type { Category } from "@/types/category";
 import Link from "next/link";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]); // ✅ FIXED
 
   useEffect(() => {
     async function load() {
