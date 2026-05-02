@@ -1,15 +1,28 @@
-import type { Joke } from "@/types/jokes";
+"use client";
 
-export function HistoryList({ items }: { items: Joke[] }) {
+import type { HistoryItem } from "@/types/history";
+
+export function HistoryList({ items }: { items: HistoryItem[] }) {
   if (items.length === 0) {
-    return <p className="text-gray-500">No history yet.</p>;
+    return (
+      <p className="opacity-70 text-center py-6">
+        No history yet. Go explore some posts.
+      </p>
+    );
   }
 
   return (
-    <div className="space-y-3">
-      {items.map((j) => (
-        <div key={j.id} className="p-3 border rounded-lg">
-          {j.text}
+    <div className="space-y-4">
+      {items.map((entry) => (
+        <div
+          key={entry.id}
+          className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+        >
+          <p className="text-sm opacity-80">Viewed:</p>
+          <p className="text-lg font-semibold">{entry.joke?.text ?? "Unknown"}</p>
+          <p className="text-xs opacity-60 mt-1">
+            {new Date(Number(entry.viewedAt)).toLocaleString()}
+          </p>
         </div>
       ))}
     </div>
