@@ -4,18 +4,17 @@ import { useFavoritesStore } from "@/store/useFavoritesStore";
 import type { Post } from "@/types/jokes";
 
 export function useFavorites() {
-  const favorites = useFavoritesStore((state) => state.favorites as Post[]);
-  const addFavorite = useFavoritesStore((state) => state.addFavorite);
-  const removeFavorite = useFavoritesStore((state) => state.removeFavorite);
-
-  function isFavorite(id: string) {
-    return favorites.some((p) => p.id === id);
-  }
+  const favorites = useFavoritesStore((s) => s.favorites);
+  const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
+  const isFavorite = useFavoritesStore((s) => s.isFavorite);
+  const hydrate = useFavoritesStore((s) => s.hydrate);
+  const loading = useFavoritesStore((s) => s.loading);
 
   return {
-    favorites,
-    addFavorite,
-    removeFavorite,
+    favorites: favorites as Post[],
+    toggleFavorite,
     isFavorite,
+    hydrate,
+    loading,
   };
 }
