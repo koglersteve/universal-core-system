@@ -1,35 +1,33 @@
-import { api } from "@/lib/client";
-import type { Category } from "@/types/category";
-import type { HistoryItem } from "@/types/history";
-import type { Ritual } from "@/types/ritual";
-import type { Post } from "@/types/jokes";
-
 export const LaffLabApi = {
-  async getCategories(): Promise<Category[]> {
+  async getCategories() {
     return api.get("/categories");
   },
 
-  async getCategory(id: string): Promise<Category> {
+  async getCategory(id: string) {
     return api.get(`/categories/${id}`);
   },
 
-  async getPosts(): Promise<Post[]> {
+  async getPosts() {
     return api.get("/posts");
   },
 
-  async getPost(id: string): Promise<Post> {
+  async getPost(id: string) {
     return api.get(`/posts/${id}`);
   },
 
-  async getHistory(): Promise<HistoryItem[]> {
+  async getHistory() {
     return api.get("/history");
   },
 
-  async addHistory(postId: string): Promise<void> {
+  async addHistory(postId: string) {
     await api.post("/history", { postId });
   },
 
-  async generateRitual(): Promise<Ritual> {
+  async clearHistory() {
+    await api.delete("/history");
+  },
+
+  async generateRitual() {
     return api.get("/daily-ritual/generate");
   },
 };
