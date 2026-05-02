@@ -2,40 +2,29 @@
 
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
-import type { Joke } from "@/types/jokes";
+import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
 
 export default function ExplorePage() {
-  const [joke, setJoke] = useState<Joke | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadRandom() {
-    setLoading(true);
-    try {
-      const data = await LaffLabApi.getRandomJoke();
-      setJoke(data);
-    } finally {
+  useEffect(() => {
+    async function load() {
+      const data = await LaffLabApi.getPosts();
+      setPosts(data);
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    loadRandom();
+    load();
   }, []);
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="space-y-6">
-      {loading && <p>Loading…</p>}
-      {joke && <JokeCard joke={joke} />}
-
-      <button
-        onClick={loadRandom}
-        className="px-4 py-2 rounded-full bg-brand-pink text-white font-semibold shadow-md
-                   hover:bg-brand-purple hover:-translate-y-0.5 active:scale-95
-                   transition-transform transition-colors"
-      >
-        Another One
-      </button>
+      {posts.map((post) => (
+        <JokeCard key={post.id} post={post} active={false} />
+      ))}
     </div>
   );
 }
