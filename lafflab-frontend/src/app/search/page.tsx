@@ -14,9 +14,11 @@ export default function SearchPage() {
     if (!query.trim()) return;
 
     setLoading(true);
-    const all = await LaffLabApi.getPosts();
 
-    const filtered = all.filter((p) =>
+    // Explicit typing prevents implicit 'any'
+    const all: Post[] = await LaffLabApi.getPosts();
+
+    const filtered = all.filter((p: Post) =>
       (p.text ?? "").toLowerCase().includes(query.toLowerCase())
     );
 
