@@ -12,8 +12,14 @@ export function useRandomCategory() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await LaffLabApi.getRandomCategory();
-        setCategory(data);
+        const categories = await LaffLabApi.getCategories();
+
+        if (categories.length > 0) {
+          const random = categories[Math.floor(Math.random() * categories.length)];
+          setCategory(random);
+        } else {
+          setCategory(null);
+        }
       } catch (err) {
         setError("Failed to load random category");
       } finally {
