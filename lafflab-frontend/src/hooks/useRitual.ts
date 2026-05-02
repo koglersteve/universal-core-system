@@ -5,7 +5,7 @@ import {
   fetchDailyRitual,
   setDailyRitualMessage
 } from "@/store/useRitualStore";
-import type { Ritual } from "@/lib/api";
+import type { Ritual } from "@/types/ritual";
 
 export function useRitual() {
   const [ritual, setRitual] = useState<Ritual | null>(null);
@@ -30,3 +30,4 @@ export function useRitual() {
 
   return { ritual, loading, updateMessage };
 }
+
