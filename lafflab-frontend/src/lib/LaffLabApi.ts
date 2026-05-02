@@ -73,8 +73,8 @@ export class LaffLabApi {
   }
 
   // --- History ---
-  static async getHistory() {
-    return this.request(`/history`);
+  static async getHistory(): Promise<Post[]> {
+    return this.request<Post[]>(`/history`);
   }
 
   // --- Favorites ---
