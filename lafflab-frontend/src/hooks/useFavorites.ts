@@ -6,7 +6,7 @@ import {
   addFavorite,
   removeFavorite
 } from "@/store/useFavoritesStore";
-import type { Joke } from "@/lib/api";
+import type { Joke } from "@/types/jokes";
 
 export function useFavorites() {
   const [favorites, setFavorites] = useState<Joke[]>([]);
