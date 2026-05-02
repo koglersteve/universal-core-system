@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 import type { Joke } from "@/types/jokes";
+import { motion } from "framer-motion";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -29,7 +30,7 @@ export default function SearchPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Search</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight">Search</h1>
 
       <form onSubmit={handleSearch} className="flex gap-2">
         <input
@@ -37,11 +38,13 @@ export default function SearchPage() {
           placeholder="Search jokes..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 border rounded px-3 py-2"
+          className="flex-1 border rounded px-3 py-2 text-black"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-black text-white rounded"
+          className="px-4 py-2 rounded-full bg-brand-pink text-white font-semibold shadow-md
+                     hover:bg-brand-purple hover:-translate-y-0.5 active:scale-95
+                     transition-transform transition-colors"
         >
           Go
         </button>
@@ -51,12 +54,15 @@ export default function SearchPage() {
 
       <div className="space-y-4">
         {results.map((joke) => (
-          <div
+          <motion.div
             key={joke.id}
-            className="p-4 border rounded bg-white shadow-sm"
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.25 }}
+            className="p-4 rounded-2xl bg-white shadow-md border border-brand-yellow/40"
           >
-            <p>{joke.text}</p>
-          </div>
+            <p className="text-black">{joke.text}</p>
+          </motion.div>
         ))}
       </div>
     </div>
