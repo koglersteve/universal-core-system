@@ -10,9 +10,9 @@ export function useJokesByCategory(categoryId: string | null) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!categoryId) return;
-
     async function load() {
+      if (!categoryId) return; // TS narrowing happens here
+
       try {
         const data = await LaffLabApi.getJokesByCategory(categoryId);
         setJokes(data);
