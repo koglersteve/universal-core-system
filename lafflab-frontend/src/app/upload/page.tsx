@@ -75,7 +75,9 @@ export default function UploadPage() {
       const id = `${file.name}-${file.size}-${file.lastModified}`;
       const kind = classifyFile(file);
       const previewUrl =
-        kind === "image" || kind === "video" ? URL.createObjectURL(file) : undefined;
+        kind === "image" || kind === "video"
+          ? URL.createObjectURL(file)
+          : undefined;
 
       newItems.push({
         id,
@@ -143,9 +145,8 @@ export default function UploadPage() {
 
   function cancelUpload(id: string) {
     const xhr = xhrRefs.current[id];
-    if (xhr) {
-      xhr.abort();
-    }
+    if (xhr) xhr.abort();
+
     setQueue((prev) =>
       prev.map((q) =>
         q.id === id ? { ...q, status: "canceled", progress: 0 } : q
@@ -156,7 +157,9 @@ export default function UploadPage() {
   function retryUpload(id: string) {
     setQueue((prev) =>
       prev.map((q) =>
-        q.id === id ? { ...q, status: "pending", progress: 0, error: undefined } : q
+        q.id === id
+          ? { ...q, status: "pending", progress: 0, error: undefined }
+          : q
       )
     );
   }
@@ -266,11 +269,12 @@ export default function UploadPage() {
   const showEmpty = queue.length === 0;
 
   return (
-    <div className="p-6 space-y-6 text-white page-shell">
+    <div className="p-[var(--space-4)] space-y-[var(--space-4)] text-white page-shell">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Upload</h1>
+        <h1 className="text-[var(--text-2xl)] font-bold">Upload</h1>
+
         {!online && (
-          <span className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-300 border border-red-500/40">
+          <span className="text-[var(--text-xs)] px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--radius-sm)] bg-red-500/20 text-red-300 border border-red-500/40">
             Offline — uploads will resume when you’re back online
           </span>
         )}
@@ -292,31 +296,31 @@ export default function UploadPage() {
           icon={EmptyUploadIcon}
         />
       ) : (
-        <div className="space-y-4 animate-fadeIn">
+        <div className="space-y-[var(--space-3)] animate-fadeIn">
           {queue.map((item) => (
             <div
               key={item.id}
-              className="border border-white/10 rounded p-3 space-y-2 bg-white/5 card-elevated"
+              className="border border-white/10 rounded-[var(--radius-md)] p-[var(--space-3)] space-y-[var(--space-2)] bg-white/5 card-elevated"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-[var(--space-2)]">
                 {item.kind === "image" && item.previewUrl && (
                   <img
                     src={item.previewUrl}
                     alt={item.file.name}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-16 h-16 object-cover rounded-[var(--radius-md)]"
                   />
                 )}
 
                 {item.kind === "video" && item.previewUrl && (
                   <video
                     src={item.previewUrl}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-16 h-16 object-cover rounded-[var(--radius-md)]"
                     muted
                   />
                 )}
 
                 {item.kind === "audio" && (
-                  <div className="w-16 h-16 flex items-center justify-center rounded bg-white/10 text-xs text-white/70">
+                  <div className="w-16 h-16 flex items-center justify-center rounded-[var(--radius-md)] bg-white/10 text-[var(--text-xs)] text-white/70">
                     {item.duration
                       ? `${Math.round(item.duration)}s`
                       : "Audio"}
@@ -324,27 +328,27 @@ export default function UploadPage() {
                 )}
 
                 <div className="flex-1">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-[var(--text-sm)]">
                     <span className="font-medium">{item.file.name}</span>
-                    <span className="text-white/60 text-xs uppercase">
+                    <span className="text-white/60 text-[var(--text-xs)] uppercase">
                       {item.status}
                     </span>
                   </div>
 
                   {item.kind === "video" && item.width && item.height && (
-                    <div className="text-xs text-white/60">
+                    <div className="text-[var(--text-xs)] text-white/60">
                       {item.width}×{item.height} ·{" "}
                       {item.duration ? `${Math.round(item.duration)}s` : ""}
                     </div>
                   )}
 
                   {item.error && (
-                    <div className="text-xs text-red-400 mt-1">
+                    <div className="text-[var(--text-xs)] text-red-400 mt-1">
                       {item.error}
                     </div>
                   )}
 
-                  <div className="w-full h-2 bg-white/10 rounded overflow-hidden mt-2">
+                  <div className="w-full h-2 bg-white/10 rounded overflow-hidden mt-[var(--space-2)]">
                     <div
                       className="h-full bg-white/40 transition-soft"
                       style={{ width: `${item.progress || 0}%` }}
@@ -352,11 +356,11 @@ export default function UploadPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-[var(--space-1)]">
                   {item.status === "uploading" && (
                     <button
                       onClick={() => cancelUpload(item.id)}
-                      className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-300 border border-red-500/40 transition-soft"
+                      className="text-[var(--text-xs)] px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--radius-sm)] bg-red-500/20 text-red-300 border border-red-500/40 transition-soft"
                     >
                       Cancel
                     </button>
@@ -365,7 +369,7 @@ export default function UploadPage() {
                   {item.status === "error" && (
                     <button
                       onClick={() => retryUpload(item.id)}
-                      className="text-xs px-2 py-1 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 transition-soft"
+                      className="text-[var(--text-xs)] px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--radius-sm)] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 transition-soft"
                     >
                       Retry
                     </button>
@@ -379,3 +383,4 @@ export default function UploadPage() {
     </div>
   );
 }
+

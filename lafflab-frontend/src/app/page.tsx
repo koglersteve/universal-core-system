@@ -7,9 +7,20 @@ import JokeCard from "@/components/JokeCard";
 import { JokeCardSkeleton } from "@/components/JokeCardSkeleton";
 import { EmptyState, EmptyFeedIcon } from "@/components/ui/EmptyState";
 
+import NotificationToast from "@/components/notifications/NotificationToast";
+import { useNotificationInbox } from "@/hooks/useNotificationInbox";
+import { useRouter } from "next/navigation";
+
 const PAGE_SIZE = 10;
 
 export default function HomeFeedPage() {
+  const router = useRouter();
+
+  // Notifications
+  const { inbox } = useNotificationInbox("user-123"); // TODO: replace with real user ID
+  const latest = inbox.find((n) => !n.read);
+
+  // Feed state
   const [items, setItems] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -22,44 +33,62 @@ export default function HomeFeedPage() {
   const touchStartY = useRef<number | null>(null);
   const pulling = useRef(false);
 
+  // Personalized feed endpoint
+  async function fetchPersonalized(userId: string) {
+    const res = await fetch(
+      `/api/feed/personalized?user=${userId}&session=home`,
+      { cache: "no-store" }
+    );
+    return await res.json();
+  }
+
+  // A) loadInitial() — personalized
   async function loadInitial() {
     setLoadingInitial(true);
 
-    const all = await LaffLabApi.getPosts();
-    const sorted = [...all].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
-    );
+    const ranked = await fetchPersonalized("user-123"); // TODO: real user ID
+    const posts = await LaffLabApi.getPosts();
+    const map = new Map(posts.map((p) => [p.id, p]));
 
-    const first = sorted.slice(0, PAGE_SIZE);
-    setItems(first);
+    const hydrated = ranked
+      .map((r: any) => map.get(r.id))
+      .filter(Boolean)
+      .slice(0, PAGE_SIZE);
+
+    setItems(hydrated);
     setPage(2);
     setActiveIndex(0);
 
     setLoadingInitial(false);
   }
 
+  // B) loadMore() — personalized
   async function loadMore() {
     if (loadingMore) return;
     setLoadingMore(true);
 
-    const all = await LaffLabApi.getPosts();
-    const sorted = [...all].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
+    const ranked = await fetchPersonalized("user-123");
+    const posts = await LaffLabApi.getPosts();
+    const map = new Map(posts.map((p) => [p.id, p]));
+
+    const hydrated = ranked
+      .map((r: any) => map.get(r.id))
+      .filter(Boolean);
+
+    const nextChunk = hydrated.slice(
+      (page - 1) * PAGE_SIZE,
+      page * PAGE_SIZE
     );
 
-    const chunk = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-    if (chunk.length > 0) {
-      setItems((prev) => [...prev, ...chunk]);
+    if (nextChunk.length > 0) {
+      setItems((prev) => [...prev, ...nextChunk]);
       setPage((p) => p + 1);
     }
 
     setLoadingMore(false);
   }
 
+  // C) refresh() — uses loadInitial
   async function refresh() {
     setRefreshing(true);
     await loadInitial();
@@ -70,22 +99,12 @@ export default function HomeFeedPage() {
     }
   }
 
-  function scrollToIndex(index: number) {
-    if (!scrollRef.current) return;
-    const container = scrollRef.current;
-    const child = container.children[index] as HTMLElement | undefined;
-    if (!child) return;
-
-    container.scrollTo({
-      top: child.offsetTop,
-      behavior: "smooth",
-    });
-  }
-
+  // Initial load
   useEffect(() => {
     loadInitial();
   }, []);
 
+  // Auto-advance logic
   useEffect(() => {
     if (!items[activeIndex]) return;
 
@@ -116,6 +135,20 @@ export default function HomeFeedPage() {
     return () => clearTimeout(timer);
   }, [activeIndex, items]);
 
+  // Scroll to index
+  function scrollToIndex(index: number) {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const child = container.children[index] as HTMLElement | undefined;
+    if (!child) return;
+
+    container.scrollTo({
+      top: child.offsetTop,
+      behavior: "smooth",
+    });
+  }
+
+  // Scroll listener
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -145,6 +178,7 @@ export default function HomeFeedPage() {
     return () => container.removeEventListener("scroll", onScroll);
   }, [activeIndex, items.length]);
 
+  // Pull-to-refresh touch handlers
   function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
     if (!scrollRef.current) return;
     if (scrollRef.current.scrollTop === 0) {
@@ -181,10 +215,11 @@ export default function HomeFeedPage() {
 
   return (
     <div className="h-screen flex flex-col bg-black text-white page-shell">
-      <div className="fixed top-4 right-4 z-50">
+      {/* Menu Button */}
+      <div className="fixed top-[var(--space-3)] right-[var(--space-3)] z-50">
         <button
           onClick={() => setMenuOpen((v) => !v)}
-          className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition-soft"
+          className="p-[var(--space-2)] rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition-soft"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -203,13 +238,14 @@ export default function HomeFeedPage() {
         </button>
       </div>
 
+      {/* Slide-in Menu */}
       {menuOpen && (
-        <div className="fixed top-0 right-0 w-56 bg-black/90 border-l border-white/10 backdrop-blur z-40 p-4 space-y-3 animate-slideDown">
+        <div className="fixed top-0 right-0 w-56 bg-black/90 border-l border-white/10 backdrop-blur z-40 p-[var(--space-3)] space-y-[var(--space-2)] animate-slideDown">
           {menuItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="block px-3 py-2 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 transition-soft"
+              className="block px-[var(--space-2)] py-[var(--space-1)] rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 transition-soft"
             >
               {item.label}
             </a>
@@ -217,10 +253,12 @@ export default function HomeFeedPage() {
         </div>
       )}
 
-      <div className="h-10 flex items-center justify-center text-xs text-white/70 border-b border-white/10 bg-black/80 backdrop-blur">
+      {/* Pull-to-refresh header */}
+      <div className="h-10 flex items-center justify-center text-[var(--text-xs)] text-white/70 border-b border-white/10 bg-black/80 backdrop-blur">
         {refreshing ? "Refreshing…" : "Pull down to refresh · LaffLab"}
       </div>
 
+      {/* Feed Scroll Container */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-scroll snap-y snap-mandatory"
@@ -229,7 +267,7 @@ export default function HomeFeedPage() {
         onTouchEnd={handleTouchEnd}
       >
         {loadingInitial ? (
-          <div className="space-y-4 p-4">
+          <div className="space-y-[var(--space-3)] p-[var(--space-3)]">
             {[...Array(6)].map((_, i) => (
               <JokeCardSkeleton key={i} />
             ))}
@@ -245,7 +283,7 @@ export default function HomeFeedPage() {
             {items.map((post) => (
               <div
                 key={post.id}
-                className="h-screen snap-start flex items-center justify-center px-2"
+                className="h-screen snap-start flex items-center justify-center px-[var(--space-2)]"
               >
                 <div className="w-full max-w-md">
                   <JokeCard post={post} />
@@ -256,11 +294,23 @@ export default function HomeFeedPage() {
         )}
 
         {loadingMore && (
-          <div className="h-20 flex items-center justify-center text-sm text-white/60">
+          <div className="h-20 flex items-center justify-center text-[var(--text-sm)] text-white/60">
             Loading more…
           </div>
         )}
       </div>
+
+      {/* Notification Toast with tone */}
+      {latest && (
+        <NotificationToast
+          title={latest.title}
+          body={latest.body}
+          tone={latest.tone}
+          onClick={() => {
+            if (latest.url) router.push(latest.url);
+          }}
+        />
+      )}
     </div>
   );
 }

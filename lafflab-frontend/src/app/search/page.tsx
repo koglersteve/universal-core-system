@@ -47,14 +47,14 @@ export default function SearchPage() {
     !loading && results.length === 0 && query.trim() !== "" && !error;
 
   return (
-    <div className="p-6 space-y-6 text-white page-shell">
+    <div className="p-[var(--space-4)] space-y-[var(--space-4)] text-white page-shell">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Search</h1>
+        <h1 className="text-[var(--text-2xl)] font-bold">Search</h1>
 
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-[var(--space-2)] text-[var(--text-xs)]">
           <button
             onClick={() => setMode("keyword")}
-            className={`px-2 py-1 rounded border text-xs transition-soft ${
+            className={`px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--radius-sm)] border text-xs transition-soft ${
               mode === "keyword"
                 ? "bg-white text-black border-white"
                 : "bg-transparent border-white/30 text-white/70"
@@ -65,7 +65,7 @@ export default function SearchPage() {
 
           <button
             onClick={() => setMode("semantic")}
-            className={`px-2 py-1 rounded border text-xs transition-soft ${
+            className={`px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--radius-sm)] border text-xs transition-soft ${
               mode === "semantic"
                 ? "bg-white text-black border-white"
                 : "bg-transparent border-white/30 text-white/70"
@@ -76,7 +76,7 @@ export default function SearchPage() {
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-[var(--space-2)]">
         <input
           type="text"
           value={query}
@@ -86,35 +86,35 @@ export default function SearchPage() {
               ? "Search by idea, vibe, or meaning…"
               : "Search by exact words…"
           }
-          className="flex-1 px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/40 transition-soft focus:border-white/40 focus:bg-white/15"
+          className="flex-1 px-[var(--space-2)] py-[var(--space-2)] rounded-[var(--radius-md)] bg-white/10 border border-white/20 text-white placeholder-white/40 transition-soft focus:border-white/40 focus:bg-white/15"
         />
 
         <button
           onClick={search}
-          className="px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition-soft"
+          className="px-[var(--space-3)] py-[var(--space-2)] rounded-[var(--radius-md)] bg-white/10 border border-white/20 hover:bg-white/20 transition-soft"
         >
           Go
         </button>
       </div>
 
       {mode === "semantic" && (
-        <p className="text-xs text-white/60">
+        <p className="text-[var(--text-xs)] text-white/60">
           AI semantic search finds jokes by meaning, not just keywords.
         </p>
       )}
 
       {error && (
-        <p className="text-center text-red-400 text-sm">{error}</p>
+        <p className="text-center text-red-400 text-[var(--text-sm)]">{error}</p>
       )}
 
       {loading ? (
-        <div className="space-y-4">
+        <div className="space-y-[var(--space-3)]">
           {[...Array(5)].map((_, i) => (
             <JokeCardSkeleton key={i} />
           ))}
         </div>
       ) : (
-        <div className="animate-fadeIn space-y-4">
+        <div className="animate-fadeIn space-y-[var(--space-3)]">
           {results.length > 0 &&
             results.map((post) => (
               <JokeCard key={post.id} post={post} />

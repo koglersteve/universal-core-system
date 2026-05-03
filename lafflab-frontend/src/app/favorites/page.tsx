@@ -1,5 +1,6 @@
 "use client";
 
+import AppShell from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import { LaffLabApi } from "@/lib/LaffLabApi";
@@ -47,21 +48,17 @@ export default function FavoritesPage() {
   const showEmpty = !isLoading && posts.length === 0;
 
   return (
-    <div className="p-6 text-white space-y-6 page-shell">
-      <h1 className="text-2xl font-bold">Favorites</h1>
-
+    <AppShell title="Favorites">
       {isLoading ? (
-        <div className="space-y-4">
+        <div className="space-y-[var(--space-3)]">
           {[...Array(4)].map((_, i) => (
             <JokeCardSkeleton key={i} />
           ))}
         </div>
       ) : (
-        <div className="animate-fadeIn space-y-4">
+        <div className="animate-fadeIn space-y-[var(--space-3)]">
           {posts.length > 0 &&
-            posts.map((post) => (
-              <JokeCard key={post.id} post={post} />
-            ))}
+            posts.map((post) => <JokeCard key={post.id} post={post} />)}
 
           {showEmpty && (
             <EmptyState
@@ -72,6 +69,6 @@ export default function FavoritesPage() {
           )}
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }

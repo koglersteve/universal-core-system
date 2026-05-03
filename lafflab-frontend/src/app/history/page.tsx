@@ -6,8 +6,8 @@ export default function HistoryPage() {
   const hasHistory = false;
 
   return (
-    <div className="p-6 text-white space-y-6 page-shell">
-      <h1 className="text-2xl font-bold">History</h1>
+    <div className="p-[var(--space-4)] text-white space-y-[var(--space-4)] page-shell">
+      <h1 className="text-[var(--text-2xl)] font-bold">History</h1>
 
       {!hasHistory && (
         <EmptyState
