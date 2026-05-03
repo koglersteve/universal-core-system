@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import PostMedia from "./PostMedia";
+import ImpressionBar from "@/components/ImpressionBar";
 import type { Post } from "@/types/jokes";
 
 export default function JokeCard({ post }: { post: Post }) {
@@ -26,6 +27,9 @@ export default function JokeCard({ post }: { post: Post }) {
           {isFavorite(post.id) ? "★ Favorited" : "☆ Favorite"}
         </button>
       </div>
+
+      {/* ⭐ Impression Bar at the bottom */}
+      <ImpressionBar postId={post.id} />
     </div>
   );
 }
