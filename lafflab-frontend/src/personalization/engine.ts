@@ -9,7 +9,6 @@ import { computeSessionSignal } from "./signals/session";
 import { rankPosts } from "./ranker";
 import { getUserProfile } from "./profile-store";
 import { handleNotificationEvent } from "@/notifications/engine";
-import { rankPosts } from "./ranker";
 
 export type PersonalizationContext = {
   userId: string;
