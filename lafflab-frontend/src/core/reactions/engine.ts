@@ -25,9 +25,9 @@ const store: ReactionStore = {
  * Record a reaction event and trigger:
  * - store event
  * - update user emotional profile
- * - compute propagation actions
+ * - compute intelligent propagation actions
  * - log propagation actions
- * - emit real‑time reaction stream event
+ * - emit real-time reaction stream event
  */
 export function recordReaction(params: {
   userId: string | null;
@@ -52,7 +52,7 @@ export function recordReaction(params: {
     updateUserProfile(params.userId, params.emoji);
   }
 
-  // Intelligent propagation actions
+  // Intelligent propagation actions (emoji + post + user context)
   const actions = getPropagationActionsForEmoji(
     params.emoji,
     params.postId,
@@ -62,21 +62,21 @@ export function recordReaction(params: {
   // Log propagation actions
   actions.forEach((a) => logPropagation(event, a));
 
-  // Emit real‑time reaction stream event
+  // Emit real-time reaction stream event
   emitReactionStreamEvent(event, actions);
 
   return event;
 }
 
 /**
- * Return all reaction events for a post
+ * Return all reaction events for a post.
  */
 export function getReactionsForPost(postId: string): ReactionEvent[] {
   return store.events.filter((e) => e.postId === postId);
 }
 
 /**
- * Return aggregated emoji counts for a post
+ * Return aggregated emoji counts for a post.
  */
 export function getAggregatedCounts(
   postId: string
@@ -101,7 +101,7 @@ export function getAggregatedCounts(
 }
 
 /**
- * Raw 7×7 propagation matrix (emotional propagation)
+ * Raw 7×7 propagation matrix (emotional propagation).
  */
 export function propagateReactions(
   event: ReactionEvent
@@ -110,17 +110,21 @@ export function propagateReactions(
 }
 
 /**
- * High‑level propagation outputs:
- * “this reaction should trigger X in app Y”
+ * High-level propagation outputs:
+ * “this reaction should trigger X in app Y”.
  */
 export function getPropagationOutputs(
   event: ReactionEvent
 ): PropagationAction[] {
-  return getPropagationActionsForEmoji(event.emoji, event.postId, event.userId || undefined);
+  return getPropagationActionsForEmoji(
+    event.emoji,
+    event.postId,
+    event.userId || undefined
+  );
 }
 
 /**
- * Return all reaction events (used for analytics)
+ * Return all reaction events (used for analytics).
  */
 export function getAllEvents(): ReactionEvent[] {
   return [...store.events];
