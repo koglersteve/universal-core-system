@@ -8,7 +8,6 @@ export type NotificationPreferences = {
 export async function getUserPreferences(
   userId: string
 ): Promise<NotificationPreferences> {
-  // TODO: load from DB / KV
   return {
     trending: true,
     newPosts: true,

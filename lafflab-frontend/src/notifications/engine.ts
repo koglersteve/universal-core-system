@@ -1,6 +1,5 @@
 import { enqueueNotification } from "./queue";
 import { getUserPreferences } from "./preference-store";
-
 import { TrendingTemplate } from "./templates/trending";
 import { NewPostTemplate } from "./templates/new-post";
 import { CreatorUpdateTemplate } from "./templates/creator-update";

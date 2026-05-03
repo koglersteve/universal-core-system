@@ -39,7 +39,7 @@ export function rankPosts(
         social * 0.1 +
         diversity * 0.1 +
         session * 0.1 +
-        governance * 1.0; // governance can zero out
+        governance * 1.0;
 
       const reasons: string[] = [];
       if (relevance > 0.7) reasons.push("high_relevance");
