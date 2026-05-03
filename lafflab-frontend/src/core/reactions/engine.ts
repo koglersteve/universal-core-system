@@ -1,17 +1,11 @@
 import { randomUUID } from "crypto";
 import { REACTION_MATRIX } from "./matrix";
-import { getPropagationActionsForEmoji } from "./propagationConfig";
-import { logPropagation } from "./propagationLog";
-import { updateUserProfile } from "./userProfile";
-import { emitReactionStreamEvent } from "./stream";
-
 import type {
   ReactionEmojiKey,
   ReactionEvent,
   ReactionPropagation,
   SurfaceId,
 } from "./types";
-import type { PropagationAction } from "./propagationConfig";
 
 type ReactionStore = {
   events: ReactionEvent[];
@@ -21,14 +15,6 @@ const store: ReactionStore = {
   events: [],
 };
 
-/**
- * Record a reaction event and trigger:
- * - store event
- * - update user emotional profile
- * - compute intelligent propagation actions
- * - log propagation actions
- * - emit real-time reaction stream event
- */
 export function recordReaction(params: {
   userId: string | null;
   postId: string;
@@ -44,40 +30,14 @@ export function recordReaction(params: {
     createdAt: new Date().toISOString(),
   };
 
-  // Store event
   store.events.push(event);
-
-  // Update user emotional profile
-  if (params.userId) {
-    updateUserProfile(params.userId, params.emoji);
-  }
-
-  // Intelligent propagation actions (emoji + post + user context)
-  const actions = getPropagationActionsForEmoji(
-    params.emoji,
-    params.postId,
-    params.userId || undefined
-  );
-
-  // Log propagation actions
-  actions.forEach((a) => logPropagation(event, a));
-
-  // Emit real-time reaction stream event
-  emitReactionStreamEvent(event, actions);
-
   return event;
 }
 
-/**
- * Return all reaction events for a post.
- */
 export function getReactionsForPost(postId: string): ReactionEvent[] {
   return store.events.filter((e) => e.postId === postId);
 }
 
-/**
- * Return aggregated emoji counts for a post.
- */
 export function getAggregatedCounts(
   postId: string
 ): Record<ReactionEmojiKey, number> {
@@ -100,32 +60,33 @@ export function getAggregatedCounts(
   return counts;
 }
 
-/**
- * Raw 7×7 propagation matrix (emotional propagation).
- */
+// Core: 7×7 propagation engine (for cross‑app logic)
 export function propagateReactions(
   event: ReactionEvent
 ): ReactionPropagation[] {
   return REACTION_MATRIX.filter((p) => p.fromEmoji === event.emoji);
 }
 
-/**
- * High-level propagation outputs:
- * “this reaction should trigger X in app Y”.
- */
+import { getPropagationActionsForEmoji } from "./propagationConfig";
+import type { PropagationAction } from "./propagationConfig";
+
+// ...
+
 export function getPropagationOutputs(
   event: ReactionEvent
 ): PropagationAction[] {
-  return getPropagationActionsForEmoji(
-    event.emoji,
-    event.postId,
-    event.userId || undefined
-  );
+  return getPropagationActionsForEmoji(event.emoji);
 }
 
-/**
- * Return all reaction events (used for analytics).
- */
-export function getAllEvents(): ReactionEvent[] {
-  return [...store.events];
+import { updateUserProfile } from "./userProfile";
+
+// inside recordReaction()
+if (params.userId) {
+  updateUserProfile(params.userId, params.emoji);
 }
+
+import { logPropagation } from "./propagationLog";
+
+// inside recordReaction()
+const actions = getPropagationActionsForEmoji(params.emoji);
+actions.forEach((a) => logPropagation(event, a));

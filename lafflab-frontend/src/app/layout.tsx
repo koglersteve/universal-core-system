@@ -25,3 +25,22 @@ export default function RootLayout({
     </html>
   );
 }
+import type { ReactNode } from "react";
+import { AuthProvider } from "@/context/AuthContext";
+// ...your other imports
+
+import type { ReactNode } from "react";
+import { AuthProvider } from "@/context/AuthContext";
+// ...other imports
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
