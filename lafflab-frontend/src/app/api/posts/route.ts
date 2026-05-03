@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { v4 as uuid } from "uuid";
+import { randomUUID } from "crypto";
 
 // Temporary in-memory store (replace with DB later)
 let POSTS: any[] = [];
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const body = await req.json();
 
   const post = {
-    id: uuid(),
+    id: randomUUID(),
     text: body.text || "",
     mediaUrl: body.mediaUrl || null,
     mediaType: body.mediaType || null,
