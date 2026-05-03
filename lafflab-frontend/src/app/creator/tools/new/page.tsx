@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function NewPostEditor() {
   const router = useRouter();
+
   const [text, setText] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -15,6 +16,7 @@ export default function NewPostEditor() {
     setSaving(true);
 
     try {
+      // Minimal POST to your existing backend
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,6 +31,7 @@ export default function NewPostEditor() {
 
       const { post } = await res.json();
 
+      // Redirect to the new post
       router.push(`/post/${post.id}`);
     } catch (err) {
       console.error(err);
