@@ -9,8 +9,8 @@ export default function JokeCard({ post }: { post: Post }) {
   const { isFavorite, toggleFavorite } = useFavoritesStore();
 
   return (
-    <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-white space-y-3">
-      <Link href={`/post/${post.id}`}>
+    <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-white space-y-3 card-elevated card-interactive">
+      <Link href={`/post/${post.id}`} className="block transition-soft">
         <PostMedia post={post} active={false} />
       </Link>
 
@@ -21,7 +21,7 @@ export default function JokeCard({ post }: { post: Post }) {
 
         <button
           onClick={() => toggleFavorite(post.id)}
-          className="text-sm px-3 py-1 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition"
+          className="text-sm px-3 py-1 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition-soft"
         >
           {isFavorite(post.id) ? "★ Favorited" : "☆ Favorite"}
         </button>
@@ -29,5 +29,4 @@ export default function JokeCard({ post }: { post: Post }) {
     </div>
   );
 }
-
 

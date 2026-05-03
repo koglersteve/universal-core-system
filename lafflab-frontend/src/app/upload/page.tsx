@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import ErrorState from "@/components/ui/ErrorState";
+import { EmptyState, EmptyUploadIcon } from "@/components/ui/EmptyState";
 
 const ALLOWED_TYPES = [
   "image/jpeg",
@@ -262,8 +263,10 @@ export default function UploadPage() {
     });
   }
 
+  const showEmpty = queue.length === 0;
+
   return (
-    <div className="p-6 space-y-6 text-white">
+    <div className="p-6 space-y-6 text-white page-shell">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Upload</h1>
         {!online && (
@@ -282,12 +285,18 @@ export default function UploadPage() {
 
       {error && <ErrorState message={error} />}
 
-      {queue.length > 0 && (
-        <div className="space-y-4">
+      {showEmpty ? (
+        <EmptyState
+          title="No uploads yet"
+          subtitle="Select files to begin uploading."
+          icon={EmptyUploadIcon}
+        />
+      ) : (
+        <div className="space-y-4 animate-fadeIn">
           {queue.map((item) => (
             <div
               key={item.id}
-              className="border border-white/10 rounded p-3 space-y-2 bg-white/5"
+              className="border border-white/10 rounded p-3 space-y-2 bg-white/5 card-elevated"
             >
               <div className="flex items-center gap-3">
                 {item.kind === "image" && item.previewUrl && (
@@ -337,7 +346,7 @@ export default function UploadPage() {
 
                   <div className="w-full h-2 bg-white/10 rounded overflow-hidden mt-2">
                     <div
-                      className="h-full bg-white/40 transition-all"
+                      className="h-full bg-white/40 transition-soft"
                       style={{ width: `${item.progress || 0}%` }}
                     />
                   </div>
@@ -347,7 +356,7 @@ export default function UploadPage() {
                   {item.status === "uploading" && (
                     <button
                       onClick={() => cancelUpload(item.id)}
-                      className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-300 border border-red-500/40"
+                      className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-300 border border-red-500/40 transition-soft"
                     >
                       Cancel
                     </button>
@@ -356,7 +365,7 @@ export default function UploadPage() {
                   {item.status === "error" && (
                     <button
                       onClick={() => retryUpload(item.id)}
-                      className="text-xs px-2 py-1 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/40"
+                      className="text-xs px-2 py-1 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 transition-soft"
                     >
                       Retry
                     </button>

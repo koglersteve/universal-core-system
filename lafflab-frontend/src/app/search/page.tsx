@@ -4,6 +4,8 @@ import { useState } from "react";
 import { LaffLabApi } from "@/lib/LaffLabApi";
 import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
+import { JokeCardSkeleton } from "@/components/JokeCardSkeleton";
+import { EmptyState, EmptySearchIcon } from "@/components/ui/EmptyState";
 
 type Mode = "keyword" | "semantic";
 
@@ -27,14 +29,13 @@ export default function SearchPage() {
       } else {
         const all = await LaffLabApi.getPosts();
 
-        // SAFE keyword search — handles undefined text
         const filtered = all.filter((p) =>
           (p.text ?? "").toLowerCase().includes(query.toLowerCase())
         );
 
         setResults(filtered);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       setError("Search failed. Please try again.");
     } finally {
@@ -42,15 +43,18 @@ export default function SearchPage() {
     }
   }
 
+  const showEmpty =
+    !loading && results.length === 0 && query.trim() !== "" && !error;
+
   return (
-    <div className="p-6 space-y-6 text-white">
+    <div className="p-6 space-y-6 text-white page-shell">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Search</h1>
 
         <div className="flex items-center gap-2 text-xs">
           <button
             onClick={() => setMode("keyword")}
-            className={`px-2 py-1 rounded border text-xs ${
+            className={`px-2 py-1 rounded border text-xs transition-soft ${
               mode === "keyword"
                 ? "bg-white text-black border-white"
                 : "bg-transparent border-white/30 text-white/70"
@@ -61,7 +65,7 @@ export default function SearchPage() {
 
           <button
             onClick={() => setMode("semantic")}
-            className={`px-2 py-1 rounded border text-xs ${
+            className={`px-2 py-1 rounded border text-xs transition-soft ${
               mode === "semantic"
                 ? "bg-white text-black border-white"
                 : "bg-transparent border-white/30 text-white/70"
@@ -82,12 +86,12 @@ export default function SearchPage() {
               ? "Search by idea, vibe, or meaning…"
               : "Search by exact words…"
           }
-          className="flex-1 px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/40"
+          className="flex-1 px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/40 transition-soft focus:border-white/40 focus:bg-white/15"
         />
 
         <button
           onClick={search}
-          className="px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition"
+          className="px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition-soft"
         >
           Go
         </button>
@@ -99,25 +103,33 @@ export default function SearchPage() {
         </p>
       )}
 
-      {loading && (
-        <p className="text-center opacity-70">Searching…</p>
-      )}
-
       {error && (
         <p className="text-center text-red-400 text-sm">{error}</p>
       )}
 
-      {!loading && results.length > 0 && (
+      {loading ? (
         <div className="space-y-4">
-          {results.map((post) => (
-            <JokeCard key={post.id} post={post} />
+          {[...Array(5)].map((_, i) => (
+            <JokeCardSkeleton key={i} />
           ))}
         </div>
-      )}
+      ) : (
+        <div className="animate-fadeIn space-y-4">
+          {results.length > 0 &&
+            results.map((post) => (
+              <JokeCard key={post.id} post={post} />
+            ))}
 
-      {!loading && results.length === 0 && query.trim() !== "" && !error && (
-        <p className="text-center opacity-60">No results found.</p>
+          {showEmpty && (
+            <EmptyState
+              title="No results found"
+              subtitle="Try different words or switch to AI semantic search."
+              icon={EmptySearchIcon}
+            />
+          )}
+        </div>
       )}
     </div>
   );
 }
+

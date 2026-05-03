@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import { LaffLabApi } from "@/lib/LaffLabApi";
 import JokeCard from "@/components/JokeCard";
+import { JokeCardSkeleton } from "@/components/JokeCardSkeleton";
+import { EmptyState, EmptyHeartIcon } from "@/components/ui/EmptyState";
 import type { Post } from "@/types/jokes";
 
 export default function FavoritesPage() {
@@ -41,23 +43,33 @@ export default function FavoritesPage() {
     loadPosts();
   }, [favorites]);
 
+  const isLoading = loading || fetching;
+  const showEmpty = !isLoading && posts.length === 0;
+
   return (
-    <div className="p-6 text-white space-y-6">
+    <div className="p-6 text-white space-y-6 page-shell">
       <h1 className="text-2xl font-bold">Favorites</h1>
 
-      {(loading || fetching) && (
-        <p className="opacity-70 text-center">Loading favorites…</p>
-      )}
-
-      {!loading && !fetching && posts.length === 0 && (
-        <p className="opacity-60 text-center">No favorites yet.</p>
-      )}
-
-      {!loading && !fetching && posts.length > 0 && (
+      {isLoading ? (
         <div className="space-y-4">
-          {posts.map((post) => (
-            <JokeCard key={post.id} post={post} />
+          {[...Array(4)].map((_, i) => (
+            <JokeCardSkeleton key={i} />
           ))}
+        </div>
+      ) : (
+        <div className="animate-fadeIn space-y-4">
+          {posts.length > 0 &&
+            posts.map((post) => (
+              <JokeCard key={post.id} post={post} />
+            ))}
+
+          {showEmpty && (
+            <EmptyState
+              title="No favorites yet"
+              subtitle="Save jokes you love and they’ll appear here."
+              icon={EmptyHeartIcon}
+            />
+          )}
         </div>
       )}
     </div>

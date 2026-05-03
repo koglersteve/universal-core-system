@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { LaffLabApi } from "@/lib/LaffLabApi";
 import type { Post } from "@/types/jokes";
 import JokeCard from "@/components/JokeCard";
+import { JokeCardSkeleton } from "@/components/JokeCardSkeleton";
+import { EmptyState, EmptyFeedIcon } from "@/components/ui/EmptyState";
 
 const PAGE_SIZE = 10;
 
@@ -11,34 +13,33 @@ export default function HomeFeedPage() {
   const [items, setItems] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [loadingInitial, setLoadingInitial] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
   const [menuOpen, setMenuOpen] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const touchStartY = useRef<number | null>(null);
   const pulling = useRef(false);
 
-  // -----------------------------
-  // INITIAL LOAD (preload first 10)
-  // -----------------------------
   async function loadInitial() {
+    setLoadingInitial(true);
+
     const all = await LaffLabApi.getPosts();
     const sorted = [...all].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() -
         new Date(a.createdAt).getTime()
     );
+
     const first = sorted.slice(0, PAGE_SIZE);
     setItems(first);
     setPage(2);
     setActiveIndex(0);
+
+    setLoadingInitial(false);
   }
 
-  // -----------------------------
-  // LOAD MORE POSTS
-  // -----------------------------
   async function loadMore() {
     if (loadingMore) return;
     setLoadingMore(true);
@@ -59,9 +60,6 @@ export default function HomeFeedPage() {
     setLoadingMore(false);
   }
 
-  // -----------------------------
-  // PULL TO REFRESH
-  // -----------------------------
   async function refresh() {
     setRefreshing(true);
     await loadInitial();
@@ -72,9 +70,6 @@ export default function HomeFeedPage() {
     }
   }
 
-  // -----------------------------
-  // SCROLL TO INDEX
-  // -----------------------------
   function scrollToIndex(index: number) {
     if (!scrollRef.current) return;
     const container = scrollRef.current;
@@ -87,16 +82,10 @@ export default function HomeFeedPage() {
     });
   }
 
-  // -----------------------------
-  // INITIAL LOAD
-  // -----------------------------
   useEffect(() => {
     loadInitial();
   }, []);
 
-  // -----------------------------
-  // AUTO‑ADVANCE WHEN JOKE FINISHES
-  // -----------------------------
   useEffect(() => {
     if (!items[activeIndex]) return;
 
@@ -127,9 +116,6 @@ export default function HomeFeedPage() {
     return () => clearTimeout(timer);
   }, [activeIndex, items]);
 
-  // -----------------------------
-  // TRACK ACTIVE INDEX ON SCROLL
-  // -----------------------------
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -159,9 +145,6 @@ export default function HomeFeedPage() {
     return () => container.removeEventListener("scroll", onScroll);
   }, [activeIndex, items.length]);
 
-  // -----------------------------
-  // PULL‑TO‑REFRESH TOUCH HANDLERS
-  // -----------------------------
   function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
     if (!scrollRef.current) return;
     if (scrollRef.current.scrollTop === 0) {
@@ -186,9 +169,6 @@ export default function HomeFeedPage() {
     touchStartY.current = null;
   }
 
-  // -----------------------------
-  // FULL SLIDE‑DOWN MENU
-  // -----------------------------
   const menuItems = [
     { label: "Creator Dashboard", href: "/creator" },
     { label: "Upload", href: "/upload" },
@@ -197,16 +177,14 @@ export default function HomeFeedPage() {
     { label: "Settings", href: "/settings" },
   ];
 
-  return (
-    <div className="h-screen flex flex-col bg-black text-white">
+  const showEmptyFeed = !loadingInitial && items.length === 0;
 
-      {/* ----------------------------- */}
-      {/* FLOATING TOP‑RIGHT ICON MENU */}
-      {/* ----------------------------- */}
+  return (
+    <div className="h-screen flex flex-col bg-black text-white page-shell">
       <div className="fixed top-4 right-4 z-50">
         <button
           onClick={() => setMenuOpen((v) => !v)}
-          className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition"
+          className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition-soft"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -225,16 +203,13 @@ export default function HomeFeedPage() {
         </button>
       </div>
 
-      {/* ----------------------------- */}
-      {/* SLIDE‑DOWN MENU */}
-      {/* ----------------------------- */}
       {menuOpen && (
         <div className="fixed top-0 right-0 w-56 bg-black/90 border-l border-white/10 backdrop-blur z-40 p-4 space-y-3 animate-slideDown">
           {menuItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="block px-3 py-2 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 transition"
+              className="block px-3 py-2 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 transition-soft"
             >
               {item.label}
             </a>
@@ -242,16 +217,10 @@ export default function HomeFeedPage() {
         </div>
       )}
 
-      {/* ----------------------------- */}
-      {/* PULL‑TO‑REFRESH HEADER */}
-      {/* ----------------------------- */}
       <div className="h-10 flex items-center justify-center text-xs text-white/70 border-b border-white/10 bg-black/80 backdrop-blur">
         {refreshing ? "Refreshing…" : "Pull down to refresh · LaffLab"}
       </div>
 
-      {/* ----------------------------- */}
-      {/* TIKTOK‑STYLE VERTICAL FEED */}
-      {/* ----------------------------- */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-scroll snap-y snap-mandatory"
@@ -259,16 +228,32 @@ export default function HomeFeedPage() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {items.map((post) => (
-          <div
-            key={post.id}
-            className="h-screen snap-start flex items-center justify-center px-2"
-          >
-            <div className="w-full max-w-md">
-              <JokeCard post={post} />
-            </div>
+        {loadingInitial ? (
+          <div className="space-y-4 p-4">
+            {[...Array(6)].map((_, i) => (
+              <JokeCardSkeleton key={i} />
+            ))}
           </div>
-        ))}
+        ) : showEmptyFeed ? (
+          <EmptyState
+            title="No posts available"
+            subtitle="Check back later for new jokes."
+            icon={EmptyFeedIcon}
+          />
+        ) : (
+          <div className="animate-fadeIn">
+            {items.map((post) => (
+              <div
+                key={post.id}
+                className="h-screen snap-start flex items-center justify-center px-2"
+              >
+                <div className="w-full max-w-md">
+                  <JokeCard post={post} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {loadingMore && (
           <div className="h-20 flex items-center justify-center text-sm text-white/60">
