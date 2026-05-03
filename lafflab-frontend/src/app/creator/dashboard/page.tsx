@@ -2,15 +2,24 @@
 
 import AppShell from "@/components/AppShell";
 
-const stats = [
+type Stat = {
+  label: string;
+  value: string | number;
+};
+
+type ActivityItem = {
+  message: string;
+  timestamp: string;
+};
+
+const stats: Stat[] = [
   { label: "Views (last 7 days)", value: "—" },
   { label: "Engagement (likes, shares)", value: "—" },
   { label: "Published posts", value: "—" },
 ];
 
-const recentActivity = [
-  // You can wire this to real data later
-];
+// Future‑proof: strongly typed, ready for real analytics
+const recentActivity: ActivityItem[] = [];
 
 export default function CreatorDashboard() {
   return (
@@ -39,6 +48,7 @@ export default function CreatorDashboard() {
           <h2 className="text-[var(--text-md)] font-semibold text-white">
             Recent Activity
           </h2>
+
           {recentActivity.length === 0 ? (
             <p className="text-white/60 text-[var(--text-sm)] mt-2">
               You haven’t published anything yet. Once you start sharing your work,
@@ -48,7 +58,10 @@ export default function CreatorDashboard() {
             <ul className="mt-2 space-y-2">
               {recentActivity.map((item, idx) => (
                 <li key={idx} className="text-white/70 text-[var(--text-sm)]">
-                  {item}
+                  <span className="font-medium">{item.message}</span>
+                  <span className="text-white/40 text-[var(--text-xs)] ml-2">
+                    {item.timestamp}
+                  </span>
                 </li>
               ))}
             </ul>
