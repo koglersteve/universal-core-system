@@ -71,9 +71,7 @@ export default function HomeFeedPage() {
     const posts = await LaffLabApi.getPosts();
     const map = new Map(posts.map((p) => [p.id, p]));
 
-    const hydrated = ranked
-      .map((r: any) => map.get(r.id))
-      .filter(Boolean);
+    const hydrated = ranked.map((r: any) => map.get(r.id)).filter(Boolean);
 
     const nextChunk = hydrated.slice(
       (page - 1) * PAGE_SIZE,
@@ -178,18 +176,25 @@ export default function HomeFeedPage() {
     return () => container.removeEventListener("scroll", onScroll);
   }, [activeIndex, items.length]);
 
-  // Pull-to-refresh touch handlers
+  // Pull-to-refresh touch handlers (FIXED)
   function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
     if (!scrollRef.current) return;
-    if (scrollRef.current.scrollTop === 0) {
-      touchStartY.current = e.touches[0].clientY;
-      pulling.current = true;
-    }
+    if (scrollRef.current.scrollTop !== 0) return;
+
+    const touch = e.touches?.[0];
+    if (!touch) return;
+
+    touchStartY.current = touch.clientY;
+    pulling.current = true;
   }
 
   function handleTouchMove(e: React.TouchEvent<HTMLDivElement>) {
     if (!pulling.current || touchStartY.current == null) return;
-    const delta = e.touches[0].clientY - touchStartY.current;
+
+    const touch = e.touches?.[0];
+    if (!touch) return;
+
+    const delta = touch.clientY - touchStartY.current;
 
     if (delta > 80 && !refreshing) {
       refresh();
@@ -300,7 +305,7 @@ export default function HomeFeedPage() {
         )}
       </div>
 
-      {/* Notification Toast with tone */}
+      {/* Notification Toast */}
       {latest && (
         <NotificationToast
           title={latest.title}
