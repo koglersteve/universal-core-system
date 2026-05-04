@@ -1,4 +1,4 @@
-import type { ReactionEmojiKey, ReactionPropagation } from "./types";
+import type { ReactionEmojiKey, ReactionPropagation } from "@/types/os";
 
 const EMOJIS: ReactionEmojiKey[] = [
   "laugh",

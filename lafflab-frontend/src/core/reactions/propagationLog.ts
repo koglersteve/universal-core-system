@@ -1,5 +1,4 @@
-import type { ReactionEvent } from "./types";
-import type { PropagationAction } from "./propagationConfig";
+import type { ReactionEvent, PropagationAction } from "@/types/os";
 
 export type PropagationLogEntry = {
   event: ReactionEvent;
@@ -9,9 +8,6 @@ export type PropagationLogEntry = {
 
 const log: PropagationLogEntry[] = [];
 
-/**
- * Store a propagation action for debugging + analytics
- */
 export function logPropagation(
   event: ReactionEvent,
   action: PropagationAction
@@ -23,9 +19,6 @@ export function logPropagation(
   });
 }
 
-/**
- * Return all logged propagation actions
- */
 export function getPropagationLog(): PropagationLogEntry[] {
   return [...log];
 }

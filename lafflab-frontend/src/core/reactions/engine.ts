@@ -4,10 +4,11 @@ import type {
   ReactionEmojiKey,
   ReactionEvent,
   ReactionPropagation,
+  ReactionCounts,
   SurfaceId,
-} from "./types";
+  PropagationAction,
+} from "@/types/os";
 import { getPropagationActionsForEmoji } from "./propagationConfig";
-import type { PropagationAction } from "./propagationConfig";
 import { updateUserProfile } from "./userProfile";
 import { logPropagation } from "./propagationLog";
 
@@ -50,10 +51,8 @@ export function getReactionsForPost(postId: string): ReactionEvent[] {
   return store.events.filter((e) => e.postId === postId);
 }
 
-export function getAggregatedCounts(
-  postId: string
-): Record<ReactionEmojiKey, number> {
-  const counts: Record<ReactionEmojiKey, number> = {
+export function getAggregatedCounts(postId: string): ReactionCounts {
+  const counts: ReactionCounts = {
     laugh: 0,
     smile: 0,
     shock: 0,
@@ -62,13 +61,11 @@ export function getAggregatedCounts(
     mindblown: 0,
     crickets: 0,
   };
-
   for (const e of store.events) {
     if (e.postId === postId) {
       counts[e.emoji] += 1;
     }
   }
-
   return counts;
 }
 

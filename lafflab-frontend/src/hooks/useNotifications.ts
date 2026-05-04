@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Notification = {
-  id: string;
-  userId: string;
-  type: string;
-  message: string;
-  createdAt: string;
-  read: boolean;
-};
+import type { Notification } from "@/types/os";
 
 export function useNotifications(userId: string) {
   const [notifications, setNotifications] = useState<Notification[]>([]);

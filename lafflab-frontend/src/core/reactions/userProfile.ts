@@ -1,4 +1,4 @@
-import type { ReactionEmojiKey } from "./types";
+import type { ReactionEmojiKey } from "@/types/os";
 
 export type UserReactionProfile = {
   userId: string;
@@ -13,18 +13,13 @@ export function updateUserProfile(userId: string, emoji: ReactionEmojiKey) {
     profiles.set(userId, {
       userId,
       emojiCounts: {
-        laugh: 0,
-        smile: 0,
-        shock: 0,
-        expressionless: 0,
-        angry: 0,
-        mindblown: 0,
-        crickets: 0,
+        laugh: 0, smile: 0, shock: 0,
+        expressionless: 0, angry: 0,
+        mindblown: 0, crickets: 0,
       },
       totalReactions: 0,
     });
   }
-
   const profile = profiles.get(userId)!;
   profile.emojiCounts[emoji] += 1;
   profile.totalReactions += 1;

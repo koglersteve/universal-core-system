@@ -1,38 +1,13 @@
-// 7 base emotional signals
-export type ReactionEmojiKey =
-  | "laugh"
-  | "smile"
-  | "shock"
-  | "expressionless"
-  | "angry"
-  | "mindblown"
-  | "crickets";
+// ─── MIGRATED ───────────────────────────────────────────────────
+// Original type definitions moved to @/types/os/reactions.ts
+// This file is a backwards-compatibility shim.  Remove once all
+// local imports are confirmed to use "@/types/os" directly.
+// ────────────────────────────────────────────────────────────────
 
-// A "surface" is any app/module/feed/widget
-export type SurfaceId = string;
-
-// A "channel" is how the reaction manifests
-export type ReactionChannel =
-  | "feed"
-  | "notification"
-  | "badge"
-  | "highlight"
-  | "recommendation"
-  | "analytics"
-  | "crosslink";
-
-export type ReactionEvent = {
-  id: string;
-  userId: string | null;
-  postId: string;
-  emoji: ReactionEmojiKey;
-  surface: SurfaceId;
-  createdAt: string;
-};
-
-export type ReactionPropagation = {
-  fromEmoji: ReactionEmojiKey;
-  toEmoji: ReactionEmojiKey;
-  weight: number; // 0–1 influence
-  channel: ReactionChannel;
-};
+export type {
+  ReactionEmojiKey,
+  SurfaceId,
+  ReactionChannel,
+  ReactionEvent,
+  ReactionPropagation,
+} from "@/types/os";

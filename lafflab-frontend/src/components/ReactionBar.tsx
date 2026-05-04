@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import type { ReactionEmojiKey } from "@/types/os";
 
-const REACTIONS = [
-  { key: "hysterical", emoji: "🤣" },
-  { key: "laughing", emoji: "😂" },
+const REACTIONS: { key: ReactionEmojiKey; emoji: string }[] = [
+  { key: "laugh", emoji: "🤣" },
+  { key: "smile", emoji: "😂" },
   { key: "expressionless", emoji: "😐" },
-  { key: "shocked", emoji: "😱" },
+  { key: "shock", emoji: "😱" },
   { key: "angry", emoji: "😡" },
   { key: "mindblown", emoji: "🤯" },
   { key: "crickets", emoji: "🦗" },
@@ -15,13 +16,13 @@ const REACTIONS = [
 
 interface ReactionBarProps {
   postId: string;
-  onReact?: (postId: string, reactionKey: string) => void;
+  onReact?: (postId: string, reactionKey: ReactionEmojiKey) => void;
 }
 
 export function ReactionBar({ postId, onReact }: ReactionBarProps) {
-  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [counts, setCounts] = useState<Partial<Record<ReactionEmojiKey, number>>>({});
 
-  function handleReact(key: string) {
+  function handleReact(key: ReactionEmojiKey) {
     setCounts((prev) => ({ ...prev, [key]: (prev[key] ?? 0) + 1 }));
     onReact?.(postId, key);
   }

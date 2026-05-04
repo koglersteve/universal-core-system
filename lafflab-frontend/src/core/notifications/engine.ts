@@ -1,14 +1,6 @@
 import { subscribeToReactionStream } from "@/core/reactions/stream";
 import type { ReactionStreamEvent } from "@/core/reactions/stream";
-
-export type Notification = {
-  id: string;
-  userId: string;
-  type: "post_trending" | "reaction_spike" | "milestone";
-  message: string;
-  createdAt: string;
-  read: boolean;
-};
+import type { Notification } from "@/types/os";
 
 const notificationsByUser = new Map<string, Notification[]>();
 
@@ -31,7 +23,6 @@ export function getNotificationsForUser(userId: string): Notification[] {
 }
 
 const REACTION_SPIKE_THRESHOLD = 10;
-
 const recentReactionsByPost = new Map<
   string,
   { count: number; lastAt: number }
@@ -40,19 +31,12 @@ const recentReactionsByPost = new Map<
 function handleReactionEvent(e: ReactionStreamEvent) {
   const postId = e.event.postId;
   const userId = e.event.userId;
-
   const now = Date.now();
   const windowMs = 5 * 60 * 1000;
 
-  const entry =
-    recentReactionsByPost.get(postId) || {
-      count: 0,
-      lastAt: now,
-    };
+  const entry = recentReactionsByPost.get(postId) || { count: 0, lastAt: now };
 
-  if (now - entry.lastAt > windowMs) {
-    entry.count = 0;
-  }
+  if (now - entry.lastAt > windowMs) entry.count = 0;
 
   entry.count += 1;
   entry.lastAt = now;
@@ -73,8 +57,5 @@ let initialized = false;
 export function initNotificationEngine() {
   if (initialized) return;
   initialized = true;
-
-  subscribeToReactionStream((e) => {
-    handleReactionEvent(e);
-  });
+  subscribeToReactionStream((e) => handleReactionEvent(e));
 }

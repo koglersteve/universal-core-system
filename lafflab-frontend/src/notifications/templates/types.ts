@@ -1,20 +1,11 @@
-import type { NotificationEvent } from "../engine";
+// ─── MIGRATED ───────────────────────────────────────────────────
+// Original type definitions moved to @/types/os/notifications.ts
+// This file is a backwards-compatibility shim.
+// ────────────────────────────────────────────────────────────────
 
-export type NotificationTone =
-  | "neutral"
-  | "playful"
-  | "urgent"
-  | "celebratory";
-
-export type NotificationContextPayload = {
-  title: string;
-  body: string;
-  url?: string;
-  tone: NotificationTone;
-};
-
-export type NotificationTemplate = {
-  id: string;
-  channels: ("push" | "inapp" | "email")[];
-  buildContext: (event: NotificationEvent) => NotificationContextPayload;
-};
+export type {
+  NotificationEvent,
+  NotificationTone,
+  NotificationContextPayload,
+  NotificationTemplate,
+} from "@/types/os";
