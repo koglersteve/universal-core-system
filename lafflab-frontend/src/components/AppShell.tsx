@@ -1,25 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import TopNav from "./TopNav";
-import SideMenu from "./SideMenu";
+import type { ReactNode } from "react";
 
 export default function AppShell({
   title,
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white page-shell">
-      <TopNav title={title} onMenuToggle={() => setMenuOpen((v) => !v)} />
+    <div className="app-shell">
+      <header className="app-shell-header">
+        <h1>{title}</h1>
+      </header>
 
-      <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
-
-      <main className="flex-1 p-[var(--space-4)] animate-fadeIn">
+      <main className="app-shell-content">
         {children}
       </main>
     </div>
