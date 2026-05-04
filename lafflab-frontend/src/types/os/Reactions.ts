@@ -48,3 +48,4 @@ export type PropagationAction = {
   channel: ReactionChannel;
   weight: number;
 };
+
