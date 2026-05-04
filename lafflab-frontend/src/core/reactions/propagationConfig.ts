@@ -1,87 +1,30 @@
-import type {
-  ReactionEmojiKey,
-  ReactionChannel,
-  SurfaceId,
-  PropagationAction,
-} from "@/types/os";
-import { getUserProfile } from "./userProfile";
-import { getAggregatedCounts } from "./engine";
+// lafflab-frontend/src/core/reactions/propagationConfig.ts
 
-const SURFACES: SurfaceId[] = [
-  "feed",
-  "for-you-feed",
-  "creator-analytics",
-  "notifications",
-  "recommendations",
-  "cross-app-events",
-];
+import { getAggregatedCounts } from "./reactionStore";
 
-const EMOJI_WEIGHTS: Record<ReactionEmojiKey, number> = {
-  laugh: 1.0,
-  smile: 0.8,
-  shock: 0.6,
-  expressionless: -0.2,
-  angry: -0.6,
-  mindblown: 1.2,
-  crickets: -1.0,
-};
+export function getPropagationConfig(postId?: string) {
+  // Base propagation weights
+  const base = {
+    laugh: 1.0,
+    smile: 0.8,
+    shock: 1.2,
+    mindblown: 1.4,
+  };
 
-const SURFACE_WEIGHTS: Record<SurfaceId, number> = {
-  "feed": 1.0,
-  "for-you-feed": 1.4,
-  "creator-analytics": 1.2,
-  "notifications": 1.3,
-  "recommendations": 1.5,
-  "cross-app-events": 1.0,
-};
-
-const CHANNELS: ReactionChannel[] = [
-  "feed",
-  "notification",
-  "badge",
-  "highlight",
-  "recommendation",
-  "analytics",
-  "crosslink",
-];
-
-export function getPropagationActionsForEmoji(
-  emoji: ReactionEmojiKey,
-  postId?: string,
-  userId?: string
-): PropagationAction[] {
-  const baseWeight = EMOJI_WEIGHTS[emoji];
-
-  const profile = userId ? getUserProfile(userId) : null;
-  const userAffinity = profile
-    ? (profile.emojiCounts[emoji] || 0) /
-      Math.max(profile.totalReactions, 1)
-    : 0;
-
+  // Get aggregated counts for this post
   const postCounts = postId ? getAggregatedCounts(postId) : null;
+
+  // Strict‑safe reducer: explicitly type accumulator as number
   const postHeat = postCounts
-    ? Object.values(postCounts).reduce((a, b) => a + b, 0)
+    ? Object.values(postCounts).reduce((a: number, b: number) => a + b, 0)
     : 0;
+
   const postHeatFactor = Math.min(1.5, 1 + postHeat / 50);
 
-  const actions: PropagationAction[] = [];
-
-  for (const surface of SURFACES) {
-    const surfaceWeight = SURFACE_WEIGHTS[surface];
-    const channel = CHANNELS[Math.floor(Math.random() * CHANNELS.length)];
-
-    const finalWeight =
-      baseWeight * surfaceWeight * postHeatFactor +
-      userAffinity * 0.5;
-
-    if (finalWeight > 0.1) {
-      actions.push({
-        targetSurface: surface,
-        channel,
-        weight: Number(finalWeight.toFixed(3)),
-      });
-    }
-  }
-
-  return actions;
+  return {
+    laugh: base.laugh * postHeatFactor,
+    smile: base.smile * postHeatFactor,
+    shock: base.shock * postHeatFactor,
+    mindblown: base.mindblown * postHeatFactor,
+  };
 }
