@@ -90,3 +90,6 @@ import { logPropagation } from "./propagationLog";
 // inside recordReaction()
 const actions = getPropagationActionsForEmoji(params.emoji);
 actions.forEach((a) => logPropagation(event, a));
+export function getAllEvents() {
+  return store.events;
+}
