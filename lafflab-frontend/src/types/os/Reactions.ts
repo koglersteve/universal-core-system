@@ -23,7 +23,6 @@ export type ReactionChannel =
   | "analytics"
   | "crosslink";
 
-/** A single reaction event */
 export type ReactionEvent = {
   id: string;
   userId: string | null;
@@ -33,7 +32,6 @@ export type ReactionEvent = {
   createdAt: string;
 };
 
-/** Propagation rule between emojis */
 export type ReactionPropagation = {
   fromEmoji: ReactionEmojiKey;
   toEmoji: ReactionEmojiKey;
