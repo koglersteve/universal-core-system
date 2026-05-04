@@ -1,28 +1,35 @@
-"use client";
-
 import { useState } from "react";
-import type { ReactionEmojiKey, ReactionCounts } from "@/types/os";
+import type { ReactionEmojiKey } from "@/types/os/ReactionEmojiKey";
 
-export function useReactions(postId: string, surface: string) {
-  const [counts, setCounts] = useState<Partial<ReactionCounts>>({});
+export function useReactions(initialCounts: Record<ReactionEmojiKey, number>) {
+  const [counts, setCounts] = useState<Record<ReactionEmojiKey, number>>(initialCounts);
   const [sending, setSending] = useState(false);
 
-  async function react(emoji: ReactionEmojiKey, userId?: string) {
+  async function sendReaction(emoji: ReactionEmojiKey) {
     if (sending) return;
     setSending(true);
-    setCounts((prev) => ({ ...prev, [emoji]: (prev[emoji] || 0) + 1 }));
+
+    // strict-safe: prev is fully typed
+    setCounts((prev: Record<ReactionEmojiKey, number>) => ({
+      ...prev,
+      [emoji]: (prev[emoji] ?? 0) + 1,
+    }));
 
     try {
       const res = await fetch("/api/reactions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId, emoji, surface, userId: userId || null }),
+        body: JSON.stringify({ emoji }),
       });
-      const data = await res.json();
-      if (data.counts) setCounts(data.counts);
-    } catch (err) { console.error(err); }
-    setSending(false);
+
+      if (!res.ok) {
+        throw new Error("Failed to send reaction");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSending(false);
+    }
   }
 
-  return { counts, react, sending };
+  return { counts, sendReaction, sending };
 }
