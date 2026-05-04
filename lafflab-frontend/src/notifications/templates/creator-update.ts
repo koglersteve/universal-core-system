@@ -1,5 +1,4 @@
-import type { NotificationTemplate } from "./types";
-import type { NotificationEvent } from "../engine";
+import type { NotificationTemplate, NotificationEvent } from "@/types/os";
 
 export const CreatorUpdateTemplate: NotificationTemplate = {
   id: "creator_update",
@@ -8,7 +7,6 @@ export const CreatorUpdateTemplate: NotificationTemplate = {
     if (event.type !== "creator_update") {
       throw new Error("Invalid event for CreatorUpdateTemplate");
     }
-
     return {
       title: "Creator update",
       body: "A creator you follow has an update.",

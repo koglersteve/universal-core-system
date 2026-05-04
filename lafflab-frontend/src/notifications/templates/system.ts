@@ -1,5 +1,4 @@
-import type { NotificationTemplate } from "./types";
-import type { NotificationEvent } from "../engine";
+import type { NotificationTemplate, NotificationEvent } from "@/types/os";
 
 export const SystemTemplate: NotificationTemplate = {
   id: "system_message",
@@ -8,7 +7,6 @@ export const SystemTemplate: NotificationTemplate = {
     if (event.type !== "system_message") {
       throw new Error("Invalid event for SystemTemplate");
     }
-
     return {
       title: "LaffLab",
       body: event.message,

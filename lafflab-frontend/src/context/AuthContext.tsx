@@ -10,15 +10,28 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+import type { UserIdentity } from "@/types/os";
 
 type AuthContextValue = {
   user: User | null;
+  identity: UserIdentity | null;
   session: Session | null;
   loading: boolean;
 };
 
+function mapToIdentity(user: User | null): UserIdentity | null {
+  if (!user) return null;
+  return {
+    id: user.id,
+    displayName: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
+    email: user.email ?? null,
+    avatarUrl: user.user_metadata?.avatar_url ?? null,
+  };
+}
+
 const AuthContext = createContext<AuthContextValue>({
   user: null,
+  identity: null,
   session: null,
   loading: true,
 });
@@ -54,8 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [supabase]);
 
+  const user = session?.user ?? null;
+
   const value: AuthContextValue = {
-    user: session?.user ?? null,
+    user,
+    identity: mapToIdentity(user),
     session,
     loading,
   };
