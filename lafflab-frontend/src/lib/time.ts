@@ -5,7 +5,13 @@
  * Removes undefined, null, empty, and invalid entries.
  */
 function normalizeDays(raw: Array<string | undefined | null>): string[] {
-  return raw.filter((d): d is string => typeof d === "string" && d.trim().length > 0);
+  const out: string[] = [];
+  for (const d of raw) {
+    if (typeof d === "string" && d.trim().length > 0) {
+      out.push(d);
+    }
+  }
+  return out;
 }
 
 /**
@@ -13,7 +19,7 @@ function normalizeDays(raw: Array<string | undefined | null>): string[] {
  * Returns an array of positive or negative deltas.
  */
 export function getDayDifferences(rawDays: Array<string | undefined | null>): number[] {
-  const days = normalizeDays(rawDays);
+  const days: string[] = normalizeDays(rawDays);
 
   if (days.length < 2) return [];
 
