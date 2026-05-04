@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { LaffLabApi } from "@/lib/LaffLabApi";
@@ -6,27 +8,39 @@ import AppShell from "@/components/AppShell";
 import PostDetail from "@/components/PostDetail";
 
 export default function PostDetailPage() {
-  const params = useParams();
-  const id = params?.id as string;
+  const { id } = useParams<{ id: string }>();
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     async function load() {
       setLoading(true);
 
-      // Prefer a direct API call if available
-      const found =
-        (await LaffLabApi.getPostById?.(id)) ??
+      // Prefer direct endpoint if available
+      const direct = LaffLabApi.getPostById
+        ? await LaffLabApi.getPostById(id)
+        : null;
+
+      // Fallback to scanning all posts
+      const fallback =
+        direct ??
         (await LaffLabApi.getPosts()).find((p) => p.id === id) ??
         null;
 
-      setPost(found);
-      setLoading(false);
+      if (mounted) {
+        setPost(fallback);
+        setLoading(false);
+      }
     }
 
     load();
+
+    return () => {
+      mounted = false;
+    };
   }, [id]);
 
   return (
