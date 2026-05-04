@@ -1,5 +1,3 @@
-// src/core/reactions/userProfile.ts
-
 import type { ReactionEmojiKey } from "@/types/os";
 
 export type UserReactionProfile = {
@@ -33,12 +31,15 @@ function createEmptyProfile(userId: string): UserReactionProfile {
  * Update a user's emotional profile based on a new reaction
  */
 export function updateUserProfile(userId: string, emoji: ReactionEmojiKey) {
-  if (!profiles.has(userId)) {
-    profiles.set(userId, createEmptyProfile(userId));
+  let profile = profiles.get(userId);
+
+  if (!profile) {
+    profile = createEmptyProfile(userId);
+    profiles.set(userId, profile);
   }
 
-  const profile = profiles.get(userId)!;
-  profile.emojiCounts[emoji] += 1;
+  // Strict-safe increment
+  profile.emojiCounts[emoji] = (profile.emojiCounts[emoji] ?? 0) + 1;
   profile.totalReactions += 1;
 }
 
