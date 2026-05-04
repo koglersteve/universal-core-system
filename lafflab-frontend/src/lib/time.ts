@@ -2,10 +2,10 @@
 
 /**
  * Normalize an array of date-like values into a clean string[].
- * Removes undefined, null, and invalid entries.
+ * Removes undefined, null, empty, and invalid entries.
  */
-function normalizeDays(days: Array<string | undefined | null>): string[] {
-  return days.filter((d): d is string => typeof d === "string" && d.length > 0);
+function normalizeDays(raw: Array<string | undefined | null>): string[] {
+  return raw.filter((d): d is string => typeof d === "string" && d.trim().length > 0);
 }
 
 /**
