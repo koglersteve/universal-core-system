@@ -19,7 +19,7 @@ function normalizeDays(raw: Array<string | undefined | null>): string[] {
  * Returns an array of positive or negative deltas.
  */
 export function getDayDifferences(rawDays: Array<string | undefined | null>): number[] {
-  const days: string[] = normalizeDays(rawDays);
+  const days: string[] = normalizeDays(rawDays); // ← FORCE TS TO NARROW
 
   if (days.length < 2) return [];
 
