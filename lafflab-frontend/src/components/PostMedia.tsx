@@ -56,14 +56,16 @@ export default function PostMedia({ post, active }: Props) {
     }
   }, [active]);
 
-  // --- Pause when off-screen ---
+  // --- Pause when off-screen (STRICT-SAFE FIX APPLIED) ---
   useEffect(() => {
     const media = videoRef.current || audioRef.current;
     if (!media) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
+        const entry = entries?.[0];
+        if (!entry) return;
+
         if (!entry.isIntersecting) {
           media.pause();
         } else if (active) {
