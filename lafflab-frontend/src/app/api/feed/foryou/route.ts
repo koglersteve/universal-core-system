@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   // Fetch posts
   const posts = await LaffLabApi.getPosts();
 
-  // Fetch user profile (mock for now)
+  // Mock user profile (replace with real user data)
   const profile = {
     totalReactions: 100,
     emojiCounts: {
@@ -22,14 +22,14 @@ export async function GET(req: Request) {
     },
   };
 
-  // Rank posts using personalized engine
+  // Map posts into the minimal structure required by personalizedRanking
   const ranked = personalizedRanking(
     posts.map((p) => ({
       id: p.id,
-      laugh: p.laugh ?? 0,
-      smile: p.smile ?? 0,
-      shock: p.shock ?? 0,
-      mindblown: p.mindblown ?? 0,
+      laugh: 0,
+      smile: 0,
+      shock: 0,
+      mindblown: 0,
     })),
     profile
   );
