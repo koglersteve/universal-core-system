@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import type { Post } from "@/types/post";
+import type { Post } from "@/types/jokes";
 import AppShell from "@/components/AppShell";
 import PostDetail from "@/components/PostDetail";
 
@@ -19,12 +19,10 @@ export default function PostDetailPage() {
     async function load() {
       setLoading(true);
 
-      // Prefer direct endpoint if available
       const direct = LaffLabApi.getPostById
         ? await LaffLabApi.getPostById(id)
         : null;
 
-      // Fallback to scanning all posts
       const fallback =
         direct ??
         (await LaffLabApi.getPosts()).find((p) => p.id === id) ??
