@@ -27,8 +27,8 @@ export function getDayDifferences(rawDays: unknown[]): number[] {
   const diffs: number[] = [];
 
   for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]); // now always string
-    const curr = new Date(days[i]);     // now always string
+    const prev = new Date(days[i - 1]!); // non-null assertion: i >= 1 and i < days.length
+    const curr = new Date(days[i]!);     // non-null assertion: i >= 1 and i < days.length
 
     const diff =
       (prev.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24);
