@@ -4,7 +4,7 @@
  * Normalize an array of date-like values into a clean string[].
  * Removes undefined, null, empty, and invalid entries.
  */
-function normalizeDays(raw: Array<string | undefined | null>): string[] {
+function normalizeDays(raw: unknown[]): string[] {
   const out: string[] = [];
   for (const d of raw) {
     if (typeof d === "string" && d.trim().length > 0) {
@@ -18,8 +18,8 @@ function normalizeDays(raw: Array<string | undefined | null>): string[] {
  * Calculate day‑to‑day differences between sorted date strings.
  * Returns an array of positive or negative deltas.
  */
-export function getDayDifferences(rawDays: Array<string | undefined | null>): number[] {
-  const days: string[] = normalizeDays(rawDays); // ← FORCE TS TO NARROW
+export function getDayDifferences(rawDays: unknown[]): number[] {
+  const days: string[] = normalizeDays(rawDays);
 
   if (days.length < 2) return [];
 
@@ -41,8 +41,8 @@ export function getDayDifferences(rawDays: Array<string | undefined | null>): nu
 /**
  * Get the number of days between two date strings.
  */
-export function daysBetween(a: string | undefined, b: string | undefined): number | null {
-  if (!a || !b) return null;
+export function daysBetween(a: unknown, b: unknown): number | null {
+  if (typeof a !== "string" || typeof b !== "string") return null;
 
   const d1 = new Date(a);
   const d2 = new Date(b);
