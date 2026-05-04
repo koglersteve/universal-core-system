@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
-
-type ReactionCounts = Record<string, number>;
+import type { ReactionCounts, ReactionEmojiKey } from "@/types/os";
 
 type ReactionSummary = {
   postId: string;
@@ -21,7 +20,7 @@ function getVelocity(summary: ReactionSummary): number {
   return summary.total / hours;
 }
 
-const EMOJI_ORDER = [
+const EMOJI_ORDER: ReactionEmojiKey[] = [
   "laugh",
   "smile",
   "shock",
@@ -47,10 +46,19 @@ export default function CreatorAnalyticsPage() {
   }, []);
 
   const globalHeat = useMemo(() => {
-    const heat: ReactionCounts = {};
+    const heat: ReactionCounts = {
+      laugh: 0,
+      smile: 0,
+      shock: 0,
+      expressionless: 0,
+      angry: 0,
+      mindblown: 0,
+      crickets: 0,
+    };
     for (const item of data) {
       for (const [emoji, count] of Object.entries(item.counts)) {
-        heat[emoji] = (heat[emoji] || 0) + (count as number);
+        heat[emoji as ReactionEmojiKey] =
+          (heat[emoji as ReactionEmojiKey] || 0) + (count as number);
       }
     }
     return heat;
@@ -60,7 +68,8 @@ export default function CreatorAnalyticsPage() {
     <AppShell title="Reaction Analytics">
       <div className="space-y-[var(--space-4)]">
         <p className="text-white/70 text-[var(--text-sm)]">
-          Emotional analytics across your posts: heatmaps, velocity, and emoji mix.
+          Emotional analytics across your posts: heatmaps, velocity, and emoji
+          mix.
         </p>
 
         {loading && (
@@ -71,7 +80,8 @@ export default function CreatorAnalyticsPage() {
 
         {!loading && data.length === 0 && (
           <p className="text-white/60 text-[var(--text-sm)]">
-            No reactions yet. Once people start reacting, insights will appear here.
+            No reactions yet. Once people start reacting, insights will appear
+            here.
           </p>
         )}
 
@@ -129,7 +139,6 @@ export default function CreatorAnalyticsPage() {
                     </p>
                   </div>
                 </div>
-
                 <div className="flex flex-wrap gap-2 text-[var(--text-xs)] text-white/70">
                   {EMOJI_ORDER.map((emoji) => (
                     <span

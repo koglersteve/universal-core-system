@@ -3,6 +3,6 @@
 import { useAuth } from "@/context/AuthContext";
 
 export function useSession() {
-  const { user, session, loading } = useAuth();
-  return { user, session, loading, isAuthenticated: !!user };
+  const { identity, session, loading } = useAuth();
+  return { identity, session, loading, isAuthenticated: !!identity };
 }
