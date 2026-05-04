@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
-import type { Category } from "@/types/categories";
+import type { Category } from "@/types/jokes";
 
 export function useRandomCategory() {
   const [category, setCategory] = useState<Category | null>(null);
@@ -15,7 +15,6 @@ export function useRandomCategory() {
           const random =
             categories[Math.floor(Math.random() * categories.length)];
 
-          // strict-safe: random is guaranteed to be Category
           setCategory(random ?? null);
         } else {
           setCategory(null);
