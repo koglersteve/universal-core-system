@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactionEmojiKey } from "@/types/os";
 
-const EMOJIS = [
-  { key: "laugh", icon: "😂" },
-  { key: "smile", icon: "🙂" },
-  { key: "shock", icon: "😮" },
-  { key: "expressionless", icon: "😐" }, // changed from sad
-  { key: "angry", icon: "😡" },
+const EMOJIS: { key: ReactionEmojiKey; icon: string }[] = [
+  { key: "hysterical", icon: "🤣" },
+  { key: "laughing", icon: "😂" },
+  { key: "expressionless", icon: "😐" },
+  { key: "shock", icon: "😱" },
   { key: "mindblown", icon: "🤯" },
-  { key: "crickets", icon: "🦗" }, // changed from love
+  { key: "angry", icon: "😡" },
+  { key: "crickets", icon: "🦗" },
 ];
 
 export default function ImpressionBar({
@@ -17,12 +18,14 @@ export default function ImpressionBar({
   initialCounts = {},
 }: {
   postId: string;
-  initialCounts?: Record<string, number>;
+  initialCounts?: Partial<Record<ReactionEmojiKey, number>>;
 }) {
-  const [counts, setCounts] = useState(initialCounts);
+  const [counts, setCounts] = useState<
+    Partial<Record<ReactionEmojiKey, number>>
+  >(initialCounts);
   const [sending, setSending] = useState(false);
 
-  async function react(emoji: string) {
+  async function react(emoji: ReactionEmojiKey) {
     if (sending) return;
 
     // optimistic update

@@ -28,7 +28,6 @@ export default function JokeCard({ post }: { post: Post }) {
         </button>
       </div>
 
-      {/* ⭐ Impression Bar at the bottom */}
       <ImpressionBar postId={post.id} />
     </div>
   );

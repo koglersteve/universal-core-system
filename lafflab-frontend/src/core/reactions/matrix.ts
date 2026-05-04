@@ -1,12 +1,14 @@
+// src/core/reactions/matrix.ts
+
 import type { ReactionEmojiKey, ReactionPropagation } from "@/types/os";
 
 const EMOJIS: ReactionEmojiKey[] = [
-  "laugh",
-  "smile",
-  "shock",
+  "hysterical",
+  "laughing",
   "expressionless",
-  "angry",
+  "shock",
   "mindblown",
+  "angry",
   "crickets",
 ];
 

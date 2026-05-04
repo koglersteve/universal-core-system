@@ -1,8 +1,11 @@
+// src/types/os/ReactionEmojiKey.ts
+// Canonical 7‑emoji reaction key set for LAFFLab
+
 export type ReactionEmojiKey =
-  | "laugh"
-  | "smile"
-  | "shock"
+  | "hysterical"
+  | "laughing"
   | "expressionless"
-  | "angry"
+  | "shock"
   | "mindblown"
+  | "angry"
   | "crickets";

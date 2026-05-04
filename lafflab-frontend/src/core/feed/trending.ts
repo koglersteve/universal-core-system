@@ -1,3 +1,5 @@
+// src/core/feed/trending.ts
+
 import type { Post } from "@/types/jokes";
 import { getAllEvents, getAggregatedCounts } from "@/core/reactions/engine";
 
@@ -16,21 +18,24 @@ function computeVelocity(postId: string): number {
   return events.length / hours;
 }
 
+/**
+ * Trend score = emotional heat + velocity + recency.
+ */
 export function computeTrendScore(post: Post): number {
   const counts = getAggregatedCounts(post.id);
 
-  const laugh = counts.laugh || 0;
-  const smile = counts.smile || 0;
+  const hysterical = counts.hysterical || 0;
+  const laughing = counts.laughing || 0;
   const shock = counts.shock || 0;
   const mindblown = counts.mindblown || 0;
   const angry = counts.angry || 0;
   const crickets = counts.crickets || 0;
 
   const emotionalHeat =
-    laugh * 3 +
-    smile * 2 +
+    hysterical * 4 +
+    laughing * 3 +
     shock * 1.5 +
-    mindblown * 4 -
+    mindblown * 5 -
     angry * 2 -
     crickets * 2.5;
 

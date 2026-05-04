@@ -1,3 +1,5 @@
+// src/core/reactions/propagationLog.ts
+
 import type { ReactionEvent, PropagationAction } from "@/types/os";
 
 export type PropagationLogEntry = {
@@ -8,6 +10,9 @@ export type PropagationLogEntry = {
 
 const log: PropagationLogEntry[] = [];
 
+/**
+ * Append a propagation action to the in‑memory log.
+ */
 export function logPropagation(
   event: ReactionEvent,
   action: PropagationAction
@@ -19,6 +24,9 @@ export function logPropagation(
   });
 }
 
+/**
+ * Return a copy of the propagation log.
+ */
 export function getPropagationLog(): PropagationLogEntry[] {
   return [...log];
 }
