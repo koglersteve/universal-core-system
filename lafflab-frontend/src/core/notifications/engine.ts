@@ -12,7 +12,10 @@ export type Notification = {
 
 const notificationsByUser = new Map<string, Notification[]>();
 
-function addNotification(userId: string, notification: Omit<Notification, "id" | "read">) {
+function addNotification(
+  userId: string,
+  notification: Omit<Notification, "id" | "read">
+) {
   const list = notificationsByUser.get(userId) || [];
   const full: Notification = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -27,22 +30,25 @@ export function getNotificationsForUser(userId: string): Notification[] {
   return notificationsByUser.get(userId) || [];
 }
 
-// Simple in-memory thresholds
 const REACTION_SPIKE_THRESHOLD = 10;
 
-const recentReactionsByPost = new Map<string, { count: number; lastAt: number }>();
+const recentReactionsByPost = new Map<
+  string,
+  { count: number; lastAt: number }
+>();
 
 function handleReactionEvent(e: ReactionStreamEvent) {
   const postId = e.event.postId;
   const userId = e.event.userId;
 
   const now = Date.now();
-  const windowMs = 5 * 60 * 1000; // 5 minutes
+  const windowMs = 5 * 60 * 1000;
 
-  const entry = recentReactionsByPost.get(postId) || {
-    count: 0,
-    lastAt: now,
-  };
+  const entry =
+    recentReactionsByPost.get(postId) || {
+      count: 0,
+      lastAt: now,
+    };
 
   if (now - entry.lastAt > windowMs) {
     entry.count = 0;
@@ -62,7 +68,6 @@ function handleReactionEvent(e: ReactionStreamEvent) {
   }
 }
 
-// Initialize subscription once
 let initialized = false;
 
 export function initNotificationEngine() {

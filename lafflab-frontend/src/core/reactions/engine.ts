@@ -6,6 +6,10 @@ import type {
   ReactionPropagation,
   SurfaceId,
 } from "./types";
+import { getPropagationActionsForEmoji } from "./propagationConfig";
+import type { PropagationAction } from "./propagationConfig";
+import { updateUserProfile } from "./userProfile";
+import { logPropagation } from "./propagationLog";
 
 type ReactionStore = {
   events: ReactionEvent[];
@@ -31,6 +35,14 @@ export function recordReaction(params: {
   };
 
   store.events.push(event);
+
+  if (params.userId) {
+    updateUserProfile(params.userId, params.emoji);
+  }
+
+  const actions = getPropagationActionsForEmoji(params.emoji);
+  actions.forEach((a) => logPropagation(event, a));
+
   return event;
 }
 
@@ -60,17 +72,11 @@ export function getAggregatedCounts(
   return counts;
 }
 
-// Core: 7×7 propagation engine (for cross‑app logic)
 export function propagateReactions(
   event: ReactionEvent
 ): ReactionPropagation[] {
   return REACTION_MATRIX.filter((p) => p.fromEmoji === event.emoji);
 }
-
-import { getPropagationActionsForEmoji } from "./propagationConfig";
-import type { PropagationAction } from "./propagationConfig";
-
-// ...
 
 export function getPropagationOutputs(
   event: ReactionEvent
@@ -78,18 +84,6 @@ export function getPropagationOutputs(
   return getPropagationActionsForEmoji(event.emoji);
 }
 
-import { updateUserProfile } from "./userProfile";
-
-// inside recordReaction()
-if (params.userId) {
-  updateUserProfile(params.userId, params.emoji);
-}
-
-import { logPropagation } from "./propagationLog";
-
-// inside recordReaction()
-const actions = getPropagationActionsForEmoji(params.emoji);
-actions.forEach((a) => logPropagation(event, a));
-export function getAllEvents() {
+export function getAllEvents(): ReactionEvent[] {
   return store.events;
 }

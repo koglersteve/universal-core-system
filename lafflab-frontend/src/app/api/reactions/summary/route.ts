@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
-import { getAggregatedCounts } from "@/core/reactions/engine";
 import { getAllEvents } from "@/core/reactions/engine";
 
 export async function GET() {
   const events = getAllEvents();
 
-  const byPost = new Map();
+  const byPost = new Map<
+    string,
+    {
+      postId: string;
+      counts: Record<string, number>;
+      firstAt: string;
+      lastAt: string;
+    }
+  >();
 
   for (const e of events) {
     if (!byPost.has(e.postId)) {
@@ -17,7 +24,9 @@ export async function GET() {
       });
     }
 
-    const entry = byPost.get(e.postId);
+    const entry = byPost.get(e.postId)!;
+
+    // Ensure counts are always numbers
     entry.counts[e.emoji] = (entry.counts[e.emoji] || 0) + 1;
 
     if (e.createdAt < entry.firstAt) entry.firstAt = e.createdAt;
@@ -25,11 +34,17 @@ export async function GET() {
   }
 
   const result = Array.from(byPost.values()).map((entry) => {
-    const total = Object.values(entry.counts).reduce((a, b) => a + b, 0);
+    const counts = entry.counts as Record<string, number>;
+
+    const total = Object.values(counts).reduce(
+      (a: number, b: number) => a + b,
+      0
+    );
+
     return {
       postId: entry.postId,
       total,
-      counts: entry.counts,
+      counts,
       firstAt: entry.firstAt,
       lastAt: entry.lastAt,
     };
