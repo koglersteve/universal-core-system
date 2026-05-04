@@ -7,7 +7,7 @@ export default function AppShell({
   children,
 }: {
   title: string;
-  children: ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <div className="app-shell">
