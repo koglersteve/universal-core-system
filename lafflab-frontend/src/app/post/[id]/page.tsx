@@ -19,17 +19,12 @@ export default function PostDetailPage() {
     async function load() {
       setLoading(true);
 
-      const direct = LaffLabApi.getPostById
-        ? await LaffLabApi.getPostById(id)
-        : null;
-
-      const fallback =
-        direct ??
-        (await LaffLabApi.getPosts()).find((p) => p.id === id) ??
-        null;
+      // Only use getPosts() since getPostById does not exist
+      const all = await LaffLabApi.getPosts();
+      const found = all.find((p) => p.id === id) ?? null;
 
       if (mounted) {
-        setPost(fallback);
+        setPost(found);
         setLoading(false);
       }
     }
