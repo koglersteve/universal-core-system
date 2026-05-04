@@ -19,15 +19,16 @@ function normalizeDays(raw: unknown[]): string[] {
  * Returns an array of positive or negative deltas.
  */
 export function getDayDifferences(rawDays: unknown[]): number[] {
-  const days: string[] = normalizeDays(rawDays);
+  // Force TS to treat this as a pure string[]
+  const days = normalizeDays(rawDays);
 
   if (days.length < 2) return [];
 
   const diffs: number[] = [];
 
   for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]);
-    const curr = new Date(days[i]);
+    const prev = new Date(days[i - 1]); // now always string
+    const curr = new Date(days[i]);     // now always string
 
     const diff =
       (prev.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24);
