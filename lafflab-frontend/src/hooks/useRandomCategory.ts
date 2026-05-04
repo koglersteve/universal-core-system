@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
-import type { Category } from "@/types/categories";
+import type { Category } from "@/types/category";
 
 export function useRandomCategory() {
   const [category, setCategory] = useState<Category | null>(null);
