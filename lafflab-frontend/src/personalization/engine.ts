@@ -12,7 +12,8 @@ export async function personalizeFeed(ctx: PersonalizationContext) {
 
   const ranked = rankPosts(ctx.posts, signals);
 
-  if (profile && profile.totalReactions > 10) {
+  // Use a real field from UserProfile instead of totalReactions
+  if (profile.recentReactions && profile.recentReactions > 10) {
     return ranked.slice(0, 20);
   }
 
