@@ -60,3 +60,12 @@ export type PropagationAction = {
 export type ReactionStreamEvent = ReactionEvent & {
   propagation?: PropagationAction;
 };
+
+// Emotional OS identity model for authenticated users
+export type UserIdentity = {
+  id: string;
+  email: string | null;
+  avatarUrl?: string | null;
+  displayName?: string | null;
+  createdAt?: string;
+};

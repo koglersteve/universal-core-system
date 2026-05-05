@@ -1,13 +1,8 @@
+// src/context/AuthContext.tsx
+
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
 import type { UserIdentity } from "@/types/os";
@@ -19,16 +14,6 @@ type AuthContextValue = {
   loading: boolean;
 };
 
-function mapToIdentity(user: User | null): UserIdentity | null {
-  if (!user) return null;
-  return {
-    id: user.id,
-    displayName: user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-    email: user.email ?? null,
-    avatarUrl: user.user_metadata?.avatar_url ?? null,
-  };
-}
-
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   identity: null,
@@ -36,48 +21,66 @@ const AuthContext = createContext<AuthContextValue>({
   loading: true,
 });
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const supabase = createSupabaseBrowserClient();
+  const [user, setUser] = useState<User | null>(null);
+  const [identity, setIdentity] = useState<UserIdentity | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = useMemo(() => createSupabaseBrowserClient(), []);
 
   useEffect(() => {
-    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session ?? null);
+      setUser(data.session?.user ?? null);
 
-    async function init() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!mounted) return;
-      setSession(session ?? null);
+      if (data.session?.user) {
+        setIdentity({
+          id: data.session.user.id,
+          email: data.session.user.email,
+          avatarUrl: data.session.user.user_metadata?.avatar_url ?? null,
+          displayName: data.session.user.user_metadata?.full_name ?? null,
+          createdAt: data.session.user.created_at,
+        });
+      }
+
       setLoading(false);
-    }
-
-    init();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session ?? null);
     });
 
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session ?? null);
+        setUser(session?.user ?? null);
+
+        if (session?.user) {
+          setIdentity({
+            id: session.user.id,
+            email: session.user.email,
+            avatarUrl: session.user.user_metadata?.avatar_url ?? null,
+            displayName: session.user.user_metadata?.full_name ?? null,
+            createdAt: session.user.created_at,
+          });
+        } else {
+          setIdentity(null);
+        }
+      }
+    );
+
     return () => {
-      mounted = false;
-      subscription.unsubscribe();
+      listener.subscription.unsubscribe();
     };
   }, [supabase]);
 
-  const user = session?.user ?? null;
-
-  const value: AuthContextValue = {
-    user,
-    identity: mapToIdentity(user),
-    session,
-    loading,
-  };
-
   return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        user,
+        identity,
+        session,
+        loading,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 }
 
