@@ -1,11 +1,14 @@
 // src/core/reactions/propagationConfig.ts
 
-import { ReactionEmojiKey, PropagationAction, SurfaceId } from "@/types/os";
+import type {
+  ReactionEmojiKey,
+  SurfaceId,
+  PropagationAction,
+  ReactionChannel,
+} from "@/types/os";
 
-/**
- * Define how each emoji propagates through the Emotional OS.
- * Each reaction triggers one or more propagation actions.
- */
+const CHANNEL: ReactionChannel = "direct";
+
 export function getPropagationActionsForEmoji(
   emoji: ReactionEmojiKey,
   postId: string
@@ -14,70 +17,70 @@ export function getPropagationActionsForEmoji(
     case "laugh":
       return [
         {
-          type: "boost",
+          type: "laugh",
           weight: 3,
           targetSurface: "forYou" satisfies SurfaceId,
-          channel: "engagement",
+          channel: CHANNEL,
         },
       ];
 
     case "smile":
       return [
         {
-          type: "boost",
+          type: "smile",
           weight: 2,
-          targetSurface: "forYou",
-          channel: "light-engagement",
-        },
-      ];
-
-    case "shock":
-      return [
-        {
-          type: "boost",
-          weight: 3,
-          targetSurface: "trending",
-          channel: "high-energy",
-        },
-      ];
-
-    case "mindblown":
-      return [
-        {
-          type: "boost",
-          weight: 5,
-          targetSurface: "trending",
-          channel: "viral",
+          targetSurface: "following" satisfies SurfaceId,
+          channel: CHANNEL,
         },
       ];
 
     case "expressionless":
       return [
         {
-          type: "penalty",
-          weight: -1,
-          targetSurface: "forYou",
-          channel: "neutral",
+          type: "expressionless",
+          weight: 1,
+          targetSurface: "global" satisfies SurfaceId,
+          channel: CHANNEL,
+        },
+      ];
+
+    case "shock":
+      return [
+        {
+          type: "shock",
+          weight: 4,
+          targetSurface: "trending" satisfies SurfaceId,
+          channel: CHANNEL,
+        },
+      ];
+
+    case "mindblown":
+      return [
+        {
+          type: "mindblown",
+          weight: 5,
+          targetSurface: "creatorHub" satisfies SurfaceId,
+          channel: CHANNEL,
         },
       ];
 
     case "angry":
       return [
         {
-          type: "penalty",
-          weight: -2,
-          targetSurface: "forYou",
-          channel: "negative",
+          type: "angry",
+          weight: 2,
+          targetSurface: "global" satisfies SurfaceId,
+          channel: CHANNEL,
         },
       ];
 
     case "crickets":
       return [
         {
-          type: "penalty",
-          weight: -3,
-          targetSurface: "forYou",
-          channel: "silence",
+          type: "crickets",
+          weight: 0,
+          targetSurface: "global" satisfies SurfaceId,
+          channel: CHANNEL,
         },
       ];
 
