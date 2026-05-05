@@ -1,6 +1,6 @@
-// src/personalization/engine.ts
+// src/ppersonalization/engine.ts
 
-import type { PersonalizationContext } from "./types";
+import type { PersonalizationContext } from "./personalization-types";
 import { getUserProfile } from "./profile-store";
 import { rankPosts } from "./ranker";
 
