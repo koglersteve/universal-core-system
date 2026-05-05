@@ -1,6 +1,6 @@
-// src/components/CrossAppInfluenceMap.tsx
+"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import type {
   ReactionEvent,
   PropagationAction,
@@ -8,19 +8,23 @@ import type {
   ReactionChannel,
 } from "@/types/os";
 
-type PropagationLogEntry = {
-  event: ReactionEvent;
-  action: PropagationAction;
+type Props = {
+  log: {
+    event: ReactionEvent;
+    actions: PropagationAction[];
+  }[];
 };
 
-export default function CrossAppInfluenceMap() {
-  const [log, setLog] = useState<PropagationLogEntry[]>([]);
+const SURFACES: SurfaceId[] = [
+  "forYou",
+  "trending",
+  "following",
+  "creatorHub",
+  "global",
+  "notifications",
+];
 
-  useEffect(() => {
-    // Placeholder: attach to real stream later
-    setLog([]);
-  }, []);
-
+export default function CrossAppInfluenceMap({ log }: Props) {
   const grouped = useMemo(() => {
     const map: Record<SurfaceId, number> = {
       forYou: 0,
@@ -28,27 +32,27 @@ export default function CrossAppInfluenceMap() {
       following: 0,
       creatorHub: 0,
       global: 0,
+      notifications: 0,
     };
 
     log.forEach((entry) => {
-      map[entry.action.targetSurface] += entry.action.weight;
+      entry.actions.forEach((action) => {
+        map[action.to] += action.weight;
+      });
     });
 
     return map;
   }, [log]);
 
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-2">Cross‑App Influence Map</h2>
+    <div className="p-4 bg-white rounded shadow">
+      <h2 className="text-xl font-bold mb-4">Cross-App Influence Map</h2>
 
       <div className="grid grid-cols-2 gap-4">
-        {Object.entries(grouped).map(([surface, score]) => (
-          <div
-            key={surface}
-            className="p-3 rounded bg-gray-100 border border-gray-300"
-          >
-            <div className="font-medium">{surface}</div>
-            <div className="text-xl font-bold">{score}</div>
+        {SURFACES.map((surface) => (
+          <div key={surface} className="p-3 border rounded">
+            <div className="font-semibold capitalize">{surface}</div>
+            <div className="text-2xl font-bold">{grouped[surface]}</div>
           </div>
         ))}
       </div>
