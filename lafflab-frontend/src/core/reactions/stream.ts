@@ -2,17 +2,20 @@
 
 import type { ReactionStreamEvent } from "@/types/os";
 
+/**
+ * In‑memory event stream for all reaction events.
+ */
 let events: ReactionStreamEvent[] = [];
 
 /**
- * Emit a reaction event into the in-memory stream.
+ * Push a new reaction event into the stream.
  */
 export function emitReactionStreamEvent(event: ReactionStreamEvent) {
   events.push(event);
 }
 
 /**
- * Return all reaction events.
+ * Retrieve all reaction events.
  */
 export function getAllEvents(): ReactionStreamEvent[] {
   return events;
