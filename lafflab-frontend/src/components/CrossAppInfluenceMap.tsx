@@ -15,6 +15,7 @@ const SURFACES: SurfaceId[] = [
   "following",
   "creatorHub",
   "global",
+  "notifications",
 ];
 
 export default function CrossAppInfluenceMap({ log }: Props) {
@@ -25,6 +26,7 @@ export default function CrossAppInfluenceMap({ log }: Props) {
       following: 0,
       creatorHub: 0,
       global: 0,
+      notifications: 0,
     };
 
     log.forEach((entry) => {
@@ -38,7 +40,7 @@ export default function CrossAppInfluenceMap({ log }: Props) {
   }, [log]);
 
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-6 gap-4">
       {SURFACES.map((s) => (
         <div key={s} className="p-4 bg-white rounded shadow">
           <div className="text-lg font-semibold capitalize">{s}</div>
