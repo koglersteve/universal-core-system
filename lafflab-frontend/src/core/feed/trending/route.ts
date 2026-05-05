@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import { rankTrendingPosts } from "@/core/feed/trending";
+import { rankPostsForTrending } from "@/core/feed/trending";
 
 export async function GET() {
   const posts = await LaffLabApi.getPosts();
-  const ranked = rankTrendingPosts(posts);
+  const ranked = rankPostsForTrending(posts);
 
-  return NextResponse.json({
-    ok: true,
-    posts: ranked,
-  });
+  return NextResponse.json(ranked);
 }
