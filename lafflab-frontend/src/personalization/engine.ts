@@ -3,12 +3,14 @@
 import type { PersonalizationContext } from "./types";
 import { getUserProfile } from "./profile-store";
 import { rankPosts } from "./ranker";
+import { profileToSignals } from "./signal-bundle";
 
 export async function personalizeFeed(ctx: PersonalizationContext) {
   const profile = await getUserProfile(ctx.userId);
 
-  // rankPosts expects (posts, profile)
-  const ranked = rankPosts(ctx.posts, profile);
+  const signals = profileToSignals(profile);
+
+  const ranked = rankPosts(ctx.posts, signals);
 
   if (profile && profile.totalReactions > 10) {
     return ranked.slice(0, 20);
