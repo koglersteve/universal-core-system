@@ -6,27 +6,41 @@ import { getAggregatedCounts } from "@/core/reactions/engine";
 export type RankedPost = Post & { score: number };
 
 /**
- * Score a post for the "For You" feed using 7‑emoji emotional heat.
+ * Score a post for the "For You" feed using the canonical 7‑emoji Emotional OS model.
  */
 export function scorePostForForYou(post: Post): number {
   const counts = getAggregatedCounts(post.id);
 
-  const hysterical = counts.hysterical || 0;
-  const laughing = counts.laughing || 0;
+  // Canonical Emotional OS reaction keys
+  const laugh = counts.laugh || 0;
+  const smile = counts.smile || 0;
+  const expressionless = counts.expressionless || 0;
+  const shock = counts.shock || 0;
   const mindblown = counts.mindblown || 0;
+  const angry = counts.angry || 0;
   const crickets = counts.crickets || 0;
 
+  // Positive emotional weight
   const positive =
-    hysterical * 4 + laughing * 3 + mindblown * 5;
-  const neutralPenalty = (counts.expressionless || 0) * 0.5;
+    laugh * 3 +
+    smile * 2 +
+    mindblown * 5 +
+    shock * 2.5;
+
+  // Neutral penalty
+  const neutralPenalty = expressionless * 0.5;
+
+  // Negative penalty
   const negativePenalty =
-    (counts.angry || 0) * 1.5 + crickets * 2;
+    angry * 1.5 +
+    crickets * 2;
 
   const base = positive - neutralPenalty - negativePenalty;
 
+  // Time decay: fades over 48 hours
   const ageMs = Date.now() - new Date(post.createdAt).getTime();
   const ageHours = ageMs / (1000 * 60 * 60);
-  const decay = Math.max(0.2, 1 - ageHours / 48); // decays over 2 days
+  const decay = Math.max(0.2, 1 - ageHours / 48);
 
   return base * decay;
 }
