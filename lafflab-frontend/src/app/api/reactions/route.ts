@@ -1,41 +1,12 @@
 import { NextResponse } from "next/server";
-import { getAggregatedCounts } from "@/core/reactions/engine";
-import { getAllEvents } from "@/core/reactions/engine";
+import { getAggregatedCounts } from "@/core/reactions/reactionStore";
+import { getAllEvents } from "@/core/reactions/stream";
 
 export async function GET() {
-  const events = getAllEvents();
+  const summary = {
+    counts: getAggregatedCounts("*"), // or remove if not needed
+    events: getAllEvents(),
+  };
 
-  const allPostIds = new Set<string>();
-  for (const e of events) {
-    allPostIds.add(e.postId);
-  }
-
-  const map = new Map<
-    string,
-    {
-      postId: string;
-      total: number;
-      counts: Record<string, number>;
-    }
-  >();
-
-  for (const postId of allPostIds) {
-    const counts = getAggregatedCounts(postId) as Record<string, number>;
-
-    const total = Object.values(counts).reduce(
-      (a: number, b: number) => a + b,
-      0
-    );
-
-    map.set(postId, {
-      postId,
-      total,
-      counts,
-    });
-  }
-
-  return NextResponse.json({
-    ok: true,
-    posts: Array.from(map.values()),
-  });
+  return NextResponse.json(summary);
 }
