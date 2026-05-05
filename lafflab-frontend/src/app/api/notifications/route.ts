@@ -1,19 +1,16 @@
+// src/app/api/notifications/route.ts
+
 import { NextResponse } from "next/server";
-import {
-  getNotificationsForUser,
-  initNotificationEngine,
-} from "@/core/notifications/engine";
+import { getNotificationsForUser } from "@/core/notifications/engine";
 
 export async function GET(req: Request) {
-  initNotificationEngine();
+  const url = new URL(req.url);
+  const userId = url.searchParams.get("userId");
 
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId") || "user-123";
+  if (!userId) {
+    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  }
 
   const notifications = getNotificationsForUser(userId);
-
-  return NextResponse.json({
-    ok: true,
-    notifications,
-  });
+  return NextResponse.json(notifications);
 }
