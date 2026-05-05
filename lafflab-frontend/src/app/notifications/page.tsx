@@ -1,49 +1,41 @@
+// src/app/notifications/page.tsx
+
 "use client";
 
-import AppShell from "@/components/AppShell";
-import { useNotifications } from "@/hooks/useNotifications";
-
-const USER_ID = "user-123"; // replace with real auth later
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import type { Notification } from "@/types/os";
 
 export default function NotificationsPage() {
-  const { notifications, loading } = useNotifications(USER_ID);
+  const { identity } = useAuth();
+  const [items, setItems] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    if (!identity) return;
+
+    fetch(`/api/notifications?userId=${identity.id}`)
+      .then((res) => res.json())
+      .then((data) => setItems(data));
+  }, [identity]);
 
   return (
-    <AppShell title="Notifications">
-      <div className="space-y-[var(--space-4)]">
-        <p className="text-white/70 text-[var(--text-sm)]">
-          System-generated emotional notifications based on your posts and reactions.
-        </p>
+    <div className="p-6">
+      <h1 className="text-xl font-semibold mb-4">Notifications</h1>
 
-        {loading && (
-          <p className="text-white/60 text-[var(--text-sm)]">
-            Loading notifications…
-          </p>
-        )}
-
-        {!loading && notifications.length === 0 && (
-          <p className="text-white/60 text-[var(--text-sm)]">
-            No notifications yet. Once your posts start getting emotional spikes,
-            they’ll show up here.
-          </p>
-        )}
-
-        <div className="space-y-2">
-          {notifications.map((n) => (
-            <div
-              key={n.id}
-              className="p-[var(--space-3)] bg-white/5 border border-white/10 rounded-lg"
-            >
-              <p className="text-white text-[var(--text-sm)]">
-                {n.message}
-              </p>
-              <p className="text-white/60 text-[var(--text-xs)] mt-1">
-                {new Date(n.createdAt).toLocaleString()}
-              </p>
-            </div>
-          ))}
-        </div>
+      <div className="flex flex-col gap-4">
+        {items.map((n) => (
+          <div
+            key={n.id}
+            className="p-4 rounded bg-gray-800 border border-gray-700"
+          >
+            <p className="text-white font-semibold">{n.title}</p>
+            <p className="text-white text-sm mt-1">{n.message}</p>
+            <p className="text-white/60 text-xs mt-2">
+              {new Date(n.createdAt).toLocaleString()}
+            </p>
+          </div>
+        ))}
       </div>
-    </AppShell>
+    </div>
   );
 }

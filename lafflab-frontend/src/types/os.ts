@@ -86,11 +86,13 @@ export type NotificationTemplate = {
   tone: NotificationTone;
 };
 
-// Final notification object delivered to UI
+// Final rendered notification delivered to UI
 export type Notification = {
   id: string;
   userId: string;
-  templateId: string;
+  title: string;
+  message: string;
+  tone: NotificationTone;
   createdAt: number;
   read: boolean;
 };
