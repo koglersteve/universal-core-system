@@ -1,18 +1,19 @@
 // src/types/os/Propagation.ts
 
 /**
- * A surface is any cross-app entity that can receive influence.
- * Example: "feed", "creator_profile", "notifications", etc.
+ * Canonical Emotional OS surface taxonomy.
+ * These are the real cross-app surfaces used by the feed,
+ * analytics, creator hub, notifications, and influence map.
  */
 export type SurfaceId =
-  | "feed"
-  | "creator_profile"
-  | "notifications"
-  | "analytics"
-  | "reactions";
+  | "forYou"
+  | "trending"
+  | "following"
+  | "creatorHub"
+  | "notifications";
 
 /**
- * Reaction channels describe how influence spreads across surfaces.
+ * Reaction channels describe how influence propagates between surfaces.
  */
 export type ReactionChannel =
   | "direct"
