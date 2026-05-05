@@ -1,3 +1,5 @@
+"use client";
+
 // src/app/creator/analytics/page.tsx
 
 import { useEffect, useMemo, useState } from "react";
