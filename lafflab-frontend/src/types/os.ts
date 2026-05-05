@@ -65,7 +65,7 @@ export type ReactionStreamEvent = ReactionEvent & {
 export type UserIdentity = {
   id: string;
   email: string | null;
-  avatarUrl?: string | null;
-  displayName?: string | null;
-  createdAt?: string;
+  avatarUrl: string | null;
+  displayName: string | null;
+  createdAt: string | null;
 };

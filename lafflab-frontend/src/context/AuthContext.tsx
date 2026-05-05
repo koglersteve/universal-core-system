@@ -28,40 +28,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  function buildIdentity(u: User | null): UserIdentity | null {
+    if (!u) return null;
+
+    return {
+      id: u.id,
+      email: u.email ?? null,
+      avatarUrl: u.user_metadata?.avatar_url ?? null,
+      displayName: u.user_metadata?.full_name ?? null,
+      createdAt: u.created_at ?? null,
+    };
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session ?? null);
-      setUser(data.session?.user ?? null);
+      const s = data.session ?? null;
+      const u = s?.user ?? null;
 
-      if (data.session?.user) {
-        setIdentity({
-          id: data.session.user.id,
-          email: data.session.user.email,
-          avatarUrl: data.session.user.user_metadata?.avatar_url ?? null,
-          displayName: data.session.user.user_metadata?.full_name ?? null,
-          createdAt: data.session.user.created_at,
-        });
-      }
-
+      setSession(s);
+      setUser(u);
+      setIdentity(buildIdentity(u));
       setLoading(false);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setSession(session ?? null);
-        setUser(session?.user ?? null);
+        const u = session?.user ?? null;
 
-        if (session?.user) {
-          setIdentity({
-            id: session.user.id,
-            email: session.user.email,
-            avatarUrl: session.user.user_metadata?.avatar_url ?? null,
-            displayName: session.user.user_metadata?.full_name ?? null,
-            createdAt: session.user.created_at,
-          });
-        } else {
-          setIdentity(null);
-        }
+        setSession(session ?? null);
+        setUser(u);
+        setIdentity(buildIdentity(u));
       }
     );
 
