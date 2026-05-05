@@ -1,5 +1,7 @@
 export type NotificationTone =
-  | "default"
+  | "neutral"
+  | "info"
+  | "playful"
   | "success"
   | "warning"
   | "error";
