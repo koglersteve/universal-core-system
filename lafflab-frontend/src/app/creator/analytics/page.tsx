@@ -13,10 +13,12 @@ type ReactionSummary = {
 
 const EMOJI_ORDER: ReactionEmojiKey[] = [
   "laugh",
-  "love",
-  "wow",
-  "sad",
+  "smile",
+  "expressionless",
+  "shock",
+  "mindblown",
   "angry",
+  "crickets",
 ];
 
 export default function CreatorAnalyticsPage() {
@@ -34,10 +36,12 @@ export default function CreatorAnalyticsPage() {
   const totals = useMemo(() => {
     const sum: ReactionCounts = {
       laugh: 0,
-      love: 0,
-      wow: 0,
-      sad: 0,
+      smile: 0,
+      expressionless: 0,
+      shock: 0,
+      mindblown: 0,
       angry: 0,
+      crickets: 0,
     };
 
     for (const item of data) {
@@ -54,7 +58,7 @@ export default function CreatorAnalyticsPage() {
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">Creator Analytics</h1>
 
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-7 gap-4">
           {EMOJI_ORDER.map((key) => (
             <div key={key} className="p-4 bg-white rounded shadow">
               <div className="text-lg font-semibold capitalize">{key}</div>
