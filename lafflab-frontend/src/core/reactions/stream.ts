@@ -1,22 +1,20 @@
 // src/core/reactions/stream.ts
 
-import type { ReactionStreamEvent } from "@/types/os";
+import type { ReactionEvent } from "@/types/os";
 
 /**
  * In‑memory event stream for all reaction events.
  */
-let events: ReactionStreamEvent[] = [];
 
-/**
- * Push a new reaction event into the stream.
- */
-export function emitReactionStreamEvent(event: ReactionStreamEvent) {
-  events.push(event);
+const listeners = new Set<(event: ReactionEvent) => void>();
+
+export function emitReaction(event: ReactionEvent) {
+  listeners.forEach((fn) => fn(event));
 }
 
-/**
- * Retrieve all reaction events.
- */
-export function getAllEvents(): ReactionStreamEvent[] {
-  return events;
+export function subscribeToReactions(
+  fn: (event: ReactionEvent) => void
+): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
 }
