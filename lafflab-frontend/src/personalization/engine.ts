@@ -1,45 +1,22 @@
-import { extractFeatures } from "./feature-extractor";
-import { computeRelevanceSignal } from "./signals/relevance";
-import { computeMomentumSignal } from "./signals/momentum";
-import { computeEmotionSignal } from "./signals/emotion";
-import { computeSocialSignal } from "./signals/social";
-import { computeGovernanceSignal } from "./signals/governance";
-import { computeDiversitySignal } from "./signals/diversity";
-import { computeSessionSignal } from "./signals/session";
+// src/personalization/engine.ts
+
 import { rankPosts } from "./ranker";
 import { getUserProfile } from "./profile-store";
-import { handleNotificationEvent } from "@/notifications/engine";
+import { sendTrendingNotification } from "@/notifications/engine";
 
 export type PersonalizationContext = {
   userId: string;
-  sessionId: string;
 };
 
-export async function getPersonalizedFeed(ctx: PersonalizationContext) {
-  const profile = await getUserProfile(ctx.userId);
-  const features = await extractFeatures(ctx);
+export function personalizeFeed(ctx: PersonalizationContext) {
+  const profile = getUserProfile(ctx.userId);
+  const ranked = rankPosts(profile);
 
-  const signals = {
-    relevance: await computeRelevanceSignal(profile, features),
-    momentum: await computeMomentumSignal(features),
-    emotion: await computeEmotionSignal(profile, features),
-    social: await computeSocialSignal(profile, features),
-    governance: await computeGovernanceSignal(features),
-    diversity: await computeDiversitySignal(profile, features),
-    session: await computeSessionSignal(ctx, features),
-  };
-
-  const ranked = rankPosts(features.posts, signals);
-
-  // 🔥 Trigger: top highly relevant + emotional post
-  const top = ranked[0];
-  if (top && top.score > 0.9) {
-    await handleNotificationEvent(ctx.userId, {
-      type: "post_trending",
-      postId: top.id,
-      score: top.score,
-    });
+  // Example personalization rule:
+  // If user has high engagement, send trending notification
+  if (profile && profile.totalReactions > 10) {
+    sendTrendingNotification(ctx.userId);
   }
 
-  return { ranked, signals };
+  return ranked;
 }
