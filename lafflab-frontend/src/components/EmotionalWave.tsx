@@ -1,8 +1,8 @@
-// src/components/EmotionalWave.tsx
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { useReactionStream } from "@/hooks/useReactionStream";
-import type { ReactionEmojiKey, ReactionStreamEvent } from "@/types/os";
+import type { ReactionEmojiKey, ReactionEvent } from "@/types/os";
 
 type Bucket = {
   timestamp: number;
@@ -10,33 +10,36 @@ type Bucket = {
 };
 
 export default function EmotionalWave() {
-  const { events } = useReactionStream();
+  const { events } = useReactionStream(); // events: ReactionEvent[]
   const [buckets, setBuckets] = useState<Bucket[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (events.length === 0) return;
+    if (!events.length) return;
 
-    const latest = events[events.length - 1];
-    if (!latest) return; // TS-safe guard
+    const latest: ReactionEvent = events[events.length - 1];
 
     setBuckets((prev) => [
       ...prev,
       {
         timestamp: latest.timestamp,
-        emoji: latest.emoji,
+        emoji: latest.emoji as ReactionEmojiKey,
       },
     ]);
   }, [events]);
 
   return (
-    <div ref={ref} className="w-full h-24 flex items-end gap-1">
+    <div
+      ref={ref}
+      className="w-full h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded overflow-hidden flex items-end"
+    >
       {buckets.map((b, i) => (
         <div
           key={i}
-          className="w-2 bg-blue-500 rounded"
+          className="w-1 bg-purple-500 opacity-70"
           style={{
-            height: `${20 + (b.timestamp % 40)}px`,
+            height: `${20 + (i % 40)}%`,
+            marginRight: "2px",
           }}
         />
       ))}
