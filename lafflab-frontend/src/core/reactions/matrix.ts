@@ -1,32 +1,59 @@
-// src/core/reactions/matrix.ts
+// src/core/reactions/engine.ts
 
-import { ReactionEmojiKey } from "@/types/os";
+import { randomUUID } from "crypto";
+import { REACTION_IDENTITY_MATRIX } from "./matrix";
 
-/**
- * Canonical Emotional OS emoji list.
- * Used for matrix operations, analytics, and reaction transforms.
- */
-export const EMOJIS: ReactionEmojiKey[] = [
-  "laugh",
-  "smile",
-  "expressionless",
-  "shock",
-  "mindblown",
-  "angry",
-  "crickets",
-];
-
-/**
- * Identity matrix for reaction weighting or transforms.
- * Each emoji maps to itself with weight 1.
- */
-export const REACTION_IDENTITY_MATRIX: Record<
+import type {
   ReactionEmojiKey,
-  Record<ReactionEmojiKey, number>
-> = EMOJIS.reduce((acc, key) => {
-  acc[key] = EMOJIS.reduce((inner, k) => {
-    inner[k] = k === key ? 1 : 0;
-    return inner;
-  }, {} as Record<ReactionEmojiKey, number>);
-  return acc;
-}, {} as Record<ReactionEmojiKey, Record<ReactionEmojiKey, number>>);
+  ReactionEvent,
+  PropagationAction,
+} from "@/types/os";
+
+import { addReaction, getAggregatedCounts } from "./reactionStore";
+import { updateUserProfile } from "./userProfile";
+import { streamReaction } from "./stream";
+import { getPropagationActionsForEmoji } from "./propagationConfig";
+
+/**
+ * Core reaction engine entry point.
+ */
+export function handleReaction(params: {
+  postId: string;
+  emoji: ReactionEmojiKey;
+  userId?: string;
+}): ReactionEvent {
+  const event: ReactionEvent = {
+    id: randomUUID(),
+    postId: params.postId,
+    emoji: params.emoji,
+    userId: params.userId ?? null,
+    timestamp: Date.now(),
+  };
+
+  // Update aggregated counts
+  addReaction(params.postId, params.emoji);
+
+  // Update user emotional profile
+  if (params.userId) {
+    updateUserProfile(params.userId, params.emoji);
+  }
+
+  // Propagation actions
+  const actions: PropagationAction[] = getPropagationActionsForEmoji(
+    params.emoji,
+    params.postId
+  );
+
+  actions.forEach((a) => {
+    // Log propagation using identity matrix or other transforms
+    // (placeholder for future analytics)
+    REACTION_IDENTITY_MATRIX[params.emoji][params.emoji];
+    // Stream propagation event
+    // (you can expand this later)
+  });
+
+  // Stream reaction event
+  streamReaction(event);
+
+  return event;
+}
