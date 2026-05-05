@@ -25,8 +25,7 @@ export type ReactionChannel =
  * A propagation action describes how a reaction event influences another surface.
  */
 export type PropagationAction = {
-  from: SurfaceId;
-  to: SurfaceId;
+  targetSurface: SurfaceId;
   channel: ReactionChannel;
   weight: number;
 };
