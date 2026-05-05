@@ -1,51 +1,44 @@
-import type { ReactionEmojiKey } from "@/types/os";
+// src/core/reactions/userProfile.ts
 
-export type UserReactionProfile = {
+import type { ReactionEmojiKey, ReactionCounts } from "@/types/os";
+
+export type UserProfile = {
   userId: string;
-  emojiCounts: Record<ReactionEmojiKey, number>;
+  emojiCounts: ReactionCounts;
   totalReactions: number;
 };
 
-const profiles = new Map<string, UserReactionProfile>();
+const profiles = new Map<string, UserProfile>();
 
-/**
- * Initialize a strict‑safe empty profile for all 7 emojis
- */
-function createEmptyProfile(userId: string): UserReactionProfile {
+function emptyCounts(): ReactionCounts {
   return {
-    userId,
-    emojiCounts: {
-      hysterical: 0,
-      laughing: 0,
-      expressionless: 0,
-      shock: 0,
-      mindblown: 0,
-      angry: 0,
-      crickets: 0,
-    },
-    totalReactions: 0,
+    laugh: 0,
+    smile: 0,
+    expressionless: 0,
+    shock: 0,
+    mindblown: 0,
+    angry: 0,
+    crickets: 0,
   };
 }
 
-/**
- * Update a user's emotional profile based on a new reaction
- */
-export function updateUserProfile(userId: string, emoji: ReactionEmojiKey) {
-  let profile = profiles.get(userId);
-
-  if (!profile) {
-    profile = createEmptyProfile(userId);
-    profiles.set(userId, profile);
+export function getOrCreateUserProfile(userId: string): UserProfile {
+  if (!profiles.has(userId)) {
+    profiles.set(userId, {
+      userId,
+      emojiCounts: emptyCounts(),
+      totalReactions: 0,
+    });
   }
+  return profiles.get(userId)!;
+}
 
-  // Strict-safe increment
-  profile.emojiCounts[emoji] = (profile.emojiCounts[emoji] ?? 0) + 1;
+export function recordUserReaction(userId: string, emoji: ReactionEmojiKey) {
+  const profile = getOrCreateUserProfile(userId);
+  profile.emojiCounts[emoji] += 1;
   profile.totalReactions += 1;
 }
 
-/**
- * Retrieve a user's emotional profile
- */
-export function getUserProfile(userId: string): UserReactionProfile | null {
-  return profiles.get(userId) || null;
+export function getUserProfile(userId: string): UserProfile | null {
+  return profiles.get(userId) ?? null;
 }
