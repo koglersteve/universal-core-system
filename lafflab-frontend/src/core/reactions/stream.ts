@@ -1,34 +1,19 @@
-import type { ReactionEvent, PropagationAction } from "@/types/os";
+// src/core/reactions/stream.ts
 
-export type ReactionStreamEvent = {
-  event: ReactionEvent;
-  propagation: PropagationAction[];
-  timestamp: string;
-};
+import type { ReactionEvent } from "@/types/os";
 
-type ReactionStreamListener = (e: ReactionStreamEvent) => void;
+let events: ReactionEvent[] = [];
 
-const listeners = new Set<ReactionStreamListener>();
-
-export function emitReactionStreamEvent(
-  event: ReactionEvent,
-  propagation: PropagationAction[]
-) {
-  const payload: ReactionStreamEvent = {
-    event,
-    propagation,
-    timestamp: new Date().toISOString(),
-  };
-  for (const listener of listeners) {
-    listener(payload);
-  }
+/**
+ * Emit a reaction event into the in-memory stream.
+ */
+export function emitReactionStreamEvent(event: ReactionEvent) {
+  events.push(event);
 }
 
-export function subscribeToReactionStream(
-  fn: ReactionStreamListener
-): () => void {
-  listeners.add(fn);
-  return () => {
-    listeners.delete(fn);
-  };
+/**
+ * Return all reaction events.
+ */
+export function getAllEvents(): ReactionEvent[] {
+  return events;
 }
