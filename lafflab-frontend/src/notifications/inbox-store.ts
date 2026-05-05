@@ -1,39 +1,14 @@
-import type { NotificationTone } from "./templates/types";
+// src/notifications/inbox-store.ts
 
-type InboxItem = {
-  id: string;
-  userId: string;
-  title: string;
-  body: string;
-  url?: string;
-  tone: NotificationTone;
-  read: boolean;
-  createdAt: number;
-};
+import type { Notification } from "@/types/os";
 
-const inbox: InboxItem[] = [];
+const inbox: Record<string, Notification[]> = {};
 
-export async function addToInbox(
-  item: Omit<InboxItem, "id" | "createdAt" | "read">
-) {
-  const entry: InboxItem = {
-    id: crypto.randomUUID(),
-    createdAt: Date.now(),
-    read: false,
-    ...item,
-  };
-
-  inbox.push(entry);
-  return entry;
+export function addToInbox(userId: string, notification: Notification) {
+  if (!inbox[userId]) inbox[userId] = [];
+  inbox[userId].push(notification);
 }
 
-export async function getInbox(userId: string) {
-  return inbox
-    .filter((n) => n.userId === userId)
-    .sort((a, b) => b.createdAt - a.createdAt);
-}
-
-export async function markRead(userId: string, id: string) {
-  const item = inbox.find((n) => n.userId === userId && n.id === id);
-  if (item) item.read = true;
+export function getInbox(userId: string): Notification[] {
+  return inbox[userId] ?? [];
 }

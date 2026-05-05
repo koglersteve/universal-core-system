@@ -1,19 +1,21 @@
+// src/notifications/dispatcher.ts
+
 import { addToInbox } from "./inbox-store";
-import type { NotificationTemplate, NotificationEvent } from "@/types/os";
+import type { NotificationTemplate, Notification } from "@/types/os";
 
 export async function dispatchNotification(
   userId: string,
-  template: NotificationTemplate,
-  event: NotificationEvent
+  template: NotificationTemplate
 ) {
-  const ctx = template.buildContext(event);
+  const notification: Notification = {
+    id: crypto.randomUUID(),
+    userId,
+    title: template.title,
+    message: template.body,
+    tone: template.tone,
+    createdAt: Date.now(),
+    read: false,
+  };
 
-  if (template.channels.includes("inapp")) {
-    await addToInbox({
-      userId, title: ctx.title, body: ctx.body,
-      url: ctx.url, tone: ctx.tone,
-    });
-  }
-  if (template.channels.includes("push")) console.log("PUSH →", userId, ctx);
-  if (template.channels.includes("email")) console.log("EMAIL →", userId, ctx);
+  addToInbox(userId, notification);
 }
