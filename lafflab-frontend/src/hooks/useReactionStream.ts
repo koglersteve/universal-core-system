@@ -8,7 +8,6 @@ export function useReactionStream() {
   const [events, setEvents] = useState<ReactionStreamEvent[]>([]);
 
   useEffect(() => {
-    // In the future this will be a websocket or SSE stream
     const interval = setInterval(() => {
       setEvents([...getAllEvents()]);
     }, 300);

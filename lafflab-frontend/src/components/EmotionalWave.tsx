@@ -15,9 +15,10 @@ export default function EmotionalWave() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!events.length) return;
+    if (events.length === 0) return;
 
-    const latest: ReactionStreamEvent = events[events.length - 1];
+    const latest = events[events.length - 1];
+    if (!latest) return; // TS-safe guard
 
     setBuckets((prev) => [
       ...prev,
