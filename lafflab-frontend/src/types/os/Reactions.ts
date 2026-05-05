@@ -2,17 +2,21 @@
 
 export type ReactionEmojiKey =
   | "laugh"
-  | "love"
-  | "wow"
-  | "sad"
-  | "angry";
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
 
 export type ReactionCounts = {
   laugh: number;
-  love: number;
-  wow: number;
-  sad: number;
+  smile: number;
+  expressionless: number;
+  shock: number;
+  mindblown: number;
   angry: number;
+  crickets: number;
 };
 
 export type ReactionEvent = {
