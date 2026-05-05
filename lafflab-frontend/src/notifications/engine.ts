@@ -1,35 +1,37 @@
-import type { NotificationEvent } from "@/types/os";
+// src/notifications/engine.ts
+
+import type { NotificationTemplate, Notification } from "@/types/os";
 import { enqueueNotification } from "./queue";
 import { getUserPreferences } from "./preference-store";
 import { TrendingTemplate } from "./templates/trending";
-import { NewPostTemplate } from "./templates/new-post";
-import { CreatorUpdateTemplate } from "./templates/creator-update";
-import { SystemTemplate } from "./templates/system";
 
-export type { NotificationEvent };
+/**
+ * Dispatch a notification to a user based on their preferences.
+ */
+export function sendNotification(userId: string, template: NotificationTemplate) {
+  const prefs = getUserPreferences(userId);
 
-export async function handleNotificationEvent(
-  userId: string,
-  event: NotificationEvent
-) {
-  const prefs = await getUserPreferences(userId);
-
-  switch (event.type) {
-    case "post_trending":
-      if (!prefs.trending) return;
-      if (event.score < 0.85) return;
-      await enqueueNotification(userId, TrendingTemplate, event);
-      break;
-    case "new_post_from_favorite":
-      if (!prefs.newPosts) return;
-      await enqueueNotification(userId, NewPostTemplate, event);
-      break;
-    case "creator_update":
-      if (!prefs.creatorUpdates) return;
-      await enqueueNotification(userId, CreatorUpdateTemplate, event);
-      break;
-    case "system_message":
-      await enqueueNotification(userId, SystemTemplate, event);
-      break;
+  // If user has disabled this tone, skip
+  if (prefs?.disabledTones?.includes(template.tone)) {
+    return;
   }
+
+  const notification: Notification = {
+    id: crypto.randomUUID(),
+    userId,
+    title: template.title,
+    message: template.body,
+    tone: template.tone,
+    createdAt: Date.now(),
+    read: false,
+  };
+
+  enqueueNotification(userId, notification);
+}
+
+/**
+ * Example: send trending notification
+ */
+export function sendTrendingNotification(userId: string) {
+  sendNotification(userId, TrendingTemplate);
 }
