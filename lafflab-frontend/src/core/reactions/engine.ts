@@ -19,8 +19,8 @@ export function processReaction(
     recordUserReaction(userId, emoji);
   }
 
-  // 3. Compute propagation actions
-  const actions = getPropagationActionsForEmoji(emoji);
+  // 3. Compute propagation actions (requires emoji + postId)
+  const actions = getPropagationActionsForEmoji(emoji, postId);
 
   // 4. Emit stream event
   const event: ReactionEvent = {
