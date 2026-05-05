@@ -1,62 +1,38 @@
 // src/core/reactions/engine.ts
 
-import { randomUUID } from "crypto";
-import { REACTION_IDENTITY_MATRIX } from "./matrix";
-
-import type {
-  ReactionEmojiKey,
-  ReactionEvent,
-  PropagationAction,
-} from "@/types/os";
-
+import type { ReactionEvent, ReactionEmojiKey } from "@/types/os";
 import { addReaction } from "./reactionStore";
-import { updateUserProfile } from "./userProfile";
+import { recordUserReaction } from "./userProfile";
 import { emitReactionStreamEvent } from "./stream";
 import { getPropagationActionsForEmoji } from "./propagationConfig";
 
-/**
- * Core reaction engine entry point.
- */
-export function handleReaction(params: {
-  postId: string;
-  emoji: ReactionEmojiKey;
-  userId?: string;
-}): ReactionEvent {
+export function processReaction(
+  postId: string,
+  emoji: ReactionEmojiKey,
+  userId: string | null
+) {
+  // 1. Update global reaction counts
+  addReaction(postId, emoji);
+
+  // 2. Update user profile counts (only if user is logged in)
+  if (userId) {
+    recordUserReaction(userId, emoji);
+  }
+
+  // 3. Compute propagation actions
+  const actions = getPropagationActionsForEmoji(emoji);
+
+  // 4. Emit stream event
   const event: ReactionEvent = {
-    id: randomUUID(),
-    postId: params.postId,
-    emoji: params.emoji,
-    userId: params.userId ?? null,
+    id: crypto.randomUUID(),
+    postId,
+    emoji,
+    userId,
     timestamp: Date.now(),
   };
 
-  // Update aggregated counts
-  addReaction(params.postId, params.emoji);
-
-  // Update user emotional profile
-  if (params.userId) {
-    updateUserProfile(params.userId, params.emoji);
-  }
-
-  // Propagation actions
-  const actions: PropagationAction[] = getPropagationActionsForEmoji(
-    params.emoji,
-    params.postId
-  );
-
-  actions.forEach((a) => {
-    // Identity matrix placeholder (future analytics)
-    REACTION_IDENTITY_MATRIX[params.emoji][params.emoji];
-
-    // Stream propagation event
-    emitReactionStreamEvent({
-      ...event,
-      propagation: a,
-    });
+  emitReactionStreamEvent({
+    ...event,
+    propagation: actions.length ? actions[0] : undefined,
   });
-
-  // Stream reaction event
-  emitReactionStreamEvent(event);
-
-  return event;
 }
