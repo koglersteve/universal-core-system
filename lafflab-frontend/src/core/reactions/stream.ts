@@ -1,19 +1,19 @@
 // src/core/reactions/stream.ts
 
-import type { ReactionEvent } from "@/types/os";
+import type { ReactionStreamEvent } from "@/types/os";
 
-let events: ReactionEvent[] = [];
+let events: ReactionStreamEvent[] = [];
 
 /**
  * Emit a reaction event into the in-memory stream.
  */
-export function emitReactionStreamEvent(event: ReactionEvent) {
+export function emitReactionStreamEvent(event: ReactionStreamEvent) {
   events.push(event);
 }
 
 /**
  * Return all reaction events.
  */
-export function getAllEvents(): ReactionEvent[] {
+export function getAllEvents(): ReactionStreamEvent[] {
   return events;
 }
