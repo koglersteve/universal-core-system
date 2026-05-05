@@ -21,6 +21,24 @@ export type ReactionCounts = {
   crickets: number;
 };
 
+// Emotional OS feed surfaces
+export type SurfaceId =
+  | "forYou"
+  | "trending"
+  | "following"
+  | "creatorHub"
+  | "global";
+
+// Emotional OS propagation channels
+export type ReactionChannel =
+  | "engagement"
+  | "light-engagement"
+  | "high-energy"
+  | "viral"
+  | "neutral"
+  | "negative"
+  | "silence";
+
 // Base reaction event emitted by the engine
 export type ReactionEvent = {
   id: string;
@@ -34,8 +52,8 @@ export type ReactionEvent = {
 export type PropagationAction = {
   type: string;
   weight: number;
-  targetSurface: string;
-  channel: string;
+  targetSurface: SurfaceId;
+  channel: ReactionChannel;
 };
 
 // Event used by the real‑time reaction stream
