@@ -12,7 +12,7 @@ export type {
   ReactionPropagation,
   ReactionCounts,
   PropagationAction,
-} from "./reactions";
+} from "./Reactions";
 
 export type {
   Notification,

@@ -1,6 +1,17 @@
-// ─── App-level type barrel ──────────────────────────────────────
-export * from "./jokes";
-export * from "./ritual";
+// ─── Emotional OS · Type Barrel ─────────────────────────────────
 
-// OS-level types (reactions, notifications, identity)
-export * from "./os";
+// Reaction system
+export * from "./Reactions";
+export * from "./ReactionEvent";
+export * from "./ReactionEmojiKey";
+export * from "./ReactionCounts";
+export * from "./PropagationAction";
+
+// Notification system
+export * from "./Notification";
+
+// Identity system
+export * from "./Identity";
+
+// Surface / routing
+export * from "./SurfaceId";
