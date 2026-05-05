@@ -1,35 +1,37 @@
-// ─── Emotional OS · Notification Types ──────────────────────────
+// src/types/os/Notification.ts
 
-export type Notification = {
-  id: string;
-  userId: string;
-  type: "post_trending" | "reaction_spike" | "milestone";
-  message: string;
-  createdAt: string;
-  read: boolean;
-};
-
-export type NotificationEvent =
-  | { type: "post_trending"; postId: string; score: number }
-  | { type: "new_post_from_favorite"; postId: string; creatorId: string }
-  | { type: "creator_update"; creatorId: string }
-  | { type: "system_message"; message: string };
-
+/**
+ * Canonical Emotional OS tone taxonomy.
+ * All notification templates and engines must use these tones.
+ */
 export type NotificationTone =
   | "neutral"
+  | "info"
   | "playful"
-  | "urgent"
-  | "celebratory";
+  | "success"
+  | "warning"
+  | "error";
 
-export type NotificationContextPayload = {
+/**
+ * Static notification template definition.
+ * Used by the Emotional OS notification engine.
+ */
+export type NotificationTemplate = {
+  id: string;
   title: string;
   body: string;
-  url?: string;
   tone: NotificationTone;
 };
 
-export type NotificationTemplate = {
+/**
+ * Fully rendered notification object delivered to the user.
+ */
+export type Notification = {
   id: string;
-  channels: ("push" | "inapp" | "email")[];
-  buildContext: (event: NotificationEvent) => NotificationContextPayload;
+  userId: string;
+  title: string;
+  message: string;
+  tone: NotificationTone;
+  createdAt: number;
+  read: boolean;
 };

@@ -1,17 +1,3 @@
-// ─── Emotional OS · Type Barrel ─────────────────────────────────
+// src/types/os/index.ts
 
-// Reaction system
-export * from "./Reactions";
-export * from "./ReactionEvent";
-export * from "./ReactionEmojiKey";
-export * from "./ReactionCounts";
-export * from "./PropagationAction";
-
-// Notification system
 export * from "./Notification";
-
-// Identity system
-export * from "./Identity";
-
-// Surface / routing
-export * from "./SurfaceId";
