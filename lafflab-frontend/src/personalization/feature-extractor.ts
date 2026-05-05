@@ -1,7 +1,7 @@
 // /src/personalization/feature-extractor.ts
-import type { PersonalizationContext } from "./engine";
-// import your real data source here
-import { LaffLabApi } from "@/lib/LaffLabApi"; // adjust path if backend
+
+import type { PersonalizationContext } from "./types";
+import { LaffLabApi } from "@/lib/LaffLabApi";
 
 export type PostFeature = {
   id: string;
