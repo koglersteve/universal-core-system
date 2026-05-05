@@ -28,7 +28,12 @@ export default function JokeCard({ post }: { post: Post }) {
         </button>
       </div>
 
-      <ImpressionBar postId={post.id} />
+      <ImpressionBar
+        onSelect={(emoji) => {
+          // Hook this into your reaction engine or API
+          console.log("Selected reaction:", emoji, "for post:", post.id);
+        }}
+      />
     </div>
   );
 }
