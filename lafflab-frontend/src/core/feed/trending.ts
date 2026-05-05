@@ -1,58 +1,53 @@
 // src/core/feed/trending.ts
 
 import type { Post } from "@/types/jokes";
-import { getAllEvents, getAggregatedCounts } from "@/core/reactions/engine";
+import { getAggregatedCounts } from "@/core/reactions/engine";
 
-export type TrendingPost = Post & { trendScore: number };
-
-function computeVelocity(postId: string): number {
-  const events = getAllEvents().filter((e) => e.postId === postId);
-  if (events.length === 0) return 0;
-
-  const times = events.map((e) => new Date(e.createdAt).getTime());
-  const min = Math.min(...times);
-  const max = Math.max(...times);
-  if (max === min) return events.length;
-
-  const hours = (max - min) / (1000 * 60 * 60);
-  return events.length / hours;
-}
+export type TrendingPost = Post & { score: number };
 
 /**
- * Trend score = emotional heat + velocity + recency.
+ * Trending score emphasizes high‑energy reactions (laugh, shock, mindblown)
+ * and penalizes negative or low‑engagement signals.
  */
-export function computeTrendScore(post: Post): number {
+export function scorePostForTrending(post: Post): number {
   const counts = getAggregatedCounts(post.id);
 
-  const hysterical = counts.hysterical || 0;
-  const laughing = counts.laughing || 0;
+  // Canonical Emotional OS reaction keys
+  const laugh = counts.laugh || 0;
+  const smile = counts.smile || 0;
   const shock = counts.shock || 0;
   const mindblown = counts.mindblown || 0;
+  const expressionless = counts.expressionless || 0;
   const angry = counts.angry || 0;
   const crickets = counts.crickets || 0;
 
-  const emotionalHeat =
-    hysterical * 4 +
-    laughing * 3 +
-    shock * 1.5 +
-    mindblown * 5 -
-    angry * 2 -
-    crickets * 2.5;
+  // Trending emphasizes high‑energy reactions
+  const positive =
+    laugh * 3 +
+    smile * 2 +
+    shock * 3 +
+    mindblown * 5;
 
-  const velocity = computeVelocity(post.id);
+  // Neutral and negative penalties
+  const neutralPenalty = expressionless * 0.5;
+  const negativePenalty = angry * 1.5 + crickets * 2;
 
+  const base = positive - neutralPenalty - negativePenalty;
+
+  // Trending decays faster than For You — 24‑hour half‑life
   const ageMs = Date.now() - new Date(post.createdAt).getTime();
   const ageHours = ageMs / (1000 * 60 * 60);
-  const recencyBoost = Math.max(0.3, 1 - ageHours / 72);
+  const decay = Math.max(0.1, 1 - ageHours / 24);
 
-  return emotionalHeat * 0.7 + velocity * 2 * recencyBoost;
+  return base * decay;
 }
 
-export function rankTrendingPosts(posts: Post[]): TrendingPost[] {
+export function rankPostsForTrending(posts: Post[]): TrendingPost[] {
   return posts
     .map((p) => ({
       ...p,
-      trendScore: computeTrendScore(p),
+      score: scorePostForTrending(p),
     }))
-    .sort((a, b) => b.trendScore - a.trendScore);
+    .sort((a, b) => b.score - a.score);
 }
+
