@@ -1,61 +1,35 @@
-import { subscribeToReactionStream } from "@/core/reactions/stream";
-import type { ReactionStreamEvent } from "@/core/reactions/stream";
-import type { Notification } from "@/types/os";
+import { ReactionEmojiKey, ReactionEvent } from "@/types/os";
+import { addReaction } from "./reactionStore";
+import { updateUserProfile } from "./userProfile";
+import { streamReaction } from "./stream";
 
-const notificationsByUser = new Map<string, Notification[]>();
+/**
+ * Core reaction engine entry point.
+ * Handles:
+ *  - updating aggregated reaction counts
+ *  - updating user emotional profile
+ *  - streaming reaction events to listeners
+ */
+export function handleReaction(params: {
+  postId: string;
+  emoji: ReactionEmojiKey;
+  userId?: string;
+}) {
+  // Update aggregated counts store
+  addReaction(params.postId, params.emoji);
 
-function addNotification(
-  userId: string,
-  notification: Omit<Notification, "id" | "read">
-) {
-  const list = notificationsByUser.get(userId) || [];
-  const full: Notification = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    read: false,
-    ...notification,
-  };
-  list.unshift(full);
-  notificationsByUser.set(userId, list);
-}
-
-export function getNotificationsForUser(userId: string): Notification[] {
-  return notificationsByUser.get(userId) || [];
-}
-
-const REACTION_SPIKE_THRESHOLD = 10;
-const recentReactionsByPost = new Map<
-  string,
-  { count: number; lastAt: number }
->();
-
-function handleReactionEvent(e: ReactionStreamEvent) {
-  const postId = e.event.postId;
-  const userId = e.event.userId;
-  const now = Date.now();
-  const windowMs = 5 * 60 * 1000;
-
-  const entry = recentReactionsByPost.get(postId) || { count: 0, lastAt: now };
-
-  if (now - entry.lastAt > windowMs) entry.count = 0;
-
-  entry.count += 1;
-  entry.lastAt = now;
-  recentReactionsByPost.set(postId, entry);
-
-  if (entry.count === REACTION_SPIKE_THRESHOLD && userId) {
-    addNotification(userId, {
-      userId,
-      type: "reaction_spike",
-      message: `Your post ${postId} is getting a spike in reactions.`,
-      createdAt: new Date().toISOString(),
-    });
+  // Update user emotional profile
+  if (params.userId) {
+    updateUserProfile(params.userId, params.emoji);
   }
-}
 
-let initialized = false;
+  // Stream reaction event
+  const event: ReactionEvent = {
+    postId: params.postId,
+    emoji: params.emoji,
+    userId: params.userId ?? null,
+    timestamp: Date.now(),
+  };
 
-export function initNotificationEngine() {
-  if (initialized) return;
-  initialized = true;
-  subscribeToReactionStream((e) => handleReactionEvent(e));
+  streamReaction(event);
 }
