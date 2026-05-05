@@ -17,7 +17,6 @@ export function getPropagationActionsForEmoji(
     case "laugh":
       return [
         {
-          type: "laugh",
           weight: 3,
           targetSurface: "forYou" satisfies SurfaceId,
           channel: CHANNEL,
@@ -27,7 +26,6 @@ export function getPropagationActionsForEmoji(
     case "smile":
       return [
         {
-          type: "smile",
           weight: 2,
           targetSurface: "following" satisfies SurfaceId,
           channel: CHANNEL,
@@ -37,7 +35,6 @@ export function getPropagationActionsForEmoji(
     case "expressionless":
       return [
         {
-          type: "expressionless",
           weight: 1,
           targetSurface: "global" satisfies SurfaceId,
           channel: CHANNEL,
@@ -47,7 +44,6 @@ export function getPropagationActionsForEmoji(
     case "shock":
       return [
         {
-          type: "shock",
           weight: 4,
           targetSurface: "trending" satisfies SurfaceId,
           channel: CHANNEL,
@@ -57,7 +53,6 @@ export function getPropagationActionsForEmoji(
     case "mindblown":
       return [
         {
-          type: "mindblown",
           weight: 5,
           targetSurface: "creatorHub" satisfies SurfaceId,
           channel: CHANNEL,
@@ -67,7 +62,6 @@ export function getPropagationActionsForEmoji(
     case "angry":
       return [
         {
-          type: "angry",
           weight: 2,
           targetSurface: "global" satisfies SurfaceId,
           channel: CHANNEL,
@@ -77,7 +71,6 @@ export function getPropagationActionsForEmoji(
     case "crickets":
       return [
         {
-          type: "crickets",
           weight: 0,
           targetSurface: "global" satisfies SurfaceId,
           channel: CHANNEL,
