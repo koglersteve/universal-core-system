@@ -4,16 +4,21 @@
 //   import type { ReactionEvent, Notification, … } from "@/types/os";
 //
 
+// ─── Reactions / Emotional Signals ───────────────────────────────
 export type {
   ReactionEmojiKey,
-  SurfaceId,
-  ReactionChannel,
-  ReactionEvent,
-  ReactionPropagation,
   ReactionCounts,
-  PropagationAction,
+  ReactionEvent,
 } from "./Reactions";
 
+// ─── Propagation / Influence Engine ──────────────────────────────
+export type {
+  SurfaceId,
+  ReactionChannel,
+  PropagationAction,
+} from "./Propagation";
+
+// ─── Notifications Engine ─────────────────────────────────────────
 export type {
   Notification,
   NotificationEvent,
@@ -22,4 +27,5 @@ export type {
   NotificationTemplate,
 } from "./notifications";
 
-export type { UserIdentity } from "./identity";
+// ─── User Identity (AuthContext) ─────────────────────────────────
+export type { UserIdentity } from "./UserIdentity";
