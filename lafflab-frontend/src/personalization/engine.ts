@@ -1,13 +1,12 @@
 // src/personalization/engine.ts
 
 import type { PersonalizationContext } from "./types";
-import { getUserProfile } from "./profile";
-import { rankPosts } from "./ranking";
+import { getUserProfile } from "./profile-store";
+import { rankPosts } from "./ranker";
 
 export function personalizeFeed(ctx: PersonalizationContext) {
   const profile = getUserProfile(ctx.userId);
 
-  // rankPosts now requires (profile, posts)
   const ranked = rankPosts(profile, ctx.posts);
 
   if (profile && profile.totalReactions > 10) {
