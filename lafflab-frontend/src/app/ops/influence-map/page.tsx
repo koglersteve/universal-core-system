@@ -5,12 +5,15 @@ import CrossAppInfluenceMap from "@/components/CrossAppInfluenceMap";
 
 export default function InfluenceMapPage() {
   return (
-    <AppShell title="Cross-App Influence Map">
-      <div className="space-y-[var(--space-4)]">
-        <p className="text-white/70 text-[var(--text-sm)]">
+    <AppShell title="Influence Map">
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Cross-App Influence Map</h1>
+        <p className="mb-6 text-gray-600">
           Visualize how emotional signals propagate between surfaces and apps.
         </p>
-        <CrossAppInfluenceMap />
+
+        {/* Provide required prop */}
+        <CrossAppInfluenceMap log={[]} />
       </div>
     </AppShell>
   );
