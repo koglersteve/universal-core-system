@@ -2,14 +2,15 @@
 
 /**
  * Canonical Emotional OS surface taxonomy.
- * These are the real cross-app surfaces used by the feed,
- * analytics, creator hub, notifications, and influence map.
+ * These surfaces represent the real cross-app influence targets
+ * used by the feed, creator hub, analytics, and influence map.
  */
 export type SurfaceId =
   | "forYou"
   | "trending"
   | "following"
   | "creatorHub"
+  | "global"
   | "notifications";
 
 /**
