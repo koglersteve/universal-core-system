@@ -10,10 +10,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
 
-  // Fetch posts for personalization
   const posts = await LaffLabApi.getPosts();
 
-  const feed = personalizeFeed({
+  const feed = await personalizeFeed({
     userId,
     posts,
   });
