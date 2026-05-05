@@ -69,3 +69,28 @@ export type UserIdentity = {
   displayName: string | null;
   createdAt: string | null;
 };
+
+// Notification tones
+export type NotificationTone =
+  | "info"
+  | "success"
+  | "warning"
+  | "error"
+  | "achievement";
+
+// Notification template structure
+export type NotificationTemplate = {
+  id: string;
+  title: string;
+  body: string;
+  tone: NotificationTone;
+};
+
+// Final notification object delivered to UI
+export type Notification = {
+  id: string;
+  userId: string;
+  templateId: string;
+  createdAt: number;
+  read: boolean;
+};

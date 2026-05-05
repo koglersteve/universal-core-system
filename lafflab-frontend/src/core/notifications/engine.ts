@@ -1,21 +1,13 @@
 // src/core/notifications/engine.ts
 
-import { Notification } from "@/types/os";
+import type { Notification } from "@/types/os";
 
 let notifications: Notification[] = [];
 
 /**
- * Initialize the notification engine.
- * (Currently a no-op, but kept for API compatibility.)
+ * Push a new notification into the store.
  */
-export function initNotificationEngine() {
-  notifications = notifications || [];
-}
-
-/**
- * Add a notification to the in-memory store.
- */
-export function addNotification(notification: Notification) {
+export function pushNotification(notification: Notification) {
   notifications.push(notification);
 }
 
@@ -24,4 +16,12 @@ export function addNotification(notification: Notification) {
  */
 export function getNotificationsForUser(userId: string): Notification[] {
   return notifications.filter((n) => n.userId === userId);
+}
+
+/**
+ * Mark a notification as read.
+ */
+export function markNotificationRead(id: string) {
+  const n = notifications.find((n) => n.id === id);
+  if (n) n.read = true;
 }
