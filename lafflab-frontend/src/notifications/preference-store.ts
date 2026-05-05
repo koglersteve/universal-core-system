@@ -1,17 +1,13 @@
+// src/notifications/preference-store.ts
+
 export type NotificationPreferences = {
-  trending: boolean;
-  newPosts: boolean;
-  creatorUpdates: boolean;
-  system: boolean;
+  disabledTones: string[];
 };
+
+const prefs: Record<string, NotificationPreferences> = {};
 
 export async function getUserPreferences(
   userId: string
 ): Promise<NotificationPreferences> {
-  return {
-    trending: true,
-    newPosts: true,
-    creatorUpdates: true,
-    system: true,
-  };
+  return prefs[userId] ?? { disabledTones: [] };
 }

@@ -8,8 +8,11 @@ import { TrendingTemplate } from "./templates/trending";
 /**
  * Dispatch a notification to a user based on their preferences.
  */
-export function sendNotification(userId: string, template: NotificationTemplate) {
-  const prefs = getUserPreferences(userId);
+export async function sendNotification(
+  userId: string,
+  template: NotificationTemplate
+) {
+  const prefs = await getUserPreferences(userId);
 
   // If user has disabled this tone, skip
   if (prefs?.disabledTones?.includes(template.tone)) {
@@ -32,6 +35,6 @@ export function sendNotification(userId: string, template: NotificationTemplate)
 /**
  * Example: send trending notification
  */
-export function sendTrendingNotification(userId: string) {
-  sendNotification(userId, TrendingTemplate);
+export async function sendTrendingNotification(userId: string) {
+  await sendNotification(userId, TrendingTemplate);
 }
