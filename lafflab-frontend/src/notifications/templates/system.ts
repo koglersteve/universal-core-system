@@ -1,16 +1,10 @@
-import type { NotificationTemplate, NotificationEvent } from "@/types/os";
+// src/notifications/templates/system.ts
+
+import type { NotificationTemplate } from "@/types/os";
 
 export const SystemTemplate: NotificationTemplate = {
   id: "system_message",
-  channels: ["inapp"],
-  buildContext: (event: NotificationEvent) => {
-    if (event.type !== "system_message") {
-      throw new Error("Invalid event for SystemTemplate");
-    }
-    return {
-      title: "LaffLab",
-      body: event.message,
-      tone: "neutral",
-    };
-  },
+  title: "LaffLab",
+  body: "You have a new system message.",
+  tone: "default",
 };
