@@ -1,55 +1,36 @@
 // src/core/reactions/engine.ts
 
 import { randomUUID } from "crypto";
-import { REACTION_MATRIX } from "./matrix";
+import { REACTION_IDENTITY_MATRIX } from "./matrix";
 
 import type {
   ReactionEmojiKey,
   ReactionEvent,
-  ReactionPropagation,
-  ReactionCounts,
-  SurfaceId,
   PropagationAction,
 } from "@/types/os";
 
-import { getPropagationActionsForEmoji } from "./propagationConfig";
+import { addReaction } from "./reactionStore";
 import { updateUserProfile } from "./userProfile";
-import { logPropagation } from "./propagationLog";
-import { addReaction, getAggregatedCounts as getCountsFromStore } from "./reactionStore";
-
-type ReactionStore = {
-  events: ReactionEvent[];
-};
-
-const store: ReactionStore = {
-  events: [],
-};
+import { emitReactionStreamEvent } from "./stream";
+import { getPropagationActionsForEmoji } from "./propagationConfig";
 
 /**
- * Record a reaction event and trigger:
- * - user profile update
- * - propagation actions
- * - propagation logging
+ * Core reaction engine entry point.
  */
-export function recordReaction(params: {
-  userId: string | null;
+export function handleReaction(params: {
   postId: string;
   emoji: ReactionEmojiKey;
-  surface: SurfaceId;
+  userId?: string;
 }): ReactionEvent {
   const event: ReactionEvent = {
     id: randomUUID(),
-    userId: params.userId,
     postId: params.postId,
     emoji: params.emoji,
-    surface: params.surface,
-    createdAt: new Date().toISOString(),
+    userId: params.userId ?? null,
+    timestamp: Date.now(),
   };
 
-  // Store event
-  store.events.push(event);
-
-  // Update aggregated counts store
+  // Update aggregated counts
   addReaction(params.postId, params.emoji);
 
   // Update user emotional profile
@@ -58,48 +39,24 @@ export function recordReaction(params: {
   }
 
   // Propagation actions
-  const actions = getPropagationActionsForEmoji(params.emoji, params.postId);
-  actions.forEach((a) => logPropagation(event, a));
+  const actions: PropagationAction[] = getPropagationActionsForEmoji(
+    params.emoji,
+    params.postId
+  );
+
+  actions.forEach((a) => {
+    // Identity matrix placeholder (future analytics)
+    REACTION_IDENTITY_MATRIX[params.emoji][params.emoji];
+
+    // Stream propagation event
+    emitReactionStreamEvent({
+      ...event,
+      propagation: a,
+    });
+  });
+
+  // Stream reaction event
+  emitReactionStreamEvent(event);
 
   return event;
-}
-
-/**
- * Return all reaction events for a post
- */
-export function getReactionsForPost(postId: string): ReactionEvent[] {
-  return store.events.filter((e) => e.postId === postId);
-}
-
-/**
- * Return aggregated emoji counts for a post
- */
-export function getAggregatedCounts(postId: string): ReactionCounts {
-  return getCountsFromStore(postId);
-}
-
-/**
- * 7×7 propagation matrix (raw emotional propagation)
- */
-export function propagateReactions(
-  event: ReactionEvent
-): ReactionPropagation[] {
-  return REACTION_MATRIX.filter((p) => p.fromEmoji === event.emoji);
-}
-
-/**
- * High‑level propagation outputs:
- * “this reaction should trigger X in app Y”
- */
-export function getPropagationOutputs(
-  event: ReactionEvent
-): PropagationAction[] {
-  return getPropagationActionsForEmoji(event.emoji, event.postId);
-}
-
-/**
- * Return all reaction events (used for analytics)
- */
-export function getAllEvents(): ReactionEvent[] {
-  return [...store.events];
 }
