@@ -1,10 +1,14 @@
 // src/core/reactions/matrix.ts
 
-import type { ReactionEmojiKey, ReactionPropagation } from "@/types/os";
+import { ReactionEmojiKey } from "@/types/os";
 
-const EMOJIS: ReactionEmojiKey[] = [
-  "hysterical",
-  "laughing",
+/**
+ * Canonical Emotional OS emoji list.
+ * Used for matrix operations, analytics, and reaction transforms.
+ */
+export const EMOJIS: ReactionEmojiKey[] = [
+  "laugh",
+  "smile",
   "expressionless",
   "shock",
   "mindblown",
@@ -12,13 +16,17 @@ const EMOJIS: ReactionEmojiKey[] = [
   "crickets",
 ];
 
-// 7×7 matrix: simple defaults (tunable later)
-export const REACTION_MATRIX: ReactionPropagation[] = EMOJIS.flatMap(
-  (from) =>
-    EMOJIS.map((to) => ({
-      fromEmoji: from,
-      toEmoji: to,
-      weight: from === to ? 1 : 0.25,
-      channel: "feed" as const,
-    }))
-);
+/**
+ * Identity matrix for reaction weighting or transforms.
+ * Each emoji maps to itself with weight 1.
+ */
+export const REACTION_IDENTITY_MATRIX: Record<
+  ReactionEmojiKey,
+  Record<ReactionEmojiKey, number>
+> = EMOJIS.reduce((acc, key) => {
+  acc[key] = EMOJIS.reduce((inner, k) => {
+    inner[k] = k === key ? 1 : 0;
+    return inner;
+  }, {} as Record<ReactionEmojiKey, number>);
+  return acc;
+}, {} as Record<ReactionEmojiKey, Record<ReactionEmojiKey, number>>);
