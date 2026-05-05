@@ -1,22 +1,16 @@
-// src/personalization/engine.ts
+// src/app/api/feed/personalized/route.ts
 
-import { rankPosts } from "./ranker";
-import { getUserProfile } from "./profile-store";
-import { sendTrendingNotification } from "@/notifications/engine";
+import { NextResponse } from "next/server";
+import { personalizeFeed } from "@/personalization/engine";
 
-export type PersonalizationContext = {
-  userId: string;
-};
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId");
 
-export function personalizeFeed(ctx: PersonalizationContext) {
-  const profile = getUserProfile(ctx.userId);
-  const ranked = rankPosts(profile);
-
-  // Example personalization rule:
-  // If user has high engagement, send trending notification
-  if (profile && profile.totalReactions > 10) {
-    sendTrendingNotification(ctx.userId);
+  if (!userId) {
+    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
 
-  return ranked;
+  const feed = personalizeFeed({ userId });
+  return NextResponse.json(feed);
 }

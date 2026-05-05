@@ -1,12 +1,16 @@
+// src/app/api/feed/personalized/route.ts
+
 import { NextResponse } from "next/server";
-import { getPersonalizedFeed } from "@/personalization/engine";
+import { personalizeFeed } from "@/personalization/engine";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("user") ?? "anonymous";
-  const sessionId = searchParams.get("session") ?? "default";
+  const userId = searchParams.get("userId");
 
-  const { ranked } = await getPersonalizedFeed({ userId, sessionId });
+  if (!userId) {
+    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  }
 
-  return NextResponse.json(ranked);
+  const feed = personalizeFeed({ userId });
+  return NextResponse.json(feed);
 }
