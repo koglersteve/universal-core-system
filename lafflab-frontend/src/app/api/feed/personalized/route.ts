@@ -1,7 +1,6 @@
-// src/app/api/feed/personalized/route.ts
-
 import { NextResponse } from "next/server";
 import { personalizeFeed } from "@/personalization/engine";
+import { LaffLabApi } from "@/lib/LaffLabApi";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -11,6 +10,13 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
 
-  const feed = personalizeFeed({ userId });
+  // Fetch posts for personalization
+  const posts = await LaffLabApi.getPosts();
+
+  const feed = personalizeFeed({
+    userId,
+    posts,
+  });
+
   return NextResponse.json(feed);
 }
