@@ -20,13 +20,18 @@ export default function EmotionalWave() {
     const latest = events[events.length - 1];
     if (!latest) return;
 
-    setBuckets((prev) => [
-      ...prev,
-      {
-        timestamp: latest.timestamp,
-        count: prev.length ? prev[prev.length - 1].count + 1 : 1,
-      },
-    ]);
+    setBuckets((prev) => {
+      const last = prev[prev.length - 1];
+      const nextCount = last ? last.count + 1 : 1;
+
+      return [
+        ...prev,
+        {
+          timestamp: latest.timestamp,
+          count: nextCount,
+        },
+      ];
+    });
   }, [events]);
 
   return (
