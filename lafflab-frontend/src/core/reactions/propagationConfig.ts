@@ -1,4 +1,4 @@
-// src/core/reactions/propagationConfig.ts
+// src/core/reactions/propagationLog.ts
 
 export type ReactionEmojiKey =
   | "laugh"
@@ -9,32 +9,42 @@ export type ReactionEmojiKey =
   | "angry"
   | "crickets";
 
-export type SurfaceId = string;
-
-export type ReactionChannel = "local" | "global";
+export type LocalReactionEvent = {
+  postId: string;
+  emoji: ReactionEmojiKey;
+  timestamp: number;
+};
 
 export type PropagationAction = {
   from: ReactionEmojiKey;
   to: ReactionEmojiKey;
   weight: number;
-  channel: ReactionChannel;
+  channel: "local" | "global";
 };
 
-export const PROPAGATION_CONFIG: PropagationAction[] = [
-  { from: "laugh",        to: "smile",         weight: 0.6, channel: "local" },
-  { from: "laugh",        to: "expressionless", weight: 0.2, channel: "local" },
+export type PropagationLogEntry = {
+  event: LocalReactionEvent;
+  action: PropagationAction;
+  timestamp: number;
+};
 
-  { from: "smile",        to: "laugh",         weight: 0.4, channel: "local" },
-  { from: "smile",        to: "expressionless", weight: 0.3, channel: "local" },
+let log: PropagationLogEntry[] = [];
 
-  { from: "expressionless", to: "smile",       weight: 0.2, channel: "local" },
+export function recordPropagation(
+  event: LocalReactionEvent,
+  action: PropagationAction
+) {
+  log.push({
+    event,
+    action,
+    timestamp: Date.now(),
+  });
+}
 
-  { from: "shock",        to: "mindblown",     weight: 0.7, channel: "global" },
-  { from: "shock",        to: "laugh",         weight: 0.3, channel: "local" },
+export function getPropagationLog() {
+  return log;
+}
 
-  { from: "mindblown",    to: "shock",         weight: 0.5, channel: "global" },
-
-  { from: "angry",        to: "expressionless", weight: 0.4, channel: "local" },
-
-  { from: "crickets",     to: "expressionless", weight: 0.5, channel: "local" },
-];
+export function clearPropagationLog() {
+  log = [];
+}
