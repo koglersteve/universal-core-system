@@ -8,7 +8,7 @@ export function profileToSignals(profile: UserProfile): SignalBundle {
     relevance: profile.recentEmotions?.length ?? 0,
     momentum: 0,
     emotion: 0,
-    social: profile.followingCount ?? 0,
+    social: 0,
     governance: 0,
     diversity: 0,
     session: 0,
