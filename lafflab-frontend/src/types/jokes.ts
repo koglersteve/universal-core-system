@@ -8,5 +8,6 @@ export interface Post {
   videoUrl?: string;
   audioUrl?: string;
   thumbnailUrl?: string;
-  createdAt: string;
+  createdAt: string | number;
 }
+

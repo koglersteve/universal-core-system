@@ -1,8 +1,20 @@
-// src/types/index.ts
+// src/types/os/index.ts
 
-// No Notification.ts
-// No Reactions.ts
-// No Propagation.ts
+// ─── User Identity (AuthContext) ─────────────────────────────────
+export type { UserIdentity } from "./UserIdentity";
 
-// Empty barrel file to satisfy imports safely
-export {};
+// ─── Session / Auth Payloads ─────────────────────────────────────
+export type { AuthContextValue } from "./AuthContext";
+
+// ─── Feed / Content Types ─────────────────────────────────────────
+export type {
+  FeedItem,
+  FeedSource,
+  FeedContextPayload,
+} from "./feed";
+
+// ─── Reactions (legacy OS types removed) ──────────────────────────
+// No reaction or notification types are exported from OS anymore.
+
+// ─── System Types (still valid) ───────────────────────────────────
+export type { SystemStatus } from "./SystemStatus";
