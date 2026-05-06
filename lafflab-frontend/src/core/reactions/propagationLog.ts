@@ -1,32 +1,50 @@
 // src/core/reactions/propagationLog.ts
 
-import type { ReactionEvent, PropagationAction } from "@/types/os";
+export type ReactionEmojiKey =
+  | "laugh"
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
 
-export type PropagationLogEntry = {
-  event: ReactionEvent;
-  action: PropagationAction;
-  timestamp: string;
+export type LocalReactionEvent = {
+  postId: string;
+  emoji: ReactionEmojiKey;
+  timestamp: number;
 };
 
-const log: PropagationLogEntry[] = [];
+export type PropagationAction = {
+  from: ReactionEmojiKey;
+  to: ReactionEmojiKey;
+  weight: number;
+  channel: "local" | "global";
+};
 
-/**
- * Append a propagation action to the in‑memory log.
- */
-export function logPropagation(
-  event: ReactionEvent,
+export type PropagationLogEntry = {
+  event: LocalReactionEvent;
+  action: PropagationAction;
+  timestamp: number;
+};
+
+let log: PropagationLogEntry[] = [];
+
+export function recordPropagation(
+  event: LocalReactionEvent,
   action: PropagationAction
 ) {
   log.push({
     event,
     action,
-    timestamp: new Date().toISOString(),
+    timestamp: Date.now(),
   });
 }
 
-/**
- * Return a copy of the propagation log.
- */
-export function getPropagationLog(): PropagationLogEntry[] {
-  return [...log];
+export function getPropagationLog() {
+  return log;
+}
+
+export function clearPropagationLog() {
+  log = [];
 }
