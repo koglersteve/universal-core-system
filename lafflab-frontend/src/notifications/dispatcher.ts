@@ -1,7 +1,19 @@
 // src/notifications/dispatcher.ts
 
 import { addToInbox } from "./inbox-store";
-import type { NotificationTemplate, Notification } from "@/types/os";
+
+export type Notification = {
+  id: string;
+  userId: string;
+  message: string;
+  createdAt: number;
+  read: boolean;
+};
+
+export type NotificationTemplate = {
+  id: string;
+  message: string;
+};
 
 export async function dispatchNotification(
   userId: string,
@@ -10,12 +22,12 @@ export async function dispatchNotification(
   const notification: Notification = {
     id: crypto.randomUUID(),
     userId,
-    title: template.title,
-    message: template.body,
-    tone: template.tone,
+    message: template.message,
     createdAt: Date.now(),
     read: false,
   };
 
   addToInbox(userId, notification);
+
+  return notification;
 }
