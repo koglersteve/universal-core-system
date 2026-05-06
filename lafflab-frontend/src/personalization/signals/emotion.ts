@@ -1,4 +1,5 @@
-// /src/personalization/signals/emotion.ts
+// src/personalization/signals/emotion.ts
+
 import type { UserProfile } from "../profile-store";
 import type { ExtractedFeatures } from "../feature-extractor";
 
@@ -9,11 +10,13 @@ export async function computeEmotionSignal(
   const scores: Record<string, number> = {};
 
   for (const post of features.posts) {
-    const tags = (post.tags ?? []).map((t) => t.toLowerCase());
     let score = 0;
 
     for (const emotion of profile.recentEmotions) {
-      if (tags.includes(emotion.toLowerCase())) {
+      if (
+        post.text &&
+        post.text.toLowerCase().includes(emotion.toLowerCase())
+      ) {
         score += 0.5;
       }
     }
