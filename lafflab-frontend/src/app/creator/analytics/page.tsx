@@ -1,4 +1,5 @@
 // src/app/creator/analytics/page.tsx
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
