@@ -6,7 +6,6 @@ import { LaffLabApi } from "@/lib/LaffLabApi";
 export type PostFeature = {
   id: string;
   createdAt: string;
-  authorId?: string;
   text?: string;
   tags?: string[];
   favorites?: number;
@@ -25,8 +24,7 @@ export async function extractFeatures(
 
   const features: PostFeature[] = posts.map((p) => ({
     id: p.id,
-    createdAt: String(p.createdAt), // 🔥 normalize
-    authorId: p.authorId,
+    createdAt: String(p.createdAt),
     text: p.text,
     tags: p.tags ?? [],
     favorites: p.favorites ?? 0,
