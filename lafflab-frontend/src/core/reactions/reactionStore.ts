@@ -29,7 +29,12 @@ export function initReactionCounts(postId: string) {
 
 export function addReaction(postId: string, emoji: ReactionEmojiKey) {
   initReactionCounts(postId);
-  store[postId][emoji] += 1;
+
+  const counts = store[postId];
+  if (!counts) return;
+
+  const current = counts[emoji] ?? 0;
+  counts[emoji] = current + 1;
 }
 
 export function getReactionCounts(postId: string): ReactionCounts {
