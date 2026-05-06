@@ -14,7 +14,7 @@ type Bucket = {
 };
 
 export default function EmotionalWave() {
-  const { events } = useReactionStream() as { events: LocalReactionEvent[] };
+  const events = useReactionStream() as unknown as LocalReactionEvent[];
   const [buckets, setBuckets] = useState<Bucket[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
