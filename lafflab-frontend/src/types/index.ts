@@ -1,20 +1,22 @@
-// src/types/os/index.ts
-
-// ─── User Identity (AuthContext) ─────────────────────────────────
-export type { UserIdentity } from "./UserIdentity";
+// src/types/index.ts
 
 // ─── Session / Auth Payloads ─────────────────────────────────────
 export type { AuthContextValue } from "./AuthContext";
 
 // ─── Feed / Content Types ─────────────────────────────────────────
-export type {
-  FeedItem,
-  FeedSource,
-  FeedContextPayload,
-} from "./feed";
+export type { FeedItem, FeedSource, FeedContextPayload } from "./feed";
 
-// ─── Reactions (legacy OS types removed) ──────────────────────────
-// No reaction or notification types are exported from OS anymore.
-
-// ─── System Types (still valid) ───────────────────────────────────
+// ─── System Types ────────────────────────────────────────────────
 export type { SystemStatus } from "./SystemStatus";
+
+// ─── Rituals ─────────────────────────────────────────────────────
+export type { Ritual } from "./ritual";
+
+// ─── Posts / Jokes ───────────────────────────────────────────────
+export type { Post, PostType } from "./jokes";
+
+// ─── History ─────────────────────────────────────────────────────
+export type { HistoryItem } from "./history";
+
+// ─── Categories ──────────────────────────────────────────────────
+export type { Category } from "./categories";
