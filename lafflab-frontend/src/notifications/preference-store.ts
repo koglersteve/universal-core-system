@@ -1,13 +1,25 @@
 // src/notifications/preference-store.ts
 
 export type NotificationPreferences = {
-  disabledTones: string[];
+  trending: boolean;
 };
 
-const prefs: Record<string, NotificationPreferences> = {};
+const prefs = new Map<string, NotificationPreferences>();
 
-export async function getUserPreferences(
-  userId: string
-): Promise<NotificationPreferences> {
-  return prefs[userId] ?? { disabledTones: [] };
+export function getUserPreferences(userId: string): Promise<NotificationPreferences> {
+  if (!prefs.has(userId)) {
+    prefs.set(userId, {
+      trending: true, // default preference
+    });
+  }
+
+  return Promise.resolve(prefs.get(userId)!);
+}
+
+export function setUserPreferences(
+  userId: string,
+  newPrefs: Partial<NotificationPreferences>
+) {
+  const existing = prefs.get(userId) ?? { trending: true };
+  prefs.set(userId, { ...existing, ...newPrefs });
 }
