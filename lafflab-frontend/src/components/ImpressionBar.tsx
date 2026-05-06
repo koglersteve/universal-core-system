@@ -1,5 +1,16 @@
+// src/components/ImpressionBar.tsx
+"use client";
+
 import React from "react";
-import { ReactionEmojiKey } from "@/types/os";
+
+type ReactionEmojiKey =
+  | "laugh"
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
 
 const EMOJIS: { key: ReactionEmojiKey; icon: string }[] = [
   { key: "laugh", icon: "😂" },
@@ -12,19 +23,19 @@ const EMOJIS: { key: ReactionEmojiKey; icon: string }[] = [
 ];
 
 type Props = {
-  onSelect: (emoji: ReactionEmojiKey) => void;
+  onSelect: (key: ReactionEmojiKey) => void;
 };
 
 export default function ImpressionBar({ onSelect }: Props) {
   return (
-    <div className="flex gap-3 items-center">
-      {EMOJIS.map(({ key, icon }) => (
+    <div className="flex gap-2">
+      {EMOJIS.map((e) => (
         <button
-          key={key}
-          onClick={() => onSelect(key)}
-          className="text-2xl hover:scale-125 transition-transform"
+          key={e.key}
+          onClick={() => onSelect(e.key)}
+          className="text-2xl hover:scale-110 transition"
         >
-          {icon}
+          {e.icon}
         </button>
       ))}
     </div>
