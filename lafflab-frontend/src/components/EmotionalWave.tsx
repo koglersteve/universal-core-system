@@ -1,8 +1,12 @@
+// src/components/EmotionalWave.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { useReactionStream } from "@/hooks/useReactionStream";
-import type { ReactionEvent } from "@/types/os";
+
+type LocalReactionEvent = {
+  timestamp: number;
+};
 
 type Bucket = {
   timestamp: number;
@@ -10,36 +14,36 @@ type Bucket = {
 };
 
 export default function EmotionalWave() {
-  const events: ReactionEvent[] = useReactionStream();
+  const { events } = useReactionStream() as { events: LocalReactionEvent[] };
   const [buckets, setBuckets] = useState<Bucket[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (events.length === 0) return;
+    const now = Date.now();
+    const windowMs = 10_000;
 
-    const latest = events[events.length - 1];
-    if (!latest) return;
+    const filtered = events.filter((e) => now - e.timestamp <= windowMs);
 
-    setBuckets((prev) => {
-      const last = prev[prev.length - 1];
-      const nextCount = last ? last.count + 1 : 1;
+    const bucketMap: Record<number, number> = {};
 
-      return [
-        ...prev,
-        {
-          timestamp: latest.timestamp,
-          count: nextCount,
-        },
-      ];
-    });
+    for (const e of filtered) {
+      const bucket = Math.floor(e.timestamp / 1000);
+      bucketMap[bucket] = (bucketMap[bucket] ?? 0) + 1;
+    }
+
+    const nextBuckets = Object.entries(bucketMap).map(([ts, count]) => ({
+      timestamp: Number(ts),
+      count,
+    }));
+
+    setBuckets(nextBuckets);
   }, [events]);
 
   return (
-    <div ref={ref} className="w-full h-40 bg-blue-100 rounded p-4">
-      <div className="text-lg font-semibold mb-2">Emotional Wave</div>
-      <div className="text-sm text-gray-600">
-        Total events: {events.length}
-      </div>
+    <div ref={ref} className="w-full h-24 bg-black/10 rounded">
+      {buckets.length === 0 && (
+        <div className="text-center text-gray-500 p-4">No activity</div>
+      )}
     </div>
   );
 }
