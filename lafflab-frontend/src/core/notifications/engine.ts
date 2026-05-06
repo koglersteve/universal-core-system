@@ -1,51 +1,42 @@
 // src/core/notifications/engine.ts
 
-import type { Notification, NotificationTemplate } from "@/types/os";
+export type LocalNotification = {
+  id: string;
+  title: string;
+  message: string;
+  timestamp: number;
+};
 
-let notifications: Notification[] = [];
-let templates: Record<string, NotificationTemplate> = {};
+export type LocalNotificationTemplate = {
+  id: string;
+  title: string;
+  message: string;
+};
 
-/**
- * Register a notification template.
- */
-export function registerNotificationTemplate(template: NotificationTemplate) {
+let notifications: LocalNotification[] = [];
+let templates: Record<string, LocalNotificationTemplate> = {};
+
+export function registerTemplate(template: LocalNotificationTemplate) {
   templates[template.id] = template;
 }
 
-/**
- * Push a new notification using a template.
- */
-export function pushNotificationFromTemplate(
-  userId: string,
-  templateId: string
-) {
-  const template = templates[templateId];
+export function enqueueNotification(id: string, _ctx: Record<string, unknown> = {}) {
+  const template = templates[id];
+
   if (!template) return;
 
-  const notification: Notification = {
-    id: crypto.randomUUID(),
-    userId,
+  notifications.push({
+    id: template.id,
     title: template.title,
-    message: template.body,
-    tone: template.tone,
-    createdAt: Date.now(),
-    read: false,
-  };
-
-  notifications.push(notification);
+    message: template.message,
+    timestamp: Date.now(),
+  });
 }
 
-/**
- * Get all notifications for a specific user.
- */
-export function getNotificationsForUser(userId: string): Notification[] {
-  return notifications.filter((n) => n.userId === userId);
+export function getNotifications() {
+  return notifications;
 }
 
-/**
- * Mark a notification as read.
- */
-export function markNotificationRead(id: string) {
-  const n = notifications.find((n) => n.id === id);
-  if (n) n.read = true;
+export function clearNotifications() {
+  notifications = [];
 }
