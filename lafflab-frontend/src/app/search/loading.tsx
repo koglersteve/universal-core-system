@@ -1,14 +1,7 @@
-import { Skeleton } from "@/components/ui/Skeleton";
-import { JokeCardSkeleton } from "@/components/JokeCardSkeleton";
-
-export default function Loading() {
+export default function SearchLoading() {
   return (
-    <div className="p-6 space-y-6 animate-fadeIn">
-      <Skeleton className="h-10 w-full" />
-
-      {[...Array(5)].map((_, i) => (
-        <JokeCardSkeleton key={i} />
-      ))}
-    </div>
+    <main className="min-h-screen flex items-center justify-center">
+      <p className="text-gray-500">Searching…</p>
+    </main>
   );
 }

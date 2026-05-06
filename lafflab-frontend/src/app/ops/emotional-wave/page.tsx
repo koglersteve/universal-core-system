@@ -1,17 +1,12 @@
-"use client";
-
-import AppShell from "@/components/AppShell";
-import EmotionalWave from "@/components/EmotionalWave";
-
 export default function EmotionalWavePage() {
   return (
-    <AppShell title="Emotional Wave">
-      <div className="space-y-[var(--space-4)]">
-        <p className="text-white/70 text-[var(--text-sm)]">
-          Real-time emotional activity across LAFFLab and connected surfaces.
+    <main className="min-h-screen flex items-center justify-center">
+      <section className="max-w-xl text-center space-y-2">
+        <h1 className="text-2xl font-bold">Emotional Wave</h1>
+        <p className="text-gray-500">
+          Emotional wave analytics and timelines will be displayed here.
         </p>
-        <EmotionalWave />
-      </div>
-    </AppShell>
+      </section>
+    </main>
   );
 }

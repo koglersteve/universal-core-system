@@ -1,52 +1,14 @@
-"use client";
+interface PostPageProps {
+  params: { id: string };
+}
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import type { Post } from "@/types/jokes";
-import AppShell from "@/components/AppShell";
-import PostDetail from "@/components/PostDetail";
-
-export default function PostDetailPage() {
-  const { id } = useParams<{ id: string }>();
-
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function load() {
-      setLoading(true);
-
-      // Only use getPosts() since getPostById does not exist
-      const all = await LaffLabApi.getPosts();
-      const found = all.find((p) => p.id === id) ?? null;
-
-      if (mounted) {
-        setPost(found);
-        setLoading(false);
-      }
-    }
-
-    load();
-
-    return () => {
-      mounted = false;
-    };
-  }, [id]);
-
+export default function PostPage({ params }: PostPageProps) {
   return (
-    <AppShell title="Post">
-      {loading ? (
-        <div className="text-white/60 text-[var(--text-sm)]">Loading…</div>
-      ) : post ? (
-        <PostDetail post={post} />
-      ) : (
-        <div className="text-white/60 text-[var(--text-sm)]">
-          Post not found.
-        </div>
-      )}
-    </AppShell>
+    <main className="min-h-screen flex items-center justify-center">
+      <section className="text-center space-y-2">
+        <h1 className="text-2xl font-bold">Post</h1>
+        <p className="text-gray-500">Post ID: {params.id}</p>
+      </section>
+    </main>
   );
 }
