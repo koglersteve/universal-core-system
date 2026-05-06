@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 "use client";
 
 import { EmptyState, EmptyHistoryIcon } from "@/components/ui/EmptyState";

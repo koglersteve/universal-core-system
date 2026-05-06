@@ -1,5 +1,7 @@
 // src/app/creator/analytics/page.tsx
-"use client";
+"export const dynamic = "force-dynamic";
+
+use client";
 
 import { useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";

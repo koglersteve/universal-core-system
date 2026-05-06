@@ -1,4 +1,6 @@
-export default function CreatorLockedPage() {
+eexport const dynamic = "force-dynamic";
+
+xport default function CreatorLockedPage() {
   return (
     <div className="p-6 text-white space-y-4">
       <h1 className="text-2xl font-bold">Creator Mode Locked</h1>

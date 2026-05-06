@@ -1,4 +1,6 @@
-"use client";
+"uexport const dynamic = "force-dynamic";
+
+se client";
 
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/LaffLabApi";
