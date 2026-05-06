@@ -1,0 +1,60 @@
+{
+  "folders": [
+    {
+      "name": "Frontend",
+      "path": "lafflab-frontend"
+    }
+  ],
+
+  "settings": {
+    // TypeScript
+    "typescript.tsdk": "lafflab-frontend/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+
+    // Formatting
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    // Tailwind IntelliSense
+    "tailwindCSS.includeLanguages": {
+      "typescriptreact": "html",
+      "javascriptreact": "html"
+    },
+
+    // File Exclusions
+    "files.exclude": {
+      "**/.next": true,
+      "**/node_modules": true,
+      "**/.turbo": true,
+      "**/.git": true
+    },
+
+    // Search Exclusions
+    "search.exclude": {
+      "**/.next": true,
+      "**/node_modules": true,
+      "**/.turbo": true
+    },
+
+    // Terminal Profiles
+    "terminal.integrated.profiles.windows": {
+      "PowerShell": {
+        "source": "PowerShell",
+        "icon": "terminal-powershell"
+      }
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+    // ESLint
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+  },
+
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "bradlc.vscode-tailwindcss",
+      "ms-vscode.vscode-typescript-next"
+    ]
+  }
+}
