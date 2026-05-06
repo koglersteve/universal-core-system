@@ -3,6 +3,8 @@
 // ─── Session / Auth Payloads ─────────────────────────────────────
 export type { AuthContextValue } from "./AuthContext";
 
+// src/types/index.ts
+
 // ─── Feed / Content Types ─────────────────────────────────────────
 export type { FeedItem, FeedSource, FeedContextPayload } from "./feed";
 
