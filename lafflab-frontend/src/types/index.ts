@@ -1,4 +1,8 @@
 // src/types/index.ts
 
-export * from "./Reactions";
-export * from "./Propagation";
+// No Notification.ts
+// No Reactions.ts
+// No Propagation.ts
+
+// Empty barrel file to satisfy imports safely
+export {};
