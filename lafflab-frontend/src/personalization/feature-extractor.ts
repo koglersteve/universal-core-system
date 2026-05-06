@@ -23,9 +23,9 @@ export async function extractFeatures(
 ): Promise<ExtractedFeatures> {
   const posts = await LaffLabApi.getPosts();
 
-  const features: PostFeature[] = posts.map((p: any) => ({
+  const features: PostFeature[] = posts.map((p) => ({
     id: p.id,
-    createdAt: p.createdAt,
+    createdAt: String(p.createdAt), // 🔥 normalize
     authorId: p.authorId,
     text: p.text,
     tags: p.tags ?? [],
