@@ -11,11 +11,10 @@ import { TrendingTemplate } from "./templates/trending";
  */
 
 export async function processNotification(userId: string) {
-  const prefs = getUserPreferences(userId);
+  const prefs = await getUserPreferences(userId);
 
   let template: NotificationTemplate;
 
-  // Example logic — pick trending template if user prefers trending
   if (prefs.trending) {
     template = TrendingTemplate;
   } else {
