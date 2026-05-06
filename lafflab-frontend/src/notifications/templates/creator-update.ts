@@ -1,10 +1,8 @@
 // src/notifications/templates/creator-update.ts
 
-import type { NotificationTemplate } from "@/types/os";
+import type { NotificationTemplate } from "@/notifications/dispatcher";
 
 export const CreatorUpdateTemplate: NotificationTemplate = {
   id: "creator_update",
-  title: "Creator Update",
-  body: "A creator you follow just posted something new!",
-  tone: "info",
+  message: "A creator you follow has posted a new update.",
 };
