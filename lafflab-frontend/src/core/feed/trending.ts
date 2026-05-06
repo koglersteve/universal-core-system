@@ -1,28 +1,26 @@
 // src/core/feed/trending.ts
 
 import type { Post } from "@/types/jokes";
-import { getAggregatedCounts } from "@/core/reactions/reactionStore";
+import { getReactionCounts } from "@/core/reactions/reactionStore";
 
 export type TrendingPost = Post & { score: number };
 
-export function rankTrendingPosts(posts: Post[]): TrendingPost[] {
+export function getTrendingPosts(posts: Post[]): TrendingPost[] {
   return posts
     .map((post) => {
-      const counts = getAggregatedCounts(post.id);
+      const counts = getReactionCounts(post.id);
 
+      // Trending score emphasizes intensity + recency
       const score =
-        counts.laugh * 5 +
-        counts.smile * 3 +
+        counts.mindblown * 5 +
+        counts.shock * 3 +
+        counts.laugh * 2 +
+        counts.smile * 1 +
         counts.expressionless * 0 +
-        counts.shock * 4 +
-        counts.mindblown * 6 +
-        counts.angry * -2 +
-        counts.crickets * -1;
+        counts.angry * -1 +
+        counts.crickets * -2;
 
-      return {
-        ...post,
-        score,
-      };
+      return { ...post, score };
     })
     .sort((a, b) => b.score - a.score);
 }
