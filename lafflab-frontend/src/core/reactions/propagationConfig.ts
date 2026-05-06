@@ -1,83 +1,40 @@
 // src/core/reactions/propagationConfig.ts
 
-import type {
-  ReactionEmojiKey,
-  SurfaceId,
-  PropagationAction,
-  ReactionChannel,
-} from "@/types/os";
+export type ReactionEmojiKey =
+  | "laugh"
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
 
-const CHANNEL: ReactionChannel = "direct";
+export type SurfaceId = string;
 
-export function getPropagationActionsForEmoji(
-  emoji: ReactionEmojiKey,
-  postId: string
-): PropagationAction[] {
-  switch (emoji) {
-    case "laugh":
-      return [
-        {
-          weight: 3,
-          targetSurface: "forYou" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+export type ReactionChannel = "local" | "global";
 
-    case "smile":
-      return [
-        {
-          weight: 2,
-          targetSurface: "following" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+export type PropagationAction = {
+  from: ReactionEmojiKey;
+  to: ReactionEmojiKey;
+  weight: number;
+  channel: ReactionChannel;
+};
 
-    case "expressionless":
-      return [
-        {
-          weight: 1,
-          targetSurface: "global" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+export const PROPAGATION_CONFIG: PropagationAction[] = [
+  { from: "laugh",        to: "smile",         weight: 0.6, channel: "local" },
+  { from: "laugh",        to: "expressionless", weight: 0.2, channel: "local" },
 
-    case "shock":
-      return [
-        {
-          weight: 4,
-          targetSurface: "trending" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+  { from: "smile",        to: "laugh",         weight: 0.4, channel: "local" },
+  { from: "smile",        to: "expressionless", weight: 0.3, channel: "local" },
 
-    case "mindblown":
-      return [
-        {
-          weight: 5,
-          targetSurface: "creatorHub" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+  { from: "expressionless", to: "smile",       weight: 0.2, channel: "local" },
 
-    case "angry":
-      return [
-        {
-          weight: 2,
-          targetSurface: "global" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+  { from: "shock",        to: "mindblown",     weight: 0.7, channel: "global" },
+  { from: "shock",        to: "laugh",         weight: 0.3, channel: "local" },
 
-    case "crickets":
-      return [
-        {
-          weight: 0,
-          targetSurface: "global" satisfies SurfaceId,
-          channel: CHANNEL,
-        },
-      ];
+  { from: "mindblown",    to: "shock",         weight: 0.5, channel: "global" },
 
-    default:
-      return [];
-  }
-}
+  { from: "angry",        to: "expressionless", weight: 0.4, channel: "local" },
+
+  { from: "crickets",     to: "expressionless", weight: 0.5, channel: "local" },
+];
