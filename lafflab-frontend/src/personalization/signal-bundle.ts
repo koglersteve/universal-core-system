@@ -6,11 +6,11 @@ import type { SignalBundle } from "./ranker";
 export function profileToSignals(profile: UserProfile): SignalBundle {
   return {
     relevance: profile.recentEmotions?.length ?? 0,
-    momentum: profile.activityScore ?? 0,
+    momentum: 0,
     emotion: profile.emotionalScore ?? 0,
     social: profile.followingCount ?? 0,
-    governance: profile.governanceScore ?? 0,
-    diversity: profile.diversityScore ?? 0,
-    session: profile.sessionScore ?? 0,
+    governance: 0,
+    diversity: 0,
+    session: 0,
   };
 }
