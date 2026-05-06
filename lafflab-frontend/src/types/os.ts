@@ -1,4 +1,6 @@
-export * from "./os/Notification";
-export * from "./os/Reactions";
-export * from "./os/Propagation";
-export * from "./os/UserIdentity";
+// src/types/os.ts
+
+// Remove conflicting wildcard exports.
+// Export nothing until valid OS types exist.
+
+export {};
