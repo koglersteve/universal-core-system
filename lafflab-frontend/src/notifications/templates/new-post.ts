@@ -1,10 +1,8 @@
 // src/notifications/templates/new-post.ts
 
-import type { NotificationTemplate } from "@/types/os";
+import type { NotificationTemplate } from "@/notifications/dispatcher";
 
 export const NewPostTemplate: NotificationTemplate = {
   id: "new_post_from_favorite",
-  title: "New Post",
-  body: "A creator you follow just published a new post!",
-  tone: "info",
+  message: "A creator you follow has posted something new.",
 };
