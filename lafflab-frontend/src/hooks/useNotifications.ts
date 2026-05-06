@@ -1,22 +1,44 @@
-"use client";
+// src/hooks/useNotifications.ts
 
 import { useEffect, useState } from "react";
-import type { Notification } from "@/types/os";
+
+export type Notification = {
+  id: string;
+  userId: string;
+  message: string;
+  createdAt: number;
+  read: boolean;
+};
 
 export function useNotifications(userId: string) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      const res = await fetch(`/api/notifications?userId=${userId}`);
-      const json = await res.json();
-      setNotifications(json.notifications || []);
-      setLoading(false);
+    let active = true;
+
+    async function poll() {
+      try {
+        const res = await fetch(`/api/notifications/inbox?userId=${userId}`);
+        const data = await res.json();
+
+        if (active) {
+          setNotifications(data.notifications ?? []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+      }
+
+      if (active) {
+        setTimeout(poll, 1500);
+      }
     }
-    load();
+
+    poll();
+
+    return () => {
+      active = false;
+    };
   }, [userId]);
 
-  return { notifications, loading };
+  return notifications;
 }
