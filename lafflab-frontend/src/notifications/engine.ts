@@ -1,40 +1,29 @@
 // src/notifications/engine.ts
 
-import type { NotificationTemplate, Notification } from "@/types/os";
+import type { Notification, NotificationTemplate } from "./dispatcher";
 import { enqueueNotification } from "./queue";
 import { getUserPreferences } from "./preference-store";
 import { TrendingTemplate } from "./templates/trending";
 
 /**
- * Dispatch a notification to a user based on their preferences.
+ * Notification engine:
+ * Chooses templates based on user preferences and dispatches them.
  */
-export async function sendNotification(
-  userId: string,
-  template: NotificationTemplate
-) {
-  const prefs = await getUserPreferences(userId);
 
-  // If user has disabled this tone, skip
-  if (prefs?.disabledTones?.includes(template.tone)) {
-    return;
+export async function processNotification(userId: string) {
+  const prefs = getUserPreferences(userId);
+
+  let template: NotificationTemplate;
+
+  // Example logic — pick trending template if user prefers trending
+  if (prefs.trending) {
+    template = TrendingTemplate;
+  } else {
+    template = {
+      id: "default",
+      message: "You have a new notification.",
+    };
   }
 
-  const notification: Notification = {
-    id: crypto.randomUUID(),
-    userId,
-    title: template.title,
-    message: template.body,
-    tone: template.tone,
-    createdAt: Date.now(),
-    read: false,
-  };
-
-  enqueueNotification(userId, notification);
-}
-
-/**
- * Example: send trending notification
- */
-export async function sendTrendingNotification(userId: string) {
-  await sendNotification(userId, TrendingTemplate);
+  return enqueueNotification(userId, template);
 }
