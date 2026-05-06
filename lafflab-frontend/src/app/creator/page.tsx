@@ -1,16 +1,13 @@
-export const dynamic = "force-dynamic";
-
 "use client";
-
-import AppShell from "@/components/AppShell";
-import { RequireAuth } from "@/components/RequireAuth";
+export const dynamic = "force-dynamic";
 
 export default function CreatorHomePage() {
   return (
-    <RequireAuth>
-      <AppShell title="Creator Studio">
-        {/* existing Creator content */}
-      </AppShell>
-    </RequireAuth>
+    <div className="space-y-2">
+      <h2 className="text-2xl font-bold">Creator Home</h2>
+      <p className="text-gray-500">
+        Overview of your creator activity will appear here.
+      </p>
+    </div>
   );
 }

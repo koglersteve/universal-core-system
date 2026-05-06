@@ -1,45 +1,15 @@
-"uexport const dynamic = "force-dynamic";
-
-se client";
-
-import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import type { Post } from "@/types/jokes";
-import JokeCard from "@/components/JokeCard";
+"use client";
+export const dynamic = "force-dynamic";
 
 export default function ExplorePage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function load() {
-      try {
-        const data = await LaffLabApi.getPosts();
-        if (mounted) {
-          setPosts(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Failed to load explore posts:", err);
-        if (mounted) setLoading(false);
-      }
-    }
-
-    load();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (loading) return <p className="text-white/70 p-6">Loading…</p>;
-
   return (
-    <div className="space-y-6 p-6">
-      {posts.map((post) => (
-        <JokeCard key={post.id} post={post} />
-      ))}
-    </div>
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold">Explore</h1>
+        <p className="text-gray-500">
+          Discover new content and categories here.
+        </p>
+      </div>
+    </main>
   );
 }

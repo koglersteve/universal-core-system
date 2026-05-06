@@ -1,23 +1,13 @@
+"use client";
 export const dynamic = "force-dynamic";
 
-"use client";
-
-import { EmptyState, EmptyHistoryIcon } from "@/components/ui/EmptyState";
-
 export default function HistoryPage() {
-  const hasHistory = false;
-
   return (
-    <div className="p-[var(--space-4)] text-white space-y-[var(--space-4)] page-shell">
-      <h1 className="text-[var(--text-2xl)] font-bold">History</h1>
-
-      {!hasHistory && (
-        <EmptyState
-          title="No history yet"
-          subtitle="Watch some jokes and your viewing history will appear here."
-          icon={EmptyHistoryIcon}
-        />
-      )}
-    </div>
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold">History</h1>
+        <p className="text-gray-500">Your viewing history will appear here.</p>
+      </div>
+    </main>
   );
 }

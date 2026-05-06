@@ -1,16 +1,15 @@
 "use client";
+export const dynamic = "force-dynamic";
 
-import { useSession } from "@/hooks/useSession";
-import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 
-export default function CreatorLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, loading } = useSession();
-  const router = useRouter();
-
-  if (!loading && !isAuthenticated) {
-    router.replace("/login");
-    return null;
-  }
-
-  return <>{children}</>;
+export default function CreatorLayout({ children }: { children: ReactNode }) {
+  return (
+    <main className="min-h-screen">
+      <header className="border-b px-4 py-3">
+        <h1 className="text-xl font-bold">Creator Studio</h1>
+      </header>
+      <section className="p-4">{children}</section>
+    </main>
+  );
 }

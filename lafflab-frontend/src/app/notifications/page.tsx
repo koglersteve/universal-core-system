@@ -1,40 +1,13 @@
-// src/app/notifications/page.tsx
-"export const dynamic = "force-dynamic";
-
-use client";
-
-import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import AppShell from "@/components/AppShell";
-
-type SimpleNotification = {
-  id: string;
-  message: string;
-};
+"use client";
+export const dynamic = "force-dynamic";
 
 export default function NotificationsPage() {
-  const { identity } = useAuth();
-  const [items, setItems] = useState<SimpleNotification[]>([]);
-
-  useEffect(() => {
-    setItems([]);
-  }, [identity]);
-
   return (
-    <AppShell title="Notifications">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Notifications</h1>
-
-        {items.length === 0 && (
-          <p className="text-gray-500">No notifications.</p>
-        )}
-
-        {items.map((n) => (
-          <div key={n.id} className="border p-3 rounded mb-2">
-            {n.message}
-          </div>
-        ))}
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold">Notifications</h1>
+        <p className="text-gray-500">Your notifications will appear here.</p>
       </div>
-    </AppShell>
+    </main>
   );
 }

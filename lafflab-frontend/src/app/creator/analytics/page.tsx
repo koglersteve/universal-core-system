@@ -1,33 +1,13 @@
-// src/app/creator/analytics/page.tsx
-"export const dynamic = "force-dynamic";
-
-use client";
-
-import { useEffect, useMemo, useState } from "react";
-import AppShell from "@/components/AppShell";
-
-type ReactionSummary = {
-  postId: string;
-  total: number;
-};
+"use client";
+export const dynamic = "force-dynamic";
 
 export default function CreatorAnalyticsPage() {
-  const [summaries, setSummaries] = useState<ReactionSummary[]>([]);
-
-  useEffect(() => {
-    setSummaries([]);
-  }, []);
-
-  const totalReactions = useMemo(() => {
-    return summaries.reduce((acc, s) => acc + s.total, 0);
-  }, [summaries]);
-
   return (
-    <AppShell title="Creator Analytics">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Creator Analytics</h1>
-        <p>Total Reactions: {totalReactions}</p>
-      </div>
-    </AppShell>
+    <div className="space-y-2">
+      <h2 className="text-2xl font-bold">Creator Analytics</h2>
+      <p className="text-gray-500">
+        Analytics and performance insights will be shown here.
+      </p>
+    </div>
   );
 }
