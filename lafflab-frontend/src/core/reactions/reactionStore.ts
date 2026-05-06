@@ -39,7 +39,21 @@ export function addReaction(postId: string, emoji: ReactionEmojiKey) {
 
 export function getReactionCounts(postId: string): ReactionCounts {
   initReactionCounts(postId);
-  return store[postId];
+
+  const counts = store[postId];
+  if (!counts) {
+    return {
+      laugh: 0,
+      smile: 0,
+      expressionless: 0,
+      shock: 0,
+      mindblown: 0,
+      angry: 0,
+      crickets: 0,
+    };
+  }
+
+  return counts;
 }
 
 export function clearReactionStore() {
@@ -47,3 +61,4 @@ export function clearReactionStore() {
     delete store[key];
   }
 }
+
