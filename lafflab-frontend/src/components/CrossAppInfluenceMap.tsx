@@ -1,50 +1,33 @@
+// src/components/CrossAppInfluenceMap.tsx
 "use client";
 
 import { useMemo } from "react";
-import type { SurfaceId, PropagationAction } from "@/types/os";
 
 type Props = {
   log: {
-    actions: PropagationAction[];
+    app: string;
+    influence: number;
   }[];
 };
 
-const SURFACES: SurfaceId[] = [
-  "forYou",
-  "trending",
-  "following",
-  "creatorHub",
-  "global",
-  "notifications",
-];
-
 export default function CrossAppInfluenceMap({ log }: Props) {
   const grouped = useMemo(() => {
-    const map: Record<SurfaceId, number> = {
-      forYou: 0,
-      trending: 0,
-      following: 0,
-      creatorHub: 0,
-      global: 0,
-      notifications: 0,
-    };
+    const map: Record<string, number> = {};
 
-    log.forEach((entry) => {
-      entry.actions.forEach((action) => {
-        const target = action.targetSurface;
-        map[target] += action.weight;
-      });
-    });
+    for (const entry of log) {
+      map[entry.app] = (map[entry.app] ?? 0) + entry.influence;
+    }
 
     return map;
   }, [log]);
 
   return (
-    <div className="grid grid-cols-6 gap-4">
-      {SURFACES.map((s) => (
-        <div key={s} className="p-4 bg-white rounded shadow">
-          <div className="text-lg font-semibold capitalize">{s}</div>
-          <div className="text-3xl font-bold">{grouped[s]}</div>
+    <div className="p-4 border rounded">
+      <h2 className="font-bold mb-2">Cross‑App Influence</h2>
+      {Object.entries(grouped).map(([app, value]) => (
+        <div key={app} className="flex justify-between py-1">
+          <span>{app}</span>
+          <span>{value}</span>
         </div>
       ))}
     </div>
