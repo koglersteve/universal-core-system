@@ -1,8 +1,5 @@
 // src/types/index.ts
 
-// ─── Feed / Content Types ─────────────────────────────────────────
-export type { FeedItem, FeedSource, FeedContextPayload } from "./feed";
-
 // ─── System Types ────────────────────────────────────────────────
 export type { SystemStatus } from "./SystemStatus";
 
