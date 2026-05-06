@@ -21,7 +21,7 @@ export default function CreatorAnalyticsPage() {
   }, [summaries]);
 
   return (
-    <AppShell>
+    <AppShell title="Creator Analytics">
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">Creator Analytics</h1>
         <p>Total Reactions: {totalReactions}</p>
