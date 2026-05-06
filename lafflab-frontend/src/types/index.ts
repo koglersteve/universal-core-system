@@ -1,8 +1,5 @@
 // src/types/index.ts
 
-// ─── System Types ────────────────────────────────────────────────
-export type { SystemStatus } from "./SystemStatus";
-
 // ─── Rituals ─────────────────────────────────────────────────────
 export type { Ritual } from "./ritual";
 
