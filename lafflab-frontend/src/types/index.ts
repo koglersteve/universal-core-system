@@ -1,13 +1,9 @@
 // src/types/index.ts
 
-// ─── Rituals ─────────────────────────────────────────────────────
 export type { Ritual } from "./ritual";
-
-// ─── Posts / Jokes ───────────────────────────────────────────────
 export type { Post, PostType } from "./jokes";
-
-// ─── History ─────────────────────────────────────────────────────
 export type { HistoryItem } from "./history";
+export type { Category } from "./category";
 
-// ─── Categories ──────────────────────────────────────────────────
-export type { Category } from "./categories";
+// optional: os.ts exports nothing, but keeping the barrel clean
+// export * from "./os";
