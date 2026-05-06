@@ -1,28 +1,35 @@
 // src/core/reactions/stream.ts
 
-import type { ReactionEvent } from "@/types/os";
+export type ReactionEmojiKey =
+  | "laugh"
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
+
+export type LocalReactionEvent = {
+  postId: string;
+  emoji: ReactionEmojiKey;
+  timestamp: number;
+};
 
 /**
  * In‑memory event stream for all reaction events.
  */
 
-let events: ReactionEvent[] = [];
+let events: LocalReactionEvent[] = [];
 
-const listeners = new Set<(event: ReactionEvent) => void>();
-
-export function emitReaction(event: ReactionEvent) {
+export function emitReactionStreamEvent(event: LocalReactionEvent) {
   events.push(event);
-  listeners.forEach((fn) => fn(event));
 }
 
-export function getAllEvents(): ReactionEvent[] {
+export function getAllEvents(): LocalReactionEvent[] {
   return events;
 }
 
-export function subscribeToReactions(
-  fn: (event: ReactionEvent) => void
-): () => void {
-  listeners.add(fn);
-  return () => listeners.delete(fn);
+export function clearReactionStream() {
+  events = [];
 }
 
