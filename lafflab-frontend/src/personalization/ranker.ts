@@ -1,14 +1,16 @@
+// src/personalization/ranker.ts
+
 import type { PostFeature } from "./feature-extractor";
 
-export type SignalBundle = {
-  relevance: Record<string, number>;
-  momentum: Record<string, number>;
-  emotion: Record<string, number>;
-  social: Record<string, number>;
-  governance: Record<string, number>;
-  diversity: Record<string, number>;
-  session: Record<string, number>;
-};
+export interface SignalBundle {
+  relevance: number;
+  momentum: number;
+  emotion: number;
+  social: number;
+  governance: number;
+  diversity: number;
+  session: number;
+}
 
 export type RankedPost = {
   id: string;
@@ -24,13 +26,13 @@ export function rankPosts(
     .map((post) => {
       const id = post.id;
 
-      const relevance = signals.relevance[id] ?? 0;
-      const momentum = signals.momentum[id] ?? 0;
-      const emotion = signals.emotion[id] ?? 0;
-      const social = signals.social[id] ?? 0;
-      const governance = signals.governance[id] ?? 0;
-      const diversity = signals.diversity[id] ?? 0;
-      const session = signals.session[id] ?? 0;
+      const relevance = signals.relevance ?? 0;
+      const momentum = signals.momentum ?? 0;
+      const emotion = signals.emotion ?? 0;
+      const social = signals.social ?? 0;
+      const governance = signals.governance ?? 0;
+      const diversity = signals.diversity ?? 0;
+      const session = signals.session ?? 0;
 
       const score =
         relevance * 0.35 +
@@ -52,3 +54,4 @@ export function rankPosts(
     .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score);
 }
+
