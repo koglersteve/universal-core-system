@@ -1,16 +1,27 @@
 // src/core/reactions/engine.ts
 
-import type { ReactionEvent, ReactionEmojiKey } from "@/types/os";
+export type LocalReactionEvent = {
+  postId: string;
+  emoji: string;
+  timestamp: number;
+};
+
+export type ReactionEmojiKey =
+  | "laugh"
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
 
 export function createReactionEvent(
   postId: string,
-  emoji: ReactionEmojiKey,
-  userId: string | null
-): ReactionEvent {
+  emoji: ReactionEmojiKey
+): LocalReactionEvent {
   return {
     postId,
     emoji,
-    userId: userId ?? "", // enforce string
     timestamp: Date.now(),
   };
 }
