@@ -7,10 +7,6 @@ export type PostFeature = {
   id: string;
   createdAt: string;
   text?: string;
-  tags?: string[];
-  favorites?: number;
-  shares?: number;
-  views?: number;
 };
 
 export type ExtractedFeatures = {
@@ -26,10 +22,6 @@ export async function extractFeatures(
     id: p.id,
     createdAt: String(p.createdAt),
     text: p.text,
-    tags: p.tags ?? [],
-    favorites: p.favorites ?? 0,
-    shares: p.shares ?? 0,
-    views: p.views ?? 0,
   }));
 
   return { posts: features };
