@@ -1,10 +1,8 @@
-import NotificationSettings from "@components/settings/NotificationSettings";
-import SectionHeader from "@components/SectionHeader";
+import NotificationSettings from "@/components/settings/NotificationSettings";
 
 export default function NotificationSettingsPage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Notifications" />
+    <div className="p-4">
       <NotificationSettings />
     </div>
   );

@@ -1,10 +1,8 @@
-import PrivacySettings from "@components/settings/PrivacySettings";
-import SectionHeader from "@components/SectionHeader";
+import PrivacySettings from "@/components/settings/PrivacySettings";
 
 export default function PrivacySettingsPage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Privacy" />
+    <div className="p-4">
       <PrivacySettings />
     </div>
   );

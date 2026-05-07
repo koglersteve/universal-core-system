@@ -1,10 +1,8 @@
-import TermsContent from "@components/settings/TermsContent";
-import SectionHeader from "@components/SectionHeader";
+import TermsContent from "@/components/settings/TermsContent";
 
 export default function TermsPage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Terms of Service" />
+    <div className="p-4">
       <TermsContent />
     </div>
   );
