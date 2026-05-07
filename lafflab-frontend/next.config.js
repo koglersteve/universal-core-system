@@ -1,8 +1,7 @@
-import type { NextConfig } from "next";
-
+/** @type {import('next').NextConfig} */
 const isAnalyze = process.env.ANALYZE === "true";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
@@ -26,7 +25,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config) => {
     if (isAnalyze) {
-      // hook for bundle analyzer or custom plugins
+      // add analyzer plugin here
     }
     return config;
   }

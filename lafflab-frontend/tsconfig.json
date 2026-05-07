@@ -30,6 +30,6 @@
       "@personalization/*": ["personalization/*"]
     }
   },
-  "include": ["next-env.d.ts", "src/**/*", "next.config.ts", "eslint.config.mjs", "tailwind.config.js"],
+  "include": ["next-env.d.ts", "src/**/*", "next.config.js", "eslint.config.mjs", "tailwind.config.js"],
   "exclude": ["node_modules", ".next", "dist"]
 }
