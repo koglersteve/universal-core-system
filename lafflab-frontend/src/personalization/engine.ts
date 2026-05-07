@@ -1,4 +1,4 @@
-export function runPersonalizationEngine(profile: any, items: any[]) {
-  return items;
-}
+export const runPersonalizationEngine = () => {
+  return {};
+};
 

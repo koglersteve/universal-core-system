@@ -1,4 +1,4 @@
-export async function getUserIdentity() {
-  return { id: "anonymous" };
-}
+export const getUserIdentity = () => {
+  return null;
+};
 
