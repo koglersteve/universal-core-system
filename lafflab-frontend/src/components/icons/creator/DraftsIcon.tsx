@@ -1,14 +1,18 @@
-export default function DraftsIcon(props: any) {
+export default function DraftsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
+      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      viewBox="0 0 24 24"
       strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
     >
-      <path d="M4 4h16v16H4z" />
-      <path d="M8 8h8M8 12h5" />
+      <rect x="4" y="4" width="16" height="16" rx="2" className="stroke-white/70" />
+      <path d="M8 8h8" className="stroke-white/70" />
+      <path d="M8 12h5" className="stroke-white/70" />
     </svg>
   );
 }

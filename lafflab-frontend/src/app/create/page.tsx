@@ -1,17 +1,11 @@
-import CreateForm from "@components/CreateForm";
-import SectionHeader from "@components/SectionHeader";
-import ErrorState from "@components/ui/ErrorState";
+import CreateForm from "@/components/forms/CreateForm";
 
 export default function CreatePage() {
-  try {
-    return (
-      <div className="p-4 space-y-6">
-        <SectionHeader title="Create" />
-        <CreateForm />
-      </div>
-    );
-  } catch {
-    return <ErrorState message="Unable to load create tools." />;
-  }
+  return (
+    <div className="p-4 text-white">
+      <h1 className="text-xl font-semibold mb-4">Create</h1>
+      <CreateForm />
+    </div>
+  );
 }
 

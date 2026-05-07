@@ -1,8 +1,19 @@
-export default function InfoIcon(props: any) {
+export default function InfoIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 8h.01M11 12h1v4h1" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="9" className="stroke-white/60" strokeWidth="2" />
+      <circle cx="12" cy="8" r="1.2" className="fill-white/80" />
+      <path
+        d="M11 11h2v6h-2"
+        className="stroke-white/80"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

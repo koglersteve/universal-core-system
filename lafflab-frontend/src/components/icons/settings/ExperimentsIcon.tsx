@@ -1,7 +1,24 @@
-export default function ExperimentsIcon(props: any) {
+export default function ExperimentsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-      <path d="M6 3h12M9 3v4l-5 9v2h16v-2l-5-9V3" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      {...props}
+    >
+      <path
+        d="M9 3h6M10 3v4.5L5.6 17a2 2 0 0 0 1.8 3h9.2a2 2 0 0 0 1.8-3L14 7.5V3"
+        className="stroke-white/70"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 14h6"
+        className="stroke-white/40"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

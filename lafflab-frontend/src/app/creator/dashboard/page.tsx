@@ -1,10 +1,8 @@
-import CreatorDashboard from "@components/creator/CreatorDashboard";
-import SectionHeader from "@components/SectionHeader";
+import CreatorDashboard from "@/components/creator/CreatorDashboard";
 
 export default function CreatorDashboardPage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Dashboard" />
+    <div className="p-4">
       <CreatorDashboard />
     </div>
   );

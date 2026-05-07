@@ -1,28 +1,34 @@
 "use client";
 
-import type { HistoryItem } from "@/types/history";
+type HistoryItem = {
+  id: string;
+  title: string;
+  timestamp: string;
+};
 
-export function HistoryList({ items }: { items: HistoryItem[] }) {
-  if (items.length === 0) {
+export default function HistoryList({ items }: { items: HistoryItem[] }) {
+  if (!items || items.length === 0) {
     return (
-      <p className="opacity-70 text-center py-6">
-        No history yet. Go explore some posts.
-      </p>
+      <div className="text-white/60 text-sm">
+        No history yet. Your recent sessions will appear here.
+      </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {items.map((entry) => (
-        <div
-          key={entry.id}
-          className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+    <ul className="space-y-3">
+      {items.map((item) => (
+        <li
+          key={item.id}
+          className="flex justify-between items-center p-3 rounded bg-white/5 border border-white/10"
         >
-          <p className="text-sm opacity-80">History Entry ID:</p>
-
-          <p className="text-lg font-semibold">{entry.id}</p>
-        </div>
+          <div>
+            <p className="text-white text-sm font-medium">{item.title}</p>
+            <p className="text-white/50 text-xs">{item.timestamp}</p>
+          </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
+

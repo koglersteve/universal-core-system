@@ -1,8 +1,15 @@
-export default function ThemeIcon(props: any) {
+export default function ThemeIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-      <circle cx="12" cy="12" r="5" />
-      <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      {...props}
+    >
+      <path
+        d="M12 3a9 9 0 0 0 0 18c4.97 0 9-4.03 9-9 0-3.87-3.13-7-7-7-1.1 0-2 .9-2 2 0 1.66-1.34 3-3 3-1.1 0-2-.9-2-2 0-2.76 2.24-5 5-5Z"
+        className="fill-white/70"
+      />
     </svg>
   );
 }

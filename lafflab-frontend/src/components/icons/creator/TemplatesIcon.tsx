@@ -1,16 +1,26 @@
-export default function TemplatesIcon(props: any) {
+export default function TemplatesIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      {...props}
-      fill="none"
-      stroke="currentColor"
       viewBox="0 0 24 24"
-      strokeWidth="1.5"
+      fill="none"
+      aria-hidden="true"
+      {...props}
     >
-      <rect x="3" y="3" width="7" height="7" rx="2" />
-      <rect x="14" y="3" width="7" height="7" rx="2" />
-      <rect x="3" y="14" width="7" height="7" rx="2" />
-      <rect x="14" y="14" width="7" height="7" rx="2" />
+      <rect
+        x="4"
+        y="5"
+        width="16"
+        height="14"
+        rx="2"
+        className="stroke-white/70"
+        strokeWidth="2"
+      />
+      <path
+        d="M8 9h8M8 13h5"
+        className="stroke-white/60"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

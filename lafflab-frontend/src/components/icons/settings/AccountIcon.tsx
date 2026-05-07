@@ -1,8 +1,24 @@
-export default function AccountIcon(props: any) {
+export default function AccountIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      {...props}
+    >
+      <circle
+        cx="12"
+        cy="9"
+        r="3"
+        className="stroke-white/80"
+        strokeWidth="2"
+      />
+      <path
+        d="M6 19c0-2.5 2.5-4.5 6-4.5s6 2 6 4.5"
+        className="stroke-white/60"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
