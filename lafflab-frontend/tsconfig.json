@@ -1,32 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "paths": {
-      "@app/*": ["app/*"],
-      "@components/*": ["components/*"],
-      "@core/*": ["core/*"],
-      "@hooks/*": ["hooks/*"],
-      "@lib/*": ["lib/*"],
-      "@notifications/*": ["notifications/*"],
-      "@personalization/*": ["personalization/*"],
-      "@store/*": ["store/*"],
-      "@types/*": ["types/*"]
+      "@/*": ["*"],
+      "@/components/*": ["components/*"],
+      "@/components/ui/*": ["components/ui/*"],
+      "@/components/icons/*": ["components/icons/*"],
+      "@/components/notifications/*": ["components/notifications/*"],
+      "@/notifications/*": ["notifications/*"],
+      "@/lib/*": ["lib/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"]
     }
-  },
-  "include": ["next-env.d.ts", "src/**/*", "next.config.mjs"],
-  "exclude": ["node_modules", ".next", "dist"]
+  }
 }
