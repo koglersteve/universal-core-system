@@ -1,12 +1,9 @@
-import NotificationsList from "@/components/notifications/NotificationsList";
-import { getNotifications } from "@/lib/server/notifications";
+import NotificationSettings from "@/components/settings/NotificationSettings";
 
-export default async function NotificationsPage() {
-  const items = await getNotifications();
-
+export default function NotificationSettingsPage() {
   return (
     <div className="p-4">
-      <NotificationsList items={items} />
+      <NotificationSettings />
     </div>
   );
 }

@@ -1,10 +1,8 @@
-import BillingSettings from "@components/settings/BillingSettings";
-import SectionHeader from "@components/SectionHeader";
+import BillingSettings from "@/components/settings/BillingSettings";
 
 export default function BillingSettingsPage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Billing" />
+    <div className="p-4">
       <BillingSettings />
     </div>
   );

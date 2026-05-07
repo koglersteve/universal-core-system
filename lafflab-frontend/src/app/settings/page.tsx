@@ -1,10 +1,8 @@
-import SettingsHome from "@components/settings/SettingsHome";
-import SectionHeader from "@components/SectionHeader";
+import SettingsHome from "@/components/settings/SettingsHome";
 
-export default function SettingsPage() {
+export default function SettingsHomePage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Settings" />
+    <div className="p-4">
       <SettingsHome />
     </div>
   );
