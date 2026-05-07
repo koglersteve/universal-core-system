@@ -1,5 +1,3 @@
-export type UserIdentity = {
-  id: string;
-  email: string | null;
-  createdAt: string;
-};
+export async function getUserIdentity() {
+  return { id: "anonymous" };
+}
