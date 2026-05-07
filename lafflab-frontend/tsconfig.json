@@ -5,9 +5,7 @@
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noImplicitOverride": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
@@ -16,7 +14,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["node"],
     "baseUrl": "./src",
     "paths": {
       "@app/*": ["app/*"],
@@ -24,12 +21,12 @@
       "@core/*": ["core/*"],
       "@hooks/*": ["hooks/*"],
       "@lib/*": ["lib/*"],
-      "@store/*": ["store/*"],
-      "@types/*": ["types/*"],
       "@notifications/*": ["notifications/*"],
-      "@personalization/*": ["personalization/*"]
+      "@personalization/*": ["personalization/*"],
+      "@store/*": ["store/*"],
+      "@types/*": ["types/*"]
     }
   },
-  "include": ["next-env.d.ts", "src/**/*", "next.config.js", "eslint.config.mjs", "tailwind.config.js"],
+  "include": ["next-env.d.ts", "src/**/*", "next.config.mjs"],
   "exclude": ["node_modules", ".next", "dist"]
 }

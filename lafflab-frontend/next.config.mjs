@@ -5,7 +5,6 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    appDir: true,
     typedRoutes: true
   },
   images: {
@@ -25,7 +24,7 @@ const nextConfig = {
   },
   webpack: (config) => {
     if (isAnalyze) {
-      // add analyzer plugin here
+      // analyzer hook
     }
     return config;
   }
