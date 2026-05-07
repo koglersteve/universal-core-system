@@ -1,9 +1,9 @@
-import Feed from "@components/feed/Feed";
+import Feed from "@/components/feed/Feed";
 
 export default function HomePage() {
   return (
-    <main className="p-4">
+    <div className="p-4">
       <Feed />
-    </main>
+    </div>
   );
 }

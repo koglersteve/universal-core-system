@@ -1,18 +1,13 @@
-import RitualScreen from "@components/ritual/RitualScreen";
-import ErrorState from "@components/ui/ErrorState";
-import { getDailyRitual } from "@lib/server/rituals";
+import RitualScreen from "@/components/ritual/RitualScreen";
+import { getRituals } from "@/lib/server/rituals";
 
 export default async function RitualPage() {
-  try {
-    const ritual = await getDailyRitual();
+  const rituals = await getRituals();
 
-    return (
-      <div className="p-4">
-        <RitualScreen ritual={ritual} />
-      </div>
-    );
-  } catch {
-    return <ErrorState message="Failed to load ritual." />;
-  }
+  return (
+    <div className="p-4">
+      <RitualScreen rituals={rituals} />
+    </div>
+  );
 }
 
