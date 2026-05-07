@@ -1,11 +1,10 @@
-import AccountSettings from "@components/settings/AccountSettings";
-import SectionHeader from "@components/SectionHeader";
+import AccountSettings from "@/components/settings/AccountSettings";
 
 export default function AccountSettingsPage() {
   return (
-    <div className="p-4 space-y-6">
-      <SectionHeader title="Account" />
+    <div className="p-4">
       <AccountSettings />
     </div>
   );
 }
+
