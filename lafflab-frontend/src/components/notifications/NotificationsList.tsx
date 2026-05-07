@@ -1,5 +1,3 @@
-// FILE: src/components/notifications/NotificationsList.tsx
-
 "use client";
 
 export default function NotificationsList({ items = [] }: { items?: any[] }) {
