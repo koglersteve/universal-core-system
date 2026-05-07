@@ -14,16 +14,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@lib/*": ["src/lib/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@personalization/*": ["src/personalization/*"]
+      "@/*": ["src/*"],
+      "@/lib/*": ["src/lib/*"],
+      "@/notifications/*": ["src/notifications/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

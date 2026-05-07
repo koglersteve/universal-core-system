@@ -1,4 +1,4 @@
-export async function getJokes() {
+export const getJokes = () => {
   return [];
-}
+};
 
