@@ -1,29 +1,20 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
+import { recordImpression } from "@lib/analytics";
 
-let IMPRESSIONS: Record<
-  string,
-  { [emoji: string]: number }
-> = {};
+const ImpressionSchema = z.object({
+  postId: z.string(),
+  userId: z.string().optional(),
+  surface: z.string()
+});
 
 export async function POST(req: Request) {
-  const { postId, emoji } = await req.json();
-
-  if (!postId || !emoji) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  try {
+    const json = await req.json();
+    const data = ImpressionSchema.parse(json);
+    await recordImpression(data);
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: "Invalid impression" }, { status: 400 });
   }
-
-  if (!IMPRESSIONS[postId]) {
-    IMPRESSIONS[postId] = {};
-  }
-
-  IMPRESSIONS[postId][emoji] = (IMPRESSIONS[postId][emoji] || 0) + 1;
-
-  return NextResponse.json({
-    ok: true,
-    counts: IMPRESSIONS[postId],
-  });
-}
-
-export async function GET() {
-  return NextResponse.json({ impressions: IMPRESSIONS });
 }

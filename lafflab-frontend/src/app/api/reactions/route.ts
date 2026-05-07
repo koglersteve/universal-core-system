@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
-import { getReactionCounts } from "@/core/reactions/reactionStore";
-import { getAllEvents } from "@/core/reactions/stream";
+import { processReaction } from "@core/reactions/engine";
+import { ReactionSchema } from "@core/reactions/propagationConfig";
 
-export async function GET() {
-  const events = getAllEvents();
-
-  const aggregated = events.reduce<Record<string, ReturnType<typeof getReactionCounts>>>(
-    (acc, event) => {
-      acc[event.postId] = getReactionCounts(event.postId);
-      return acc;
-    },
-    {}
-  );
-
-  return NextResponse.json({ aggregated });
+export async function POST(req: Request) {
+  const json = await req.json();
+  const data = ReactionSchema.parse(json);
+  const result = await processReaction(data);
+  return NextResponse.json(result);
 }

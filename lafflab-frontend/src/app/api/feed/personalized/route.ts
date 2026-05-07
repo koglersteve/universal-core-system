@@ -1,21 +1,11 @@
 import { NextResponse } from "next/server";
-import { personalizeFeed } from "@/personalization/engine";
-import { LaffLabApi } from "@/lib/LaffLabApi";
+import { runPersonalization } from "@personalization/engine";
+import { loadProfile } from "@personalization/profile-store";
+import { extractSignals } from "@personalization/feature-extractor";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
-  }
-
-  const posts = await LaffLabApi.getPosts();
-
-  const feed = await personalizeFeed({
-    userId,
-    posts,
-  });
-
-  return NextResponse.json(feed);
+export async function GET() {
+  const profile = await loadProfile();
+  const signals = extractSignals(profile);
+  const feed = await runPersonalization(signals);
+  return NextResponse.json({ feed });
 }

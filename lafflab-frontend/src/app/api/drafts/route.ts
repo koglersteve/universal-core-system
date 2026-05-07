@@ -1,31 +1,24 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
+import { z } from "zod";
+import { getDrafts, saveDraft } from "@lib/server/jokes";
 
-// Temporary in-memory store (replace with DB later)
-let DRAFTS: any[] = [];
+const DraftSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1)
+});
 
 export async function GET() {
-  return NextResponse.json({ drafts: DRAFTS });
+  const drafts = await getDrafts();
+  return NextResponse.json({ drafts });
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
-
-  const draft = {
-    id: randomUUID(),
-    text: body.text || "",
-    updatedAt: new Date().toISOString(),
-  };
-
-  DRAFTS.unshift(draft);
-
-  return NextResponse.json({ draft });
-}
-
-export async function DELETE(req: Request) {
-  const { id } = await req.json();
-
-  DRAFTS = DRAFTS.filter((d) => d.id !== id);
-
-  return NextResponse.json({ ok: true });
+  try {
+    const json = await req.json();
+    const data = DraftSchema.parse(json);
+    const saved = await saveDraft(data);
+    return NextResponse.json(saved);
+  } catch (err) {
+    return NextResponse.json({ error: "Invalid draft" }, { status: 400 });
+  }
 }
