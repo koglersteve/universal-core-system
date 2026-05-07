@@ -1,12 +1,18 @@
-export default function RitualPage() {
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <section className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">Ritual</h1>
-        <p className="text-gray-500">
-          Daily ritual experience will be designed here.
-        </p>
-      </section>
-    </main>
-  );
+import RitualScreen from "@components/ritual/RitualScreen";
+import ErrorState from "@components/ui/ErrorState";
+import { getDailyRitual } from "@lib/server/rituals";
+
+export default async function RitualPage() {
+  try {
+    const ritual = await getDailyRitual();
+
+    return (
+      <div className="p-4">
+        <RitualScreen ritual={ritual} />
+      </div>
+    );
+  } catch {
+    return <ErrorState message="Failed to load ritual." />;
+  }
 }
+

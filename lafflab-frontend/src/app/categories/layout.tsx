@@ -1,5 +1,14 @@
-import type { ReactNode } from "react";
+import SectionHeader from "@components/SectionHeader";
 
-export default function CategoriesLayout({ children }: { children: ReactNode }) {
-  return <main className="min-h-screen">{children}</main>;
+export default function CategoriesLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen w-full flex flex-col">
+      <SectionHeader title="Categories" />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
 }

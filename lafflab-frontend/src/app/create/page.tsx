@@ -1,13 +1,17 @@
+import CreateForm from "@components/CreateForm";
+import SectionHeader from "@components/SectionHeader";
+import ErrorState from "@components/ui/ErrorState";
+
 export default function CreatePage() {
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <section className="w-full max-w-lg text-center space-y-2">
-        <h1 className="text-2xl font-bold">Create</h1>
-        <p className="text-gray-500">
-          Content creation tools will be implemented here.
-        </p>
-      </section>
-    </main>
-  );
+  try {
+    return (
+      <div className="p-4 space-y-6">
+        <SectionHeader title="Create" />
+        <CreateForm />
+      </div>
+    );
+  } catch {
+    return <ErrorState message="Unable to load create tools." />;
+  }
 }
 

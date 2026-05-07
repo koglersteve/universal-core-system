@@ -1,12 +1,11 @@
-export default function SettingsAccountPage() {
+import AccountSettings from "@components/settings/AccountSettings";
+import SectionHeader from "@components/SectionHeader";
+
+export default function AccountSettingsPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <section className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold">Account Settings</h1>
-        <p className="text-gray-500">
-          Account details and security options will be managed here.
-        </p>
-      </section>
-    </main>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="Account" />
+      <AccountSettings />
+    </div>
   );
 }

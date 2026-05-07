@@ -1,7 +1,9 @@
+import Feed from "@components/feed/Feed";
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold">Home</h1>
+    <main className="p-4">
+      <Feed />
     </main>
   );
 }

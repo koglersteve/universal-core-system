@@ -1,5 +1,14 @@
-import type { ReactNode } from "react";
+import SectionHeader from "@components/SectionHeader";
 
-export default function HistoryLayout({ children }: { children: ReactNode }) {
-  return <main className="min-h-screen">{children}</main>;
+export default function HistoryLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen w-full flex flex-col">
+      <SectionHeader title="History" />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
 }

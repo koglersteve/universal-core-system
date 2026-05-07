@@ -1,10 +1,11 @@
+import AnalyticsPanel from "@components/creator/AnalyticsPanel";
+import SectionHeader from "@components/SectionHeader";
+
 export default function CreatorAnalyticsPage() {
   return (
-    <section className="space-y-2">
-      <h2 className="text-2xl font-bold">Creator Analytics</h2>
-      <p className="text-gray-500">
-        Analytics and performance insights will be shown here.
-      </p>
-    </section>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="Creator Analytics" />
+      <AnalyticsPanel />
+    </div>
   );
 }

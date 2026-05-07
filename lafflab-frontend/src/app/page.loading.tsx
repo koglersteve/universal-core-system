@@ -1,8 +1,8 @@
-export default function HomeLoading() {
+export default function HomePageLoading() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <p>Loading…</p>
-    </main>
+    <div className="min-h-screen flex items-center justify-center text-white">
+      <p className="text-gray-300">Loading feed…</p>
+    </div>
   );
 }
 

@@ -1,27 +1,24 @@
-"use client";
+import Link from "next/link";
+import CheckCircleIcon from "@components/icons/CheckCircleIcon";
 
 export default function UploadSuccessPage() {
   return (
-    <div className="p-6 text-white space-y-4">
-      <h1 className="text-2xl font-bold">Upload Complete</h1>
+    <div className="min-h-screen flex items-center justify-center p-6 text-center text-white">
+      <div className="space-y-6">
+        <div className="flex justify-center">
+          <CheckCircleIcon className="w-16 h-16 text-green-400" />
+        </div>
 
-      <p className="text-white/70">
-        Your files have been uploaded successfully.
-      </p>
+        <h1 className="text-3xl font-bold">Upload Successful</h1>
+        <p className="text-gray-300">Your content is now live and ready.</p>
 
-      <a
-        href="/upload"
-        className="inline-block px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition"
-      >
-        Upload More
-      </a>
-
-      <a
-        href="/creator"
-        className="inline-block ml-3 px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition"
-      >
-        Go to Creator Dashboard
-      </a>
+        <Link
+          href="/"
+          className="inline-block px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition"
+        >
+          Return Home
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,12 +1,22 @@
-export default function FeedPage() {
-  return (
-    <section className="h-full flex items-center justify-center">
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">Feed</h1>
-        <p className="text-gray-500">
-          Your main content feed will be rendered here.
-        </p>
+import FeedList from "@components/FeedList";
+import EmptyState from "@components/ui/EmptyState";
+import ErrorState from "@components/ui/ErrorState";
+import { getFeed } from "@lib/server/feed";
+
+export default async function FeedPage() {
+  try {
+    const items = await getFeed();
+
+    if (!items || items.length === 0) {
+      return <EmptyState title="Your Feed is Empty" message="Follow creators to fill it." />;
+    }
+
+    return (
+      <div className="p-4">
+        <FeedList items={items} />
       </div>
-    </section>
-  );
+    );
+  } catch {
+    return <ErrorState message="Failed to load feed." />;
+  }
 }

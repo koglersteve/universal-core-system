@@ -1,12 +1,17 @@
-export default function EmotionalWavePage() {
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <section className="max-w-xl text-center space-y-2">
-        <h1 className="text-2xl font-bold">Emotional Wave</h1>
-        <p className="text-gray-500">
-          Emotional wave analytics and timelines will be displayed here.
-        </p>
-      </section>
-    </main>
-  );
+import EmotionalWavePanel from "@components/ops/EmotionalWavePanel";
+import ErrorState from "@components/ui/ErrorState";
+import { getEmotionalWave } from "@lib/server/ops";
+
+export default async function EmotionalWavePage() {
+  try {
+    const wave = await getEmotionalWave();
+
+    return (
+      <div className="p-4">
+        <EmotionalWavePanel data={wave} />
+      </div>
+    );
+  } catch {
+    return <ErrorState message="Failed to load emotional wave data." />;
+  }
 }

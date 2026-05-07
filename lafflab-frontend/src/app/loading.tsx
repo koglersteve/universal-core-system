@@ -1,11 +1,7 @@
-import { JokeCardSkeleton } from "@/components/JokeCardSkeleton";
-
-export default function Loading() {
+export default function AppLoading() {
   return (
-    <div className="p-6 space-y-6 animate-fadeIn">
-      {[...Array(6)].map((_, i) => (
-        <JokeCardSkeleton key={i} />
-      ))}
+    <div className="min-h-screen flex items-center justify-center text-white">
+      <p className="text-gray-300">Loading…</p>
     </div>
   );
 }

@@ -1,10 +1,11 @@
-export default function CreatorToolsDraftsPage() {
+import DraftList from "@components/creator/tools/DraftList";
+import SectionHeader from "@components/SectionHeader";
+
+export default function DraftsPage() {
   return (
-    <section className="space-y-2">
-      <h2 className="text-2xl font-bold">Drafts</h2>
-      <p className="text-gray-500">
-        Draft tools and content will be listed here.
-      </p>
-    </section>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="Drafts" />
+      <DraftList />
+    </div>
   );
 }

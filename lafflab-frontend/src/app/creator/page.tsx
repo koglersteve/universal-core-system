@@ -1,10 +1,11 @@
-export default function CreatorHomePage() {
+import CreatorDashboardCard from "@components/CreatorDashboardCard";
+import SectionHeader from "@components/SectionHeader";
+
+export default function CreatorPage() {
   return (
-    <section className="space-y-2">
-      <h2 className="text-2xl font-bold">Creator Home</h2>
-      <p className="text-gray-500">
-        Overview of your creator activity will appear here.
-      </p>
-    </section>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="Creator Home" />
+      <CreatorDashboardCard />
+    </div>
   );
 }

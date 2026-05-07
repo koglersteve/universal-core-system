@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
-import { getAllEvents } from "@/core/reactions/stream";
+import { getReactionSummary } from "@core/reactions/engine";
+import { getUserIdentity } from "@hooks/UserIdentity";
 
 export async function GET() {
-  return NextResponse.json(getAllEvents());
+  const user = await getUserIdentity();
+  const summary = await getReactionSummary(user.id);
+  return NextResponse.json({ summary });
 }
+

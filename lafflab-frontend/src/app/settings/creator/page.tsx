@@ -1,12 +1,11 @@
-export default function SettingsCreatorPage() {
+import CreatorSettings from "@components/settings/CreatorSettings";
+import SectionHeader from "@components/SectionHeader";
+
+export default function CreatorSettingsPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <section className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold">Creator Settings</h1>
-        <p className="text-gray-500">
-          Creator-specific preferences will be configured here.
-        </p>
-      </section>
-    </main>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="Creator Mode" />
+      <CreatorSettings />
+    </div>
   );
 }

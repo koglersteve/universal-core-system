@@ -1,12 +1,11 @@
-export default function SettingsNotificationsPage() {
+import NotificationSettings from "@components/settings/NotificationSettings";
+import SectionHeader from "@components/SectionHeader";
+
+export default function NotificationSettingsPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <section className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold">Notification Settings</h1>
-        <p className="text-gray-500">
-          Notification preferences will be configured here.
-        </p>
-      </section>
-    </main>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="Notifications" />
+      <NotificationSettings />
+    </div>
   );
 }

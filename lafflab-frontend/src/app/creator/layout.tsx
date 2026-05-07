@@ -1,12 +1,14 @@
-import type { ReactNode } from "react";
+import SectionHeader from "@components/SectionHeader";
 
-export default function CreatorLayout({ children }: { children: ReactNode }) {
+export default function CreatorLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <main className="min-h-screen">
-      <header className="border-b px-4 py-3">
-        <h1 className="text-xl font-bold">Creator Studio</h1>
-      </header>
-      <section className="p-4">{children}</section>
-    </main>
+    <div className="min-h-screen w-full flex flex-col">
+      <SectionHeader title="Creator" />
+      <div className="flex-1">{children}</div>
+    </div>
   );
 }

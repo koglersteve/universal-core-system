@@ -1,12 +1,24 @@
-export default function CategoriesPage() {
-  return (
-    <section className="h-full flex items-center justify-center">
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">Categories</h1>
-        <p className="text-gray-500">
-          Browse and explore content categories here.
-        </p>
+import CategoryCard from "@components/CategoryCard";
+import EmptyState from "@components/ui/EmptyState";
+import ErrorState from "@components/ui/ErrorState";
+import { getCategories } from "@lib/server/categories";
+
+export default async function CategoriesPage() {
+  try {
+    const categories = await getCategories();
+
+    if (!categories || categories.length === 0) {
+      return <EmptyState title="No Categories" message="Nothing to show yet." />;
+    }
+
+    return (
+      <div className="grid grid-cols-2 gap-4 p-4">
+        {categories.map((cat) => (
+          <CategoryCard key={cat.id} category={cat} />
+        ))}
       </div>
-    </section>
-  );
+    );
+  } catch {
+    return <ErrorState message="Failed to load categories." />;
+  }
 }

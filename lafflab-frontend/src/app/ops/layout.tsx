@@ -1,5 +1,14 @@
-import type { ReactNode } from "react";
+import SectionHeader from "@components/SectionHeader";
 
-export default function SettingsLayout({ children }: { children: ReactNode }) {
-  return <main className="min-h-screen">{children}</main>;
+export default function OpsLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen w-full flex flex-col">
+      <SectionHeader title="Ops Console" />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
 }

@@ -1,8 +1,13 @@
+import Skeleton from "@components/ui/Skeleton";
+
 export default function FavoritesLoading() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-500">Loading favorites…</p>
-    </main>
+    <div className="p-4 space-y-4">
+      <Skeleton className="h-20 w-full" />
+      <Skeleton className="h-20 w-full" />
+      <Skeleton className="h-20 w-full" />
+    </div>
   );
 }
+
 

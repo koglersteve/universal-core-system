@@ -1,19 +1,22 @@
+"use client";
+
 export default function ErrorState({
   message,
-  retry,
+  onRetry
 }: {
-  message: string;
-  retry?: () => void;
+  message?: string;
+  onRetry?: () => void;
 }) {
   return (
-    <div className="p-6 text-red-400 space-y-3">
-      <p>{message}</p>
-      {retry && (
+    <div className="flex flex-col items-center justify-center py-20 text-center text-red-400">
+      <h2 className="text-xl font-semibold">Something went wrong</h2>
+      {message && <p className="mt-2 text-sm">{message}</p>}
+      {onRetry && (
         <button
-          onClick={retry}
-          className="px-4 py-2 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition text-white"
+          onClick={onRetry}
+          className="mt-4 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
         >
-          Try again
+          Retry
         </button>
       )}
     </div>

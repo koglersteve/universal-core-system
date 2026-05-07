@@ -1,10 +1,11 @@
-export default function CreatorToolsNewPage() {
+import NewPostForm from "@components/creator/tools/NewPostForm";
+import SectionHeader from "@components/SectionHeader";
+
+export default function NewPostPage() {
   return (
-    <section className="space-y-2">
-      <h2 className="text-2xl font-bold">New Tool</h2>
-      <p className="text-gray-500">
-        Creation flow for new tools will be implemented here.
-      </p>
-    </section>
+    <div className="p-4 space-y-6">
+      <SectionHeader title="New Post" />
+      <NewPostForm />
+    </div>
   );
 }

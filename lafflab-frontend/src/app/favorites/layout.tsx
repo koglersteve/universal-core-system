@@ -1,5 +1,14 @@
-import type { ReactNode } from "react";
+import SectionHeader from "@components/SectionHeader";
 
-export default function FavoritesLayout({ children }: { children: ReactNode }) {
-  return <main className="min-h-screen">{children}</main>;
+export default function FavoritesLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen w-full flex flex-col">
+      <SectionHeader title="Favorites" />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
 }
