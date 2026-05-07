@@ -1,3 +1,4 @@
-export function runPersonalizationEngine(user: any, items: any[]) {
+export function runPersonalizationEngine(profile: any, items: any[]) {
   return items;
 }
+
