@@ -1,48 +1,22 @@
 {
-  "id": "lafflab",
   "name": "LAFFlab",
-  "version": "1.0.0",
-  "description": "Emotion-aware joke lab with cross-app orchestration across the Aurelia-Q OS.",
-  "entry": "./index.ts",
-
-  "routes": [
-    "/lafflab",
-    "/lafflab/jokes/random",
-    "/lafflab/jokes/category/:id",
-    "/lafflab/jokes/search",
-    "/lafflab/favorites",
-    "/lafflab/favorites/add",
-    "/lafflab/history",
-    "/lafflab/history/add",
-    "/lafflab/categories",
-    "/lafflab/emotion-link",
-    "/lafflab/cross-app",
-    "/lafflab/premium",
-    "/lafflab/premium/activate",
-    "/lafflab/ritual",
-    "/lafflab/ritual/complete",
-    "/lafflab/couples",
-    "/lafflab/couples/session",
-    "/lafflab/analytics"
-  ],
-
-  "permissions": [
-    "user:profile",
-    "user:mood",
-    "cross-app:launch",
-    "notifications",
-    "analytics:write"
-  ],
-
-  "ui": {
-    "appEntry": "LaffLabHome"
-  },
-
-  "features": {
-    "emotionalLinkEngine": true,
-    "crossAppLauncher": true,
-    "dailyLaughRitual": true,
-    "couplesMode": true,
-    "premium": true
-  }
+  "short_name": "LAFFlab",
+  "description": "Emotionally tuned comedy feed with creator tools and reaction intelligence.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#FF5C7A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
