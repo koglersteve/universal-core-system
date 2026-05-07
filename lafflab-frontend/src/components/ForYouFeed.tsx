@@ -1,12 +1,12 @@
-// FILE: src/components/history/HistoryList.tsx
+// FILE: src/components/ForYouFeed.tsx
 
 "use client";
 
-export default function HistoryList({ items = [] }: { items?: any[] }) {
+export default function ForYouFeed({ items = [] }: { items?: any[] }) {
   return (
     <div className="space-y-4">
       {items.length === 0 ? (
-        <p className="text-white/60">No history yet.</p>
+        <p className="text-white/60">No personalized recommendations yet.</p>
       ) : (
         <ul className="space-y-3">
           {items.map((item, i) => (
@@ -22,4 +22,3 @@ export default function HistoryList({ items = [] }: { items?: any[] }) {
     </div>
   );
 }
-
