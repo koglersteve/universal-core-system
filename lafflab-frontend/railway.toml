@@ -1,0 +1,15 @@
+# Force Railway to use Nixpacks with Node 20
+[build]
+builder = "NIXPACKS"
+
+[build.nixpacks]
+nodejs_version = "20"
+
+# Tell Railway EXACTLY where your frontend lives
+[deploy]
+# Build the frontend inside the subfolder
+build = "npm install && npm run build"
+build_dir = "lafflab-frontend"
+
+# Start the Next.js server from the subfolder
+start = "npm start --prefix lafflab-frontend"
