@@ -1,17 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 
-export function JokeReveal({ text }: { text: string }) {
+export default function JokeReveal({ text }: { text: string }) {
   const [revealed, setRevealed] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="p-4 rounded-2xl bg-white shadow-md border border-brand-yellow/40 text-black"
+    <div
+      className="p-4 rounded-2xl bg-white shadow-md border border-brand-yellow/40 text-black
+                 opacity-0 translate-y-3 animate-[fadeInUp_0.25s_ease-out_forwards]"
     >
       <p className="text-lg font-medium">
         {revealed ? text : text.split(".")[0] + "..."}
@@ -27,6 +24,7 @@ export function JokeReveal({ text }: { text: string }) {
           Reveal Punchline
         </button>
       )}
-    </motion.div>
+    </div>
   );
 }
+
