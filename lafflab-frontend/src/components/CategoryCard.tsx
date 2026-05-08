@@ -1,37 +1,30 @@
-"use client";
-
 import Link from "next/link";
 
-export default function CategoryCard({
-  category,
-}: {
-  category: { id: string; name: string };
-}) {
+type Category = {
+  id: string;
+  name: string;
+  description?: string;
+};
+
+interface CategoryCardProps {
+  category: Category;
+}
+
+export default function CategoryCard({ category }: CategoryCardProps) {
+  const href: `/categories/${string}` = `/categories/${category.id}`;
+
   return (
     <Link
-      href={`/categories/${category.id}`}
+      href={href}
       style={{ textDecoration: "none", color: "inherit" }}
     >
-      <div
-        style={{
-          background: "var(--bg-card)",
-          padding: "16px",
-          borderRadius: "12px",
-          marginBottom: "12px",
-          boxShadow: "var(--shadow-soft)",
-          animation: "slideIn 0.3s ease-out",
-          transition: "transform 0.15s ease, box-shadow 0.15s ease",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "scale(1.02)";
-          e.currentTarget.style.boxShadow = "var(--shadow-soft-strong)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = "var(--shadow-soft)";
-        }}
-      >
-        <h3 style={{ margin: 0 }}>{category.name}</h3>
+      <div className="rounded-lg border p-4 hover:shadow-md transition-shadow cursor-pointer">
+        <h3 className="text-lg font-semibold">{category.name}</h3>
+        {category.description && (
+          <p className="text-sm text-gray-600 mt-1">
+            {category.description}
+          </p>
+        )}
       </div>
     </Link>
   );
