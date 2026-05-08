@@ -1,17 +1,11 @@
-import VerifyScreen from "@components/verify/VerifyScreen";
-import ErrorState from "@components/ui/ErrorState";
-import { getVerificationContext } from "@lib/server/verify";
+type AllowedStatus = "pending" | "unverified" | "verified";
 
-export default async function VerifyPage() {
-  try {
-    const context = await getVerificationContext();
-
-    return (
-      <div className="p-4">
-        <VerifyScreen context={context} />
-      </div>
-    );
-  } catch {
-    return <ErrorState message="Failed to initialize verification." />;
-  }
+function normalizeStatus(s: string): AllowedStatus {
+  if (s === "pending" || s === "unverified" || s === "verified") return s;
+  return "unverified";
 }
+
+const context = {
+  userId: user.id,
+  status: normalizeStatus(user.status),
+};
