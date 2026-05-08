@@ -38,3 +38,5 @@ export function ActionButton({
     </button>
   );
 }
+
+export default ActionButton;
