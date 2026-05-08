@@ -11,11 +11,9 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
-  const href: `/categories/${string}` = `/categories/${category.id}`;
-
   return (
     <Link
-      href={href}
+      href={`/categories/${category.id}` as `/categories/${string}`}
       style={{ textDecoration: "none", color: "inherit" }}
     >
       <div className="rounded-lg border p-4 hover:shadow-md transition-shadow cursor-pointer">
