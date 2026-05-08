@@ -1,52 +1,35 @@
-"use client";
+import Link from "next/link";
 
-import AppShell from "@/components/AppShell";
-import CreatorCard from "@/components/CreatorCard";
-import ActionButton from "@/components/ActionButton";
+type CreatorDashboardCardProps = {
+  title: string;
+  description: string;
+  href: `/creator/${string}` | `/creator/${string}/${string}` | string; // fallback for now
+  icon?: React.ReactNode;
+};
 
-export default function CreatorDashboard() {
+export default function CreatorDashboardCard({
+  title,
+  description,
+  href,
+  icon,
+}: CreatorDashboardCardProps) {
+  const safeHref = href as RouteImpl<string>;
+
   return (
-    <AppShell title="Creator Dashboard">
-      <div className="space-y-6">
-
-        <p className="text-white/70 text-sm">
-          Welcome back. Your creator tools, drafts, templates, and collaboration
-          features are available below.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <CreatorCard
-            title="New Post"
-            description="Create a new piece of content"
-            href="/creator/tools/new"
-          />
-
-          <CreatorCard
-            title="Drafts"
-            description="Continue working on saved drafts"
-            href="/creator/tools/drafts"
-          />
-
-          <CreatorCard
-            title="Templates"
-            description="Use or customize content templates"
-            href="/creator/tools/templates"
-          />
-
-          <CreatorCard
-            title="Collab"
-            description="Collaborate with other creators"
-            href="/creator/tools/collab"
-          />
+    <Link
+      href={safeHref}
+      className="block p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition"
+    >
+      <div className="flex items-center space-x-4">
+        {icon && <div className="text-2xl">{icon}</div>}
+        <div>
+          <h3 className="text-lg font-semibold">{title}</h3>
+          <p className="text-sm text-gray-400">{description}</p>
         </div>
-
-        <div className="pt-4">
-          <ActionButton href="/creator/tools/status">
-            View Submission Status
-          </ActionButton>
-        </div>
-
       </div>
-    </AppShell>
+    </Link>
   );
 }
+
+// Needed for typedRoutes compatibility
+import type { RouteImpl } from "next/dist/lib/load-custom-routes";
