@@ -1,17 +1,35 @@
-import VerifyUpload from "@components/verify/VerifyUpload";
-import ErrorState from "@components/ui/ErrorState";
-import { getVerificationUploadContext } from "@lib/server/verify";
+import React from "react";
+import VerifyScreen, {
+  VerifyScreenContext,
+} from "@/components/verify/VerifyScreen";
+import { getUserIdentity } from "@/lib/server/user";
 
-export default async function VerifyUploadPage() {
+function normalizeStatus(s: string): VerifyScreenContext["status"] {
+  if (s === "pending" || s === "unverified" || s === "verified") return s;
+  return "unverified";
+}
+
+export default async function VerifyPage() {
   try {
-    const context = await getVerificationUploadContext();
+    const user = await getUserIdentity();
+
+    const context: VerifyScreenContext = {
+      userId: user.id,
+      status: normalizeStatus(user.status),
+    };
 
     return (
       <div className="p-4">
-        <VerifyUpload context={context} />
+        <VerifyScreen context={context} />
       </div>
     );
   } catch {
-    return <ErrorState message="Failed to load verification upload." />;
+    return (
+      <div className="p-4">
+        <div className="text-red-500 font-semibold">
+          Unable to load verification screen.
+        </div>
+      </div>
+    );
   }
 }
