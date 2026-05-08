@@ -11,8 +11,9 @@ interface MediaAutoPlayerProps {
 export function MediaAutoPlayer({ post, active }: MediaAutoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [visible, setVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -20,9 +21,8 @@ export function MediaAutoPlayer({ post, active }: MediaAutoPlayerProps) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          setVisible(entry.intersectionRatio >= 0.6);
-        });
+        const entry = entries[0];
+        setVisible(entry.intersectionRatio >= 0.6);
       },
       { threshold: [0, 0.6, 1] }
     );
@@ -35,19 +35,11 @@ export function MediaAutoPlayer({ post, active }: MediaAutoPlayerProps) {
     const shouldPlay = active && visible;
 
     if (post.type === "video" && videoRef.current) {
-      if (shouldPlay) {
-        videoRef.current.play().catch(() => {});
-      } else {
-        videoRef.current.pause();
-      }
+      shouldPlay ? videoRef.current.play().catch(() => {}) : videoRef.current.pause();
     }
 
     if (post.type === "audio" && audioRef.current) {
-      if (shouldPlay) {
-        audioRef.current.play().catch(() => {});
-      } else {
-        audioRef.current.pause();
-      }
+      shouldPlay ? audioRef.current.play().catch(() => {}) : audioRef.current.pause();
     }
   }, [active, visible, post.type]);
 
@@ -61,7 +53,6 @@ export function MediaAutoPlayer({ post, active }: MediaAutoPlayerProps) {
           className="w-full rounded-2xl bg-black"
           muted
           playsInline
-          controls={false}
         />
       )}
 

@@ -1,20 +1,13 @@
-// src/components/EmotionalWave.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { useReactionStream } from "@/hooks/useReactionStream";
 
-type LocalReactionEvent = {
-  timestamp: number;
-};
-
-type Bucket = {
-  timestamp: number;
-  count: number;
-};
+type LocalReactionEvent = { timestamp: number };
+type Bucket = { timestamp: number; count: number };
 
 export default function EmotionalWave() {
-  const events = useReactionStream() as unknown as LocalReactionEvent[];
+  const events = useReactionStream() as LocalReactionEvent[];
   const [buckets, setBuckets] = useState<Bucket[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -40,9 +33,9 @@ export default function EmotionalWave() {
   }, [events]);
 
   return (
-    <div ref={ref} className="w-full h-24 bg-black/10 rounded">
+    <div ref={ref} className="w-full h-24 bg-white/5 border border-white/10 rounded-lg">
       {buckets.length === 0 && (
-        <div className="text-center text-gray-500 p-4">No activity</div>
+        <div className="text-center text-white/50 p-4">No activity</div>
       )}
     </div>
   );

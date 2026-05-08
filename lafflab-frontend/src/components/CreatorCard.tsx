@@ -10,14 +10,12 @@ export default function CreatorCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="p-[var(--space-4)] rounded-[var(--radius-lg)] bg-white/5 border border-white/10 card-elevated space-y-[var(--space-3)]">
+    <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3 text-white">
       <div>
-        <h2 className="text-[var(--text-xl)] font-semibold">{title}</h2>
+        <h2 className="text-xl font-semibold">{title}</h2>
 
         {subtitle && (
-          <p className="text-white/60 text-[var(--text-sm)] mt-[var(--space-1)]">
-            {subtitle}
-          </p>
+          <p className="text-sm text-white/60 mt-1">{subtitle}</p>
         )}
       </div>
 

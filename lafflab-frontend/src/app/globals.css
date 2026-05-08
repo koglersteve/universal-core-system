@@ -21,3 +21,10 @@ html, body {
     transform: translateY(0);
   }
 }
+@keyframes laughMeter {
+  0% { width: 0%; }
+  40% { width: 40%; }
+  80% { width: 80%; }
+  60% { width: 60%; }
+  100% { width: 100%; }
+}

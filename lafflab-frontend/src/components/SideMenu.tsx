@@ -1,3 +1,4 @@
+// src/components/SideMenu.tsx
 "use client";
 
 import Link from "next/link";
@@ -12,13 +13,12 @@ const menuItems = [
   { label: "Settings", href: "/settings" },
 ];
 
-export default function SideMenu({
-  open,
-  onClose,
-}: {
+type SideMenuProps = {
   open: boolean;
   onClose: () => void;
-}) {
+};
+
+export default function SideMenu({ open, onClose }: SideMenuProps) {
   return (
     <>
       {open && (
@@ -29,21 +29,19 @@ export default function SideMenu({
       )}
 
       <aside
-        className={`fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-white/10 backdrop-blur z-50 p-[var(--space-4)] space-y-[var(--space-3)] transition-soft ${
+        className={`fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-white/10 backdrop-blur z-50 p-4 space-y-3 transition-transform ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <h2 className="text-[var(--text-lg)] font-semibold mb-[var(--space-2)]">
-          Menu
-        </h2>
+        <h2 className="text-lg font-semibold mb-2 text-white">Menu</h2>
 
-        <nav className="space-y-[var(--space-2)]">
+        <nav className="space-y-2">
           {menuItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="block px-[var(--space-2)] py-[var(--space-2)] rounded-[var(--radius-md)] bg-white/5 border border-white/10 hover:bg-white/10 transition-soft"
+              className="block px-3 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-white"
             >
               {item.label}
             </Link>

@@ -12,19 +12,16 @@ export function EmptyState({
   icon: React.ComponentType<any>;
 }) {
   return (
-    <div className="flex flex-col items-center text-center space-y-[var(--space-2)] py-[var(--space-5)] animate-fadeIn">
+    <div className="flex flex-col items-center text-center space-y-3 py-10 animate-fadeIn">
       <Icon className="w-14 h-14 text-white/40" />
 
-      <h2 className="text-[var(--text-xl)] font-semibold">{title}</h2>
+      <h2 className="text-xl font-semibold text-white">{title}</h2>
 
-      <p className="text-white/60 text-[var(--text-sm)] max-w-xs">
-        {subtitle}
-      </p>
+      <p className="text-white/60 text-sm max-w-xs">{subtitle}</p>
     </div>
   );
 }
 
-/* Icons remain unchanged */
 export const EmptyFeedIcon = (props: any) => (
   <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeWidth="1.5" d="M4 6h16M4 12h16M4 18h16" />

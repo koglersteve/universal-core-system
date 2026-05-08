@@ -2,15 +2,9 @@
 
 export function LoadingSpinner() {
   return (
-    <div
-      style={{
-        padding: "12px",
-        opacity: 0.8,
-        animation: "pulse 1s infinite",
-        textAlign: "center",
-      }}
-    >
-      <p style={{ margin: 0 }}>Loading…</p>
+    <div className="p-3 text-center opacity-80 animate-pulse text-white">
+      Loading…
     </div>
   );
 }
+

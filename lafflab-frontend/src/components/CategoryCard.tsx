@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 type Category = {
@@ -6,20 +8,14 @@ type Category = {
   description?: string;
 };
 
-interface CategoryCardProps {
-  category: Category;
-}
-
-export default function CategoryCard({ category }: CategoryCardProps) {
+export default function CategoryCard({ category }: { category: Category }) {
   return (
-    <Link
-      href={`/categories/${category.id}` as `/categories/${string}`}
-      style={{ textDecoration: "none", color: "inherit" }}
-    >
-      <div className="rounded-lg border p-4 hover:shadow-md transition-shadow cursor-pointer">
+    <Link href={`/categories/${category.id}`} className="block text-white">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition cursor-pointer">
         <h3 className="text-lg font-semibold">{category.name}</h3>
+
         {category.description && (
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-white/60 mt-1">
             {category.description}
           </p>
         )}

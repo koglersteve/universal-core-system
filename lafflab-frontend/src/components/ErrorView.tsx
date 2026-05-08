@@ -2,17 +2,9 @@
 
 export function ErrorView({ error }: { error: string }) {
   return (
-    <div
-      style={{
-        background: "var(--error-bg)",
-        padding: "12px",
-        borderRadius: "8px",
-        marginBottom: "16px",
-        color: "var(--error-text)",
-        animation: "fadeIn 0.25s ease-out",
-      }}
-    >
-      <p style={{ margin: 0 }}>Error: {error}</p>
+    <div className="p-3 rounded-lg mb-4 bg-red-900/40 border border-red-500/40 text-red-200 animate-fadeIn">
+      Error: {error}
     </div>
   );
 }
+

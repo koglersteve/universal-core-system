@@ -10,19 +10,19 @@ export default function JokeCard({ post }: { post: Post }) {
   const { isFavorite, toggleFavorite } = useFavoritesStore();
 
   return (
-    <div className="p-[var(--space-3)] rounded-[var(--radius-md)] bg-white/5 border border-white/10 text-white space-y-[var(--space-2)] card-elevated card-interactive">
-      <Link href={`/post/${post.id}`} className="block transition-soft">
+    <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-white space-y-3">
+      <Link href={`/post/${post.id}`} className="block">
         <PostMedia post={post} active={false} />
       </Link>
 
       <div className="flex justify-between items-center">
-        <span className="text-[var(--text-xs)] text-white/60">
+        <span className="text-xs text-white/60">
           {new Date(post.createdAt).toLocaleString()}
         </span>
 
         <button
           onClick={() => toggleFavorite(post.id)}
-          className="text-[var(--text-sm)] px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--radius-sm)] bg-white/10 border border-white/20 hover:bg-white/20 transition-soft"
+          className="px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/20 transition"
         >
           {isFavorite(post.id) ? "★ Favorited" : "☆ Favorite"}
         </button>
@@ -30,11 +30,9 @@ export default function JokeCard({ post }: { post: Post }) {
 
       <ImpressionBar
         onSelect={(emoji) => {
-          // Hook this into your reaction engine or API
           console.log("Selected reaction:", emoji, "for post:", post.id);
         }}
       />
     </div>
   );
 }
-

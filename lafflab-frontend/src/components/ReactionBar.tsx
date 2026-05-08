@@ -1,9 +1,7 @@
 // src/components/ReactionBar.tsx
 "use client";
 
-import React from "react";
-
-type ReactionEmojiKey =
+export type ReactionEmojiKey =
   | "laugh"
   | "smile"
   | "expressionless"
@@ -22,18 +20,18 @@ const REACTIONS: { key: ReactionEmojiKey; emoji: string }[] = [
   { key: "crickets", emoji: "🦗" },
 ];
 
-type Props = {
+type ReactionBarProps = {
   onReact: (key: ReactionEmojiKey) => void;
 };
 
-export default function ReactionBar({ onReact }: Props) {
+export default function ReactionBar({ onReact }: ReactionBarProps) {
   return (
     <div className="flex gap-2">
       {REACTIONS.map((r) => (
         <button
           key={r.key}
           onClick={() => onReact(r.key)}
-          className="text-2xl hover:scale-110 transition"
+          className="text-2xl hover:scale-110 transition-transform"
         >
           {r.emoji}
         </button>

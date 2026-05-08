@@ -1,40 +1,34 @@
+// src/components/PostMedia.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import type { Post } from "@/types/jokes";
 
-interface Props {
+type PostMediaProps = {
   post: Post;
   active: boolean;
-}
+};
 
-export default function PostMedia({ post, active }: Props) {
+export default function PostMedia({ post, active }: PostMediaProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
-  // --- TEXT LENGTH ENFORCEMENT (150 chars max) ---
   const safeText =
     post.text && post.text.length > 150
       ? post.text.slice(0, 150)
       : post.text;
 
-  // --- MEDIA TYPE DETECTION ---
   const isImage = post.type === "image" || post.type === "meme";
   const isVideo = post.type === "video";
   const isAudio = post.type === "audio";
 
-  const mediaUrl =
-    post.imageUrl ||
-    post.videoUrl ||
-    post.audioUrl ||
-    null;
+  const mediaUrl = post.imageUrl || post.videoUrl || post.audioUrl || null;
 
   if (!mediaUrl) return safeText ? <p>{safeText}</p> : null;
 
-  // --- MEDIA LENGTH ENFORCEMENT (30 sec max) ---
   const enforceDuration = (el: HTMLMediaElement | null) => {
     if (!el) return;
     if (el.duration > 30) {
@@ -44,7 +38,6 @@ export default function PostMedia({ post, active }: Props) {
     }
   };
 
-  // --- Autoplay / pause based on active state ---
   useEffect(() => {
     const media = videoRef.current || audioRef.current;
     if (!media) return;
@@ -56,7 +49,6 @@ export default function PostMedia({ post, active }: Props) {
     }
   }, [active]);
 
-  // --- Pause when off-screen (STRICT-SAFE FIX APPLIED) ---
   useEffect(() => {
     const media = videoRef.current || audioRef.current;
     if (!media) return;
@@ -82,19 +74,16 @@ export default function PostMedia({ post, active }: Props) {
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl bg-black/20">
-      {/* Skeleton Loader */}
       {!loaded && !error && (
         <div className="absolute inset-0 animate-pulse bg-white/10 rounded-xl" />
       )}
 
-      {/* Error Fallback */}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center text-white/60 text-sm">
           Media unavailable
         </div>
       )}
 
-      {/* IMAGE / MEME */}
       {isImage && !error && (
         <img
           src={post.imageUrl!}
@@ -107,7 +96,6 @@ export default function PostMedia({ post, active }: Props) {
         />
       )}
 
-      {/* VIDEO */}
       {isVideo && !error && (
         <video
           ref={videoRef}
@@ -127,7 +115,6 @@ export default function PostMedia({ post, active }: Props) {
         />
       )}
 
-      {/* AUDIO */}
       {isAudio && !error && (
         <audio
           ref={audioRef}

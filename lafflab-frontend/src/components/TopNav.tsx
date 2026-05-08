@@ -8,12 +8,12 @@ export default function TopNav({
   onMenuToggle: () => void;
 }) {
   return (
-    <header className="app-header flex items-center justify-between">
-      <h1 className="text-[var(--text-xl)] font-semibold">{title}</h1>
+    <header className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur">
+      <h1 className="text-xl font-semibold text-white">{title}</h1>
 
       <button
         onClick={onMenuToggle}
-        className="p-[var(--space-2)] rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-soft"
+        className="p-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,3 +33,4 @@ export default function TopNav({
     </header>
   );
 }
+
