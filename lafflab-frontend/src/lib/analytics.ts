@@ -1,8 +1,17 @@
 // lafflab-frontend/src/lib/analytics.ts
 
-export const Analytics = {
+export interface AnalyticsInterface {
+  track(event: string, data?: Record<string, any>): void;
+  pageview(path: string): void;
+}
+
+export const Analytics: AnalyticsInterface = {
   track(event: string, data: Record<string, any> = {}) {
     console.log("[Analytics]", event, data);
+  },
+
+  pageview(path: string) {
+    console.log("[Pageview]", path);
   },
 };
 
@@ -11,7 +20,6 @@ export async function recordImpression(data: {
   surface: string;
   userId?: string;
 }) {
-  // Placeholder implementation until backend is wired
   console.log("[Impression Recorded]", data);
 
   return {
