@@ -1,12 +1,9 @@
-// Default export
-export default function personalizedRanking(items: any[], user: any = null) {
+// Default export (renamed to avoid conflicts)
+export default function personalizedRankingDefault(items: any[], user: any = null) {
   return items;
 }
 
-// Named export (distinct function name)
-export function personalizedRankingFn(items: any[], user: any = null) {
+// Named export (canonical function)
+export function personalizedRanking(items: any[], user: any = null) {
   return items;
 }
-
-// Alias to satisfy named import
-export const personalizedRanking = personalizedRankingFn;
