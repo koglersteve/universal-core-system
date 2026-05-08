@@ -19,6 +19,7 @@
       "@/*": ["src/*"],
       "@core/*": ["src/core/*"],
       "@lib/*": ["src/lib/*"],
+      "@lib/server/*": ["src/lib/server/*"],
       "@hooks/*": ["src/hooks/*"],
       "@personalization/*": ["src/personalization/*"],
       "@notifications/*": ["src/notifications/*"],
