@@ -16,10 +16,12 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
+      "@/*": ["src/*"],
       "@core/*": ["src/core/*"],
       "@lib/*": ["src/lib/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@personalization/*": ["src/personalization/*"]
+      "@personalization/*": ["src/personalization/*"],
+      "@notifications/*": ["src/notifications/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
