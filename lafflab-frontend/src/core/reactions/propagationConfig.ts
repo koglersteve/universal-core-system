@@ -1,4 +1,7 @@
 export const ReactionSchema = {
   type: "reaction",
-  fields: {}
+  fields: {},
+  parse(value: unknown) {
+    return value;
+  }
 };

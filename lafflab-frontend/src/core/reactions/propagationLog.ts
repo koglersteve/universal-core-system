@@ -41,7 +41,11 @@ export function recordPropagation(
   });
 }
 
-export function getPropagationLog() {
+export function getPropagationLog(options?: { limit?: number }) {
+  if (options?.limit != null) {
+    return log.slice(-options.limit);
+  }
+
   return log;
 }
 

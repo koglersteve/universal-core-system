@@ -1,3 +1,7 @@
-export default function CheckCircleIcon() {
-  return <div>✔️</div>;
+type IconProps = {
+  className?: string;
+};
+
+export default function CheckCircleIcon({ className }: IconProps) {
+  return <div className={className}>✔️</div>;
 }
