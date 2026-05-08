@@ -21,7 +21,8 @@
       "@lib/*": ["src/lib/*"],
       "@hooks/*": ["src/hooks/*"],
       "@personalization/*": ["src/personalization/*"],
-      "@notifications/*": ["src/notifications/*"]
+      "@notifications/*": ["src/notifications/*"],
+      "@components/*": ["src/components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
