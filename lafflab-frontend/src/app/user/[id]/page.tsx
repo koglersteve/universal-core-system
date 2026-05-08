@@ -1,7 +1,7 @@
 import UserProfile from "@components/user/UserProfile";
 import EmptyState from "@components/ui/EmptyState";
 import ErrorState from "@components/ui/ErrorState";
-import { getUserById } from "@lib/server/users";
+import { getUserById } from "@/lib/server/user";
 
 interface UserPageProps {
   params: { id: string };

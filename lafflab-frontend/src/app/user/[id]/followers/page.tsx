@@ -1,7 +1,7 @@
 import FollowersList from "@components/user/FollowersList";
 import EmptyState from "@components/ui/EmptyState";
 import ErrorState from "@components/ui/ErrorState";
-import { getFollowers } from "@lib/server/users";
+import { getFollowers } from "@/lib/server/user";
 
 interface FollowersPageProps {
   params: { id: string };
