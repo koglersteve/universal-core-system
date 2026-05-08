@@ -1,3 +1,3 @@
-export const getTrendingData = () => {
+export async function getTrending() {
   return [];
-};
+}

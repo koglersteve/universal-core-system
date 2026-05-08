@@ -1,3 +1,3 @@
-export const handleUpload = () => {
-  return { success: true };
-};
+export async function getUploadSession(userId: string | null = null) {
+  return { userId, sessionId: "mock-session" };
+}

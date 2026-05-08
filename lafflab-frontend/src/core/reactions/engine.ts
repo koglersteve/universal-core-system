@@ -1,27 +1,11 @@
-// src/core/reactions/engine.ts
+export function applyReactions(post: any, reaction: any) {
+  return post;
+}
 
-export type LocalReactionEvent = {
-  postId: string;
-  emoji: string;
-  timestamp: number;
-};
+export function processReaction(postId: string, reaction: any) {
+  return { postId, reaction };
+}
 
-export type ReactionEmojiKey =
-  | "laugh"
-  | "smile"
-  | "expressionless"
-  | "shock"
-  | "mindblown"
-  | "angry"
-  | "crickets";
-
-export function createReactionEvent(
-  postId: string,
-  emoji: ReactionEmojiKey
-): LocalReactionEvent {
-  return {
-    postId,
-    emoji,
-    timestamp: Date.now(),
-  };
+export function getReactionSummary(postId: string) {
+  return { postId, summary: {} };
 }
