@@ -1,10 +1,15 @@
-import VerifyReview from "@components/verify/VerifyReview";
-import ErrorState from "@components/ui/ErrorState";
-import { getVerificationRetryReviewDetails } from "@lib/server/verify";
+import React from "react";
+import VerifyReview from "@/components/verify/VerifyReview";
+import { getUserIdentity } from "@/lib/server/user";
 
-export default async function VerifyUploadVerifyReviewRetryReviewPage() {
+export default async function VerifyRetryReviewPage() {
   try {
-    const details = await getVerificationRetryReviewDetails();
+    const user = await getUserIdentity();
+
+    const details = {
+      userId: user.id,
+      review: {}, // required by VerifyReviewProps
+    };
 
     return (
       <div className="p-4">
@@ -12,6 +17,10 @@ export default async function VerifyUploadVerifyReviewRetryReviewPage() {
       </div>
     );
   } catch {
-    return <ErrorState message="Failed to load retry review details." />;
+    return (
+      <div className="p-4 text-red-500 font-semibold">
+        Unable to load retry review screen.
+      </div>
+    );
   }
 }
