@@ -58,12 +58,10 @@ export default function PostCard({ post }: { post: Post }) {
             transition-all duration-300
           "
         >
-          {/* Creator */}
           <div className="text-sm opacity-70 font-medium">
             @{post.creator.screenName}
           </div>
 
-          {/* Media */}
           {post.type === "video" && (
             <video
               src={post.mediaUrl}
@@ -92,7 +90,6 @@ export default function PostCard({ post }: { post: Post }) {
             <p className="text-lg leading-snug opacity-95">{post.text}</p>
           )}
 
-          {/* Reaction Bar */}
           <div className="flex items-center justify-between pt-2">
             <div className="flex gap-4">
               {reactions.map((r) => {
@@ -118,7 +115,6 @@ export default function PostCard({ post }: { post: Post }) {
               })}
             </div>
 
-            {/* Share */}
             <button
               onClick={(e) => {
                 e.stopPropagation();

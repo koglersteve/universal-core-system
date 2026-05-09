@@ -23,7 +23,6 @@ export default async function FeedPage() {
       <TopBar />
 
       <div className="relative overflow-hidden flex-1">
-        {/* Subtle parallax overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
 
         <FeedList posts={posts} />

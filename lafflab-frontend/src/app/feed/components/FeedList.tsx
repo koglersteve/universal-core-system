@@ -49,25 +49,14 @@ export default function FeedList({ posts }: { posts: Post[] }) {
         space-y-10
       "
     >
-      {/* Top Ad */}
       <AdBanner position="top" />
 
       {posts.map((post, index) => (
-        <div
-          key={post.id}
-          className="
-            post-card
-            transition-all duration-300
-            snap-center
-          "
-        >
+        <div key={post.id} className="post-card transition-all duration-300">
           <PostCard post={post} />
 
-          {/* Inline ad every 8 posts */}
           {index > 0 && index % 8 === 0 && (
-            <div className="mt-8">
-              <AdBanner position="inline" />
-            </div>
+            <AdBanner position="inline" />
           )}
         </div>
       ))}

@@ -9,6 +9,7 @@ export default function MenuDrawer({
 }) {
   return (
     <>
+      {/* Backdrop */}
       {open && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
@@ -16,7 +17,8 @@ export default function MenuDrawer({
         />
       )}
 
-      <div
+      {/* Drawer */}
+      <aside
         className={`
           fixed top-0 right-0 h-full w-72 bg-black text-white z-50
           border-l border-white/10 p-6 space-y-6
@@ -24,6 +26,7 @@ export default function MenuDrawer({
           ${open ? "translate-x-0" : "translate-x-full"}
         `}
       >
+        {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl font-bold">Menu</h2>
           <button
@@ -34,6 +37,7 @@ export default function MenuDrawer({
           </button>
         </div>
 
+        {/* Profile */}
         <div className="flex items-center gap-3 pb-4 border-b border-white/10">
           <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg">
             👤
@@ -44,7 +48,8 @@ export default function MenuDrawer({
           </div>
         </div>
 
-        <div className="space-y-4 pt-2">
+        {/* Menu Items */}
+        <nav className="space-y-4 pt-2">
           <button className="w-full flex items-center gap-3 text-left py-2 opacity-80 hover:opacity-100">
             <span>⚙️</span> Settings
           </button>
@@ -62,8 +67,8 @@ export default function MenuDrawer({
               <span>🚪</span> Logout
             </button>
           </div>
-        </div>
-      </div>
+        </nav>
+      </aside>
     </>
   );
 }
