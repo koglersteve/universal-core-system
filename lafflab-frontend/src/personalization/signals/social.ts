@@ -1,5 +1,3 @@
-// /src/personalization/signals/social.ts
-
 import type { UserProfile } from "../profile-store";
 import type { ExtractedFeatures } from "../feature-extractor";
 
@@ -9,7 +7,7 @@ export async function computeSocialSignal(
 ): Promise<Record<string, number>> {
   const scores: Record<string, number> = {};
 
-  for (const post of features.posts) {
+  for (const post of features) {
     scores[post.id] = 0;
   }
 

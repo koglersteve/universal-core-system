@@ -1,5 +1,3 @@
-// /src/personalization/signals/session.ts
-
 import type { ExtractedFeatures } from "../feature-extractor";
 
 export async function computeSessionSignal(

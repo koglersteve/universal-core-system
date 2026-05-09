@@ -1,5 +1,3 @@
-// /src/personalization/signals/governance.ts
-
 import type { ExtractedFeatures } from "../feature-extractor";
 
 export async function computeGovernanceSignal(
@@ -7,7 +5,7 @@ export async function computeGovernanceSignal(
 ): Promise<Record<string, number>> {
   const scores: Record<string, number> = {};
 
-  for (const post of features.posts) {
+  for (const post of features) {
     scores[post.id] = 1;
   }
 

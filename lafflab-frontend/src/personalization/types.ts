@@ -1,5 +1,3 @@
-// src/personalization/types.ts
-
 import type { Post } from "@/types/jokes";
 
 export type PersonalizationContext = {

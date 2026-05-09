@@ -1,5 +1,3 @@
-// /src/personalization/signals/momentum.ts
-
 import type { ExtractedFeatures } from "../feature-extractor";
 
 export async function computeMomentumSignal(
@@ -9,15 +7,14 @@ export async function computeMomentumSignal(
 
   const now = Date.now();
 
-  for (const post of features.posts) {
+  for (const post of features) {
     const created = new Date(post.createdAt).getTime();
     const ageHours = Math.max(1, (now - created) / (1000 * 60 * 60));
 
-    const engagement = 0; // no favorites/shares/views available
+    const engagement = 0;
     const velocity = engagement / ageHours;
 
-    const normalized = Math.max(0, Math.min(1, velocity));
-    scores[post.id] = normalized;
+    scores[post.id] = Math.max(0, Math.min(1, velocity));
   }
 
   return scores;

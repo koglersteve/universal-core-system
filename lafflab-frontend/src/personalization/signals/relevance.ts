@@ -1,5 +1,3 @@
-// /src/personalization/signals/relevance.ts
-
 import type { UserProfile } from "../profile-store";
 import type { ExtractedFeatures } from "../feature-extractor";
 
@@ -9,14 +7,17 @@ export async function computeRelevanceSignal(
 ): Promise<Record<string, number>> {
   const scores: Record<string, number> = {};
 
-  for (const post of features.posts) {
+  const interests = (profile as any).interests ?? [];
+
+  for (const post of features) {
     let score = 0;
 
-    const text = (post.text ?? "").toLowerCase();
+    const text = (post as any).text?.toLowerCase?.() ?? "";
 
-    for (const interest of profile.interests) {
-      const i = interest.toLowerCase();
-      if (text.includes(i)) score += 0.3;
+    for (const interest of interests) {
+      if (text.includes(interest.toLowerCase())) {
+        score += 0.3;
+      }
     }
 
     scores[post.id] = Math.min(1, score);

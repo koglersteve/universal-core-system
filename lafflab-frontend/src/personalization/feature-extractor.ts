@@ -5,16 +5,17 @@ export interface PostFeature {
   score: number;
 }
 
-export function extractFeatures(post: any): PostFeature {
-  return {
+export type ExtractedFeatures = PostFeature[];
+
+export function extractFeatures(posts: any[]): ExtractedFeatures {
+  return posts.map((post) => ({
     id: post.id,
     createdAt: String(post.createdAt),
     authorId: String(post.authorId ?? ""),
     score: Number(post.score ?? 0),
-  };
+  }));
 }
 
-// Matches SignalBundle in ranker.ts
 export function extractSignals(profile: any) {
   return {
     relevance: Number(profile.relevance ?? 1),
