@@ -1,20 +1,71 @@
 "use client";
 
-export default function FeedList({ items = [] }: { items?: any[] }) {
-  if (!items.length) {
-    return <p className="text-white/60">No feed items available.</p>;
-  }
+import { useRef, useEffect, useState } from "react";
+import PostCard from "./PostCard";
+import AdBanner from "./AdBanner";
+import { useFeedStore } from "@/store/feed.store";
+import { useSpotlight } from "../utils/useSpotlight";
+import { getSpotlightStyles } from "../utils/spotlight";
+
+export default function FeedList() {
+  const { posts, loadInitial } = useFeedStore();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [positions, setPositions] = useState<number[]>([]);
+  const centerY = useSpotlight();
+
+  useEffect(() => {
+    loadInitial();
+  }, [loadInitial]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const updatePositions = () => {
+      const rects = Array.from(
+        containerRef.current.querySelectorAll("[data-post]")
+      ).map((el) => el.getBoundingClientRect().top + el.clientHeight / 2);
+
+      setPositions(rects);
+    };
+
+    updatePositions();
+    window.addEventListener("scroll", updatePositions);
+    window.addEventListener("resize", updatePositions);
+
+    return () => {
+      window.removeEventListener("scroll", updatePositions);
+      window.removeEventListener("resize", updatePositions);
+    };
+  }, [posts]);
 
   return (
-    <ul className="space-y-3">
-      {items.map((item, i) => (
-        <li
-          key={i}
-          className="p-4 bg-white/5 rounded-lg border border-white/10 text-white"
-        >
-          {item.title || "Untitled"}
-        </li>
-      ))}
-    </ul>
+    <div
+      ref={containerRef}
+      className="flex-1 overflow-y-scroll snap-y snap-mandatory"
+    >
+      {posts.map((post, index) => {
+        const distance = positions[index]
+          ? Math.abs(positions[index] - centerY)
+          : 9999;
+
+        const { scale, opacity } = getSpotlightStyles(distance);
+
+        return (
+          <div
+            key={post.id}
+            data-post
+            style={{
+              transform: `scale(${scale})`,
+              opacity,
+              transition: "transform 0.2s ease, opacity 0.2s ease"
+            }}
+          >
+            <PostCard post={post} />
+
+            {(index + 1) % 8 === 0 && <AdBanner position="inline" />}
+          </div>
+        );
+      })}
+    </div>
   );
 }
