@@ -1,12 +1,13 @@
-import FeedList from "@/components/FeedList";
-import { getFeed } from "@/lib/server/feed";
+import TopBar from "@/components/TopBar";
+import FeedList from "./components/FeedList";
+import AdBanner from "./components/AdBanner";
 
-export default async function FeedPage() {
-  const items = await getFeed();
-
+export default function FeedPage() {
   return (
-    <div className="p-4">
-      <FeedList items={items} />
+    <div className="flex flex-col h-screen overflow-hidden">
+      <TopBar />
+      <AdBanner position="top" />
+      <FeedList />
     </div>
   );
 }
