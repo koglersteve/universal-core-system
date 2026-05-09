@@ -25,3 +25,13 @@ model Post {
   creator   User     @relation(fields: [creatorId], references: [id])
   createdAt DateTime @default(now())
 }
+
+model UserSettings {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  darkMode      Boolean  @default(true)
+  pushNotifications Boolean @default(false)
+  emailAlerts   Boolean  @default(true)
+  creatorMode   Boolean  @default(false)
+  updatedAt     DateTime @updatedAt
+}
