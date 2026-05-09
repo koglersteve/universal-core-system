@@ -1,71 +1,76 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import PostCard from "./PostCard";
 import AdBanner from "./AdBanner";
-import { useFeedStore } from "@/store/feed.store";
-import { useSpotlight } from "../utils/spotlight";
-import { getSpotlightStyles } from "../utils/spotlight";
+import { Post } from "@/types/post";
 
-export default function FeedList() {
-  const { posts, loadInitial } = useFeedStore();
+export default function FeedList({ posts }: { posts: Post[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [positions, setPositions] = useState<number[]>([]);
-  const centerY = useSpotlight();
 
   useEffect(() => {
-    loadInitial();
-  }, [loadInitial]);
+    const container = containerRef.current;
+    if (!container) return;
 
-  useEffect(() => {
-    if (!containerRef.current) return;
+    const handleScroll = () => {
+      const cards = container.querySelectorAll(".post-card");
+      const center = window.innerHeight / 2;
 
-    const updatePositions = () => {
-      const rects = Array.from(
-        containerRef.current.querySelectorAll("[data-post]")
-      ).map((el) => el.getBoundingClientRect().top + el.clientHeight / 2);
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height / 2;
 
-      setPositions(rects);
+        const distance = Math.abs(center - cardCenter);
+        const maxDistance = window.innerHeight * 0.6;
+
+        const t = Math.min(distance / maxDistance, 1);
+
+        const scale = 1 - t * 0.15;
+        const opacity = 1 - t * 0.35;
+
+        (card as HTMLElement).style.transform = `scale(${scale})`;
+        (card as HTMLElement).style.opacity = `${opacity}`;
+      });
     };
 
-    updatePositions();
-    window.addEventListener("scroll", updatePositions);
-    window.addEventListener("resize", updatePositions);
+    handleScroll();
+    container.addEventListener("scroll", handleScroll, { passive: true });
 
-    return () => {
-      window.removeEventListener("scroll", updatePositions);
-      window.removeEventListener("resize", updatePositions);
-    };
-  }, [posts]);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-scroll snap-y snap-mandatory"
+      className="
+        flex-1 overflow-y-scroll
+        snap-y snap-mandatory
+        px-5 pt-4 pb-16
+        space-y-10
+      "
     >
-      {posts.map((post, index) => {
-        const distance = positions[index]
-          ? Math.abs(positions[index] - centerY)
-          : 9999;
+      {/* Top Ad */}
+      <AdBanner position="top" />
 
-        const { scale, opacity } = getSpotlightStyles(distance);
+      {posts.map((post, index) => (
+        <div
+          key={post.id}
+          className="
+            post-card
+            transition-all duration-300
+            snap-center
+          "
+        >
+          <PostCard post={post} />
 
-        return (
-          <div
-            key={post.id}
-            data-post
-            style={{
-              transform: `scale(${scale})`,
-              opacity,
-              transition: "transform 0.2s ease, opacity 0.2s ease"
-            }}
-          >
-            <PostCard post={post} />
-
-            {(index + 1) % 8 === 0 && <AdBanner position="inline" />}
-          </div>
-        );
-      })}
+          {/* Inline ad every 8 posts */}
+          {index > 0 && index % 8 === 0 && (
+            <div className="mt-8">
+              <AdBanner position="inline" />
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

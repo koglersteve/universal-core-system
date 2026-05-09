@@ -2,29 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+/* GLOBAL SMOOTHING + MOTION */
 html, body {
-  background-color: #000;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: #000;
   color: #fff;
 }
 
 * {
-  -webkit-tap-highlight-color: transparent;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes fadeInUp {
-  from {
+/* TYPOGRAPHY */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+p {
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+/* GLOBAL ANIMATIONS */
+@keyframes fadeScaleIn {
+  0% {
     opacity: 0;
-    transform: translateY(12px);
+    transform: scale(0.92);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
-@keyframes laughMeter {
-  0% { width: 0%; }
-  40% { width: 40%; }
-  80% { width: 80%; }
-  60% { width: 60%; }
-  100% { width: 100%; }
+
+.fade-scale-in {
+  animation: fadeScaleIn 0.35s ease-out forwards;
+}
+
+/* MOTION UTILITIES */
+.motion-soft {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.motion-medium {
+  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.motion-slow {
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* DARK MODE COLOR VARIABLES */
+:root {
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --card-shadow: rgba(0, 0, 0, 0.35);
 }

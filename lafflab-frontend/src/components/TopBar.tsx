@@ -9,9 +9,8 @@ export default function TopBar() {
   return (
     <>
       <div className="w-full flex items-center justify-between p-4 text-white bg-black border-b border-white/10">
-        <div className="font-bold text-lg">LAFFlab</div>
+        <div className="font-bold text-lg tracking-wide">LAFFlab</div>
 
-        {/* Menu Button */}
         <button
           onClick={() => setMenuOpen(true)}
           className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition"
@@ -33,7 +32,6 @@ export default function TopBar() {
         </button>
       </div>
 
-      {/* Slide‑In Drawer */}
       <MenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );

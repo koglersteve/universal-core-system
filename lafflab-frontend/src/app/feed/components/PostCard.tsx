@@ -19,18 +19,14 @@ export default function PostCard({ post }: { post: Post }) {
   const [open, setOpen] = useState(false);
   const { toggleFavorite } = useFavoritesStore();
 
-  // ⭐ NEW: Local reaction state + animation state
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const [animating, setAnimating] = useState<string | null>(null);
 
   const handleReaction = (key: string) => {
     setSelectedReaction(key);
     setAnimating(key);
-
-    // reset animation after 300ms
     setTimeout(() => setAnimating(null), 300);
 
-    // favorite logic stays the same
     if (key === "laugh" || key === "mindblown") {
       toggleFavorite(post.id);
     }
@@ -51,40 +47,54 @@ export default function PostCard({ post }: { post: Post }) {
   return (
     <>
       <div
-        className="snap-center py-6 cursor-pointer"
+        className="snap-center py-6 cursor-pointer transition-transform"
         onClick={() => setOpen(true)}
       >
-        <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-white space-y-3">
-
+        <div
+          className="
+            rounded-2xl bg-white/5 border border-white/10 p-5 text-white space-y-4
+            shadow-[0_0_20px_rgba(0,0,0,0.3)]
+            hover:shadow-[0_0_30px_rgba(0,0,0,0.45)]
+            transition-all duration-300
+          "
+        >
           {/* Creator */}
-          <div className="text-sm opacity-70">
+          <div className="text-sm opacity-70 font-medium">
             @{post.creator.screenName}
           </div>
 
           {/* Media */}
           {post.type === "video" && (
-            <video src={post.mediaUrl} controls className="w-full rounded-lg" />
+            <video
+              src={post.mediaUrl}
+              controls
+              className="w-full rounded-xl border border-white/10"
+            />
           )}
 
           {post.type === "audio" && (
-            <audio src={post.mediaUrl} controls className="w-full" />
+            <audio
+              src={post.mediaUrl}
+              controls
+              className="w-full rounded-lg border border-white/10"
+            />
           )}
 
           {(post.type === "image" || post.type === "meme") && (
             <img
               src={post.mediaUrl}
               alt="post media"
-              className="w-full rounded-lg"
+              className="w-full rounded-xl border border-white/10"
             />
           )}
 
           {post.type === "text" && (
-            <p className="text-lg leading-snug">{post.text}</p>
+            <p className="text-lg leading-snug opacity-95">{post.text}</p>
           )}
 
           {/* Reaction Bar */}
           <div className="flex items-center justify-between pt-2">
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {reactions.map((r) => {
                 const isSelected = selectedReaction === r.key;
                 const isAnimating = animating === r.key;
@@ -97,7 +107,7 @@ export default function PostCard({ post }: { post: Post }) {
                       handleReaction(r.key);
                     }}
                     className={`
-                      text-xl transition-transform
+                      text-2xl transition-transform
                       ${isAnimating ? "scale-150" : "hover:scale-125"}
                       ${isSelected ? "opacity-100" : "opacity-60"}
                     `}
@@ -114,7 +124,7 @@ export default function PostCard({ post }: { post: Post }) {
                 e.stopPropagation();
                 handleShare();
               }}
-              className="text-xl opacity-80 hover:opacity-100"
+              className="text-2xl opacity-70 hover:opacity-100 transition"
             >
               ↗
             </button>
@@ -122,7 +132,6 @@ export default function PostCard({ post }: { post: Post }) {
         </div>
       </div>
 
-      {/* Fullscreen Viewer */}
       {open && <PostViewer post={post} onClose={() => setOpen(false)} />}
     </>
   );

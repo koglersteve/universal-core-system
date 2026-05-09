@@ -1,13 +1,33 @@
 import TopBar from "@/components/TopBar";
 import FeedList from "./components/FeedList";
-import AdBanner from "./components/AdBanner";
+import { Post } from "@/types/post";
 
-export default function FeedPage() {
+async function getFeed(): Promise<Post[]> {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feed`, {
+      cache: "no-store"
+    });
+
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export default async function FeedPage() {
+  const posts = await getFeed();
+
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-black">
+    <div className="min-h-screen w-full bg-black text-white flex flex-col">
       <TopBar />
-      <AdBanner position="top" />
-      <FeedList />
+
+      <div className="relative overflow-hidden flex-1">
+        {/* Subtle parallax overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
+
+        <FeedList posts={posts} />
+      </div>
     </div>
   );
 }
