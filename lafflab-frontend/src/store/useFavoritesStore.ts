@@ -1,9 +1,13 @@
+"use client";
+
 import { create } from "zustand";
 
 const LOCAL_KEY = "lafflab_favorites";
 
 type FavoritesState = {
   favorites: Set<string>;
+  isFavorite: (id: string) => boolean;
+  toggleFavorite: (id: string) => void;
   addFavorite: (id: string) => void;
   removeFavorite: (id: string) => void;
   loadFavorites: () => void;
@@ -11,6 +15,21 @@ type FavoritesState = {
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   favorites: new Set(),
+
+  isFavorite: (id: string) => {
+    return get().favorites.has(id);
+  },
+
+  toggleFavorite: (id: string) => {
+    const favs = new Set(get().favorites);
+    if (favs.has(id)) {
+      favs.delete(id);
+    } else {
+      favs.add(id);
+    }
+    set({ favorites: favs });
+    saveLocal(favs);
+  },
 
   addFavorite: (id: string) => {
     const favs = new Set(get().favorites);
