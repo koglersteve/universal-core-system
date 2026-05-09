@@ -38,12 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession ?? null);
-        setUser(newSession?.user ?? null);
-      }
-    );
+    const { data: listener } = supabase.auth.onAuthStateChange();
 
     return () => {
       listener.subscription.unsubscribe();
@@ -60,3 +55,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+
