@@ -13,11 +13,12 @@
   "include": [
     "src/server.ts",
     "src/routes/feed.ts",
-    "src/lib/**/*.ts"
+    "src/lib/prisma.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
+    "src/lib/api",
     "src/autonomy",
     "src/dashboard",
     "src/eventbus",
