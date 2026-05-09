@@ -1,8 +1,7 @@
-import { NextResponse } from "next/server";
-import trending from "@/notifications/templates/trending";
-import system from "@/notifications/templates/system";
-import newPost from "@/notifications/templates/new-post";
-import creatorUpdate from "@/notifications/templates/creator-update";
+import { trending } from "@/notifications/templates/trending";
+import { system } from "@/notifications/templates/system";
+import { newPost } from "@/notifications/templates/new-post";
+import { creatorUpdate } from "@/notifications/templates/creator-update";
 
 const Templates = {
   trending,
