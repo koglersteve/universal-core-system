@@ -1,10 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
-import { getReactionSummary } from "@core/reactions/engine";
-import { getUserIdentity } from "@hooks/UserIdentity";
+import { getReactionSummary } from "@/lib/reactions";
 
 export async function GET() {
-  const user = await getUserIdentity();
-  const summary = await getReactionSummary(user.id);
-  return NextResponse.json({ summary });
+  const summary = await getReactionSummary();
+  return NextResponse.json(summary);
 }
-

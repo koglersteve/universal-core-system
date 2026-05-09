@@ -1,9 +1,10 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
-import { getInbox } from "@notifications/inbox-store";
-import { getUserIdentity } from "@hooks/UserIdentity";
+import { getInbox } from "@/notifications/inbox-store";
 
 export async function GET() {
-  const user = await getUserIdentity();
-  const inbox = await getInbox(user.id);
-  return NextResponse.json({ inbox });
+  const inbox = getInbox("demo-user");
+  return NextResponse.json(inbox);
 }
+lete successfully: exit code: 1 

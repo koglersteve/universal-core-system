@@ -1,9 +1,5 @@
-import CreatorSettings from "@/components/settings/CreatorSettings";
+export const dynamic = "force-dynamic";
 
-export default function CreatorSettingsPage() {
-  return (
-    <div className="p-4">
-      <CreatorSettings />
-    </div>
-  );
+export default function CreatorPage() {
+  return <div>Creator Dashboard</div>;
 }
