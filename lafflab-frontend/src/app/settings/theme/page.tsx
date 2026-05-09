@@ -3,7 +3,7 @@
 import Toggle from "@/components/Toggle";
 import { useSettings } from "@/hooks/useSettings";
 
-export default function CreatorSettings() {
+export default function ThemeSettings() {
   const { settings, updateSetting } = useSettings();
 
   if (!settings) return null;
@@ -12,15 +12,16 @@ export default function CreatorSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between p-4 bg-neutral-900 rounded-lg">
         <div>
-          <p className="text-lg font-semibold">Creator Mode</p>
-          <p className="text-neutral-400 text-sm">Unlock creator tools</p>
+          <p className="text-lg font-semibold">Dark Mode</p>
+          <p className="text-neutral-400 text-sm">Toggle dark/light theme</p>
         </div>
 
         <Toggle
-          value={settings.creatorMode}
-          onChange={(v) => updateSetting("creatorMode", v)}
+          value={settings.darkMode}
+          onChange={(v) => updateSetting("darkMode", v)}
         />
       </div>
     </div>
   );
 }
+
