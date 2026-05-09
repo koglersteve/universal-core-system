@@ -1,10 +1,7 @@
-// FILE: src/app/favorites/page.tsx
+import FavoritesList from "@/components/favorites/FavoritesList";
 
-import FavoritesList from "@/components/FavoritesList";
-import { getFavorites } from "@/lib/server/favorites";
-
-export default async function FavoritesPage() {
-  const items = await getFavorites();
+export default function FavoritesPage() {
+  const items: any[] = [];
 
   return (
     <div className="p-4">
