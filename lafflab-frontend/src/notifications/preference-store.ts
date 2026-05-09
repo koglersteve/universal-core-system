@@ -1,24 +1,15 @@
-// src/notifications/preference-store.ts
-
 export type NotificationPreferences = {
   trending: boolean;
+  system: boolean;
+  newPost: boolean;
+  creatorUpdate: boolean;
 };
 
-const prefs = new Map<string, NotificationPreferences>();
-
-export function getUserPreferences(
-  userId: string
-): Promise<NotificationPreferences> {
-  if (!prefs.has(userId)) {
-    prefs.set(userId, { trending: true });
-  }
-  return Promise.resolve(prefs.get(userId)!);
-}
-
-export function setUserPreferences(
-  userId: string,
-  newPrefs: Partial<NotificationPreferences>
-) {
-  const existing = prefs.get(userId) ?? { trending: true };
-  prefs.set(userId, { ...existing, ...newPrefs });
+export async function getUserPreferences(userId: string): Promise<NotificationPreferences> {
+  return {
+    trending: true,
+    system: true,
+    newPost: true,
+    creatorUpdate: true,
+  };
 }

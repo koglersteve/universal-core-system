@@ -1,5 +1,3 @@
-// src/notifications/queue.ts
-
 import { buildNotification } from "./dispatcher";
 import type { Notification, NotificationTemplate } from "./dispatcher";
 

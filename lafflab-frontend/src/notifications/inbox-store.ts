@@ -1,5 +1,3 @@
-// src/notifications/inbox-store.ts
-
 import type { Notification } from "./dispatcher";
 
 const inbox: Record<string, Notification[]> = {};
