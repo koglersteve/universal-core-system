@@ -1,4 +1,3 @@
-// src/server.ts
 import fastify from "fastify";
 import feedRoutes from "./routes/feed";
 
