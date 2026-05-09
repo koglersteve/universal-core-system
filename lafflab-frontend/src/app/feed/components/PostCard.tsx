@@ -19,7 +19,18 @@ export default function PostCard({ post }: { post: Post }) {
   const [open, setOpen] = useState(false);
   const { toggleFavorite } = useFavoritesStore();
 
+  // ⭐ NEW: Local reaction state + animation state
+  const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
+  const [animating, setAnimating] = useState<string | null>(null);
+
   const handleReaction = (key: string) => {
+    setSelectedReaction(key);
+    setAnimating(key);
+
+    // reset animation after 300ms
+    setTimeout(() => setAnimating(null), 300);
+
+    // favorite logic stays the same
     if (key === "laugh" || key === "mindblown") {
       toggleFavorite(post.id);
     }
@@ -45,10 +56,12 @@ export default function PostCard({ post }: { post: Post }) {
       >
         <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-white space-y-3">
 
+          {/* Creator */}
           <div className="text-sm opacity-70">
             @{post.creator.screenName}
           </div>
 
+          {/* Media */}
           {post.type === "video" && (
             <video src={post.mediaUrl} controls className="w-full rounded-lg" />
           )}
@@ -58,29 +71,44 @@ export default function PostCard({ post }: { post: Post }) {
           )}
 
           {(post.type === "image" || post.type === "meme") && (
-            <img src={post.mediaUrl} alt="post media" className="w-full rounded-lg" />
+            <img
+              src={post.mediaUrl}
+              alt="post media"
+              className="w-full rounded-lg"
+            />
           )}
 
           {post.type === "text" && (
             <p className="text-lg leading-snug">{post.text}</p>
           )}
 
+          {/* Reaction Bar */}
           <div className="flex items-center justify-between pt-2">
             <div className="flex gap-3">
-              {reactions.map((r) => (
-                <button
-                  key={r.key}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleReaction(r.key);
-                  }}
-                  className="text-xl hover:scale-125 transition-transform"
-                >
-                  {r.emoji}
-                </button>
-              ))}
+              {reactions.map((r) => {
+                const isSelected = selectedReaction === r.key;
+                const isAnimating = animating === r.key;
+
+                return (
+                  <button
+                    key={r.key}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleReaction(r.key);
+                    }}
+                    className={`
+                      text-xl transition-transform
+                      ${isAnimating ? "scale-150" : "hover:scale-125"}
+                      ${isSelected ? "opacity-100" : "opacity-60"}
+                    `}
+                  >
+                    {r.emoji}
+                  </button>
+                );
+              })}
             </div>
 
+            {/* Share */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -94,6 +122,7 @@ export default function PostCard({ post }: { post: Post }) {
         </div>
       </div>
 
+      {/* Fullscreen Viewer */}
       {open && <PostViewer post={post} onClose={() => setOpen(false)} />}
     </>
   );

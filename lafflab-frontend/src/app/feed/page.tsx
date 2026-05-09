@@ -1,27 +1,13 @@
-"use client";
+import TopBar from "@/components/TopBar";
+import FeedList from "./components/FeedList";
+import AdBanner from "./components/AdBanner";
 
-export default function TopBar() {
+export default function FeedPage() {
   return (
-    <div className="w-full flex items-center justify-between p-4 text-white bg-black">
-      <div className="font-bold text-lg">LAFFlab</div>
-
-      {/* Menu Icon */}
-      <button className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-white"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
-      </button>
+    <div className="flex flex-col h-screen overflow-hidden bg-black">
+      <TopBar />
+      <AdBanner position="top" />
+      <FeedList />
     </div>
   );
 }
