@@ -1,61 +1,64 @@
-export const dynamic = "force-dynamic";
-
-import { NextResponse } from "next/server";
-import { Post } from "@/types/post";
-
 export async function GET() {
-  const mockFeed: Post[] = [
+  return Response.json([
     {
-      id: "1",
-      type: "video",
-      mediaUrl: "https://example.com/video1.mp4",
-      createdAt: new Date().toISOString(),
+      id: "p1",
+      type: "text",
+      text: "LAFFlab is alive again — rebuilding the emotional OS one post at a time.",
+      mediaUrl: null,
+      score: 42,
       creator: {
         id: "u1",
-        screenName: "FunnyGuy"
+        screenName: "Steve",
+        avatarUrl: "https://i.pravatar.cc/150?img=3"
       }
     },
     {
-      id: "2",
-      type: "audio",
-      mediaUrl: "https://example.com/audio1.mp3",
-      createdAt: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
+      id: "p2",
+      type: "image",
+      text: "Mood of the day.",
+      mediaUrl: "https://picsum.photos/600/800?random=1",
+      score: 12,
       creator: {
         id: "u2",
-        screenName: "LaughMaster"
+        screenName: "Aurelia",
+        avatarUrl: "https://i.pravatar.cc/150?img=5"
       }
     },
     {
-      id: "3",
-      type: "image",
-      mediaUrl: "https://example.com/image1.jpg",
-      createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+      id: "p3",
+      type: "text",
+      text: "If you’re reading this, the feed is officially working again.",
+      mediaUrl: null,
+      score: 7,
       creator: {
         id: "u3",
-        screenName: "MemeLord"
+        screenName: "LAFFbot",
+        avatarUrl: "https://i.pravatar.cc/150?img=8"
       }
     },
     {
-      id: "4",
-      type: "meme",
-      mediaUrl: "https://example.com/meme1.jpg",
-      createdAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+      id: "p4",
+      type: "image",
+      text: "Prototype meme test.",
+      mediaUrl: "https://picsum.photos/700/700?random=2",
+      score: 99,
       creator: {
         id: "u4",
-        screenName: "JokeDealer"
+        screenName: "MemeCore",
+        avatarUrl: "https://i.pravatar.cc/150?img=12"
       }
     },
     {
-      id: "5",
+      id: "p5",
       type: "text",
-      text: "This is a 150 character max joke post. Short, punchy, and funny.",
-      createdAt: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+      text: "Scaling animation test — scroll slowly and watch the spotlight effect.",
+      mediaUrl: null,
+      score: 3,
       creator: {
         id: "u5",
-        screenName: "WriterDude"
+        screenName: "DevMode",
+        avatarUrl: "https://i.pravatar.cc/150?img=15"
       }
     }
-  ];
-
-  return NextResponse.json(mockFeed);
+  ]);
 }
