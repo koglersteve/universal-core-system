@@ -1,3 +1,4 @@
+// src/routes/feed.ts
 import { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma";
 
@@ -26,8 +27,8 @@ function normalizePost(p: any): FeedPost {
     creator: {
       id: p.creator?.id ?? "unknown",
       screenName: p.creator?.screenName ?? "Unknown",
-      avatarUrl: p.creator?.avatarUrl ?? null,
-    },
+      avatarUrl: p.creator?.avatarUrl ?? null
+    }
   };
 }
 
@@ -42,8 +43,8 @@ const MOCK_POSTS: FeedPost[] = [
     creator: {
       id: "user-1",
       screenName: "MockUser",
-      avatarUrl: null,
-    },
+      avatarUrl: null
+    }
   },
   {
     id: "mock-2",
@@ -55,16 +56,15 @@ const MOCK_POSTS: FeedPost[] = [
     creator: {
       id: "user-2",
       screenName: "System",
-      avatarUrl: null,
-    },
-  },
+      avatarUrl: null
+    }
+  }
 ];
 
 export default async function feedRoutes(app: FastifyInstance) {
-  // GLOBAL FEED
-  app.get("/feed", async (req, reply) => {
+  app.get("/feed", async (_req, reply) => {
     try {
-      let posts = [];
+      let posts: any[] = [];
 
       try {
         posts = await prisma.post.findMany({
@@ -74,11 +74,11 @@ export default async function feedRoutes(app: FastifyInstance) {
               select: {
                 id: true,
                 screenName: true,
-                avatarUrl: true,
-              },
-            },
+                avatarUrl: true
+              }
+            }
           },
-          take: 50,
+          take: 50
         });
       } catch (err) {
         app.log.error({ err }, "Prisma error in /feed");
@@ -95,8 +95,7 @@ export default async function feedRoutes(app: FastifyInstance) {
     }
   });
 
-  // RECENT FEED
-  app.get("/feed/recent", async (req, reply) => {
+  app.get("/feed/recent", async (_req, reply) => {
     try {
       const posts = await prisma.post.findMany({
         orderBy: { createdAt: "desc" },
@@ -105,11 +104,11 @@ export default async function feedRoutes(app: FastifyInstance) {
             select: {
               id: true,
               screenName: true,
-              avatarUrl: true,
-            },
-          },
+              avatarUrl: true
+            }
+          }
         },
-        take: 100,
+        take: 100
       });
 
       if (!posts || posts.length === 0) {
@@ -123,24 +122,20 @@ export default async function feedRoutes(app: FastifyInstance) {
     }
   });
 
-  // TRENDING FEED
-  app.get("/feed/trending", async (req, reply) => {
+  app.get("/feed/trending", async (_req, reply) => {
     try {
       const posts = await prisma.post.findMany({
-        orderBy: [
-          { score: "desc" },
-          { createdAt: "desc" },
-        ],
+        orderBy: [{ score: "desc" }, { createdAt: "desc" }],
         include: {
           creator: {
             select: {
               id: true,
               screenName: true,
-              avatarUrl: true,
-            },
-          },
+              avatarUrl: true
+            }
+          }
         },
-        take: 50,
+        take: 50
       });
 
       if (!posts || posts.length === 0) {
@@ -154,7 +149,6 @@ export default async function feedRoutes(app: FastifyInstance) {
     }
   });
 
-  // PERSONALIZED FEED (by userId query)
   app.get("/feed/personalized", async (req, reply) => {
     try {
       const query = req.query as { userId?: string };
@@ -166,10 +160,7 @@ export default async function feedRoutes(app: FastifyInstance) {
 
       const posts = await prisma.post.findMany({
         where: {
-          OR: [
-            { creatorId: userId },
-            // extend with follows, preferences, etc.
-          ],
+          OR: [{ creatorId: userId }]
         },
         orderBy: { createdAt: "desc" },
         include: {
@@ -177,11 +168,11 @@ export default async function feedRoutes(app: FastifyInstance) {
             select: {
               id: true,
               screenName: true,
-              avatarUrl: true,
-            },
-          },
+              avatarUrl: true
+            }
+          }
         },
-        take: 50,
+        take: 50
       });
 
       if (!posts || posts.length === 0) {
