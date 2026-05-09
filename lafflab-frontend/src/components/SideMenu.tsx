@@ -1,53 +1,42 @@
-// src/components/SideMenu.tsx
 "use client";
 
 import Link from "next/link";
+import { Settings } from "lucide-react";
 
-const menuItems = [
-  { label: "Home", href: "/" },
-  { label: "Search", href: "/search" },
-  { label: "Favorites", href: "/favorites" },
-  { label: "History", href: "/history" },
-  { label: "Upload", href: "/upload" },
-  { label: "Creator Dashboard", href: "/creator" },
-  { label: "Settings", href: "/settings" },
-];
-
-type SideMenuProps = {
-  open: boolean;
-  onClose: () => void;
-};
-
-export default function SideMenu({ open, onClose }: SideMenuProps) {
+export default function SideMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-          onClick={onClose}
-        />
-      )}
-
-      <aside
-        className={`fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-white/10 backdrop-blur z-50 p-4 space-y-3 transition-transform ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+    <div
+      className={`
+        fixed inset-0 z-50 transition-all duration-300
+        ${open ? "bg-black/60 pointer-events-auto" : "bg-transparent pointer-events-none"}
+      `}
+      onClick={onClose}
+    >
+      <div
+        className={`
+          absolute right-0 top-0 h-full w-72 bg-neutral-900 text-white
+          transition-transform duration-300
+          ${open ? "translate-x-0" : "translate-x-full"}
+        `}
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold mb-2 text-white">Menu</h2>
+        <div className="p-6 space-y-6">
+          <h2 className="text-xl font-semibold">Menu</h2>
 
-        <nav className="space-y-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onClose}
-              className="block px-3 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-white"
-            >
-              {item.label}
+          <nav className="space-y-4">
+            <Link href="/creator" className="block text-lg">Creator Dashboard</Link>
+            <Link href="/upload" className="block text-lg">Upload</Link>
+            <Link href="/favorites" className="block text-lg">Favorites</Link>
+            <Link href="/history" className="block text-lg">History</Link>
+
+            {/* ⭐ Settings Icon Link */}
+            <Link href="/settings" className="flex items-center gap-3 text-lg">
+              <Settings size={22} />
+              <span>Settings</span>
             </Link>
-          ))}
-        </nav>
-      </aside>
-    </>
+          </nav>
+        </div>
+      </div>
+    </div>
   );
 }
