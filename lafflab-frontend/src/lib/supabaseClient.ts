@@ -1,10 +1,12 @@
-"use client";
-
-import { createClient } from "@supabase/supabase-js";
+// Frontend stub — prevents Next.js from requiring @supabase/supabase-js
 
 export function createSupabaseBrowserClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-  );
+  return {
+    auth: {
+      getSession: async () => ({ data: { session: null } }),
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe: () => {} } },
+      }),
+    },
+  };
 }
