@@ -1,84 +1,27 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-//
-// ------------------------------
-// Existing Drama Models
-// ------------------------------
-//
-
-model DramaClip {
-  id        Int             @id @default(autoincrement())
-  title     String
-  videoUrl  String
-  type      String
-  createdAt DateTime        @default(now())
-  favorites DramaFavorite[]
-  views     DramaView[]
+generator client {
+  provider = "prisma-client-js"
 }
 
-model DramaFavorite {
-  id        Int        @id @default(autoincrement())
-  clipId    Int
-  userId    String
-  clip      DramaClip  @relation(fields: [clipId], references: [id])
-  createdAt DateTime   @default(now())
+model User {
+  id         String   @id @default(cuid())
+  screenName String
+  avatarUrl  String?  @db.Text
+  posts      Post[]
+  createdAt  DateTime @default(now())
 }
-
-model DramaView {
-  id        Int        @id @default(autoincrement())
-  clipId    Int
-  userId    String
-  clip      DramaClip  @relation(fields: [clipId], references: [id])
-  createdAt DateTime   @default(now())
-}
-
-//
-// ------------------------------
-// Existing Joke + History Models
-// ------------------------------
-//
-
-model Joke {
-  id          String   @id @default(cuid())
-  text        String
-  categoryId  String?
-  createdAt   DateTime @default(now())
-
-  history     History[]
-}
-
-model History {
-  id        String   @id @default(cuid())
-  userId    String
-  jokeId    String
-  viewedAt  BigInt
-
-  joke      Joke     @relation(fields: [jokeId], references: [id])
-}
-
-//
-// ------------------------------
-// NEW UNIVERSAL MEDIA POST MODEL
-// ------------------------------
-//
 
 model Post {
-  id           String   @id @default(cuid())
-  type         String   // "text" | "image" | "meme" | "video" | "audio"
-  text         String?  @db.Text
-  imageUrl     String?
-  videoUrl     String?
-  audioUrl     String?
-  thumbnailUrl String?
-  createdAt    DateTime @default(now())
-
-  @@index([createdAt, type])
+  id        String   @id @default(cuid())
+  type      String
+  text      String?  @db.Text
+  mediaUrl  String?  @db.Text
+  score     Int      @default(0)
+  creatorId String
+  creator   User     @relation(fields: [creatorId], references: [id])
+  createdAt DateTime @default(now())
 }
-

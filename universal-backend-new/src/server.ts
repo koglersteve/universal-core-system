@@ -1,8 +1,31 @@
-import { Hono } from "hono";
-import { postsRouter } from "./routes/posts";
+import fastify from "fastify";
+import cors from "@fastify/cors";
 
-const app = new Hono();
+import feedRoutes from "./routes/feed";
 
-app.route("/api/lafflab/posts", postsRouter);
+async function start() {
+  const app = fastify({ logger: true });
 
-export default app;
+  await app.register(cors, {
+    origin: "*",
+  });
+
+  app.register(feedRoutes);
+
+  app.get("/health", async () => ({ status: "ok" }));
+
+  try {
+    await app.listen({
+      port: Number(process.env.PORT) || 8080,
+      host: "0.0.0.0",
+    });
+
+    console.log("🚀 Universal Backend running on port", process.env.PORT || 8080);
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+}
+
+start();
+
