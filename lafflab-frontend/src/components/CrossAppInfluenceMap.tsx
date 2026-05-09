@@ -1,34 +1,34 @@
-// src/components/CrossAppInfluenceMap.tsx
-"use client";
-
-import { useMemo } from "react";
 "use client";
 
 import { useMemo } from "react";
 
-type Props = {
-  log: {
-    app: string;
-    influence: number;
-  }[];
-};
-
-export default function CrossAppInfluenceMap({ log }: Props) {
+export default function CrossAppInfluenceMap({ log }: { log: any[] }) {
   const grouped = useMemo(() => {
-    const map: Record<string, number> = {};
-    for (const entry of log) {
-      map[entry.app] = (map[entry.app] ?? 0) + entry.influence;
-    }
+    const map: Record<string, number> = {
+      forYou: 0,
+      trending: 0,
+      following: 0,
+      creatorHub: 0,
+      global: 0,
+      notifications: 0,
+    };
+
+    log.forEach((entry) => {
+      entry.actions.forEach((action: any) => {
+        if (map[action.to] !== undefined) {
+          map[action.to] += action.weight;
+        }
+      });
+    });
+
     return map;
   }, [log]);
 
   return (
-    <div className="p-4 rounded-lg bg-white/5 border border-white/10 text-white">
-      <h2 className="font-semibold mb-3 text-lg">Cross‑App Influence</h2>
-
-      {Object.entries(grouped).map(([app, value]) => (
-        <div key={app} className="flex justify-between py-1 text-white/80">
-          <span>{app}</span>
+    <div className="space-y-2 text-white">
+      {Object.entries(grouped).map(([key, value]) => (
+        <div key={key} className="flex justify-between">
+          <span>{key}</span>
           <span>{value}</span>
         </div>
       ))}
