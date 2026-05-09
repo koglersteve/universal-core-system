@@ -1,9 +1,11 @@
-// src/notifications/engine.ts
-
 import { enqueueNotification } from "./queue";
 import { getUserPreferences } from "./preference-store";
 import type { NotificationTemplate } from "./dispatcher";
-import { TrendingTemplate } from "./templates/trending";
+
+import { trending } from "./templates/trending";
+import { system } from "./templates/system";
+import { newPost } from "./templates/new-post";
+import { creatorUpdate } from "./templates/creator-update";
 
 export async function processNotification(userId: string) {
   const prefs = await getUserPreferences(userId);
@@ -11,14 +13,15 @@ export async function processNotification(userId: string) {
   let template: NotificationTemplate;
 
   if (prefs.trending) {
-    template = TrendingTemplate;
+    template = trending;
+  } else if (prefs.system) {
+    template = system;
+  } else if (prefs.newPost) {
+    template = newPost;
   } else {
-    template = {
-      id: "default",
-      message: "You have a new notification.",
-      tone: "neutral",
-    };
+    template = creatorUpdate;
   }
 
-  return enqueueNotification(userId, template);
+  await enqueueNotification(userId, template);
 }
+
