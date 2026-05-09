@@ -1,16 +1,17 @@
+"use client";
+
 import { useState } from "react";
 import type { ReactionEmojiKey } from "@/types/os/ReactionEmojiKey";
 
 export function useReactions(initialCounts: Record<ReactionEmojiKey, number>) {
-  const [counts, setCounts] = useState<Record<ReactionEmojiKey, number>>(initialCounts);
+  const [counts, setCounts] = useState(initialCounts);
   const [sending, setSending] = useState(false);
 
   async function sendReaction(emoji: ReactionEmojiKey) {
     if (sending) return;
     setSending(true);
 
-    // strict-safe: prev is fully typed
-    setCounts((prev: Record<ReactionEmojiKey, number>) => ({
+    setCounts((prev) => ({
       ...prev,
       [emoji]: (prev[emoji] ?? 0) + 1,
     }));
@@ -21,9 +22,7 @@ export function useReactions(initialCounts: Record<ReactionEmojiKey, number>) {
         body: JSON.stringify({ emoji }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to send reaction");
-      }
+      if (!res.ok) throw new Error("Failed to send reaction");
     } catch (err) {
       console.error(err);
     } finally {
@@ -33,3 +32,4 @@ export function useReactions(initialCounts: Record<ReactionEmojiKey, number>) {
 
   return { counts, sendReaction, sending };
 }
+

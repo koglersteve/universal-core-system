@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 
 type IconProps = {
   className?: string;

@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 type Tone = "neutral" | "playful" | "urgent" | "celebratory";
 
-type NotificationItem = {
+export type NotificationItem = {
   id: string;
   title: string;
   body: string;
@@ -21,7 +21,9 @@ type NotificationState = {
 
 export const useNotificationStore = create<NotificationState>((set) => ({
   inbox: [],
+
   setInbox: (items) => set({ inbox: items }),
+
   markRead: (id) =>
     set((state) => ({
       inbox: state.inbox.map((n) =>

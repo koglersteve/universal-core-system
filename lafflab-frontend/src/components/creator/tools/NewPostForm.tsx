@@ -1,3 +1,5 @@
+"use client";
+
 import CreateForm from "@/components/forms/CreateForm";
 
 export default function NewPostForm() {

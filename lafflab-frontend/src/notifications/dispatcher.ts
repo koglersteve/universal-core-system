@@ -1,33 +1,38 @@
 // src/notifications/dispatcher.ts
 
-import { addToInbox } from "./inbox-store";
+export type NotificationTone = "neutral" | "playful" | "urgent" | "celebratory";
 
 export type Notification = {
   id: string;
   userId: string;
+  title?: string;
   message: string;
+  url?: string;
+  tone?: NotificationTone;
   createdAt: number;
   read: boolean;
 };
 
 export type NotificationTemplate = {
   id: string;
+  title?: string;
   message: string;
+  url?: string;
+  tone?: NotificationTone;
 };
 
-export async function dispatchNotification(
+export function buildNotification(
   userId: string,
   template: NotificationTemplate
-) {
-  const notification: Notification = {
+): Notification {
+  return {
     id: crypto.randomUUID(),
     userId,
+    title: template.title,
     message: template.message,
+    url: template.url,
+    tone: template.tone ?? "neutral",
     createdAt: Date.now(),
     read: false,
   };
-
-  addToInbox(userId, notification);
-
-  return notification;
 }

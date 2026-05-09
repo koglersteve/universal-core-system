@@ -1,5 +1,6 @@
 // src/notifications/queue.ts
 
+import { buildNotification } from "./dispatcher";
 import type { Notification, NotificationTemplate } from "./dispatcher";
 
 const queue: Record<string, Notification[]> = {};
@@ -8,19 +9,11 @@ export function enqueueNotification(
   userId: string,
   template: NotificationTemplate
 ): Notification {
-  const notification: Notification = {
-    id: crypto.randomUUID(),
-    userId,
-    message: template.message,
-    createdAt: Date.now(),
-    read: false,
-  };
+  const notification = buildNotification(userId, template);
 
-  if (!queue[userId]) {
-    queue[userId] = [];
-  }
-
+  if (!queue[userId]) queue[userId] = [];
   queue[userId].push(notification);
+
   return notification;
 }
 
@@ -39,7 +32,5 @@ export function clearQueue(userId: string) {
 }
 
 export function clearAllQueues() {
-  for (const key in queue) {
-    delete queue[key];
-  }
+  for (const key in queue) delete queue[key];
 }

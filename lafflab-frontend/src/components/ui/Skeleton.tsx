@@ -1,10 +1,12 @@
+"use client";
+
 type SkeletonProps = {
   className?: string;
   variant?: "text" | "rect" | "circle";
 };
 
-export default function Skeleton({ className, variant = "rect" }: SkeletonProps) {
-  const base = "animate-pulse bg-gray-800";
+export default function Skeleton({ className = "", variant = "rect" }: SkeletonProps) {
+  const base = "animate-pulse bg-white/10";
 
   if (variant === "circle") {
     return <div className={`${base} rounded-full ${className}`} />;

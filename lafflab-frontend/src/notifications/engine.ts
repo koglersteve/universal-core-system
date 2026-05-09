@@ -1,14 +1,9 @@
 // src/notifications/engine.ts
 
-import type { Notification, NotificationTemplate } from "./dispatcher";
 import { enqueueNotification } from "./queue";
 import { getUserPreferences } from "./preference-store";
+import type { NotificationTemplate } from "./dispatcher";
 import { TrendingTemplate } from "./templates/trending";
-
-/**
- * Notification engine:
- * Chooses templates based on user preferences and dispatches them.
- */
 
 export async function processNotification(userId: string) {
   const prefs = await getUserPreferences(userId);
@@ -21,6 +16,7 @@ export async function processNotification(userId: string) {
     template = {
       id: "default",
       message: "You have a new notification.",
+      tone: "neutral",
     };
   }
 

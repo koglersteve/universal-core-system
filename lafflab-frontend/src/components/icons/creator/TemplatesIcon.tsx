@@ -1,11 +1,8 @@
+"use client";
+
 export default function TemplatesIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      {...props}
-    >
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
       <rect
         x="4"
         y="5"

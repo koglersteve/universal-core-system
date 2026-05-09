@@ -1,25 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import ActionButton from "@/components/ActionButton";
+import LoadingButton from "@/components/ui/LoadingButton";
+import { useToast } from "@/components/ui/ToastProvider";
 
-export default function CreateForm({ onSubmit }: { onSubmit?: (data: any) => void }) {
+export default function CreateForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
   const [text, setText] = useState("");
   const [media, setMedia] = useState<File | null>(null);
+  const toast = useToast();
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const payload = { text, media };
-    onSubmit?.(payload);
+  async function handleSubmit() {
+    try {
+      await onSubmit?.({ text, media });
+      toast("Post published!", "success");
+      setText("");
+      setMedia(null);
+    } catch (err) {
+      toast("Failed to publish post", "error");
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-white">
+    <form onSubmit={(e) => e.preventDefault()} className="space-y-4 text-white">
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Write something funny..."
-        className="w-full p-3 rounded bg-white/10 border border-white/20 focus:outline-none"
+        className="w-full p-3 rounded bg-white/10 border border-white/20"
         rows={4}
       />
 
@@ -27,12 +34,12 @@ export default function CreateForm({ onSubmit }: { onSubmit?: (data: any) => voi
         type="file"
         accept="image/*,video/*"
         onChange={(e) => setMedia(e.target.files?.[0] ?? null)}
-        className="block text-sm text-gray-300"
+        className="block text-sm text-white/70"
       />
 
-      <ActionButton type="submit">
+      <LoadingButton onClick={handleSubmit} className="bg-pink-600 hover:bg-pink-700">
         Publish
-      </ActionButton>
+      </LoadingButton>
     </form>
   );
 }

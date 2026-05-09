@@ -25,12 +25,10 @@ export default function NotificationToast({
   return (
     <div
       onClick={onClick}
-      className={`fixed bottom-6 right-6 max-w-xs p-[var(--space-3)] rounded-[var(--radius-lg)] bg-white/10 ${toneClass} backdrop-blur card-elevated animate-slideDown cursor-pointer`}
+      className={`fixed bottom-6 right-6 max-w-xs p-4 rounded-lg bg-white/10 backdrop-blur border ${toneClass} cursor-pointer animate-slideDown`}
     >
-      <p className="text-[var(--text-sm)] font-semibold">{title}</p>
-      <p className="text-[var(--text-xs)] text-white/70 mt-[var(--space-1)]">
-        {body}
-      </p>
+      <p className="text-sm font-semibold text-white">{title}</p>
+      <p className="text-xs text-white/70 mt-1">{body}</p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 import type { Post } from "@/types/jokes";
 

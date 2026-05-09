@@ -1,4 +1,1 @@
-export const getUserIdentity = () => {
-  return null;
-};
-
+export const getUserIdentity = () => null;

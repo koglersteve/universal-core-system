@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 
 export type VerifyScreenContext = {
   userId: string;
@@ -11,13 +11,13 @@ export type VerifyScreenProps = {
 
 export default function VerifyScreen({ context }: VerifyScreenProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-white">
       <h1 className="text-2xl font-bold">Verify Your Identity</h1>
 
       {context && (
-        <div className="text-sm text-gray-600">
-          <p>User: {context.userId}</p>
-          <p>Status: {context.status}</p>
+        <div className="text-sm text-white/60 space-y-1">
+          <p><span className="font-semibold">User:</span> {context.userId}</p>
+          <p><span className="font-semibold">Status:</span> {context.status}</p>
         </div>
       )}
     </div>

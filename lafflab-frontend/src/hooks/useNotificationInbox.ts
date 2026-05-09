@@ -10,7 +10,7 @@ export function useNotificationInbox(userId: string) {
     async function load() {
       const res = await fetch(`/api/notifications/inbox?user=${userId}`);
       const data = await res.json();
-      setInbox(data);
+      setInbox(data.notifications ?? []);
     }
     load();
   }, [userId, setInbox]);

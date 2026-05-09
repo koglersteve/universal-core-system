@@ -17,15 +17,11 @@ export interface FavoritesState {
 
 const LOCAL_KEY = "favorites";
 
-// -----------------------------
-// LOCAL STORAGE HELPERS
-// -----------------------------
 function loadLocal(): Set<string> {
   if (typeof window === "undefined") return new Set();
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
-    if (!raw) return new Set();
-    return new Set(JSON.parse(raw));
+    return raw ? new Set(JSON.parse(raw)) : new Set();
   } catch {
     return new Set();
   }
@@ -40,9 +36,6 @@ function saveLocal(favs: Set<string>) {
   }
 }
 
-// -----------------------------
-// ZUSTAND STORE
-// -----------------------------
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   favorites: new Set(),
   hydrated: false,
@@ -50,9 +43,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   syncing: false,
   error: null,
 
-  // -----------------------------
-  // HYDRATE + MERGE LOCAL + REMOTE
-  // -----------------------------
   hydrate: async () => {
     if (get().hydrated) return;
 
@@ -60,8 +50,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
     try {
       const local = loadLocal();
-
-      // Pull remote favorites
       const remote = await LaffLabApi.getFavorites().catch(() => ({
         favorites: [],
       }));
@@ -91,16 +79,12 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     }
   },
 
-  // -----------------------------
-  // TOGGLE FAVORITE (OPTIMISTIC + SYNC)
-  // -----------------------------
   toggleFavorite: async (postId: string) => {
     const prev = get().favorites;
     const next = new Set(prev);
 
     const wasFavorite = next.has(postId);
 
-    // Optimistic update
     if (wasFavorite) next.delete(postId);
     else next.add(postId);
 
@@ -108,14 +92,12 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     saveLocal(next);
 
     try {
-      // Push to backend
       if (wasFavorite) {
         await LaffLabApi.removeFavorite(postId);
       } else {
         await LaffLabApi.addFavorite(postId);
       }
 
-      // Pull remote again to ensure cross‑device consistency
       const remote = await LaffLabApi.getFavorites().catch(() => null);
 
       if (remote && Array.isArray(remote.favorites)) {
@@ -137,7 +119,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     } catch (err) {
       console.error("Favorite sync failed:", err);
 
-      // Rollback optimistic update
       const rollback = new Set(prev);
       saveLocal(rollback);
 
@@ -149,10 +130,5 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     }
   },
 
-  // -----------------------------
-  // CHECK FAVORITE
-  // -----------------------------
-  isFavorite: (id: string) => {
-    return get().favorites.has(id);
-  },
+  isFavorite: (id: string) => get().favorites.has(id),
 }));

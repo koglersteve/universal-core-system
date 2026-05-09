@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 
 export type VerifyUploadContext = {
   userId: string;
@@ -12,14 +12,20 @@ export type VerifyUploadProps = {
 
 export default function VerifyUpload({ context }: VerifyUploadProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-white">
       <h1 className="text-2xl font-bold">Upload Verification Documents</h1>
 
       {context && (
-        <div className="text-sm text-gray-600">
-          <p>User: {context.userId}</p>
-          <p>Allowed Types: {context.allowedTypes.join(", ")}</p>
-          <p>Max Size: {context.maxSizeMB} MB</p>
+        <div className="text-sm text-white/60 space-y-1">
+          <p><span className="font-semibold">User:</span> {context.userId}</p>
+          <p>
+            <span className="font-semibold">Allowed Types:</span>{" "}
+            {context.allowedTypes.join(", ")}
+          </p>
+          <p>
+            <span className="font-semibold">Max Size:</span>{" "}
+            {context.maxSizeMB} MB
+          </p>
         </div>
       )}
     </div>

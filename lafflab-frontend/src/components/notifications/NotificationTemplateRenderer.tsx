@@ -1,3 +1,5 @@
+"use client";
+
 import trending from "@/notifications/templates/trending";
 import system from "@/notifications/templates/system";
 import newPost from "@/notifications/templates/new-post";
@@ -7,12 +9,12 @@ const templates = {
   trending,
   system,
   "new-post": newPost,
-  "creator-update": creatorUpdate
+  "creator-update": creatorUpdate,
 };
 
 export default function NotificationTemplateRenderer({
   type,
-  payload
+  payload,
 }: {
   type: string;
   payload: any;
@@ -29,9 +31,5 @@ export default function NotificationTemplateRenderer({
 
   const content = template(payload);
 
-  return (
-    <div className="text-white text-sm leading-relaxed">
-      {content}
-    </div>
-  );
+  return <div className="text-white text-sm leading-relaxed">{content}</div>;
 }

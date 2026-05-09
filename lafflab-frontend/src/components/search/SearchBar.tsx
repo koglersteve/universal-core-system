@@ -7,7 +7,7 @@ export default function SearchBar() {
   const router = useRouter();
   const [value, setValue] = useState("");
 
-  function submit(e: any) {
+  function submit(e: React.FormEvent) {
     e.preventDefault();
     router.push(`/search?q=${encodeURIComponent(value)}`);
   }
@@ -20,7 +20,7 @@ export default function SearchBar() {
         placeholder="Search..."
         className="flex-1 p-2 rounded bg-white/10 text-white border border-white/20"
       />
-      <button className="px-4 py-2 bg-white/20 rounded text-white">
+      <button className="px-4 py-2 bg-white/20 rounded text-white hover:bg-white/30 transition">
         Go
       </button>
     </form>

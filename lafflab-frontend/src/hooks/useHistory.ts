@@ -14,7 +14,7 @@ export function useHistory() {
       try {
         const data = await LaffLabApi.getHistory();
         setHistory(data);
-      } catch (err) {
+      } catch {
         setError("Failed to load history");
       } finally {
         setLoading(false);
@@ -35,4 +35,3 @@ export function useHistory() {
 
   return { history, loading, error, reload, clear };
 }
-

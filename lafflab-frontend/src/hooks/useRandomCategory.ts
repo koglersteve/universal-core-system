@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 import type { Category } from "@/types/category";
@@ -11,10 +13,8 @@ export function useRandomCategory() {
       try {
         const categories = await LaffLabApi.getCategories();
 
-        if (categories && categories.length > 0) {
-          const random =
-            categories[Math.floor(Math.random() * categories.length)];
-
+        if (categories?.length) {
+          const random = categories[Math.floor(Math.random() * categories.length)];
           setCategory(random ?? null);
         } else {
           setCategory(null);

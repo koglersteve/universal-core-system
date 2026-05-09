@@ -6,13 +6,12 @@ export type NotificationPreferences = {
 
 const prefs = new Map<string, NotificationPreferences>();
 
-export function getUserPreferences(userId: string): Promise<NotificationPreferences> {
+export function getUserPreferences(
+  userId: string
+): Promise<NotificationPreferences> {
   if (!prefs.has(userId)) {
-    prefs.set(userId, {
-      trending: true, // default preference
-    });
+    prefs.set(userId, { trending: true });
   }
-
   return Promise.resolve(prefs.get(userId)!);
 }
 

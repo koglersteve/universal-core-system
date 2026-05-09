@@ -1,4 +1,4 @@
-// src/hooks/useNotifications.ts
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -28,13 +28,10 @@ export function useNotifications(userId: string) {
         console.error("Failed to fetch notifications:", err);
       }
 
-      if (active) {
-        setTimeout(poll, 1500);
-      }
+      if (active) setTimeout(poll, 1500);
     }
 
     poll();
-
     return () => {
       active = false;
     };
