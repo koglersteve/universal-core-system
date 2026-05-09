@@ -1,34 +1,25 @@
-import { Router } from "express";
-import bcrypt from "bcryptjs";
-import { db } from "../../lib/db";
+import { NextResponse } from "next/server";
 
-const router = Router();
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
 
-router.post("/reset", async (req, res) => {
-  const { token, password } = req.body;
+    const backendRes = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/reset`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }
+    );
 
-  const record = await db.password_reset_tokens.findUnique({
-    where: { token },
-  });
+    const data = await backendRes.json();
 
-  if (!record) return res.status(400).json({ error: "Invalid token" });
-  if (record.used) return res.status(400).json({ error: "Token already used" });
-  if (record.expires_at < new Date())
-    return res.status(400).json({ error: "Token expired" });
-
-  const hashed = await bcrypt.hash(password, 10);
-
-  await db.user.update({
-    where: { id: record.user_id },
-    data: { password: hashed },
-  });
-
-  await db.password_reset_tokens.update({
-    where: { token },
-    data: { used: true },
-  });
-
-  return res.json({ ok: true });
-});
-
-export default router;
+    return NextResponse.json(data, { status: backendRes.status });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Password reset failed" },
+      { status: 500 }
+    );
+  }
+}
