@@ -2,17 +2,13 @@ import Link from "next/link";
 
 export default function SettingsHome() {
   return (
-    <div className="min-h-screen bg-black text-white p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Settings</h1>
-
-      <div className="space-y-4">
-        <Link href="/settings/account" className="block text-lg">Account</Link>
-        <Link href="/settings/notifications" className="block text-lg">Notifications</Link>
-        <Link href="/settings/privacy" className="block text-lg">Privacy</Link>
-        <Link href="/settings/creator" className="block text-lg">Creator Mode</Link>
-        <Link href="/settings/theme" className="block text-lg">Theme</Link>
-        <Link href="/settings/storage" className="block text-lg">Data & Storage</Link>
-      </div>
+    <div className="space-y-4">
+      <Link href="/settings/account" className="block text-lg">Account</Link>
+      <Link href="/settings/notifications" className="block text-lg">Notifications</Link>
+      <Link href="/settings/privacy" className="block text-lg">Privacy</Link>
+      <Link href="/settings/creator" className="block text-lg">Creator Mode</Link>
+      <Link href="/settings/theme" className="block text-lg">Theme</Link>
+      <Link href="/settings/storage" className="block text-lg">Data & Storage</Link>
     </div>
   );
 }
