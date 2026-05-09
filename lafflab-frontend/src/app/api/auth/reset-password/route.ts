@@ -1,15 +1,17 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { Router } from "express";
 import crypto from "crypto";
+import { db } from "../../lib/db";
+import { sendEmail } from "../../lib/email";
 
-export async function POST(req: Request) {
-  const { email } = await req.json();
+const router = Router();
+
+router.post("/reset-password", async (req, res) => {
+  const { email } = req.body;
 
   const user = await db.user.findUnique({ where: { email } });
 
   // Always return ok to avoid user enumeration
-  if (!user) return NextResponse.json({ ok: true });
+  if (!user) return res.json({ ok: true });
 
   const token = crypto.randomBytes(32).toString("hex");
 
@@ -17,12 +19,12 @@ export async function POST(req: Request) {
     data: {
       user_id: user.id,
       token,
-      expires_at: new Date(Date.now() + 1000 * 60 * 30),
+      expires_at: new Date(Date.now() + 1000 * 60 * 30), // 30 minutes
       used: false,
     },
   });
 
-  const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/reset?token=${token}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/auth/reset?token=${token}`;
 
   await sendEmail({
     to: email,
@@ -50,5 +52,7 @@ export async function POST(req: Request) {
     `,
   });
 
-  return NextResponse.json({ ok: true });
-}
+  return res.json({ ok: true });
+});
+
+export default router;

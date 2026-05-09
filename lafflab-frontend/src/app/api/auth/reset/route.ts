@@ -1,19 +1,20 @@
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { Router } from "express";
 import bcrypt from "bcryptjs";
+import { db } from "../../lib/db";
 
-export async function POST(req: Request) {
-  const { token, password } = await req.json();
+const router = Router();
+
+router.post("/reset", async (req, res) => {
+  const { token, password } = req.body;
 
   const record = await db.password_reset_tokens.findUnique({
     where: { token },
   });
 
-  if (!record || record.used)
-    return NextResponse.json({ error: "Invalid token" }, { status: 400 });
-
+  if (!record) return res.status(400).json({ error: "Invalid token" });
+  if (record.used) return res.status(400).json({ error: "Token already used" });
   if (record.expires_at < new Date())
-    return NextResponse.json({ error: "Token expired" }, { status: 400 });
+    return res.status(400).json({ error: "Token expired" });
 
   const hashed = await bcrypt.hash(password, 10);
 
@@ -27,5 +28,7 @@ export async function POST(req: Request) {
     data: { used: true },
   });
 
-  return NextResponse.json({ ok: true });
-}
+  return res.json({ ok: true });
+});
+
+export default router;

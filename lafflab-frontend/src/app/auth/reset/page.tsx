@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useSupabase } from "@/hooks/useSupabase";
+import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/ToastProvider";
 
 export default function ResetPasswordPage() {
-  const supabase = useSupabase();
-  const toast = useToast();
+  const params = useSearchParams();
+  const token = params.get("token");
 
+  const toast = useToast();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,9 +16,13 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.updateUser({ password });
+    const res = await fetch("/api/auth/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, password }),
+    });
 
-    if (error) {
+    if (!res.ok) {
       toast("Try again, champ.", "error");
     } else {
       toast("Password updated. You’re unstoppable.", "success");
