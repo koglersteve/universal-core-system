@@ -4,13 +4,22 @@ import { Post } from "@/types/post";
 
 async function getFeed(): Promise<Post[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feed`, {
-      cache: "no-store"
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/feed`;
+
+    const res = await fetch(url, {
+      cache: "no-store",
+      next: { revalidate: 0 }
     });
 
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
+    if (!res.ok) {
+      console.error("Feed API error:", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error("Feed fetch failed:", err);
     return [];
   }
 }
