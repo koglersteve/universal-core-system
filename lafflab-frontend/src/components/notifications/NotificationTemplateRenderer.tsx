@@ -1,35 +1,36 @@
 "use client";
 
-import trending from "@/notifications/templates/trending";
-import system from "@/notifications/templates/system";
-import newPost from "@/notifications/templates/new-post";
-import creatorUpdate from "@/notifications/templates/creator-update";
+import { trending } from "@/notifications/templates/trending";
+import { system } from "@/notifications/templates/system";
+import { newPost } from "@/notifications/templates/new-post";
+import { creatorUpdate } from "@/notifications/templates/creator-update";
 
-const templates = {
+const templates: Record<string, any> = {
   trending,
   system,
-  "new-post": newPost,
-  "creator-update": creatorUpdate,
+  newPost,
+  creatorUpdate,
 };
 
 export default function NotificationTemplateRenderer({
   type,
-  payload,
 }: {
   type: string;
-  payload: any;
 }) {
   const template = templates[type];
 
   if (!template) {
     return (
-      <div className="text-white/60 text-sm">
-        Unknown notification type: {type}
+      <div className="text-white/60">
+        Unknown notification template.
       </div>
     );
   }
 
-  const content = template(payload);
-
-  return <div className="text-white text-sm leading-relaxed">{content}</div>;
+  return (
+    <div className="p-4 rounded bg-white/10 border border-white/20 text-white">
+      <h2 className="font-bold">{template.title}</h2>
+      <p>{template.body}</p>
+    </div>
+  );
 }
