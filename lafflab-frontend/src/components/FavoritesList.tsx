@@ -1,34 +1,33 @@
-// FILE: src/components/FavoritesList.tsx
 "use client";
 
-import JokeCard from "@/components/JokeCard";
-import { EmptyState, EmptyHeartIcon } from "@/components/EmptyState";
-import type { Post } from "@/types/jokes";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 
-type FavoritesListProps = {
-  posts: Post[];
-};
+interface FavoritesListProps {
+  posts: any[];
+}
 
 export default function FavoritesList({ posts }: FavoritesListProps) {
-  const { favorites } = useFavoritesStore();
+  const { favorites } = useFavoritesStore(); // Set<string>
 
-  const favoritePosts = posts.filter((post) => favorites.includes(post.id));
+  const favoritePosts = posts.filter((post) => favorites.has(post.id));
 
   if (!favoritePosts.length) {
     return (
-      <EmptyState
-        title="No favorites yet"
-        subtitle="Save jokes you love and they’ll show up here for quick laughs."
-        icon={EmptyHeartIcon}
-      />
+      <p className="text-white/60">
+        No favorites yet.
+      </p>
     );
   }
 
   return (
     <div className="space-y-4">
       {favoritePosts.map((post) => (
-        <JokeCard key={post.id} post={post} />
+        <div
+          key={post.id}
+          className="p-4 rounded bg-white/10 border border-white/20 text-white"
+        >
+          {JSON.stringify(post)}
+        </div>
       ))}
     </div>
   );
