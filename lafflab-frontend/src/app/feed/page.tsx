@@ -4,7 +4,7 @@ import { Post } from "@/types/post";
 
 async function getFeed(): Promise<Post[]> {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/feed`;
+    const url = "/api/feed"; // ← FIXED
 
     const res = await fetch(url, {
       cache: "no-store",
