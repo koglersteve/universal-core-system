@@ -21,3 +21,6 @@ export async function loadProfile(): Promise<UserProfile> {
     session: 1,
   };
 }
+
+// Alias to satisfy API route imports
+export const getProfile = loadProfile;
