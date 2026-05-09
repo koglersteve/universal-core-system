@@ -7,4 +7,3 @@ export async function GET() {
   const inbox = getInbox("demo-user");
   return NextResponse.json(inbox);
 }
-lete successfully: exit code: 1 
