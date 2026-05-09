@@ -7,8 +7,8 @@ import { useToast } from "@/components/ui/ToastProvider";
 export default function ResetPasswordPage() {
   const params = useSearchParams();
   const token = params.get("token");
-
   const toast = useToast();
+
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -23,9 +23,9 @@ export default function ResetPasswordPage() {
     });
 
     if (!res.ok) {
-      toast("Try again, champ.", "error");
+      toast("Try again.", "error");
     } else {
-      toast("Password updated. You’re unstoppable.", "success");
+      toast("Password updated.", "success");
     }
 
     setLoading(false);
@@ -33,7 +33,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="max-w-md mx-auto p-6 text-white space-y-6">
-      <h1 className="text-2xl font-bold">Reset Your Password</h1>
+      <h1 className="text-2xl font-bold">Reset Password</h1>
 
       <form onSubmit={handleReset} className="space-y-4">
         <input
@@ -54,3 +54,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+

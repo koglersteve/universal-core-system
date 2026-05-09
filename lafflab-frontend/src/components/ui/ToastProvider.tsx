@@ -1,31 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { useToast } from "@/components/ui/ToastProvider";
+import { createContext, useContext, useState } from "react";
 
-export default function ExampleForm({ onSubmit }) {
-  const [loading, setLoading] = useState(false);
-  const toast = useToast();
+const ToastContext = createContext<any>(null);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setLoading(true);
+export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const [message, setMessage] = useState<string | null>(null);
+  const [type, setType] = useState<"success" | "error" | null>(null);
 
-    try {
-      await onSubmit?.();
-      toast("Success!", "success");
-    } catch {
-      toast("Something went wrong", "error");
-    } finally {
-      setLoading(false);
-    }
+  function toast(msg: string, t: "success" | "error") {
+    setMessage(msg);
+    setType(t);
+    setTimeout(() => {
+      setMessage(null);
+      setType(null);
+    }, 3000);
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <button disabled={loading}>
-        {loading ? "Saving…" : "Save"}
-      </button>
-    </form>
+    <ToastContext.Provider value={toast}>
+      {children}
+      {message && (
+        <div className="fixed bottom-4 right-4 px-4 py-2 rounded bg-black text-white">
+          {message}
+        </div>
+      )}
+    </ToastContext.Provider>
   );
+}
+
+export function useToast() {
+  return useContext(ToastContext);
 }

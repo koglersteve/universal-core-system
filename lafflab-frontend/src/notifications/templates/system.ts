@@ -1,11 +1,5 @@
-// src/notifications/templates/system.ts
-
-import type { NotificationTemplate } from "../dispatcher";
-
-export const SystemTemplate: NotificationTemplate = {
-  id: "system",
-  title: "System Update",
-  message: "Your account settings were updated.",
-  tone: "neutral",
+export const system = {
+  title: "System Notification",
+  body: "A system event has occurred.",
 };
 
