@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
@@ -70,7 +73,6 @@ import jokesRouter from "./routes.api/jokes";
 import categoriesRouter from "./routes.api/categories";
 import historyApiRouter from "./routes.api/history";
 import dailyRitualRouter from "./routes.api/dailyRitual";
-// ❌ REMOVED: import healthApiRouter from "./routes.api/health";
 
 const app = new Hono();
 
@@ -174,7 +176,6 @@ app.route("/jokes", jokesRouter);
 app.route("/categories", categoriesRouter);
 app.route("/history", historyApiRouter);
 app.route("/daily-ritual", dailyRitualRouter);
-// ❌ REMOVED: app.route("/health", healthApiRouter);
 
 // -----------------------------------------------------
 // Root Endpoint
