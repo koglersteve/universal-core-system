@@ -25,3 +25,4 @@ async function start() {
 }
 
 start();
+console.log("DATABASE_URL in production:", process.env.DATABASE_URL);
