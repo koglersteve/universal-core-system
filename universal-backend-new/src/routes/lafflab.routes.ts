@@ -1,69 +1,54 @@
 import { FastifyInstance } from "fastify";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export default async function lafflabRoutes(app: FastifyInstance) {
   // Base route
   app.get("/lafflab", async () => ({
     service: "LAFFlab",
     status: "online",
-    endpoints: ["/lafflab/memes", "/lafflab/jokes", "/lafflab/random"]
+    endpoints: ["/lafflab/memes", "/lafflab/jokes", "/lafflab/quotes", "/lafflab/gifs", "/lafflab/random"]
   }));
 
-  // Mock memes
+  // Get all memes
   app.get("/lafflab/memes", async () => {
-    return [
-      {
-        id: "meme-1",
-        type: "meme",
-        mediaUrl: "https://i.imgflip.com/30b1gx.jpg",
-        caption: "Classic meme",
-        score: 100
-      },
-      {
-        id: "meme-2",
-        type: "meme",
-        mediaUrl: "https://i.imgflip.com/1bij.jpg",
-        caption: "Distracted Boyfriend",
-        score: 88
-      }
-    ];
+    return prisma.lAFFItem.findMany({
+      where: { type: "meme" },
+      orderBy: { createdAt: "desc" }
+    });
   });
 
-  // Mock jokes
+  // Get all jokes
   app.get("/lafflab/jokes", async () => {
-    return [
-      {
-        id: "joke-1",
-        type: "joke",
-        text: "Why don’t skeletons fight each other? They don’t have the guts.",
-        score: 55
-      },
-      {
-        id: "joke-2",
-        type: "joke",
-        text: "I told my computer I needed a break… and it said 'No problem, I’ll go to sleep.'",
-        score: 42
-      }
-    ];
+    return prisma.lAFFItem.findMany({
+      where: { type: "joke" },
+      orderBy: { createdAt: "desc" }
+    });
   });
 
-  // Random item
-  app.get("/lafflab/random", async () => {
-    const items = [
-      {
-        id: "meme-1",
-        type: "meme",
-        mediaUrl: "https://i.imgflip.com/30b1gx.jpg",
-        caption: "Classic meme",
-        score: 100
-      },
-      {
-        id: "joke-1",
-        type: "joke",
-        text: "Why don’t skeletons fight each other? They don’t have the guts.",
-        score: 55
-      }
-    ];
+  // Get all quotes
+  app.get("/lafflab/quotes", async () => {
+    return prisma.lAFFItem.findMany({
+      where: { type: "quote" },
+      orderBy: { createdAt: "desc" }
+    });
+  });
 
-    return items[Math.floor(Math.random() * items.length)];
+  // Get all GIFs
+  app.get("/lafflab/gifs", async () => {
+    return prisma.lAFFItem.findMany({
+      where: { type: "gif" },
+      orderBy: { createdAt: "desc" }
+    });
+  });
+
+  // Random LAFFlab item
+  app.get("/lafflab/random", async () => {
+    const items = await prisma.lAFFItem.findMany();
+    if (items.length === 0) return { error: "No LAFFlab items found" };
+
+    const random = items[Math.floor(Math.random() * items.length)];
+    return random;
   });
 }
