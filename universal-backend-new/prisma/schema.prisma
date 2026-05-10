@@ -1,37 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id         String   @id @default(cuid())
-  screenName String
-  avatarUrl  String?  @db.Text
-  posts      Post[]
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  email       String   @unique
+  screenName  String
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts       Post[]
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  type      String
-  text      String?  @db.Text
-  mediaUrl  String?  @db.Text
-  score     Int      @default(0)
-  creatorId String
-  creator   User     @relation(fields: [creatorId], references: [id])
-  createdAt DateTime @default(now())
-}
+  id         String   @id @default(cuid())
+  type       String
+  text       String?
+  mediaUrl   String?
+  score      Int      @default(0)
+  createdAt  DateTime @default(now())
 
-model UserSettings {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  darkMode      Boolean  @default(true)
-  pushNotifications Boolean @default(false)
-  emailAlerts   Boolean  @default(true)
-  creatorMode   Boolean  @default(false)
-  updatedAt     DateTime @updatedAt
+  creatorId  String
+  creator    User     @relation(fields: [creatorId], references: [id])
 }
