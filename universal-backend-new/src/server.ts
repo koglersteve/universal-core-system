@@ -2,7 +2,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import fastify from "fastify";
+
+// ROUTES
 import feedRoutes from "./routes/feed";
+import lafflabRoutes from "./routes/lafflab.routes";
 
 async function start() {
   const app = fastify({ logger: true });
@@ -11,14 +14,16 @@ async function start() {
   app.get("/", async () => ({
     message: "Universal Backend Online",
     health: "/health",
-    feed: "/feed"
+    feed: "/feed",
+    lafflab: "/lafflab"
   }));
 
   // Health check
   app.get("/health", async () => ({ status: "ok" }));
 
-  // Feed routes
+  // Register routes
   app.register(feedRoutes);
+  app.register(lafflabRoutes);
 
   try {
     await app.listen({
