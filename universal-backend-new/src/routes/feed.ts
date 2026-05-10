@@ -6,13 +6,9 @@ export default async function feedRoutes(app: FastifyInstance) {
     try {
       const posts = await prisma.post.findMany({
         orderBy: { createdAt: "desc" },
-        include: {
-          creator: true // allow null creator safely
-        },
         take: 50
       });
 
-      // If DB is empty, return mock post
       if (!posts || posts.length === 0) {
         return reply.send([
           {
@@ -23,6 +19,7 @@ export default async function feedRoutes(app: FastifyInstance) {
             mediaUrl: "https://i.imgflip.com/30b1gx.jpg",
             createdAt: new Date().toISOString(),
             score: 42,
+            creatorId: "user-1",
             creator: {
               id: "user-1",
               screenName: "MockUser",
@@ -32,26 +29,15 @@ export default async function feedRoutes(app: FastifyInstance) {
         ]);
       }
 
-      // Normalize creator to avoid crashes
-      const safePosts = posts.map((p) => ({
-        ...p,
-        creator: p.creator
-          ? {
-              id: p.creator.id,
-              screenName: p.creator.screenName,
-              avatarUrl: p.creator.avatarUrl
-            }
-          : {
-              id: "unknown",
-              screenName: "Unknown User",
-              avatarUrl: null
-            }
-      }));
-
-      return reply.send(safePosts);
-    } catch (err) {
+      return reply.send(posts);
+    } catch (err: any) {
       app.log.error(err);
-      return reply.status(500).send({ error: "Feed service failed" });
+      return reply
+        .status(500)
+        .send({
+          error: "Feed service failed",
+          message: err?.message ?? "unknown error"
+        });
     }
   });
 }
