@@ -1,3 +1,7 @@
+// ---------------------------------------------
+//  Prisma Schema for Universal Backend + LAFFlab
+// ---------------------------------------------
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,25 +11,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ---------------------------------------------
+//  USER MODEL
+// ---------------------------------------------
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  screenName  String
-  avatarUrl   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  email      String   @unique
+  screenName String
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
 
-  posts       Post[]
+  posts      Post[]
+  lafflabItems LAFFItem[]
 }
 
+// ---------------------------------------------
+//  UNIVERSAL FEED POST MODEL
+// ---------------------------------------------
 model Post {
   id         String   @id @default(cuid())
   type       String
   text       String?
   mediaUrl   String?
-  score      Int      @default(0)
-  createdAt  DateTime @default(now())
+  score      Int       @default(0)
+  createdAt  DateTime  @default(now())
 
   creatorId  String
-  creator    User     @relation(fields: [creatorId], references: [id])
+  creator    User      @relation(fields: [creatorId], references: [id])
+}
+
+// ---------------------------------------------
+//  LAFFLAB CONTENT MODEL
+// ---------------------------------------------
+model LAFFItem {
+  id         String   @id @default(cuid())
+  type       String   // "meme" | "joke" | "quote" | "gif"
+  text       String?  // for jokes, quotes
+  mediaUrl   String?  // for memes, gifs
+  caption    String?  // optional caption
+  score      Int       @default(0)
+  createdAt  DateTime  @default(now())
+
+  creatorId  String
+  creator    User      @relation(fields: [creatorId], references: [id])
 }
