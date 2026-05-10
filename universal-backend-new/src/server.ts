@@ -7,9 +7,18 @@ import feedRoutes from "./routes/feed";
 async function start() {
   const app = fastify({ logger: true });
 
-  app.register(feedRoutes);
+  // Root route
+  app.get("/", async () => ({
+    message: "Universal Backend Online",
+    health: "/health",
+    feed: "/feed"
+  }));
 
+  // Health check
   app.get("/health", async () => ({ status: "ok" }));
+
+  // Feed routes
+  app.register(feedRoutes);
 
   try {
     await app.listen({
@@ -25,4 +34,3 @@ async function start() {
 }
 
 start();
-console.log("DATABASE_URL in production:", process.env.DATABASE_URL);
