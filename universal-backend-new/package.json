@@ -1,3 +1,5 @@
+"build": "prisma generate && tsc"
+
 {
   "name": "universal-backend-new",
   "version": "1.0.1",
