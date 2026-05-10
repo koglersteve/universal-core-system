@@ -6,6 +6,7 @@ import fastify from "fastify";
 // ROUTES
 import feedRoutes from "./routes/feed";
 import lafflabRoutes from "./routes/lafflab.routes";
+import postRoutes from "./routes/post.routes";
 
 async function start() {
   const app = fastify({ logger: true });
@@ -15,7 +16,8 @@ async function start() {
     message: "Universal Backend Online",
     health: "/health",
     feed: "/feed",
-    lafflab: "/lafflab"
+    lafflab: "/lafflab",
+    post: "/post"
   }));
 
   // Health check
@@ -24,6 +26,7 @@ async function start() {
   // Register routes
   app.register(feedRoutes);
   app.register(lafflabRoutes);
+  app.register(postRoutes);
 
   try {
     await app.listen({
