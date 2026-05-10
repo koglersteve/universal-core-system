@@ -3,39 +3,45 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.post.deleteMany();
+  console.log("🌱 Seeding database...");
 
+  // Create a user
+  const user = await prisma.user.create({
+    data: {
+      email: "mockuser@example.com",
+      screenName: "MockUser",
+      avatarUrl: null
+    }
+  });
+
+  // Create posts
   await prisma.post.createMany({
     data: [
       {
-        type: "text",
-        text: "Why don’t skeletons fight each other? They don’t have the guts.",
-      },
-      {
-        type: "image",
-        text: "Relatable meme of the day.",
-        imageUrl: "https://example.com/memes/relatable.png",
-      },
-      {
         type: "meme",
-        text: "When the deploy works on the first try.",
-        imageUrl: "https://example.com/memes/deploy.png",
+        text: null,
+        mediaUrl: "https://i.imgflip.com/30b1gx.jpg",
+        score: 42,
+        creatorId: user.id
       },
       {
-        type: "video",
-        text: "Stand‑up clip: 15 seconds of chaos.",
-        videoUrl: "https://example.com/videos/standup.mp4",
-        thumbnailUrl: "https://example.com/videos/standup-thumb.jpg",
-      },
-      {
-        type: "audio",
-        text: "Audio joke: classic one‑liner.",
-        audioUrl: "https://example.com/audio/joke1.mp3",
-      },
-    ],
+        type: "text",
+        text: "Hello from Prisma seed!",
+        mediaUrl: null,
+        score: 10,
+        creatorId: user.id
+      }
+    ]
   });
+
+  console.log("🌱 Seed complete.");
 }
 
 main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
