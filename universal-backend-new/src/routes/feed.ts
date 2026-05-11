@@ -2,42 +2,43 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma";
 
 export default async function feedRoutes(app: FastifyInstance) {
-  app.get("/feed", async (_req, reply) => {
+  app.get("/feed", async (req, reply) => {
     try {
+      const { cursor, limit = 10, app: appFilter } = req.query as {
+        cursor?: string;
+        limit?: string | number;
+        app?: string;
+      };
+
+      const take = Number(limit) || 10;
+
       const posts = await prisma.post.findMany({
+        where: appFilter ? { app: appFilter } : {},
+        take,
+        skip: cursor ? 1 : 0,
+        cursor: cursor ? { id: cursor } : undefined,
         orderBy: { createdAt: "desc" },
-        take: 50
+        include: {
+          creator: {
+            select: {
+              id: true,
+              screenName: true,
+              avatarUrl: true,
+            },
+          },
+        },
       });
 
-      if (!posts || posts.length === 0) {
-        return reply.send([
-          {
-            id: "mock-1",
-            app: "mock",
-            type: "meme",
-            text: null,
-            mediaUrl: "https://i.imgflip.com/30b1gx.jpg",
-            createdAt: new Date().toISOString(),
-            score: 42,
-            creatorId: "user-1",
-            creator: {
-              id: "user-1",
-              screenName: "MockUser",
-              avatarUrl: null
-            }
-          }
-        ]);
-      }
+      const nextCursor =
+        posts.length === take ? posts[posts.length - 1].id : null;
 
-      return reply.send(posts);
-    } catch (err: any) {
+      return reply.send({
+        items: posts,
+        nextCursor,
+      });
+    } catch (err) {
       app.log.error(err);
-      return reply
-        .status(500)
-        .send({
-          error: "Feed service failed",
-          message: err?.message ?? "unknown error"
-        });
+      return reply.status(500).send({ error: "Feed service failed" });
     }
   });
 }

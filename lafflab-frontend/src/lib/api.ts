@@ -1,64 +1,13 @@
-import { api } from "@/lib/client";
-import type { Category } from "@/types/category";
-import type { HistoryItem } from "@/types/history";
-import type { Ritual } from "@/types/ritual";
-import type { Post } from "@/types/jokes";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ?? "https://universal-core-backend-production.up.railway.app";
 
-export const LaffLabApi = {
-  async getCategories(): Promise<Category[]> {
-    return api("/categories");
-  },
+export async function fetchFeed(params: { app: string; cursor?: string | null; limit?: number }) {
+  const url = new URL("/feed", API_BASE);
+  url.searchParams.set("app", params.app);
+  if (params.cursor) url.searchParams.set("cursor", params.cursor);
+  if (params.limit) url.searchParams.set("limit", String(params.limit));
 
-  async getCategory(id: string): Promise<Category> {
-    return api(`/categories/${id}`);
-  },
-
-  async getPosts(): Promise<Post[]> {
-    return api("/posts");
-  },
-
-  async getPost(id: string): Promise<Post> {
-    return api(`/posts/${id}`);
-  },
-
-  async getHistory(): Promise<HistoryItem[]> {
-    return api("/history");
-  },
-
-  async addHistory(postId: string): Promise<void> {
-    await api("/history", {
-      method: "POST",
-      body: JSON.stringify({ postId }),
-      headers: { "Content-Type": "application/json" },
-    });
-  },
-
-  async clearHistory(): Promise<void> {
-    await api("/history", {
-      method: "DELETE",
-    });
-  },
-
-  async generateRitual(): Promise<Ritual> {
-    return api("/daily-ritual/generate");
-  },
-
-  // ⭐ Favorites system
-  async getFavorites(): Promise<Post[]> {
-    return api("/favorites");
-  },
-
-  async addFavorite(postId: string): Promise<void> {
-    await api("/favorites", {
-      method: "POST",
-      body: JSON.stringify({ postId }),
-      headers: { "Content-Type": "application/json" },
-    });
-  },
-
-  async removeFavorite(postId: string): Promise<void> {
-    await api(`/favorites/${postId}`, {
-      method: "DELETE",
-    });
-  },
-};
+  const res = await fetch(url.toString(), { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to fetch feed");
+  return res.json() as Promise<{ items: any[]; nextCursor: string | null }>;
+}
