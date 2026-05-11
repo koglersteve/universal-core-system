@@ -15,15 +15,15 @@
     "jsx": "preserve",
     "incremental": true,
 
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"],
-      "@components/*": ["components/*"],
-      "@personalization/*": ["personalization/*"],
-      "@notifications/*": ["notifications/*"],
-      "@core/*": ["core/*"],
-      "@lib/*": ["lib/*"],
-      "@hooks/*": ["hooks/*"]
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@personalization/*": ["src/personalization/*"],
+      "@notifications/*": ["src/notifications/*"],
+      "@core/*": ["src/core/*"],
+      "@lib/*": ["src/lib/*"],
+      "@hooks/*": ["src/hooks/*"]
     },
 
     "plugins": [
