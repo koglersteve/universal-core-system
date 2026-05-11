@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchDailyRitual, setDailyRitualMessage } from "@/store/useRitualStore";
 import type { Ritual } from "@/types/ritual";
 

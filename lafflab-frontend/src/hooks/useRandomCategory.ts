@@ -12,7 +12,6 @@ export function useRandomCategory() {
     async function load() {
       try {
         const categories = await LaffLabApi.getCategories();
-
         if (categories?.length) {
           const random = categories[Math.floor(Math.random() * categories.length)];
           setCategory(random ?? null);

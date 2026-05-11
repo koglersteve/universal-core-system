@@ -17,12 +17,10 @@ export function useReactions(initialCounts: Record<ReactionEmojiKey, number>) {
     }));
 
     try {
-      const res = await fetch("/api/reactions", {
+      await fetch("/api/reactions", {
         method: "POST",
         body: JSON.stringify({ emoji }),
       });
-
-      if (!res.ok) throw new Error("Failed to send reaction");
     } catch (err) {
       console.error(err);
     } finally {

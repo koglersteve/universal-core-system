@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LaffLabApi } from "@/lib/api";
 
 export function usePersonalizationProfile(userId: string) {
   const [profile, setProfile] = useState<any>(null);
@@ -9,8 +10,7 @@ export function usePersonalizationProfile(userId: string) {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const res = await fetch(`/api/personalization/profile?user=${userId}`);
-      const data = await res.json();
+      const data = await LaffLabApi.getSettings();
       setProfile(data);
       setLoading(false);
     }

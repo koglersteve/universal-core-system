@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LaffLabApi } from "@/lib/api";
 
 export type Notification = {
   id: string;
@@ -18,12 +19,8 @@ export function useNotifications(userId: string) {
 
     async function poll() {
       try {
-        const res = await fetch(`/api/notifications/inbox?userId=${userId}`);
-        const data = await res.json();
-
-        if (active) {
-          setNotifications(data.notifications ?? []);
-        }
+        const data = await LaffLabApi.getNotificationInbox();
+        if (active) setNotifications(data ?? []);
       } catch (err) {
         console.error("Failed to fetch notifications:", err);
       }
