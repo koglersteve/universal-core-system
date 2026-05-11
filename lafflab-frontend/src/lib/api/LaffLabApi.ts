@@ -1,27 +1,15 @@
-export const LaffLabApi = {
-  async listHistory() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/history/list`,
-      { cache: "no-store" }
-    );
-    return res.json();
-  },
+"use client";
 
-  async addHistory(item: any) {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/history/add`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item)
-      }
-    );
-  },
+import { LaffLabApi } from "@/lib/api";
 
-  async clearHistory() {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/history/clear`,
-      { method: "POST" }
-    );
-  }
-};
+export async function fetchDailyRitual() {
+  return LaffLabApi.getRitual();
+}
+
+export async function setDailyRitualMessage(message: string) {
+  return fetch("/api/daily-ritual", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+  }).then((r) => r.json());
+}
