@@ -16,7 +16,7 @@ export function useFeed(type: string = "main") {
     const res = await fetch(`/api/feed?type=${type}&page=${page}`);
     const data = await res.json();
 
-    if (data.items.length === 0) {
+    if (!data.items || data.items.length === 0) {
       setHasMore(false);
     } else {
       setItems((prev) => [...prev, ...data.items]);
