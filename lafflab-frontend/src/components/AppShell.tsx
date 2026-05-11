@@ -1,9 +1,8 @@
-// src/components/AppShell.tsx
 "use client";
 
 import { useState } from "react";
-import SideMenu from "./SideMenu";
 import TopNav from "./TopNav";
+import SideMenu from "./SideMenu";
 import MenuDrawer from "./MenuDrawer";
 
 type Props = {
@@ -18,7 +17,7 @@ export default function AppShell({ children }: Props) {
       <TopNav title="LAFFlab" onMenuToggle={() => setMenuOpen(true)} />
 
       <div className="flex flex-1 overflow-hidden">
-        <SideMenu />
+        <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
         <main className="flex-1 overflow-y-auto">
           {children}
