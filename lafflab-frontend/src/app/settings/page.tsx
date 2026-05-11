@@ -1,14 +1,26 @@
-import Link from "next/link";
+"use client";
 
-export default function SettingsHome() {
+import Toggle from "@/components/Toggle";
+import { useSettings } from "@/hooks/useSettings";
+
+export default function ThemeSettingsPage() {
+  const { settings, updateSetting } = useSettings();
+
+  if (!settings) return null;
+
   return (
-    <div className="space-y-4">
-      <Link href="/settings/account" className="block text-lg">Account</Link>
-      <Link href="/settings/notifications" className="block text-lg">Notifications</Link>
-      <Link href="/settings/privacy" className="block text-lg">Privacy</Link>
-      <Link href="/settings/creator" className="block text-lg">Creator Mode</Link>
-      <Link href="/settings/theme" className="block text-lg">Theme</Link>
-      <Link href="/settings/storage" className="block text-lg">Data & Storage</Link>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between p-4 bg-neutral-900 rounded-xl">
+        <div>
+          <p className="text-lg font-semibold">Dark Mode</p>
+          <p className="text-neutral-400 text-sm">Use a darker color theme</p>
+        </div>
+
+        <Toggle
+          checked={settings.darkMode}
+          onChange={(v) => updateSetting("darkMode", v)}
+        />
+      </div>
     </div>
   );
 }
