@@ -1,29 +1,20 @@
 "use client";
 
 import Toggle from "@/components/Toggle";
-import { useState, useEffect } from "react";
-import { LaffLabApi } from "@/lib/api";
+import { useSettings } from "@/hooks/useSettings";
 
-export default function CreatorSettingsPage() {
-  const [settings, setSettings] = useState<any>(null);
-
-  useEffect(() => {
-    LaffLabApi.getSettings().then(setSettings);
-  }, []);
-
-  async function updateSetting(key: string, value: boolean) {
-    await LaffLabApi.updateSettings({ [key]: value });
-    setSettings((prev: any) => ({ ...prev, [key]: value }));
-  }
+export default function CreatorSettings() {
+  const { settings, updateSetting } = useSettings();
 
   if (!settings) return null;
 
   return (
-    <div className="p-6 text-white">
-      <h1 className="text-xl font-bold mb-4">Creator Settings</h1>
-
-      <div className="flex items-center justify-between py-3">
-        <span className="text-sm">Creator Mode</span>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between p-4 bg-neutral-900 rounded-xl">
+        <div>
+          <p className="text-lg font-semibold">Creator Mode</p>
+          <p className="text-neutral-400 text-sm">Unlock creator tools</p>
+        </div>
 
         <Toggle
           checked={settings.creatorMode}
