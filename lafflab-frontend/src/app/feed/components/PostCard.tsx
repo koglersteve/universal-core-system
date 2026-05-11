@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Post } from "@/types/post";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import PostViewer from "./PostViewer";
 
-const reactions = [
+const REACTIONS = [
   { key: "laugh", emoji: "😂" },
   { key: "smile", emoji: "🙂" },
   { key: "expressionless", emoji: "😐" },
@@ -15,14 +14,14 @@ const reactions = [
   { key: "crickets", emoji: "🦗" }
 ];
 
-export default function PostCard({ post }: { post: Post }) {
+export default function Component({ post }) {
   const [open, setOpen] = useState(false);
   const { toggleFavorite } = useFavoritesStore();
 
-  const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
-  const [animating, setAnimating] = useState<string | null>(null);
+  const [selectedReaction, setSelectedReaction] = useState(null);
+  const [animating, setAnimating] = useState(null);
 
-  const handleReaction = (key: string) => {
+  const handleReaction = (key) => {
     setSelectedReaction(key);
     setAnimating(key);
     setTimeout(() => setAnimating(null), 300);
@@ -59,7 +58,7 @@ export default function PostCard({ post }: { post: Post }) {
           "
         >
           <div className="text-sm opacity-70 font-medium">
-            @{post.creator.screenName}
+            @{post.creator?.screenName}
           </div>
 
           {post.type === "video" && (
@@ -81,7 +80,7 @@ export default function PostCard({ post }: { post: Post }) {
           {(post.type === "image" || post.type === "meme") && (
             <img
               src={post.mediaUrl}
-              alt="post media"
+              alt=""
               className="w-full rounded-xl border border-white/10"
             />
           )}
@@ -92,7 +91,7 @@ export default function PostCard({ post }: { post: Post }) {
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex gap-4">
-              {reactions.map((r) => {
+              {REACTIONS.map((r) => {
                 const isSelected = selectedReaction === r.key;
                 const isAnimating = animating === r.key;
 

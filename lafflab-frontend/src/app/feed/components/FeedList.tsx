@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import PostCard from "./PostCard";
+import FeedPost from "./FeedPost";
 import AdBanner from "./AdBanner";
-import { Post } from "@/types/post";
 
-export default function FeedList({ posts }: { posts: Post[] }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function Component({ posts }) {
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -28,8 +27,8 @@ export default function FeedList({ posts }: { posts: Post[] }) {
         const scale = 1 - t * 0.15;
         const opacity = 1 - t * 0.35;
 
-        (card as HTMLElement).style.transform = `scale(${scale})`;
-        (card as HTMLElement).style.opacity = `${opacity}`;
+        card.style.transform = `scale(${scale})`;
+        card.style.opacity = `${opacity}`;
       });
     };
 
@@ -49,14 +48,14 @@ export default function FeedList({ posts }: { posts: Post[] }) {
         space-y-10
       "
     >
-      <AdBanner position="top" />
+      <AdBanner type="permanent" />
 
       {posts.map((post, index) => (
-        <div key={post.id} className="post-card transition-all duration-300">
-          <PostCard post={post} />
+        <div key={post.id || index} className="post-card transition-all duration-300">
+          <FeedPost post={post} />
 
           {index > 0 && index % 8 === 0 && (
-            <AdBanner position="inline" />
+            <AdBanner type="inline" />
           )}
         </div>
       ))}
