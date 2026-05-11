@@ -11,7 +11,12 @@ export default function FeedPage() {
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
       {/* Top Bar with hamburger menu */}
-      <TopBar />
+      <TopBar
+        title="Home"
+        onMenuToggle={() => {
+          // If your TopBar already handles menu internally, leave empty
+        }}
+      />
 
       {/* Permanent thin ad banner */}
       <div className="w-full border-b border-white/10">
