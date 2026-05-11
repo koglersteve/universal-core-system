@@ -1,15 +1,14 @@
 "use client";
 
-export default function TopNav({
-  title,
-  onMenuToggle,
-}: {
+type Props = {
   title: string;
   onMenuToggle: () => void;
-}) {
+};
+
+export default function TopNav({ title, onMenuToggle }: Props) {
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur">
-      <h1 className="text-xl font-semibold text-white">{title}</h1>
+    <header className="app-header flex items-center justify-between px-4 py-3 bg-black text-white">
+      <h1 className="text-lg font-semibold">{title}</h1>
 
       <button
         onClick={onMenuToggle}
