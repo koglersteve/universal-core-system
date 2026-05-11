@@ -1,3 +1,4 @@
+// src/components/AppShell.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,7 +15,7 @@ export default function AppShell({ children }: Props) {
 
   return (
     <div className="flex flex-col h-screen w-full bg-background text-foreground">
-      <TopNav onMenu={() => setMenuOpen(true)} />
+      <TopNav title="LAFFlab" onMenuToggle={() => setMenuOpen(true)} />
 
       <div className="flex flex-1 overflow-hidden">
         <SideMenu />
