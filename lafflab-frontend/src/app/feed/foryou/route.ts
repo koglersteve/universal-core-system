@@ -1,11 +1,12 @@
-import { personalizedRanking } from "@/core/feed/personalizedRanking";
-import { getJokes } from "@/lib/server/jokes";
-import { getUserIdentity } from "@/hooks/UserIdentity";
+import { runPersonalizationEngine } from "@/personalization/engine";
+import { getProfile } from "@/personalization/profile-store";
+import { getPosts } from "@/lib/server/posts";
 
 export async function GET() {
-  const user = await getUserIdentity();
-  const jokes = await getJokes();
-  const ranked = personalizedRanking(user, jokes);
+  const profile = await getProfile();
+  const posts = await getPosts();
+
+  const ranked = runPersonalizationEngine(profile, posts);
 
   return Response.json(ranked);
 }
