@@ -1,12 +1,19 @@
 "use client";
 
-import { LaffLabApi } from "@/lib/api";
-
 export async function fetchDailyRitual() {
-  return LaffLabApi.getRitual();
+  const res = await fetch("/api/daily-ritual", { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load daily ritual");
+  return res.json();
 }
 
 export async function setDailyRitualMessage(msg: string) {
-  return LaffLabApi.post("/ritual/update", { message: msg });
+  const res = await fetch("/api/daily-ritual", {
+    method: "POST",
+    body: JSON.stringify({ message: msg }),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) throw new Error("Failed to update ritual message");
+  return res.json();
 }
 
