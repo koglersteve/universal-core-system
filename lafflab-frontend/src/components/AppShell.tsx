@@ -1,21 +1,30 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState } from "react";
+import SideMenu from "./SideMenu";
+import TopNav from "./TopNav";
+import MenuDrawer from "./MenuDrawer";
 
-export default function AppShell({
-  title,
-  children,
-}: {
-  title: string;
-  children?: ReactNode;
-}) {
+type Props = {
+  children: React.ReactNode;
+};
+
+export default function AppShell({ children }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
-      <header className="px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur">
-        <h1 className="text-xl font-semibold">{title}</h1>
-      </header>
+    <div className="flex flex-col h-screen w-full bg-background text-foreground">
+      <TopNav onMenu={() => setMenuOpen(true)} />
 
-      <main className="flex-1 p-4">{children}</main>
+      <div className="flex flex-1 overflow-hidden">
+        <SideMenu />
+
+        <main className="flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+
+      <MenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
 }
