@@ -1,37 +1,34 @@
-// src/hooks/useFeed.ts
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { LaffLabApi } from "@/lib/api";
+import { useEffect, useState } from "react";
 
-export function useFeed(app: string) {
+export function useFeed(type: string = "main") {
   const [items, setItems] = useState<any[]>([]);
-  const [cursor, setCursor] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const loadMore = useCallback(async () => {
+  async function loadMore() {
     if (loading || !hasMore) return;
-    setLoading(true);
-    try {
-      const data = await LaffLabApi.fetchFeed({ app, cursor, limit: 10 });
-      setItems((prev) => [...prev, ...data.items]);
-      setCursor(data.nextCursor);
-      setHasMore(Boolean(data.nextCursor));
-    } finally {
-      setLoading(false);
-    }
-  }, [app, cursor, loading, hasMore]);
 
-  useEffect(() => {
-    setItems([]);
-    setCursor(null);
-    setHasMore(true);
-  }, [app]);
+    setLoading(true);
+
+    const res = await fetch(`/api/feed?type=${type}&page=${page}`);
+    const data = await res.json();
+
+    if (data.items.length === 0) {
+      setHasMore(false);
+    } else {
+      setItems((prev) => [...prev, ...data.items]);
+      setPage((p) => p + 1);
+    }
+
+    setLoading(false);
+  }
 
   useEffect(() => {
     loadMore();
-  }, [loadMore]);
+  }, []);
 
-  return { items, loadMore, loading, hasMore };
+  return { items, loadMore, hasMore, loading };
 }
