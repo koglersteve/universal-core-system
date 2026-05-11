@@ -1,3 +1,4 @@
+// src/hooks/useFeed.ts
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -33,5 +34,4 @@ export function useFeed(app: string) {
   }, [loadMore]);
 
   return { items, loadMore, loading, hasMore };
-}
 }
