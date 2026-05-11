@@ -1,6 +1,6 @@
-export default function AccountSettings() {
+export default function AccountSettingsPage() {
   return (
-    <div className="min-h-screen bg-black text-white p-6 space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold">Account</h1>
 
       <div className="space-y-4">

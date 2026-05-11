@@ -1,6 +1,6 @@
-export default function StorageSettings() {
+export default function StorageSettingsPage() {
   return (
-    <div className="min-h-screen bg-black text-white p-6 space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold">Data & Storage</h1>
 
       <div className="space-y-4">

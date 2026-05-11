@@ -1,6 +1,6 @@
-export default function PrivacySettings() {
+export default function PrivacySettingsPage() {
   return (
-    <div className="min-h-screen bg-black text-white p-6 space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold">Privacy</h1>
 
       <div className="space-y-4">
