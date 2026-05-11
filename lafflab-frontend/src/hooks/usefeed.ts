@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { fetchFeed } from "@/lib/api";
+import { LaffLabApi } from "@/lib/api";
 
 export function useFeed(app: string) {
   const [items, setItems] = useState<any[]>([]);
@@ -13,8 +13,8 @@ export function useFeed(app: string) {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const data = await fetchFeed({ app, cursor, limit: 10 });
-      setItems(prev => [...prev, ...data.items]);
+      const data = await LaffLabApi.fetchFeed({ app, cursor, limit: 10 });
+      setItems((prev) => [...prev, ...data.items]);
       setCursor(data.nextCursor);
       setHasMore(Boolean(data.nextCursor));
     } finally {
@@ -23,7 +23,6 @@ export function useFeed(app: string) {
   }, [app, cursor, loading, hasMore]);
 
   useEffect(() => {
-    // reset when app changes
     setItems([]);
     setCursor(null);
     setHasMore(true);
@@ -34,4 +33,5 @@ export function useFeed(app: string) {
   }, [loadMore]);
 
   return { items, loadMore, loading, hasMore };
+}
 }
