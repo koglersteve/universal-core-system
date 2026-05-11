@@ -19,30 +19,57 @@ async function post(path: string, body?: any) {
 }
 
 export const LaffLabApi = {
+  // -------------------------
   // Categories
+  // -------------------------
   getCategories: () => get("/categories"),
   getCategory: (id: string) => get(`/categories/${id}`),
 
+  // -------------------------
   // Posts
+  // -------------------------
   getPosts: () => get("/posts"),
+  getPost: (id: string) => get(`/posts/${id}`),
 
+  // -------------------------
   // History
+  // -------------------------
   getHistory: () => get("/history"),
   addHistory: (postId: string) => post("/history/add", { postId }),
   clearHistory: () => post("/history/clear"),
 
+  // -------------------------
   // Ritual
+  // -------------------------
   getRitual: () => get("/ritual"),
 
+  // -------------------------
   // Notifications
+  // -------------------------
   getNotifications: () => get("/notifications"),
   getNotificationInbox: () => get("/notifications/inbox"),
   getNotificationPreferences: () => get("/notifications/preferences"),
 
+  // -------------------------
   // Settings
+  // -------------------------
   getSettings: () => get("/settings"),
+  updateSettings: (patch: any) => post("/settings/update", patch),
 
-  // Feed
+  // -------------------------
+  // Personalization
+  // -------------------------
+  getPersonalizationProfile: () => get("/personalization/profile"),
+
+  // -------------------------
+  // Reactions
+  // -------------------------
+  sendReaction: (emoji: string) => post("/reactions", { emoji }),
+  getReactionSummary: () => get("/reactions/summary"),
+
+  // -------------------------
+  // Feed (new backend)
+  // -------------------------
   fetchFeed: (params: { app: string; cursor?: string | null; limit?: number }) => {
     const url = new URL("/feed", API_BASE);
     url.searchParams.set("app", params.app);
