@@ -28,6 +28,7 @@ export const LaffLabApi = {
 
   // History
   getHistory: () => get("/history"),
+  addHistory: (postId: string) => post("/history/add", { postId }),
   clearHistory: () => post("/history/clear"),
 
   // Ritual
@@ -41,7 +42,7 @@ export const LaffLabApi = {
   // Settings
   getSettings: () => get("/settings"),
 
-  // Feed (new backend)
+  // Feed
   fetchFeed: (params: { app: string; cursor?: string | null; limit?: number }) => {
     const url = new URL("/feed", API_BASE);
     url.searchParams.set("app", params.app);
