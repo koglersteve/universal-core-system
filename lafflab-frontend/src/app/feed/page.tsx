@@ -5,29 +5,28 @@ import TopBar from "@/components/TopBar";
 import AdBanner from "@/components/AdBanner";
 import FeedPost from "./components/FeedPost";
 
-export default function FeedPage() {
+export default function Component() {
   const { items, loadMore, hasMore, loading } = useFeed("main");
 
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
-      {/* Top Bar with hamburger menu */}
-      <TopBar
-        title="Home"
-        onMenuToggle={() => {
-          // If your TopBar already handles menu internally, leave empty
-        }}
-      />
 
-      {/* Permanent thin ad banner */}
-      <div className="w-full border-b border-white/10">
-        <AdBanner type="permanent" />
+      {/* Top Bar with permanent ad on the same row */}
+      <div className="w-full flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur-md">
+        <TopBar
+          title=""
+          onMenuToggle={() => {}}
+        />
+
+        <div className="flex-shrink-0">
+          <AdBanner type="permanent" />
+        </div>
       </div>
 
       {/* Feed */}
       <div className="flex-1 overflow-y-auto">
         {items.map((post, index) => (
           <div key={post.id || index}>
-            {/* Insert ad every 8 posts */}
             {index !== 0 && index % 8 === 0 && (
               <AdBanner type="inline" />
             )}
@@ -36,7 +35,6 @@ export default function FeedPage() {
           </div>
         ))}
 
-        {/* Infinite scroll loader */}
         {hasMore && (
           <div className="py-6 flex justify-center">
             <button
