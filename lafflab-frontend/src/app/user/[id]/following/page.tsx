@@ -1,31 +1,32 @@
-import FollowingList from "@components/user/FollowingList";
-import EmptyState from "@components/ui/EmptyState";
-import ErrorState from "@components/ui/ErrorState";
+export const dynamic = "force-dynamic";
+
 import { getFollowing } from "@/lib/server/user";
 
-interface FollowingPageProps {
-  params: { id: string };
-}
+export default async function Component({ params }) {
+  const following = await getFollowing(params.id);
 
-export default async function FollowingPage({ params }: FollowingPageProps) {
-  try {
-    const following = await getFollowing(params.id);
-
-    if (!following || following.length === 0) {
-      return (
-        <EmptyState
-          title="Not Following Anyone"
-          message="This user hasn't followed anyone yet."
-        />
-      );
-    }
-
+  if (!following || following.length === 0) {
     return (
-      <div className="p-4">
-        <FollowingList users={following} />
+      <div className="p-6 text-white">
+        <div className="text-xl font-semibold mb-4">Following</div>
+        <div className="text-gray-300">Not following anyone.</div>
       </div>
     );
-  } catch {
-    return <ErrorState message="Failed to load following list." />;
   }
+
+  return (
+    <div className="p-6 text-white space-y-4">
+      <div className="text-xl font-semibold mb-4">Following</div>
+
+      {following.map((f) => (
+        <div key={f.id} className="flex items-center space-x-3">
+          <img
+            src={f.avatarUrl || "/default-avatar.png"}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <div className="text-gray-200">{f.username}</div>
+        </div>
+      ))}
+    </div>
+  );
 }

@@ -1,31 +1,32 @@
-import FollowersList from "@components/user/FollowersList";
-import EmptyState from "@components/ui/EmptyState";
-import ErrorState from "@components/ui/ErrorState";
+export const dynamic = "force-dynamic";
+
 import { getFollowers } from "@/lib/server/user";
 
-interface FollowersPageProps {
-  params: { id: string };
-}
+export default async function Component({ params }) {
+  const followers = await getFollowers(params.id);
 
-export default async function FollowersPage({ params }: FollowersPageProps) {
-  try {
-    const followers = await getFollowers(params.id);
-
-    if (!followers || followers.length === 0) {
-      return (
-        <EmptyState
-          title="No Followers Yet"
-          message="This user doesn't have any followers."
-        />
-      );
-    }
-
+  if (!followers || followers.length === 0) {
     return (
-      <div className="p-4">
-        <FollowersList users={followers} />
+      <div className="p-6 text-white">
+        <div className="text-xl font-semibold mb-4">Followers</div>
+        <div className="text-gray-300">No followers yet.</div>
       </div>
     );
-  } catch {
-    return <ErrorState message="Failed to load followers." />;
   }
+
+  return (
+    <div className="p-6 text-white space-y-4">
+      <div className="text-xl font-semibold mb-4">Followers</div>
+
+      {followers.map((f) => (
+        <div key={f.id} className="flex items-center space-x-3">
+          <img
+            src={f.avatarUrl || "/default-avatar.png"}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <div className="text-gray-200">{f.username}</div>
+        </div>
+      ))}
+    </div>
+  );
 }
