@@ -12,32 +12,36 @@ export default function Component() {
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
 
       {/* 🔥 Upgraded Top Header */}
-      <div className="
-        w-full 
-        border-b border-white/10 
-        bg-gradient-to-b from-black/80 to-black/40 
-        backdrop-blur-xl 
-        shadow-[0_4px_20px_rgba(0,0,0,0.6)]
-      ">
+      <div
+        className="
+          w-full 
+          border-b border-white/10 
+          bg-gradient-to-b from-black/80 to-black/40 
+          backdrop-blur-xl 
+          shadow-[0_4px_20px_rgba(0,0,0,0.6)]
+        "
+      >
         <div className="relative flex items-center justify-center px-4 py-4">
 
           {/* Center: Premium Large Banner */}
           <div className="max-w-lg w-full flex justify-center">
-            <div className="
-              w-full 
-              rounded-xl 
-              overflow-hidden 
-              shadow-[0_0_25px_rgba(255,255,255,0.08)]
-              hover:shadow-[0_0_35px_rgba(255,255,255,0.12)]
-              transition-shadow duration-300
-            ">
+            <div
+              className="
+                w-full 
+                rounded-xl 
+                overflow-hidden 
+                shadow-[0_0_25px_rgba(255,255,255,0.08)]
+                hover:shadow-[0_0_35px_rgba(255,255,255,0.12)]
+                transition-shadow duration-300
+              "
+            >
               <AdBanner type="permanent" />
             </div>
           </div>
 
           {/* Right: Hamburger Menu */}
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
-            <TopBar title="" onMenuToggle={() => {}} />
+            <TopBar onMenuToggle={() => {}} />
           </div>
         </div>
       </div>
