@@ -1,27 +1,36 @@
-import React from "react";
+export const dynamic = "force-dynamic";
+
 import { getUserIdentity } from "@/lib/server/user";
-import VerifyScreen, {
-  VerifyScreenContext,
-} from "@/components/verify/VerifyScreen";
 
-type AllowedStatus = "pending" | "unverified" | "verified";
-
-function normalizeStatus(s: string): AllowedStatus {
-  if (s === "pending" || s === "unverified" || s === "verified") return s;
-  return "unverified";
-}
-
-export default async function HomePage() {
+export default async function Component() {
   const user = await getUserIdentity();
 
-  const context: VerifyScreenContext = {
-    userId: user.id,
-    status: normalizeStatus(user.status),
-  };
+  if (!user) {
+    return (
+      <div className="p-6 text-white">
+        <div className="text-xl font-semibold mb-4">Verification</div>
+        <div className="text-gray-300">You must be logged in.</div>
+      </div>
+    );
+  }
 
   return (
-    <main className="p-4">
-      <VerifyScreen context={context} />
-    </main>
+    <div className="p-6 text-white">
+      <div className="text-xl font-semibold mb-4">Verification</div>
+
+      <div className="text-gray-300">
+        User ID: {user.id}
+      </div>
+
+      <div className="mt-4">
+        <a
+          href="/verify/upload"
+          className="px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
+        >
+          Start Verification
+        </a>
+      </div>
+    </div>
   );
 }
+

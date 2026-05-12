@@ -8,7 +8,7 @@ export default async function Component() {
   if (!user) {
     return (
       <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Verify Upload</div>
+        <div className="text-xl font-semibold mb-4">Retry Review</div>
         <div className="text-gray-300">You must be logged in.</div>
       </div>
     );
@@ -16,19 +16,15 @@ export default async function Component() {
 
   return (
     <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">Verify Upload</div>
+      <div className="text-xl font-semibold mb-4">Retry Review</div>
 
       <div className="text-gray-300">
         User ID: {user.id}
       </div>
 
-      <a
-        href="/verify/upload/verify/review"
-        className="mt-4 inline-block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-      >
-        Continue
-      </a>
+      <div className="mt-4 text-gray-400">
+        Review step placeholder.
+      </div>
     </div>
   );
 }
-
