@@ -1,6 +1,6 @@
 "use client";
 
-export default function Component({ post }) {
+export default function PostCard({ post }) {
   return (
     <div className="bg-white/5 p-4 rounded-lg border border-white/10">
       <div className="text-white font-semibold mb-2">
