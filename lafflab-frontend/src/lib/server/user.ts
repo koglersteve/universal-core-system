@@ -1,48 +1,15 @@
-// lafflab-frontend/src/lib/server/user.ts
+import { db } from "@/lib/db";
 
-export type UserIdentity = {
-  id: string;
-  status: string;
-};
-
-export async function getUserIdentity(): Promise<UserIdentity> {
-  return {
-    id: "demo-user",
-    status: "unverified",
-  };
+export async function getUser() {
+  const session = await db.session.get();
+  const user = session ? await db.user.find(session.userId) : null;
+  return { user, session };
 }
 
-// ---------------------------------------------------------
-// Followers
-// ---------------------------------------------------------
+export async function updateUserProfile(values: any) {
+  const session = await db.session.get();
+  if (!session) return null;
 
-export async function getFollowers(userId: string) {
-  // Placeholder until backend is wired
-  return [
-    { id: "follower-1", name: "Follower One" },
-    { id: "follower-2", name: "Follower Two" },
-  ];
-}
-
-// ---------------------------------------------------------
-// Following
-// ---------------------------------------------------------
-
-export async function getFollowing(userId: string) {
-  return [
-    { id: "following-1", name: "Following One" },
-    { id: "following-2", name: "Following Two" },
-  ];
-}
-
-// ---------------------------------------------------------
-// User by ID
-// ---------------------------------------------------------
-
-export async function getUserById(userId: string) {
-  return {
-    id: userId,
-    name: "Demo User",
-    bio: "This is a placeholder user profile.",
-  };
+  const updated = await db.user.update(session.userId, values);
+  return updated;
 }
