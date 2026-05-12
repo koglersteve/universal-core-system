@@ -27,28 +27,6 @@ export default function Component({ id }) {
       >
         Posts
       </Link>
-
-      <Link
-        href={`/user/${id}/followers`}
-        className={`pb-3 ${
-          path.includes("/followers")
-            ? "text-white border-b-2 border-white"
-            : "text-gray-400"
-        }`}
-      >
-        Followers
-      </Link>
-
-      <Link
-        href={`/user/${id}/following`}
-        className={`pb-3 ${
-          path.includes("/following")
-            ? "text-white border-b-2 border-white"
-            : "text-gray-400"
-        }`}
-      >
-        Following
-      </Link>
     </div>
   );
 }

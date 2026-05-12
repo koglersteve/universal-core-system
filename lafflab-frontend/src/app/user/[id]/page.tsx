@@ -2,8 +2,6 @@ export const dynamic = "force-dynamic";
 
 import { getUserById } from "@/lib/server/user";
 import { getFollowerCount, getFollowingCount, getPostCount } from "@/lib/server/user";
-import ProfileHeader from "@/components/ProfileHeader";
-import ProfileTabs from "@/components/ProfileTabs";
 
 export default async function Component({ params }) {
   const user = await getUserById(params.id);
@@ -23,7 +21,17 @@ export default async function Component({ params }) {
 
   return (
     <div className="p-6 text-white space-y-6">
-      <ProfileHeader user={user} editable={false} />
+      <div className="flex items-center space-x-4">
+        <img
+          src={user.avatarUrl || "/default-avatar.png"}
+          alt=""
+          className="w-20 h-20 rounded-full object-cover"
+        />
+        <div>
+          <div className="text-lg font-semibold">{user.username}</div>
+          <div className="text-gray-400">@{user.id}</div>
+        </div>
+      </div>
 
       <div className="flex space-x-8 text-center">
         <div>
@@ -40,7 +48,14 @@ export default async function Component({ params }) {
         </div>
       </div>
 
-      <ProfileTabs id={params.id} />
+      <div className="space-y-3">
+        <a
+          href={`/user/${params.id}/posts`}
+          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
+        >
+          View Posts
+        </a>
+      </div>
     </div>
   );
 }

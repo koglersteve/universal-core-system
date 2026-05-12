@@ -22,9 +22,7 @@ export default async function Component({ params }) {
 
   return (
     <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">
-        Posts by {user.username}
-      </div>
+      <div className="text-xl font-semibold mb-4">Posts by {user.username}</div>
       <FeedList posts={posts} />
     </div>
   );

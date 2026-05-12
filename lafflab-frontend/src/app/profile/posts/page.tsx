@@ -4,7 +4,8 @@ import { getUser } from "@/lib/server/user";
 import FeedList from "@/app/feed/components/FeedList";
 
 export default async function Component() {
-  const { user } = await getUser();
+  const result = await getUser();
+  const user = result?.user || null;
 
   if (!user) {
     return (
