@@ -7,5 +7,6 @@ export async function getPosts() {
 
 export async function getPostsByUser(userId: string) {
   if (!db.post || !db.post.findMany) return [];
-  return await db.post.findMany({ where: { authorId: userId } });
+  const all = await db.post.findMany();
+  return all.filter((p) => p.authorId === userId);
 }
