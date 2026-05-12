@@ -10,8 +10,8 @@ export default function Component({ post }) {
       {post.mediaUrl && (
         <img
           src={post.mediaUrl}
-          className="w-full rounded-md mb-3"
           alt=""
+          className="w-full rounded-md mb-3"
         />
       )}
 

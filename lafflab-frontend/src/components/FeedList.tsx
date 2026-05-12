@@ -12,7 +12,7 @@ export default function Component({ posts }) {
   }
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4">
       {posts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}
