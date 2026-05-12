@@ -12,12 +12,12 @@ export async function POST(req: Request) {
     }
 
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes); // <-- FIX: TS-safe + Node-safe
 
     const fileName = `${Date.now()}-${file.name}`;
     const filePath = path.join(process.cwd(), "public", "avatars", fileName);
 
-    await writeFile(filePath, buffer);
+    await writeFile(filePath, buffer); // <-- Now fully valid
 
     return NextResponse.json({
       url: `/avatars/${fileName}`,
