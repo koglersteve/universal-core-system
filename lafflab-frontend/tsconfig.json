@@ -17,11 +17,15 @@
     "paths": {
       "@/*": ["src/*"],
       "@lib/*": ["src/lib/*"],
+      "@hooks/*": ["src/hooks/*"],
       "@personalization/*": ["src/personalization/*"],
       "@core/*": ["src/core/*"],
       "@notifications/*": ["src/notifications/*"],
-      "@types/*": ["src/types/*"]
-    }
+      "@types/*": ["src/types/*"],
+      "@store/*": ["src/store/*"],
+      "@components/*": ["src/components/*"]
+    },
+    "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
