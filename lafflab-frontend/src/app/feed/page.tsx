@@ -11,15 +11,19 @@ export default function Component() {
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
 
-      {/* Top Bar with permanent ad on the same row */}
-      <div className="w-full flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur-md">
-        <TopBar
-          title=""
-          onMenuToggle={() => {}}
-        />
+      {/* Top Header: Centered Banner + Right Hamburger */}
+      <div className="w-full border-b border-white/10 bg-black/40 backdrop-blur-md">
+        <div className="relative flex items-center justify-center px-4 py-3">
 
-        <div className="flex-shrink-0">
-          <AdBanner type="permanent" />
+          {/* Center: Large Permanent Banner */}
+          <div className="max-w-md w-full flex justify-center">
+            <AdBanner type="permanent" />
+          </div>
+
+          {/* Right: Hamburger Menu */}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+            <TopBar title="" onMenuToggle={() => {}} />
+          </div>
         </div>
       </div>
 
