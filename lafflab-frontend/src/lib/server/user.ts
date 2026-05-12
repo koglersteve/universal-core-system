@@ -1,5 +1,4 @@
-// Temporary server-side user module
-// Matches minimal DB shape so the build passes
+// Minimal user server module with stat helpers
 
 export async function getUser() {
   return { user: null, session: null };
@@ -23,5 +22,23 @@ export async function getFollowing(id: string) {
 
 export async function updateUserProfile(values: any) {
   return null;
+}
+
+export async function getFollowerCount(id: string) {
+  const list = await getFollowers(id);
+  return list.length;
+}
+
+export async function getFollowingCount(id: string) {
+  const list = await getFollowing(id);
+  return list.length;
+}
+
+export async function getPostCount(id: string) {
+  const posts = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?userId=${id}`,
+    { cache: "no-store" }
+  ).then((r) => r.json());
+  return posts.length;
 }
 
