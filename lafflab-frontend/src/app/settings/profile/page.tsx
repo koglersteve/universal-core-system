@@ -1,25 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Component() {
-  const [profile, setProfile] = useState<any>(null);
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     async function load() {
-      try {
-        const res = await fetch("/api/profile");
-        const data = await res.json();
-        setProfile(data);
-      } catch (err) {
-        console.error("Failed to load profile", err);
-      } finally {
-        setLoading(false);
-      }
+      const res = await fetch("/api/profile");
+      const data = await res.json();
+      setName(data.name || "");
+      setBio(data.bio || "");
+      setAvatarUrl(data.avatarUrl || "");
+      setLoading(false);
     }
     load();
   }, []);
+
+  async function handleUpload(e: any) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/upload-avatar", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    setAvatarUrl(data.url);
+    setUploading(false);
+  }
+
+  async function handleSave() {
+    setSaving(true);
+
+    await fetch("/api/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, bio, avatarUrl }),
+    });
+
+    window.location.href = "/profile";
+  }
 
   if (loading) {
     return (
@@ -29,41 +61,68 @@ export default function Component() {
     );
   }
 
-  if (!profile) {
-    return (
-      <div className="min-h-screen w-full bg-black text-white flex items-center justify-center">
-        Failed to load profile.
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen w-full bg-black text-white p-6 space-y-6">
 
-      <div className="flex items-center gap-4">
-        {profile.avatarUrl ? (
-          <img
-            src={profile.avatarUrl}
-            alt="Avatar"
-            className="w-20 h-20 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-neutral-700" />
-        )}
+      <h1 className="text-2xl font-semibold">Edit Profile</h1>
+
+      <div className="space-y-4">
 
         <div>
-          <p className="text-2xl font-semibold">{profile.name}</p>
-          {profile.bio && (
-            <p className="text-neutral-400 mt-1">{profile.bio}</p>
+          <label className="block mb-1 text-neutral-400">Name</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 text-neutral-400">Bio</label>
+          <textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md text-white h-24"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 text-neutral-400">Avatar</label>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleUpload}
+            className="w-full text-sm text-neutral-400"
+          />
+
+          {uploading && (
+            <p className="text-neutral-400 mt-2">Uploading…</p>
+          )}
+
+          {avatarUrl && (
+            <img
+              src={avatarUrl}
+              alt="Avatar Preview"
+              className="w-24 h-24 rounded-full object-cover mt-4"
+            />
           )}
         </div>
       </div>
 
-      <a
-        href="/profile/edit"
-        className="inline-block px-4 py-2 bg-white text-black rounded-md hover:bg-neutral-200 transition"
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        className="px-4 py-2 bg-white text-black rounded-md hover:bg-neutral-200 transition"
       >
-        Edit Profile
+        {saving ? "Saving…" : "Save Changes"}
+      </button>
+
+      <a
+        href="/profile"
+        className="block mt-4 text-neutral-400 hover:text-white transition"
+      >
+        Cancel
       </a>
     </div>
   );
