@@ -1,7 +1,8 @@
 export const dynamic = "force-dynamic";
 
 import { getUserById } from "@/lib/server/user";
-import Link from "next/link";
+import { getFollowerCount, getFollowingCount, getPostCount } from "@/lib/server/user";
+import ProfileTabs from "@/components/ProfileTabs";
 
 export default async function Component({ params }) {
   const user = await getUserById(params.id);
@@ -14,6 +15,10 @@ export default async function Component({ params }) {
       </div>
     );
   }
+
+  const followerCount = await getFollowerCount(params.id);
+  const followingCount = await getFollowingCount(params.id);
+  const postCount = await getPostCount(params.id);
 
   return (
     <div className="p-6 text-white space-y-6">
@@ -29,28 +34,24 @@ export default async function Component({ params }) {
         </div>
       </div>
 
-      <div className="space-y-3">
-        <Link
-          href={`/user/${params.id}/followers`}
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Followers
-        </Link>
-
-        <Link
-          href={`/user/${params.id}/following`}
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Following
-        </Link>
-
-        <Link
-          href={`/user/${params.id}/posts`}
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Posts
-        </Link>
+      <div className="flex space-x-8 text-center">
+        <div>
+          <div className="text-xl font-bold">{postCount}</div>
+          <div className="text-gray-400 text-sm">Posts</div>
+        </div>
+        <div>
+          <div className="text-xl font-bold">{followerCount}</div>
+          <div className="text-gray-400 text-sm">Followers</div>
+        </div>
+        <div>
+          <div className="text-xl font-bold">{followingCount}</div>
+          <div className="text-gray-400 text-sm">Following</div>
+        </div>
       </div>
+
+      <ProfileTabs id={params.id} />
+
+      <div className="text-gray-300">This user's profile overview.</div>
     </div>
   );
 }
