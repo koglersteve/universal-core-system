@@ -11,13 +11,28 @@ export default function Component() {
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
 
-      {/* Top Header: Centered Banner + Right Hamburger */}
-      <div className="w-full border-b border-white/10 bg-black/40 backdrop-blur-md">
-        <div className="relative flex items-center justify-center px-4 py-3">
+      {/* 🔥 Upgraded Top Header */}
+      <div className="
+        w-full 
+        border-b border-white/10 
+        bg-gradient-to-b from-black/80 to-black/40 
+        backdrop-blur-xl 
+        shadow-[0_4px_20px_rgba(0,0,0,0.6)]
+      ">
+        <div className="relative flex items-center justify-center px-4 py-4">
 
-          {/* Center: Large Permanent Banner */}
-          <div className="max-w-md w-full flex justify-center">
-            <AdBanner type="permanent" />
+          {/* Center: Premium Large Banner */}
+          <div className="max-w-lg w-full flex justify-center">
+            <div className="
+              w-full 
+              rounded-xl 
+              overflow-hidden 
+              shadow-[0_0_25px_rgba(255,255,255,0.08)]
+              hover:shadow-[0_0_35px_rgba(255,255,255,0.12)]
+              transition-shadow duration-300
+            ">
+              <AdBanner type="permanent" />
+            </div>
           </div>
 
           {/* Right: Hamburger Menu */}
