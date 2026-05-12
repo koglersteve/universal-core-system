@@ -1,65 +1,40 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import { useSession } from "@/hooks/useSession";
-import Link from "next/link";
+import { getUser } from "@/lib/server/user";
 
-export default function Component() {
-  const { user } = useSession();
+export default async function Component() {
+  const result = await getUser();
+  const user = result?.user || null;
 
   if (!user) {
     return (
       <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Profile</div>
+        <div className="text-xl font-semibold mb-4">Profile Settings</div>
         <div className="text-gray-300">You are not logged in.</div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 text-white space-y-6">
-      <div className="text-xl font-semibold">Profile</div>
+    <div className="p-6 text-white space-y-4">
+      <div className="text-xl font-semibold mb-4">Profile Settings</div>
 
-      <div className="flex items-center space-x-4">
-        <img
-          src={user.avatarUrl || "/default-avatar.png"}
-          alt=""
-          className="w-20 h-20 rounded-full object-cover"
-        />
-        <div>
-          <div className="text-lg font-semibold">{user.username}</div>
-          <div className="text-gray-400">{user.email}</div>
-        </div>
+      <div className="space-y-2">
+        <div className="text-gray-400 text-sm">Username</div>
+        <div className="text-white">{user.username}</div>
       </div>
 
-      <div className="space-y-3">
-        <Link
-          href="/profile/edit"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Edit Profile
-        </Link>
-
-        <Link
-          href="/favorites"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Favorites
-        </Link>
-
-        <Link
-          href="/history"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          History
-        </Link>
-
-        <Link
-          href="/settings"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Settings
-        </Link>
+      <div className="space-y-2">
+        <div className="text-gray-400 text-sm">Email</div>
+        <div className="text-white">{user.email}</div>
       </div>
+
+      <a
+        href="/settings/profile/edit"
+        className="inline-block mt-4 px-4 py-2 bg-white/10 rounded-md hover:bg-white/20 transition"
+      >
+        Edit Profile
+      </a>
     </div>
   );
 }

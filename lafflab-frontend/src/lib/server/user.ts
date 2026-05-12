@@ -1,5 +1,3 @@
-// Minimal user server module with stat helpers
-
 export async function getUser() {
   return { user: null, session: null };
 }
