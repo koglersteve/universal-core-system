@@ -1,41 +1,68 @@
 "use client";
 
 import Link from "next/link";
-import { Settings } from "lucide-react";
+import { useState } from "react";
 
-export default function SideMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function Component() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div
-      className={`
-        fixed inset-0 z-50 transition-all duration-300
-        ${open ? "bg-black/60 pointer-events-auto" : "bg-transparent pointer-events-none"}
-      `}
-      onClick={onClose}
-    >
-      <div
-        className={`
-          absolute right-0 top-0 h-full w-72 bg-neutral-900 text-white
-          transition-transform duration-300
-          ${open ? "translate-x-0" : "translate-x-full"}
-        `}
-        onClick={(e) => e.stopPropagation()}
+    <div>
+      <button
+        onClick={() => setOpen(true)}
+        className="text-white p-2"
       >
-        <div className="p-6 space-y-6">
-          <h2 className="text-xl font-semibold">Menu</h2>
+        ☰
+      </button>
 
-          <nav className="space-y-4">
-            <Link href="/creator" className="block text-lg">Creator Dashboard</Link>
-            <Link href="/upload" className="block text-lg">Upload</Link>
-            <Link href="/favorites" className="block text-lg">Favorites</Link>
-            <Link href="/history" className="block text-lg">History</Link>
+      {open && (
+        <div className="fixed inset-0 bg-black/70 z-40" onClick={() => setOpen(false)} />
+      )}
 
-            {/* ⭐ Settings Icon Link */}
-            <Link href="/settings" className="flex items-center gap-3 text-lg">
-              <Settings size={22} />
-              <span>Settings</span>
-            </Link>
-          </nav>
-        </div>
+      <div
+        className={`fixed top-0 left-0 h-full w-64 bg-black text-white z-50 transform transition-transform ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="p-6 text-xl font-semibold">Menu</div>
+
+        <nav className="space-y-1 px-4">
+          <Link href="/" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Home
+          </Link>
+
+          <Link href="/feed" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Feed
+          </Link>
+
+          <Link href="/foryou" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            For You
+          </Link>
+
+          <Link href="/explore" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Explore
+          </Link>
+
+          <Link href="/favorites" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Favorites
+          </Link>
+
+          <Link href="/history" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            History
+          </Link>
+
+          <Link href="/profile" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Profile
+          </Link>
+
+          <Link href="/settings" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Settings
+          </Link>
+
+          <Link href="/logout" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Logout
+          </Link>
+        </nav>
       </div>
     </div>
   );
