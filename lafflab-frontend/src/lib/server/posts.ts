@@ -1,16 +1,6 @@
-export async function getPosts() {
-  return [
-    {
-      id: 1,
-      type: "text",
-      text: "Welcome to LAFFlab!",
-      creator: { screenName: "system" },
-      mediaUrl: null
-    }
-  ];
-}
+import { db } from "@/lib/db";
 
-export async function getPostById(id) {
-  const posts = await getPosts();
-  return posts.find((p) => String(p.id) === String(id)) || null;
+export async function getPostsByUser(userId: string) {
+  if (!db.post || !db.post.findMany) return [];
+  return await db.post.findMany({ where: { authorId: userId } });
 }

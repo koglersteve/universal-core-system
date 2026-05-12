@@ -1,22 +1,30 @@
-import FeedPost from "@/app/feed/components/FeedPost";
-import { getPostById } from "@/lib/server/posts";
+export const dynamic = "force-dynamic";
 
-export default async function Component({ params }) {
-  const post = await getPostById(params.id);
+import { getUser } from "@/lib/server/user";
 
-  if (!post) {
+export default async function Component() {
+  const { user } = await getUser();
+
+  if (!user) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-white">
-        Post not found.
+      <div className="p-6 text-white">
+        <div className="text-xl font-semibold mb-4">My Posts</div>
+        <div className="text-gray-300">You are not logged in.</div>
       </div>
     );
   }
 
+  const posts = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?userId=${user.id}`,
+    { cache: "no-store" }
+  ).then((r) => r.json());
+
   return (
-    <div className="w-full h-full flex items-center justify-center p-6">
-      <div className="max-w-2xl w-full">
-        <FeedPost post={post} />
-      </div>
+    <div className="p-6 text-white">
+      <div className="text-xl font-semibold mb-4">My Posts</div>
+      <FeedList posts={posts} />
     </div>
   );
 }
+
+import FeedList from "@/app/feed/components/FeedList";

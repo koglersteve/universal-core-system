@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import { getPosts } from "@lib/server/jokes";
-import { applyReactions } from "@core/reactions/engine";
+import { getPostsByUser } from "@/lib/server/posts";
 
-export async function GET() {
-  const posts = await getPosts();
-  const enriched = applyReactions(posts);
-  return NextResponse.json({ posts: enriched });
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId");
+
+  if (!userId) return NextResponse.json([]);
+
+  const posts = await getPostsByUser(userId);
+  return NextResponse.json(posts);
 }
+
