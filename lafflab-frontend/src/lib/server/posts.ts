@@ -10,3 +10,16 @@ export async function getPostsByUser(userId: string) {
   const all = await db.post.findMany();
   return all.filter((p) => p.authorId === userId);
 }
+
+export async function createPost(data: { title: string; content: string; authorId: string }) {
+  if (!db.post || !db.post.create) return null;
+
+  return await db.post.create({
+    data: {
+      title: data.title,
+      content: data.content,
+      authorId: data.authorId,
+    },
+  });
+}
+
