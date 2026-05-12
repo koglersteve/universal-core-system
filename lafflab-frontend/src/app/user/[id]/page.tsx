@@ -41,8 +41,6 @@ export default async function Component({ params }) {
       </div>
 
       <ProfileTabs id={params.id} />
-
-      <div className="text-gray-300">This user's profile overview.</div>
     </div>
   );
 }

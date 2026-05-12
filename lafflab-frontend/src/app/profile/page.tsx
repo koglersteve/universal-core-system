@@ -38,36 +38,6 @@ export default async function Component() {
           <div className="text-gray-400 text-sm">Following</div>
         </div>
       </div>
-
-      <div className="space-y-3">
-        <a
-          href="/profile/edit"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Edit Profile
-        </a>
-
-        <a
-          href="/profile/posts"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          My Posts
-        </a>
-
-        <a
-          href="/favorites"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Favorites
-        </a>
-
-        <a
-          href="/settings"
-          className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Settings
-        </a>
-      </div>
     </div>
   );
 }
