@@ -1,34 +1,71 @@
 "use client";
 
-type Props = {
-  title: string;
-  onMenuToggle: () => void;
-};
+import { useState } from "react";
 
-export default function TopBar({ title, onMenuToggle }: Props) {
+export default function Component({ onMenuToggle }) {
+  const [open, setOpen] = useState(false);
+
+  const handleFutureFeature = () => {
+    alert("This feature is coming in a future update.");
+  };
+
   return (
-    <div className="w-full flex items-center justify-between p-4 text-white bg-black border-b border-white/10">
-      <div className="font-bold text-lg tracking-wide">{title}</div>
-
+    <>
+      {/* Hamburger Icon */}
       <button
-        onClick={onMenuToggle}
-        className="p-2 rounded-full bg-white/10 border border-white/20 backdrop-blur hover:bg-white/20 transition"
+        onClick={() => setOpen(true)}
+        className="text-3xl text-white"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-white"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
+        ☰
       </button>
-    </div>
+
+      {/* Slide-Out Menu */}
+      {open && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50">
+          <div className="absolute right-0 top-0 h-full w-72 bg-black border-l border-white/10 p-6 flex flex-col justify-between">
+
+            {/* Close Button */}
+            <button
+              onClick={() => setOpen(false)}
+              className="text-white text-2xl self-end mb-6"
+            >
+              ✕
+            </button>
+
+            {/* Main Menu Items */}
+            <div className="space-y-4 text-lg">
+              <button className="w-full text-left">Profile</button>
+              <button className="w-full text-left">Settings</button>
+              <button className="w-full text-left">Favorites</button>
+              <button className="w-full text-left">Notifications</button>
+              <button className="w-full text-left">Creator Tools</button>
+              <button className="w-full text-left">Advertise With Us</button>
+              <button className="w-full text-left">Help & Support</button>
+            </div>
+
+            {/* Future Dashboard Items */}
+            <div className="mt-10 space-y-3 text-neutral-400 text-sm">
+              <button onClick={handleFutureFeature} className="w-full text-left">
+                Analytics Dashboard (coming soon)
+              </button>
+              <button onClick={handleFutureFeature} className="w-full text-left">
+                Admin Dashboard (coming soon)
+              </button>
+              <button onClick={handleFutureFeature} className="w-full text-left">
+                Creator Dashboard (coming soon)
+              </button>
+              <button onClick={handleFutureFeature} className="w-full text-left">
+                Business Dashboard (coming soon)
+              </button>
+            </div>
+
+            {/* Logout */}
+            <button className="mt-10 text-left text-red-400">
+              Logout
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
