@@ -1,11 +1,17 @@
 export const dynamic = "force-dynamic";
 
 import FeedList from "@/app/feed/components/FeedList";
+import { headers } from "next/headers";
 
 export default async function Component() {
-  const posts = await fetch("/api/posts", { cache: "no-store" }).then((r) =>
-    r.json()
-  );
+  // Build a fully-qualified absolute URL for RSC-safe internal fetches
+  const host = headers().get("host");
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  const url = `${protocol}://${host}/api/posts`;
+
+  const posts = await fetch(url, {
+    cache: "no-store",
+  }).then((r) => r.json());
 
   return (
     <div className="p-6 text-white">
