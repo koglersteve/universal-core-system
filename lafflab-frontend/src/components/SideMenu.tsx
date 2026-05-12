@@ -1,22 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
-export default function Component() {
-  const [open, setOpen] = useState(false);
-
+export default function Component({ open, onClose }) {
   return (
-    <div>
-      <button
-        onClick={() => setOpen(true)}
-        className="text-white p-2"
-      >
-        ☰
-      </button>
-
+    <>
       {open && (
-        <div className="fixed inset-0 bg-black/70 z-40" onClick={() => setOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/70 z-40"
+          onClick={onClose}
+        />
       )}
 
       <div
@@ -64,6 +57,6 @@ export default function Component() {
           </Link>
         </nav>
       </div>
-    </div>
+    </>
   );
 }
