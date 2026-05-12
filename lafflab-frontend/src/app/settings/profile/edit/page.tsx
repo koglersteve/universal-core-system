@@ -1,115 +1,78 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSession } from "@/hooks/useSession";
+import { useState } from "react";
 
 export default function Component() {
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { user, updateProfile } = useSession();
+
+  const [username, setUsername] = useState(user?.username || "");
+  const [avatar, setAvatar] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch("/api/profile");
-        const data = await res.json();
-        setName(data.name || "");
-        setBio(data.bio || "");
-        setAvatarUrl(data.avatarUrl || "");
-      } catch (err) {
-        console.error("Failed to load profile", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
-
-  async function handleSave() {
+  async function submit() {
     setSaving(true);
-    try {
-      await fetch("/api/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, bio, avatarUrl }),
+
+    let avatarUrl = user?.avatarUrl;
+
+    if (avatar) {
+      const form = new FormData();
+      form.append("file", avatar);
+
+      const res = await fetch("/api/upload-avatar", {
+        method: "POST",
+        body: form,
       });
-      window.location.href = "/profile";
-    } catch (err) {
-      console.error("Failed to save profile", err);
-      alert("Failed to save profile.");
-    } finally {
-      setSaving(false);
+
+      const data = await res.json();
+      avatarUrl = data.url;
     }
+
+    await updateProfile({ username, avatarUrl });
+    setSaving(false);
   }
 
-  if (loading) {
+  if (!user) {
     return (
-      <div className="min-h-screen w-full bg-black text-white flex items-center justify-center">
-        Loading profile…
+      <div className="p-6 text-white">
+        <div className="text-xl font-semibold mb-4">Edit Profile</div>
+        <div className="text-gray-300">You are not logged in.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full bg-black text-white p-6 space-y-6">
-
-      <h1 className="text-2xl font-semibold">Edit Profile</h1>
+    <div className="p-6 text-white space-y-6">
+      <div className="text-xl font-semibold">Edit Profile</div>
 
       <div className="space-y-4">
-
         <div>
-          <label className="block mb-1 text-neutral-400">Name</label>
+          <label className="block mb-1 text-gray-300">Username</label>
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md text-white"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-3 py-2 bg-black/40 border border-white/20 rounded-md text-white"
           />
         </div>
 
         <div>
-          <label className="block mb-1 text-neutral-400">Bio</label>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md text-white h-24"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-neutral-400">Avatar URL</label>
+          <label className="block mb-1 text-gray-300">Avatar</label>
           <input
-            value={avatarUrl}
-            onChange={(e) => setAvatarUrl(e.target.value)}
-            className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md text-white"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setAvatar(e.target.files?.[0] || null)}
+            className="w-full text-gray-300"
           />
         </div>
 
-        {avatarUrl && (
-          <div className="mt-4">
-            <img
-              src={avatarUrl}
-              alt="Avatar Preview"
-              className="w-24 h-24 rounded-full object-cover"
-            />
-          </div>
-        )}
+        <button
+          onClick={submit}
+          disabled={saving}
+          className="px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition disabled:opacity-50"
+        >
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
       </div>
-
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="px-4 py-2 bg-white text-black rounded-md hover:bg-neutral-200 transition"
-      >
-        {saving ? "Saving..." : "Save Changes"}
-      </button>
-
-      <a
-        href="/profile"
-        className="block mt-4 text-neutral-400 hover:text-white transition"
-      >
-        Cancel
-      </a>
     </div>
   );
 }
