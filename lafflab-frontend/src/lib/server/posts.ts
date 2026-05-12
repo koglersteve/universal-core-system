@@ -12,22 +12,12 @@ export async function getPostsByUser(userId: string) {
 }
 
 export async function createPost(data: { title: string; content: string; authorId: string }) {
-  // If DB doesn't support writes, return a mock object
-  if (!db.post || !db.post.create) {
-    return {
-      id: Math.random().toString(36).slice(2),
-      title: data.title,
-      content: data.content,
-      authorId: data.authorId,
-      createdAt: new Date().toISOString(),
-    };
-  }
-
-  return await db.post.create({
-    data: {
-      title: data.title,
-      content: data.content,
-      authorId: data.authorId,
-    },
-  });
+  // Always return a mock post — no DB writes required
+  return {
+    id: Math.random().toString(36).slice(2),
+    title: data.title,
+    content: data.content,
+    authorId: data.authorId,
+    createdAt: new Date().toISOString(),
+  };
 }
