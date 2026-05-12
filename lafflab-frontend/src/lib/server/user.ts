@@ -1,3 +1,10 @@
+import {
+  getFollowers as _getFollowers,
+  getFollowing as _getFollowing,
+  getFollowerCount as _getFollowerCount,
+  getFollowingCount as _getFollowingCount,
+} from "@/lib/server/follow";
+
 export async function getUser() {
   return { user: null, session: null };
 }
@@ -10,26 +17,8 @@ export async function getUserById(id: string) {
   return null;
 }
 
-export async function getFollowers(id: string) {
-  return [];
-}
-
-export async function getFollowing(id: string) {
-  return [];
-}
-
 export async function updateUserProfile(values: any) {
   return null;
-}
-
-export async function getFollowerCount(id: string) {
-  const list = await getFollowers(id);
-  return list.length;
-}
-
-export async function getFollowingCount(id: string) {
-  const list = await getFollowing(id);
-  return list.length;
 }
 
 export async function getPostCount(id: string) {
@@ -39,4 +28,9 @@ export async function getPostCount(id: string) {
   ).then((r) => r.json());
   return posts.length;
 }
+
+export const getFollowers = _getFollowers;
+export const getFollowing = _getFollowing;
+export const getFollowerCount = _getFollowerCount;
+export const getFollowingCount = _getFollowingCount;
 
