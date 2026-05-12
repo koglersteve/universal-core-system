@@ -1,5 +1,4 @@
 export async function getPosts() {
-  // Temporary placeholder until backend is wired
   return [
     {
       id: 1,
@@ -9,4 +8,9 @@ export async function getPosts() {
       mediaUrl: null
     }
   ];
+}
+
+export async function getPostById(id) {
+  const posts = await getPosts();
+  return posts.find((p) => String(p.id) === String(id)) || null;
 }
