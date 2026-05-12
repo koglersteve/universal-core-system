@@ -1,13 +1,18 @@
 import "./globals.css";
-import SessionProvider from "@/context/SessionProvider";
+import AppShell from "@/components/AppShell";
 
-export default function Component({ children }) {
+export const metadata = {
+  title: "LAFFlab",
+  description: "LAFFlab App",
+};
+
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
+        <AppShell>
           {children}
-        </SessionProvider>
+        </AppShell>
       </body>
     </html>
   );
