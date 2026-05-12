@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { getUser } from "@/lib/server/user";
+import FeedList from "@/app/feed/components/FeedList";
 
 export default async function Component() {
   const { user } = await getUser();
@@ -15,7 +16,7 @@ export default async function Component() {
   }
 
   const posts = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?userId=${user.id}`,
+    `/api/posts?userId=${user.id}`,
     { cache: "no-store" }
   ).then((r) => r.json());
 
@@ -26,5 +27,3 @@ export default async function Component() {
     </div>
   );
 }
-
-import FeedList from "@/app/feed/components/FeedList";

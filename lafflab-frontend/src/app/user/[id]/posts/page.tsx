@@ -16,7 +16,7 @@ export default async function Component({ params }) {
   }
 
   const posts = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?userId=${params.id}`,
+    `/api/posts?userId=${params.id}`,
     { cache: "no-store" }
   ).then((r) => r.json());
 

@@ -22,10 +22,10 @@ export async function updateUserProfile(values: any) {
 }
 
 export async function getPostCount(id: string) {
-  const posts = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?userId=${id}`,
-    { cache: "no-store" }
-  ).then((r) => r.json());
+  const posts = await fetch(`/api/posts?userId=${id}`, {
+    cache: "no-store",
+  }).then((r) => r.json());
+
   return posts.length;
 }
 
