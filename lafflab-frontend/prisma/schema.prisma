@@ -4,36 +4,50 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  avatarUrl String?
-  bio       String?
+  id         String  @id @default(uuid())
+  email      String? @unique
+  username   String? @unique
+  screenName String?
+  avatarUrl  String?
+  bio        String?
 
   posts     Post[]
-  followers Follow[] @relation("FollowingRelation")
-  following Follow[] @relation("FollowerRelation")
+  followers Follow[] @relation("followers")
+  following Follow[] @relation("following")
+
+  passwordResetTokens PasswordResetToken[] // <-- REQUIRED for Prisma 6
+
+  createdAt DateTime @default(now())
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   content   String
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
 }
 
 model Follow {
-  id          String   @id @default(cuid())
+  id          String @id @default(uuid())
   followerId  String
   followingId String
-  createdAt   DateTime @default(now())
 
-  follower  User @relation("FollowerRelation", fields: [followerId], references: [id])
-  following User @relation("FollowingRelation", fields: [followingId], references: [id])
+  follower  User @relation("following", fields: [followerId], references: [id])
+  following User @relation("followers", fields: [followingId], references: [id])
 
-  @@unique([followerId, followingId])
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id])
 }
