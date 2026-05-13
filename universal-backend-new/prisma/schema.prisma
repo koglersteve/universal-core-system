@@ -23,6 +23,7 @@ model User {
 
   posts        Post[]
   lafflabItems LAFFItem[]
+  resetTokens  PasswordResetToken[]
 }
 
 // ---------------------------------------------
@@ -46,7 +47,7 @@ model Post {
 // ---------------------------------------------
 model LAFFItem {
   id         String   @id @default(cuid())
-  app        String 
+  app        String
   type       String
   text       String?
   mediaUrl   String?
@@ -56,4 +57,15 @@ model LAFFItem {
 
   creatorId  String
   creator    User      @relation(fields: [creatorId], references: [id])
+}
+
+// ---------------------------------------------
+//  PASSWORD RESET TOKENS
+// ---------------------------------------------
+model PasswordResetToken {
+  token     String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expires   DateTime
+  createdAt DateTime @default(now())
 }
