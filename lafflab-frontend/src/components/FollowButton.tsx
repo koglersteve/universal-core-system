@@ -1,52 +1,50 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
-type Props = {
-  targetUserId: string;
-  initialIsFollowing: boolean;
-  initialFollowerCount: number;
-};
-
-export default function Component({
+export default function FollowButton({
   targetUserId,
   initialIsFollowing,
   initialFollowerCount,
-}: Props) {
+}: {
+  targetUserId: string;
+  initialIsFollowing: boolean;
+  initialFollowerCount: number;
+}) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
-  const [followerCount, setFollowerCount] = useState(initialFollowerCount);
-  const [isPending, startTransition] = useTransition();
+  const [count, setCount] = useState(initialFollowerCount);
+  const [loading, setLoading] = useState(false);
 
-  function toggleFollow() {
-    startTransition(async () => {
-      const action = isFollowing ? "unfollow" : "follow";
+  async function toggle() {
+    if (loading) return;
+    setLoading(true);
 
-      const res = await fetch("/api/follow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetUserId, action }),
-      });
+    const endpoint = isFollowing ? "/api/unfollow" : "/api/follow";
 
-      if (!res.ok) return;
-
-      const data = await res.json();
-      setIsFollowing(data.isFollowing);
-      setFollowerCount(data.followerCount);
+    await fetch(endpoint, {
+      method: "POST",
+      body: JSON.stringify({
+        followerId: "me",
+        followingId: targetUserId,
+      }),
     });
+
+    setIsFollowing(!isFollowing);
+    setCount((c) => (isFollowing ? c - 1 : c + 1));
+    setLoading(false);
   }
 
   return (
-    <div className="flex items-center space-x-3">
-      <button
-        onClick={toggleFollow}
-        disabled={isPending}
-        className="px-4 py-2 rounded-md bg-white text-black font-semibold hover:bg-gray-200 disabled:opacity-60 disabled:cursor-not-allowed transition"
-      >
-        {isFollowing ? "Following" : "Follow"}
-      </button>
-      <div className="text-gray-400 text-sm">
-        {followerCount} follower{followerCount === 1 ? "" : "s"}
-      </div>
-    </div>
+    <button
+      onClick={toggle}
+      disabled={loading}
+      className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+        isFollowing
+          ? "bg-white/20 text-white hover:bg-white/30"
+          : "bg-blue-500 text-white hover:bg-blue-600"
+      }`}
+    >
+      {loading ? "…" : isFollowing ? "Following" : "Follow"} • {count}
+    </button>
   );
 }

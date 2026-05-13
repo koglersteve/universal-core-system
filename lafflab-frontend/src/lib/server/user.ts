@@ -1,36 +1,56 @@
-import {
-  getFollowers as _getFollowers,
-  getFollowing as _getFollowing,
-  getFollowerCount as _getFollowerCount,
-  getFollowingCount as _getFollowingCount,
-} from "@/lib/server/follow";
-
-export async function getUser() {
-  return { user: null, session: null };
-}
-
-export async function getUserIdentity() {
-  return null;
-}
+import { prisma } from "@/lib/prisma";
 
 export async function getUserById(id: string) {
-  return null;
+  if (!id) return null;
+
+  return prisma.user.findUnique({
+    where: { id },
+  });
 }
 
-export async function updateUserProfile(values: any) {
-  return null;
+export async function getUserByUsername(username: string) {
+  if (!username) return null;
+
+  return prisma.user.findUnique({
+    where: { username },
+  });
 }
 
-export async function getPostCount(id: string) {
-  const posts = await fetch(`/api/posts?userId=${id}`, {
-    cache: "no-store",
-  }).then((r) => r.json());
-
-  return posts.length;
+export async function updateUserProfile({
+  id,
+  username,
+  avatarUrl,
+  bio,
+}: {
+  id: string;
+  username?: string;
+  avatarUrl?: string;
+  bio?: string;
+}) {
+  return prisma.user.update({
+    where: { id },
+    data: {
+      username,
+      avatarUrl,
+      bio,
+    },
+  });
 }
 
-export const getFollowers = _getFollowers;
-export const getFollowing = _getFollowing;
-export const getFollowerCount = _getFollowerCount;
-export const getFollowingCount = _getFollowingCount;
+export async function getPostCount(userId: string) {
+  return prisma.post.count({
+    where: { userId },
+  });
+}
 
+export async function getFollowerCount(userId: string) {
+  return prisma.follow.count({
+    where: { followingId: userId },
+  });
+}
+
+export async function getFollowingCount(userId: string) {
+  return prisma.follow.count({
+    where: { followerId: userId },
+  });
+}
