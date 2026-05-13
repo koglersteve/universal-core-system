@@ -1,5 +1,13 @@
 import { prisma } from "@/lib/prisma";
 
+export async function getUser() {
+  return { user: null, session: null };
+}
+
+export async function getUserIdentity() {
+  return null;
+}
+
 export async function getUserById(id: string) {
   if (!id) return null;
 
