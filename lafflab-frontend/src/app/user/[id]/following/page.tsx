@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import FollowButton from "@/components/FollowButton";
 import { getUser } from "@/lib/server/user";
+import FollowButton from "@/components/FollowButton";
 import Link from "next/link";
 
 export default async function FollowingPage({ params }: { params: { id: string } }) {
@@ -26,14 +26,10 @@ export default async function FollowingPage({ params }: { params: { id: string }
     <div className="p-6 text-white space-y-4">
       <h1 className="text-xl font-semibold">Following</h1>
 
-      {following.length === 0 && (
-        <div className="text-white/60">Not following anyone yet.</div>
-      )}
-
       {following.map((f) => {
         const u = f.following;
         return (
-          <div key={u.id} className="flex items-center justify-between py-2 border-b border-white/10">
+          <div key={u.id} className="flex items-center justify-between py-3 border-b border-white/10">
             <Link href={`/user/${u.id}`} className="flex items-center gap-3">
               <img
                 src={u.avatarUrl || "/default-avatar.png"}
@@ -46,10 +42,7 @@ export default async function FollowingPage({ params }: { params: { id: string }
             </Link>
 
             {user && user.id !== u.id && (
-              <FollowButton
-                userId={u.id}
-                initialFollowing={true}
-              />
+              <FollowButton userId={u.id} initialFollowing={true} />
             )}
           </div>
         );

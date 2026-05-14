@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/server/user";
 import ProfileHeader from "@/components/ProfileHeader";
+import ProfileTabs from "@/components/ProfileTabs";
 import { isFollowing } from "@/lib/server/follow";
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -26,19 +27,16 @@ export default async function Page({ params }: { params: { id: string } }) {
       : false;
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black text-white">
       <ProfileHeader
         user={profile}
-        stats={{
-          followers,
-          following,
-          posts,
-        }}
+        stats={{ followers, following, posts }}
         isOwnProfile={user?.id === profile.id}
         initialFollowing={followingState}
       />
 
-      {/* User posts list goes here */}
+      <ProfileTabs id={profile.id} />
+
       <div className="p-6 text-white/70">
         User posts will render here.
       </div>
