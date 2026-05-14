@@ -7,7 +7,7 @@ import { getUser } from "@/lib/server/user";
 export async function GET() {
   let user = null;
 
-  // SAFE getUser() — never hangs
+  // Fully safe getUser()
   try {
     const result = await getUser();
     user = result?.user || null;
@@ -15,41 +15,33 @@ export async function GET() {
     user = null;
   }
 
-  // If no user → return global feed
-  if (!user) {
-    const posts = await prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 50,
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            screenName: true,
-            avatarUrl: true,
-          },
-        },
-      },
-    });
+  // Try follow table safely
+  let followingIds: string[] = [];
 
-    return NextResponse.json({ posts });
+  if (user) {
+    try {
+      const following = await prisma.follow.findMany({
+        where: { followerId: user.id },
+        select: { followingId: true },
+      });
+
+      followingIds = following.map((f) => f.followingId);
+    } catch (e) {
+      // Follow table missing → fallback to global feed
+      followingIds = [];
+    }
   }
 
-  // If user exists → return personalized feed
-  const following = await prisma.follow.findMany({
-    where: { followerId: user.id },
-    select: { followingId: true },
-  });
-
-  const followingIds = following.map((f) => f.followingId);
-
+  // Fetch posts (global or personalized)
   const posts = await prisma.post.findMany({
-    where: {
-      OR: [
-        { userId: user.id },
-        { userId: { in: followingIds } },
-      ],
-    },
+    where: user
+      ? {
+          OR: [
+            { userId: user.id },
+            { userId: { in: followingIds } },
+          ],
+        }
+      : undefined,
     orderBy: { createdAt: "desc" },
     take: 50,
     include: {
