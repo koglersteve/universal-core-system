@@ -19,7 +19,7 @@ model User {
   followers Follow[] @relation("followers")
   following Follow[] @relation("following")
 
-  passwordResetTokens PasswordResetToken[] // <-- REQUIRED for Prisma 6
+  passwordResetTokens PasswordResetToken[]
 
   createdAt DateTime @default(now())
 }
@@ -33,7 +33,7 @@ model Post {
 }
 
 model Follow {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   followerId  String
   followingId String
 
@@ -41,6 +41,8 @@ model Follow {
   following User @relation("followers", fields: [followingId], references: [id])
 
   createdAt DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }
 
 model PasswordResetToken {
