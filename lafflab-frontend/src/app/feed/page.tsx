@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import PostComposer from "@/components/PostComposer";
-import { Menu } from "lucide-react";
+import { Menu, Pencil } from "lucide-react";
+import PostComposerModal from "@/components/PostComposerModal";
 
 type Post = {
   id: string;
@@ -21,6 +21,7 @@ type Post = {
 export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [composerOpen, setComposerOpen] = useState(false);
 
   async function loadFeed() {
     const res = await fetch("/api/feed");
@@ -38,24 +39,19 @@ export default function FeedPage() {
 
       {/* TOP BAR */}
       <div className="fixed top-0 left-0 w-full h-14 bg-black/80 backdrop-blur flex items-center justify-between px-4 z-50 border-b border-white/10">
-        {/* Left spacer */}
         <div className="w-8" />
 
-        {/* CENTER PERMANENT AD BANNER */}
         <div className="text-center text-white/80 text-sm font-medium">
           🔥 Your Ad Here 🔥
         </div>
 
-        {/* HAMBURGER MENU ICON */}
         <button className="w-8 h-8 flex items-center justify-center">
           <Menu size={24} />
         </button>
       </div>
 
-      {/* MAIN FEED CONTENT */}
+      {/* MAIN FEED */}
       <div className="max-w-xl mx-auto pt-20 pb-24 p-4 space-y-6">
-
-        <PostComposer onPostCreated={loadFeed} />
 
         {loading && <div className="text-white/60 mt-4">Loading…</div>}
 
@@ -118,10 +114,20 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* BOTTOM LEFT POST BUTTON */}
-      <button className="fixed bottom-6 left-6 bg-white text-black px-4 py-2 rounded-full font-semibold shadow-lg">
-        Post
+      {/* FLOATING COMPOSER ICON */}
+      <button
+        onClick={() => setComposerOpen(true)}
+        className="fixed bottom-6 left-6 bg-white text-black p-3 rounded-full shadow-lg"
+      >
+        <Pencil size={22} />
       </button>
+
+      {/* POPUP COMPOSER */}
+      <PostComposerModal
+        open={composerOpen}
+        onClose={() => setComposerOpen(false)}
+        onPostCreated={loadFeed}
+      />
     </div>
   );
 }
