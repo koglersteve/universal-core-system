@@ -20,23 +20,23 @@ export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadPosts() {
-    const res = await fetch("/api/posts");
+  async function loadFeed() {
+    const res = await fetch("/api/feed");
     const data = await res.json();
     setPosts(data.posts);
     setLoading(false);
   }
 
   useEffect(() => {
-    loadPosts();
+    loadFeed();
   }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-xl mx-auto p-4 space-y-6">
-        <h1 className="text-2xl font-semibold mb-2">Feed</h1>
+        <h1 className="text-2xl font-semibold mb-2">Home</h1>
 
-        <PostComposer onPostCreated={loadPosts} />
+        <PostComposer onPostCreated={loadFeed} />
 
         {loading && <div className="text-white/60 mt-4">Loading…</div>}
 
@@ -80,7 +80,7 @@ export default function HomePage() {
 
           {!loading && posts.length === 0 && (
             <div className="text-white/50 text-sm mt-4">
-              No posts yet. Be the first to post.
+              No posts yet. Follow people or create your first post.
             </div>
           )}
         </div>
