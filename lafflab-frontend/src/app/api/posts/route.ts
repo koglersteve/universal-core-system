@@ -1,16 +1,24 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
-import { getPosts, getPostsByUser } from "@/lib/server/posts";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
+export async function GET() {
+  const posts = await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          screenName: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
 
-  if (userId) {
-    const posts = await getPostsByUser(userId);
-    return NextResponse.json(posts);
-  }
-
-  const posts = await getPosts();
-  return NextResponse.json(posts);
+  return NextResponse.json({ posts });
 }
 

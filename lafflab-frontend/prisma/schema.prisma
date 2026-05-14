@@ -29,6 +29,7 @@ model Post {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   content   String
+  imageUrl  String?
   createdAt DateTime @default(now())
 }
 
@@ -53,3 +54,4 @@ model PasswordResetToken {
 
   user User @relation(fields: [userId], references: [id])
 }
+

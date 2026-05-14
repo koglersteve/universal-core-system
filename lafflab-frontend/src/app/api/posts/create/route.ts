@@ -1,24 +1,28 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/server/user";
-import { createPost } from "@/lib/server/posts";
 
 export async function POST(req: Request) {
-  const result = await getUser();
-  const user = result?.user || null;
-
+  const { user } = await getUser();
   if (!user) {
-    return NextResponse.redirect("/login");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const form = await req.formData();
-  const title = form.get("title")?.toString() || "";
-  const content = form.get("content")?.toString() || "";
+  const { content, imageUrl } = await req.json();
 
-  await createPost({
-    title,
-    content,
-    authorId: user.id,
+  if (!content || typeof content !== "string" || content.trim().length === 0) {
+    return NextResponse.json({ error: "Content is required" }, { status: 400 });
+  }
+
+  const post = await prisma.post.create({
+    data: {
+      userId: user.id,
+      content: content.trim(),
+      imageUrl: imageUrl || null,
+    },
   });
 
-  return NextResponse.redirect("/feed");
+  return NextResponse.json({ post });
 }
