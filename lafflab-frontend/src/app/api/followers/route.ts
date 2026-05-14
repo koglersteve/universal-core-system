@@ -23,7 +23,5 @@ export async function GET(req: Request) {
     },
   });
 
-  return NextResponse.json(
-    followers.map((f) => f.follower)
-  );
+  return NextResponse.json(followers.map((f) => f.follower));
 }

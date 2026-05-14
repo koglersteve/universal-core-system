@@ -1,47 +1,59 @@
-export const dynamic = "force-dynamic";
+import { prisma } from "@/lib/prisma";
+import FollowButton from "@/components/FollowButton";
+import { getUser } from "@/lib/server/user";
+import Link from "next/link";
 
-import { headers } from "next/headers";
-import { getUserById } from "@/lib/server/user";
+export default async function FollowersPage({ params }: { params: { id: string } }) {
+  const profileId = params.id;
 
-export default async function FollowersPage({ params }) {
-  const user = await getUserById(params.id);
+  const followers = await prisma.follow.findMany({
+    where: { followingId: profileId },
+    include: {
+      follower: {
+        select: {
+          id: true,
+          username: true,
+          screenName: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
 
-  if (!user) {
-    return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Followers</div>
-        <div className="text-gray-300">User not found.</div>
-      </div>
-    );
-  }
-
-  const host = headers().get("host");
-  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  const url = `${protocol}://${host}/api/followers?userId=${params.id}`;
-
-  const followers = await fetch(url, { cache: "no-store" }).then((r) =>
-    r.json()
-  );
+  const { user } = await getUser();
 
   return (
     <div className="p-6 text-white space-y-4">
-      <div className="text-xl font-semibold">Followers</div>
+      <h1 className="text-xl font-semibold">Followers</h1>
 
-      {followers.length === 0 ? (
-        <div className="text-gray-400 text-sm">No followers yet.</div>
-      ) : (
-        <div className="space-y-3">
-          {followers.map((id: string) => (
-            <a
-              key={id}
-              href={`/user/${id}`}
-              className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-            >
-              @{id}
-            </a>
-          ))}
-        </div>
+      {followers.length === 0 && (
+        <div className="text-white/60">No followers yet.</div>
       )}
+
+      {followers.map((f) => {
+        const u = f.follower;
+        return (
+          <div key={u.id} className="flex items-center justify-between py-2 border-b border-white/10">
+            <Link href={`/user/${u.id}`} className="flex items-center gap-3">
+              <img
+                src={u.avatarUrl || "/default-avatar.png"}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <div>
+                <div className="font-medium">{u.screenName}</div>
+                <div className="text-sm text-white/60">@{u.username}</div>
+              </div>
+            </Link>
+
+            {user && user.id !== u.id && (
+              <FollowButton
+                userId={u.id}
+                initialFollowing={false}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -1,47 +1,59 @@
-export const dynamic = "force-dynamic";
+import { prisma } from "@/lib/prisma";
+import FollowButton from "@/components/FollowButton";
+import { getUser } from "@/lib/server/user";
+import Link from "next/link";
 
-import { headers } from "next/headers";
-import { getUserById } from "@/lib/server/user";
+export default async function FollowingPage({ params }: { params: { id: string } }) {
+  const profileId = params.id;
 
-export default async function FollowingPage({ params }) {
-  const user = await getUserById(params.id);
+  const following = await prisma.follow.findMany({
+    where: { followerId: profileId },
+    include: {
+      following: {
+        select: {
+          id: true,
+          username: true,
+          screenName: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
 
-  if (!user) {
-    return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Following</div>
-        <div className="text-gray-300">User not found.</div>
-      </div>
-    );
-  }
-
-  const host = headers().get("host");
-  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  const url = `${protocol}://${host}/api/following?userId=${params.id}`;
-
-  const following = await fetch(url, { cache: "no-store" }).then((r) =>
-    r.json()
-  );
+  const { user } = await getUser();
 
   return (
     <div className="p-6 text-white space-y-4">
-      <div className="text-xl font-semibold">Following</div>
+      <h1 className="text-xl font-semibold">Following</h1>
 
-      {following.length === 0 ? (
-        <div className="text-gray-400 text-sm">Not following anyone yet.</div>
-      ) : (
-        <div className="space-y-3">
-          {following.map((id: string) => (
-            <a
-              key={id}
-              href={`/user/${id}`}
-              className="block px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-            >
-              @{id}
-            </a>
-          ))}
-        </div>
+      {following.length === 0 && (
+        <div className="text-white/60">Not following anyone yet.</div>
       )}
+
+      {following.map((f) => {
+        const u = f.following;
+        return (
+          <div key={u.id} className="flex items-center justify-between py-2 border-b border-white/10">
+            <Link href={`/user/${u.id}`} className="flex items-center gap-3">
+              <img
+                src={u.avatarUrl || "/default-avatar.png"}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <div>
+                <div className="font-medium">{u.screenName}</div>
+                <div className="text-sm text-white/60">@{u.username}</div>
+              </div>
+            </Link>
+
+            {user && user.id !== u.id && (
+              <FollowButton
+                userId={u.id}
+                initialFollowing={true}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
