@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export default function AvatarUploader({ onUploaded }: { onUploaded: (url: string) => void }) {
+export default function AvatarUploader({
+  onUploaded,
+}: {
+  onUploaded: (url: string) => void;
+}) {
   const [uploading, setUploading] = useState(false);
 
   async function handleFile(e: any) {

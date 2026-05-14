@@ -13,6 +13,21 @@ export default function EditProfilePage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+"use client";
+
+import { useState, useEffect } from "react";
+import AvatarUploader from "@/components/AvatarUploader";
+
+export default function EditProfilePage() {
+  const [form, setForm] = useState({
+    username: "",
+    screenName: "",
+    avatarUrl: "",
+    bio: "",
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
