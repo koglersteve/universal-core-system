@@ -1,28 +1,34 @@
-export const dynamic = "force-dynamic";
-
 import { getUserById } from "@/lib/server/user";
-import FeedList from "@/app/feed/components/FeedList";
+import { getFollowerCount, getFollowingCount } from "@/lib/server/follow";
+import { getUser } from "@/lib/server/user";
+import FollowButton from "@/components/FollowButton";
+import { isFollowing } from "@/lib/server/follow";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const user = await getUserById(params.id);
+  const profile = await getUserById(params.id);
+  if (!profile) return <div className="p-6 text-white">User not found.</div>;
 
-  if (!user) {
-    return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">User</div>
-        <div className="text-gray-300">User not found.</div>
-      </div>
-    );
-  }
+  const { user } = await getUser();
 
-  const posts = await fetch(`/api/posts?userId=${params.id}`, {
-    cache: "no-store",
-  }).then((r) => r.json());
+  const followerCount = await getFollowerCount(profile.id);
+  const followingCount = await getFollowingCount(profile.id);
+
+  const following = user
+    ? await isFollowing(user.id, profile.id)
+    : false;
 
   return (
-    <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">{user.screenName}'s Posts</div>
-      <FeedList posts={posts} />
+    <div className="p-6 text-white space-y-4">
+      <div className="text-2xl font-semibold">{profile.screenName}</div>
+
+      <div className="flex gap-4 text-sm text-white/70">
+        <div>{followerCount} Followers</div>
+        <div>{followingCount} Following</div>
+      </div>
+
+      {user && user.id !== profile.id && (
+        <FollowButton userId={profile.id} initialFollowing={following} />
+      )}
     </div>
   );
 }

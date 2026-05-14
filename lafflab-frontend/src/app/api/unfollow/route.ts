@@ -1,17 +1,20 @@
 import { NextResponse } from "next/server";
-import { unfollowUser } from "@/lib/server/follow";
+import { prisma } from "@/lib/prisma";
+import { getUser } from "@/lib/server/user";
 
 export async function POST(req: Request) {
-  const { followerId, followingId } = await req.json();
+  const { user } = await getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  if (!followerId || !followingId) {
-    return NextResponse.json(
-      { error: "Missing followerId or followingId" },
-      { status: 400 }
-    );
-  }
+  const { targetId } = await req.json();
+  if (!targetId) return NextResponse.json({ error: "Missing targetId" }, { status: 400 });
 
-  await unfollowUser(followerId, followingId);
+  await prisma.follow.deleteMany({
+    where: {
+      followerId: user.id,
+      followingId: targetId,
+    },
+  });
 
   return NextResponse.json({ success: true });
 }

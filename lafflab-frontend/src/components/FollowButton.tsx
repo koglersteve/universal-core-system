@@ -3,48 +3,39 @@
 import { useState } from "react";
 
 export default function FollowButton({
-  targetUserId,
-  initialIsFollowing,
-  initialFollowerCount,
+  userId,
+  initialFollowing,
 }: {
-  targetUserId: string;
-  initialIsFollowing: boolean;
-  initialFollowerCount: number;
+  userId: string;
+  initialFollowing: boolean;
 }) {
-  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
-  const [count, setCount] = useState(initialFollowerCount);
+  const [following, setFollowing] = useState(initialFollowing);
   const [loading, setLoading] = useState(false);
 
-  async function toggle() {
-    if (loading) return;
+  async function toggleFollow() {
     setLoading(true);
 
-    const endpoint = isFollowing ? "/api/unfollow" : "/api/follow";
+    const endpoint = following ? "/api/unfollow" : "/api/follow";
 
     await fetch(endpoint, {
       method: "POST",
-      body: JSON.stringify({
-        followerId: "me",
-        followingId: targetUserId,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ targetId: userId }),
     });
 
-    setIsFollowing(!isFollowing);
-    setCount((c) => (isFollowing ? c - 1 : c + 1));
+    setFollowing(!following);
     setLoading(false);
   }
 
   return (
     <button
-      onClick={toggle}
+      onClick={toggleFollow}
       disabled={loading}
-      className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-        isFollowing
-          ? "bg-white/20 text-white hover:bg-white/30"
-          : "bg-blue-500 text-white hover:bg-blue-600"
-      }`}
+      className={`px-4 py-2 rounded ${
+        following ? "bg-gray-700" : "bg-blue-600"
+      } disabled:opacity-50`}
     >
-      {loading ? "…" : isFollowing ? "Following" : "Follow"} • {count}
+      {loading ? "…" : following ? "Following" : "Follow"}
     </button>
   );
 }
