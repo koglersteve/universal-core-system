@@ -1,74 +1,31 @@
 "use client";
 
-export default function MenuDrawer({
-  open,
-  onClose
-}: {
+type MenuDrawerProps = {
   open: boolean;
   onClose: () => void;
-}) {
+};
+
+export default function MenuDrawer({ open, onClose }: MenuDrawerProps) {
+  if (!open) return null;
+
   return (
-    <>
-      {/* Backdrop */}
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-          onClick={onClose}
-        />
-      )}
-
-      {/* Drawer */}
-      <aside
-        className={`
-          fixed top-0 right-0 h-full w-72 bg-black text-white z-50
-          border-l border-white/10 p-6 space-y-6
-          transform transition-transform duration-300
-          ${open ? "translate-x-0" : "translate-x-full"}
-        `}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-bold">Menu</h2>
-          <button
-            onClick={onClose}
-            className="text-2xl opacity-70 hover:opacity-100"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Profile */}
-        <div className="flex items-center gap-3 pb-4 border-b border-white/10">
-          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg">
-            👤
-          </div>
-          <div>
-            <div className="font-semibold">Your Profile</div>
-            <div className="text-sm opacity-70">@username</div>
-          </div>
-        </div>
-
-        {/* Menu Items */}
-        <nav className="space-y-4 pt-2">
-          <button className="w-full flex items-center gap-3 text-left py-2 opacity-80 hover:opacity-100">
-            <span>⚙️</span> Settings
-          </button>
-
-          <button className="w-full flex items-center gap-3 text-left py-2 opacity-80 hover:opacity-100">
-            <span>📊</span> Creator Dashboard
-          </button>
-
-          <button className="w-full flex items-center gap-3 text-left py-2 opacity-80 hover:opacity-100">
-            <span>ℹ️</span> About LAFFlab
-          </button>
-
-          <div className="border-t border-white/10 pt-4">
-            <button className="w-full flex items-center gap-3 text-left py-2 text-red-400 opacity-80 hover:opacity-100">
-              <span>🚪</span> Logout
-            </button>
-          </div>
-        </nav>
-      </aside>
-    </>
+    <div className="fixed inset-0 z-50 flex">
+      <div
+        className="flex-1 bg-black/60"
+        onClick={onClose}
+      />
+      <div className="w-64 bg-black border-l border-white/10 p-4 space-y-4">
+        <div className="text-lg font-semibold mb-2">Menu</div>
+        <button className="block w-full text-left text-sm text-white/80 py-2">
+          Profile
+        </button>
+        <button className="block w-full text-left text-sm text-white/80 py-2">
+          Settings
+        </button>
+        <button className="block w-full text-left text-sm text-white/80 py-2">
+          Logout
+        </button>
+      </div>
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, Pencil } from "lucide-react";
 import PostComposerModal from "@/components/PostComposerModal";
+import MenuDrawer from "@/components/MenuDrawer";
 
 type Post = {
   id: string;
@@ -18,21 +19,102 @@ type Post = {
   };
 };
 
+const REACTION_EMOJIS = ["😂", "🙂", "😐", "😱", "🤯", "😡", "🦗"];
+
+type ReactionMap = {
+  [postId: string]: string | undefined;
+};
+
 export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [composerOpen, setComposerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [reactions, setReactions] = useState<ReactionMap>({});
 
-  async function loadFeed() {
-    const res = await fetch("/api/feed");
+  // Load reactions from localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem("lafflab_reactions");
+    if (stored) {
+      try {
+        setReactions(JSON.parse(stored));
+      } catch {
+        setReactions({});
+      }
+    }
+  }, []);
+
+  function saveReactions(next: ReactionMap) {
+    setReactions(next);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("lafflab_reactions", JSON.stringify(next));
+    }
+  }
+
+  async function loadPage(targetPage: number, replace = false) {
+    if (targetPage > 0 && !hasMore) return;
+
+    if (targetPage === 0) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+
+    const res = await fetch(`/api/feed?page=${targetPage}`);
     const data = await res.json();
-    setPosts(data.posts);
+
+    if (replace) {
+      setPosts(data.posts);
+    } else {
+      setPosts((prev) => [...prev, ...data.posts]);
+    }
+
+    setHasMore(data.hasMore);
+    setPage(targetPage);
     setLoading(false);
+    setLoadingMore(false);
   }
 
   useEffect(() => {
-    loadFeed();
+    loadPage(0, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Infinite scroll
+  useEffect(() => {
+    function onScroll() {
+      if (!hasMore || loadingMore) return;
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const threshold = document.body.offsetHeight - 400;
+      if (scrollPosition >= threshold) {
+        loadPage(page + 1);
+      }
+    }
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [page, hasMore, loadingMore]);
+
+  function handleReaction(postId: string, emoji: string) {
+    const current = reactions[postId];
+    const next: ReactionMap = { ...reactions };
+
+    if (current === emoji) {
+      delete next[postId];
+    } else {
+      next[postId] = emoji;
+    }
+
+    saveReactions(next);
+  }
+
+  async function handlePostCreated() {
+    await loadPage(0, true);
+  }
 
   return (
     <div className="min-h-screen bg-black text-white relative">
@@ -42,7 +124,10 @@ export default function FeedPage() {
         <div className="text-center text-white/80 text-sm font-medium">
           🔥 Your Ad Here 🔥
         </div>
-        <button className="w-8 h-8 flex items-center justify-center">
+        <button
+          className="w-8 h-8 flex items-center justify-center"
+          onClick={() => setDrawerOpen(true)}
+        >
           <Menu size={24} />
         </button>
       </div>
@@ -88,13 +173,18 @@ export default function FeedPage() {
                 </Link>
 
                 <div className="flex justify-between text-xl pt-2 border-t border-white/10">
-                  <button>😂</button>
-                  <button>🙂</button>
-                  <button>😐</button>
-                  <button>😱</button>
-                  <button>🤯</button>
-                  <button>😡</button>
-                  <button>🦗</button>
+                  {REACTION_EMOJIS.map((emoji) => {
+                    const active = reactions[post.id] === emoji;
+                    return (
+                      <button
+                        key={emoji}
+                        onClick={() => handleReaction(post.id, emoji)}
+                        className={active ? "scale-110" : "opacity-70"}
+                      >
+                        {emoji}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -111,6 +201,12 @@ export default function FeedPage() {
               No posts yet.
             </div>
           )}
+
+          {loadingMore && (
+            <div className="text-white/60 text-sm text-center py-4">
+              Loading more…
+            </div>
+          )}
         </div>
       </div>
 
@@ -124,8 +220,10 @@ export default function FeedPage() {
       <PostComposerModal
         open={composerOpen}
         onClose={() => setComposerOpen(false)}
-        onPostCreated={loadFeed}
+        onPostCreated={handlePostCreated}
       />
+
+      <MenuDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </div>
   );
 }

@@ -1,22 +1,27 @@
 export const dynamic = "force-dynamic";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/server/user";
 
-export async function GET() {
+const PAGE_SIZE = 20;
+
+export async function GET(req: NextRequest) {
+  const url = new URL(req.url);
+  const pageParam = url.searchParams.get("page");
+  const page = Number.isNaN(Number(pageParam)) ? 0 : parseInt(pageParam || "0", 10);
+  const skip = page * PAGE_SIZE;
+
   let user = null;
 
-  // Fully safe getUser()
   try {
     const result = await getUser();
     user = result?.user || null;
-  } catch (e) {
+  } catch {
     user = null;
   }
 
-  // Try follow table safely
-  let followingIds: string[] = [];
+  let where: any = undefined;
 
   if (user) {
     try {
@@ -25,25 +30,24 @@ export async function GET() {
         select: { followingId: true },
       });
 
-      followingIds = following.map((f) => f.followingId);
-    } catch (e) {
-      // Follow table missing → fallback to global feed
-      followingIds = [];
+      const followingIds = following.map((f) => f.followingId);
+
+      where = {
+        OR: [
+          { userId: user.id },
+          { userId: { in: followingIds } },
+        ],
+      };
+    } catch {
+      where = undefined;
     }
   }
 
-  // Fetch posts (global or personalized)
   const posts = await prisma.post.findMany({
-    where: user
-      ? {
-          OR: [
-            { userId: user.id },
-            { userId: { in: followingIds } },
-          ],
-        }
-      : undefined,
+    where,
     orderBy: { createdAt: "desc" },
-    take: 50,
+    skip,
+    take: PAGE_SIZE,
     include: {
       user: {
         select: {
@@ -56,5 +60,7 @@ export async function GET() {
     },
   });
 
-  return NextResponse.json({ posts });
+  const hasMore = posts.length === PAGE_SIZE;
+
+  return NextResponse.json({ posts, hasMore });
 }
