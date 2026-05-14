@@ -1,34 +1,47 @@
-import { getUserById } from "@/lib/server/user";
-import { getFollowerCount, getFollowingCount } from "@/lib/server/follow";
+import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/server/user";
-import FollowButton from "@/components/FollowButton";
+import ProfileHeader from "@/components/ProfileHeader";
 import { isFollowing } from "@/lib/server/follow";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const profile = await getUserById(params.id);
-  if (!profile) return <div className="p-6 text-white">User not found.</div>;
+  const profile = await prisma.user.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!profile) {
+    return <div className="p-6 text-white">User not found.</div>;
+  }
 
   const { user } = await getUser();
 
-  const followerCount = await getFollowerCount(profile.id);
-  const followingCount = await getFollowingCount(profile.id);
+  const [followers, following, posts] = await Promise.all([
+    prisma.follow.count({ where: { followingId: profile.id } }),
+    prisma.follow.count({ where: { followerId: profile.id } }),
+    prisma.post.count({ where: { userId: profile.id } }),
+  ]);
 
-  const following = user
-    ? await isFollowing(user.id, profile.id)
-    : false;
+  const followingState =
+    user && user.id !== profile.id
+      ? await isFollowing(user.id, profile.id)
+      : false;
 
   return (
-    <div className="p-6 text-white space-y-4">
-      <div className="text-2xl font-semibold">{profile.screenName}</div>
+    <div className="min-h-screen bg-black">
+      <ProfileHeader
+        user={profile}
+        stats={{
+          followers,
+          following,
+          posts,
+        }}
+        isOwnProfile={user?.id === profile.id}
+        initialFollowing={followingState}
+      />
 
-      <div className="flex gap-4 text-sm text-white/70">
-        <div>{followerCount} Followers</div>
-        <div>{followingCount} Following</div>
+      {/* User posts list goes here */}
+      <div className="p-6 text-white/70">
+        User posts will render here.
       </div>
-
-      {user && user.id !== profile.id && (
-        <FollowButton userId={profile.id} initialFollowing={following} />
-      )}
     </div>
   );
 }
