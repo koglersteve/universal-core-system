@@ -9,10 +9,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
 
-  const following = await prisma.follow.findMany({
-    where: { followerId: userId },
+  const followers = await prisma.follow.findMany({
+    where: { followingId: userId },
     include: {
-      following: {
+      follower: {
         select: {
           id: true,
           username: true,
@@ -24,6 +24,6 @@ export async function GET(req: Request) {
   });
 
   return NextResponse.json(
-    following.map((f) => f.following)
+    followers.map((f) => f.follower)
   );
 }
