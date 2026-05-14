@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import PostComposer from "@/components/PostComposer";
+import { Menu } from "lucide-react";
 
 type Post = {
   id: string;
@@ -33,9 +34,26 @@ export default function FeedPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-xl mx-auto p-4 space-y-6">
-        <h1 className="text-2xl font-semibold mb-2">Home</h1>
+    <div className="min-h-screen bg-black text-white relative">
+
+      {/* TOP BAR */}
+      <div className="fixed top-0 left-0 w-full h-14 bg-black/80 backdrop-blur flex items-center justify-between px-4 z-50 border-b border-white/10">
+        {/* Left spacer */}
+        <div className="w-8" />
+
+        {/* CENTER PERMANENT AD BANNER */}
+        <div className="text-center text-white/80 text-sm font-medium">
+          🔥 Your Ad Here 🔥
+        </div>
+
+        {/* HAMBURGER MENU ICON */}
+        <button className="w-8 h-8 flex items-center justify-center">
+          <Menu size={24} />
+        </button>
+      </div>
+
+      {/* MAIN FEED CONTENT */}
+      <div className="max-w-xl mx-auto pt-20 pb-24 p-4 space-y-6">
 
         <PostComposer onPostCreated={loadFeed} />
 
@@ -43,50 +61,67 @@ export default function FeedPage() {
 
         <div className="space-y-4 mt-4">
           {posts.map((post) => (
-            <Link
+            <div
               key={post.id}
-              href={`/post/${post.id}`}
-              className="block border border-white/10 rounded-lg p-4 space-y-2 hover:border-white/30 transition"
+              className="border border-white/10 rounded-lg p-4 space-y-2"
             >
-              <div className="flex items-center gap-3">
-                <img
-                  src={post.user.avatarUrl || "/default-avatar.png"}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <div>
-                  <div className="text-sm font-medium">
-                    {post.user.screenName}
-                  </div>
-                  <div className="text-xs text-white/60">
-                    @{post.user.username}
+              <Link href={`/post/${post.id}`} className="block space-y-2">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={post.user.avatarUrl || "/default-avatar.png"}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="text-sm font-medium">
+                      {post.user.screenName}
+                    </div>
+                    <div className="text-xs text-white/60">
+                      @{post.user.username}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="text-sm mt-2 whitespace-pre-wrap">
-                {post.content}
-              </div>
+                <div className="text-sm mt-2 whitespace-pre-wrap">
+                  {post.content}
+                </div>
 
-              {post.imageUrl && (
-                <img
-                  src={post.imageUrl}
-                  className="mt-2 max-h-80 rounded-md border border-white/10 object-cover"
-                />
-              )}
+                {post.imageUrl && (
+                  <img
+                    src={post.imageUrl}
+                    className="mt-2 max-h-80 rounded-md border border-white/10 object-cover"
+                  />
+                )}
 
-              <div className="text-xs text-white/40 mt-1">
-                {new Date(post.createdAt).toLocaleString()}
+                <div className="text-xs text-white/40 mt-1">
+                  {new Date(post.createdAt).toLocaleString()}
+                </div>
+              </Link>
+
+              {/* REACTION BAR */}
+              <div className="flex justify-between text-xl pt-2 border-t border-white/10">
+                <button>😂</button>
+                <button>🙂</button>
+                <button>😐</button>
+                <button>😱</button>
+                <button>🤯</button>
+                <button>😡</button>
+                <button>🦗</button>
               </div>
-            </Link>
+            </div>
           ))}
 
           {!loading && posts.length === 0 && (
             <div className="text-white/50 text-sm mt-4">
-              No posts yet. Follow people or create your first post.
+              No posts yet.
             </div>
           )}
         </div>
       </div>
+
+      {/* BOTTOM LEFT POST BUTTON */}
+      <button className="fixed bottom-6 left-6 bg-white text-black px-4 py-2 rounded-full font-semibold shadow-lg">
+        Post
+      </button>
     </div>
   );
 }
