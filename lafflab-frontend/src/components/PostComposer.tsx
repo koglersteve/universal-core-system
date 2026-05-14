@@ -7,6 +7,19 @@ export default function PostComposer({ onPostCreated }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  async function handleMediaDuration(file: File) {
+    return new Promise<number>((resolve) => {
+      const url = URL.createObjectURL(file);
+      const media = document.createElement(
+        file.type.startsWith("audio") ? "audio" : "video"
+      );
+      media.src = url;
+      media.addEventListener("loadedmetadata", () => {
+        resolve(media.duration);
+      });
+    });
+  }
+
   async function handleSubmit() {
     if (!content.trim() && !imageFile) return;
 
@@ -14,7 +27,6 @@ export default function PostComposer({ onPostCreated }) {
 
     let imageUrl = null;
 
-    // Upload image if present
     if (imageFile) {
       const uploadRes = await fetch("/api/post/upload-url", {
         method: "POST",
@@ -35,7 +47,6 @@ export default function PostComposer({ onPostCreated }) {
       imageUrl = publicUrl;
     }
 
-    // Create post
     await fetch("/api/post/create", {
       method: "POST",
       body: JSON.stringify({
@@ -53,24 +64,43 @@ export default function PostComposer({ onPostCreated }) {
 
   return (
     <div className="space-y-3">
-      {/* TEXT INPUT */}
+
       <textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => {
+          if (e.target.value.length <= 150) {
+            setContent(e.target.value);
+          }
+        }}
         placeholder="What's on your mind?"
         className="w-full bg-black border border-white/20 rounded-lg p-3 text-sm text-white resize-none"
         rows={4}
       />
 
-      {/* IMAGE INPUT */}
+      <div className="text-right text-xs text-white/60">
+        {content.length}/150
+      </div>
+
       <input
         type="file"
-        accept="image/*"
-        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+        accept="image/*,video/*,audio/*"
+        onChange={async (e) => {
+          const file = e.target.files?.[0] || null;
+          if (!file) return;
+
+          if (file.type.startsWith("video") || file.type.startsWith("audio")) {
+            const duration = await handleMediaDuration(file);
+            if (duration > 30) {
+              alert("Video and audio posts must be 30 seconds or less.");
+              return;
+            }
+          }
+
+          setImageFile(file);
+        }}
         className="text-sm text-white/70"
       />
 
-      {/* SUBMIT BUTTON */}
       <button
         onClick={handleSubmit}
         disabled={uploading}
