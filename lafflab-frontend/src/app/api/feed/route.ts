@@ -5,8 +5,17 @@ import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/server/user";
 
 export async function GET() {
-  const { user } = await getUser();
+  let user = null;
 
+  // SAFE getUser() — never hangs
+  try {
+    const result = await getUser();
+    user = result?.user || null;
+  } catch (e) {
+    user = null;
+  }
+
+  // If no user → return global feed
   if (!user) {
     const posts = await prisma.post.findMany({
       orderBy: { createdAt: "desc" },
@@ -26,6 +35,7 @@ export async function GET() {
     return NextResponse.json({ posts });
   }
 
+  // If user exists → return personalized feed
   const following = await prisma.follow.findMany({
     where: { followerId: user.id },
     select: { followingId: true },
