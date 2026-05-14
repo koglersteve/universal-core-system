@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import PostComposer from "@/components/PostComposer";
 
 type Post = {
@@ -42,9 +43,10 @@ export default function HomePage() {
 
         <div className="space-y-4 mt-4">
           {posts.map((post) => (
-            <div
+            <Link
               key={post.id}
-              className="border border-white/10 rounded-lg p-4 space-y-2"
+              href={`/post/${post.id}`}
+              className="block border border-white/10 rounded-lg p-4 space-y-2 hover:border-white/30 transition"
             >
               <div className="flex items-center gap-3">
                 <img
@@ -75,7 +77,7 @@ export default function HomePage() {
               <div className="text-xs text-white/40 mt-1">
                 {new Date(post.createdAt).toLocaleString()}
               </div>
-            </div>
+            </Link>
           ))}
 
           {!loading && posts.length === 0 && (
