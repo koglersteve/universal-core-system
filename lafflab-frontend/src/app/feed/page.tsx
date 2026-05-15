@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
-import { RefreshCcw, Pencil } from "lucide-react";
+import { RefreshCcw, Pencil, Menu } from "lucide-react";
 import PostComposerModal from "@/components/PostComposerModal";
 import PostFullscreenViewer from "@/components/PostFullscreenViewer";
+import HamburgerMenu from "@/components/HamburgerMenu";
 
 type Post = {
   id: string;
@@ -31,6 +31,8 @@ export default function FeedPage() {
 
   const [reactions, setReactions] = useState({});
   const scrollPos = useRef(0);
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Load reactions from localStorage
   useEffect(() => {
@@ -97,7 +99,15 @@ export default function FeedPage() {
           🔥 Your Ad Here 🔥
         </div>
 
-        <div className="w-8" />
+        {/* HAMBURGER MENU BUTTON */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="text-white/80 hover:text-white"
+        >
+          <Menu size={26} />
+        </button>
+
+        <HamburgerMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
       </div>
 
       {/* FEED */}
