@@ -1,24 +1,28 @@
 import { NextResponse } from "next/server";
-
-let profileData = {
-  name: "New User",
-  bio: "This is your bio.",
-  avatarUrl: "",
-};
+import { prisma } from "@/lib/prisma";
+import { getUser } from "@/lib/server/user";
 
 export async function GET() {
-  return NextResponse.json(profileData);
-}
+  try {
+    const { user } = await getUser();
 
-export async function PUT(request: Request) {
-  const body = await request.json();
+    if (!user) {
+      return NextResponse.json({ user: null });
+    }
 
-  profileData = {
-    ...profileData,
-    name: body.name ?? profileData.name,
-    bio: body.bio ?? profileData.bio,
-    avatarUrl: body.avatarUrl ?? profileData.avatarUrl,
-  };
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        username: true,
+        screenName: true,
+        avatarUrl: true,
+        email: true,
+      },
+    });
 
-  return NextResponse.json({ success: true, profile: profileData });
+    return NextResponse.json({ user: dbUser });
+  } catch {
+    return NextResponse.json({ user: null });
+  }
 }

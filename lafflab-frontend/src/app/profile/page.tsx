@@ -1,26 +1,63 @@
-import AppShell from "@/components/AppShell";
-import { getUser } from "@/lib/server/user";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useEffect, useState } from "react";
 
-export default async function Page() {
-  const { user } = await getUser();
+export default function ProfilePage() {
+  const [user, setUser] = useState(null);
+
+  async function loadProfile() {
+    const res = await fetch("/api/profile");
+    const data = await res.json();
+    setUser(data.user);
+  }
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading…
+      </div>
+    );
+  }
 
   return (
-    <AppShell title="My Profile">
-      {!user ? (
-        <div className="text-white/60 text-sm">Loading…</div>
-      ) : (
-        <div className="p-6 text-white">
-          <div className="text-xl font-semibold mb-4">My Profile</div>
+    <div className="min-h-screen bg-black text-white p-6 space-y-6">
 
-          <div className="space-y-2">
-            <div>Email: {user.email}</div>
-            <div>Screen Name: {user.screenName}</div>
+      <h1 className="text-2xl font-bold">Your Profile</h1>
+
+      <div className="space-y-4">
+
+        <div className="flex items-center gap-4">
+          <img
+            src={user.avatarUrl || "/default-avatar.png"}
+            className="w-20 h-20 rounded-full object-cover border border-white/10"
+          />
+          <div>
+            <div className="text-lg font-semibold">{user.screenName}</div>
+            <div className="text-white/60">@{user.username}</div>
           </div>
         </div>
-      )}
-    </AppShell>
+
+        <div className="border border-white/10 rounded-lg p-4 space-y-3">
+          <div className="text-sm text-white/60">Screen Name</div>
+          <div className="text-white">{user.screenName}</div>
+        </div>
+
+        <div className="border border-white/10 rounded-lg p-4 space-y-3">
+          <div className="text-sm text-white/60">Username</div>
+          <div className="text-white">@{user.username}</div>
+        </div>
+
+        <div className="border border-white/10 rounded-lg p-4 space-y-3">
+          <div className="text-sm text-white/60">Email</div>
+          <div className="text-white">{user.email}</div>
+        </div>
+
+      </div>
+    </div>
   );
 }
 

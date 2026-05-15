@@ -1,11 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function HamburgerMenu({ open, onClose }) {
+  const router = useRouter();
   if (!open) return null;
 
-  // Close menu when clicking outside
   useEffect(() => {
     function handleClick(e) {
       if (!document.getElementById("hamburger-menu")?.contains(e.target)) {
@@ -23,7 +24,13 @@ export default function HamburgerMenu({ open, onClose }) {
     >
       <div className="flex flex-col py-2">
 
-        <button className="px-4 py-2 text-left text-white/80 hover:bg-white/10">
+        <button
+          onClick={() => {
+            onClose();
+            router.push("/profile");
+          }}
+          className="px-4 py-2 text-left text-white/80 hover:bg-white/10"
+        >
           Edit Profile
         </button>
 
