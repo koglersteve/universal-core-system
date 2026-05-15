@@ -1,40 +1,62 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import { getUser } from "@/lib/server/user";
+import { useEffect, useState } from "react";
 
-export default async function Component() {
-  const result = await getUser();
-  const user = result?.user || null;
+export default function ProfilePage() {
+  const [user, setUser] = useState(null);
+
+  async function loadProfile() {
+    const res = await fetch("/api/profile");
+    const data = await res.json();
+    setUser(data.user);
+  }
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
   if (!user) {
     return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Profile Settings</div>
-        <div className="text-gray-300">You are not logged in.</div>
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading…
       </div>
     );
   }
 
   return (
-    <div className="p-6 text-white space-y-4">
-      <div className="text-xl font-semibold mb-4">Profile Settings</div>
+    <div className="min-h-screen bg-black text-white p-6 space-y-6">
 
-      <div className="space-y-2">
-        <div className="text-gray-400 text-sm">Username</div>
-        <div className="text-white">{user.username}</div>
+      <h1 className="text-2xl font-bold">Your Profile</h1>
+
+      <div className="space-y-4">
+
+        <div className="flex items-center gap-4">
+          <img
+            src={user.avatarUrl || "/default-avatar.png"}
+            className="w-20 h-20 rounded-full object-cover border border-white/10"
+          />
+          <div>
+            <div className="text-lg font-semibold">{user.screenName}</div>
+            <div className="text-white/60">@{user.username}</div>
+          </div>
+        </div>
+
+        <div className="border border-white/10 rounded-lg p-4 space-y-3">
+          <div className="text-sm text-white/60">Screen Name</div>
+          <div className="text-white">{user.screenName}</div>
+        </div>
+
+        <div className="border border-white/10 rounded-lg p-4 space-y-3">
+          <div className="text-sm text-white/60">Username</div>
+          <div className="text-white">@{user.username}</div>
+        </div>
+
+        <div className="border border-white/10 rounded-lg p-4 space-y-3">
+          <div className="text-sm text-white/60">Email</div>
+          <div className="text-white">{user.email}</div>
+        </div>
+
       </div>
-
-      <div className="space-y-2">
-        <div className="text-gray-400 text-sm">Email</div>
-        <div className="text-white">{user.email}</div>
-      </div>
-
-      <a
-        href="/settings/profile/edit"
-        className="inline-block mt-4 px-4 py-2 bg-white/10 rounded-md hover:bg-white/20 transition"
-      >
-        Edit Profile
-      </a>
     </div>
   );
 }
