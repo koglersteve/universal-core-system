@@ -14,6 +14,8 @@
     "esModuleInterop": true,
     "incremental": true,
     "baseUrl": ".",
+    "types": ["node"],
+
     "paths": {
       "@/*": ["src/*"],
       "@lib/*": ["src/lib/*"],
@@ -25,8 +27,11 @@
       "@store/*": ["src/store/*"],
       "@components/*": ["src/components/*"]
     },
+
     "plugins": [{ "name": "next" }]
   },
+
   "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
+
