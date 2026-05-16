@@ -10,6 +10,27 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/server.ts",
+    "src/routes/**/*.ts",
+    "src/lib/prisma.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/lib/api",
+    "src/autonomy",
+    "src/dashboard",
+    "src/eventbus",
+    "src/health",
+    "src/index.ts",
+    "src/insight",
+    "src/kernel",
+    "src/middleware",
+    "src/os",
+    "src/plugins",
+    "src/routes.api",
+    "src/services",
+    "src/types"
+  ]
 }
