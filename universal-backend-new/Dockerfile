@@ -2,15 +2,14 @@ FROM node:22.12.0
 
 WORKDIR /app
 
+# Copy only backend package files
 COPY package*.json ./
 COPY prisma ./prisma
+COPY tsconfig.json ./
+COPY src ./src
 
 RUN npm install --force
 
-COPY . .
-
 RUN npm run build
-
-EXPOSE 8080
 
 CMD ["node", "dist/server.js"]
