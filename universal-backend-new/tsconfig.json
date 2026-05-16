@@ -10,43 +10,6 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "include": [
-    "src/server.ts",
-    "src/routes/feed.ts",
-    "src/lib/prisma.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/lib/api",
-    "src/autonomy",
-    "src/dashboard",
-    "src/eventbus",
-    "src/health",
-    "src/index.ts",
-    "src/insight",
-    "src/kernel",
-    "src/middleware",
-    "src/os",
-    "src/plugins",
-    "src/routes.api",
-    "src/routes/behavior.routes.ts",
-    "src/routes/cognitive.routes.ts",
-    "src/routes/dramanextdoor.routes.ts",
-    "src/routes/emotion.routes.ts",
-    "src/routes/history.routes.ts",
-    "src/routes/history.ts",
-    "src/routes/hoameme.routes.ts",
-    "src/routes/idlyily.routes.ts",
-    "src/routes/jokes.ts",
-    "src/routes/lafflab.routes.ts",
-    "src/routes/mememycat.routes.ts",
-    "src/routes/mememydog.routes.ts",
-    "src/routes/memory.routes.ts",
-    "src/routes/multiverse.routes.ts",
-    "src/routes/multiverse.switch.routes.ts",
-    "src/routes/os.routes.ts",
-    "src/routes/persona.routes.ts",
-    "src/routes/posts.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
