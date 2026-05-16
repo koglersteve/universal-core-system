@@ -9,8 +9,8 @@ export default async function profileRoutes(app: FastifyInstance) {
       where: { id },
       include: {
         posts: true,
-        lafflabItems: true,
-      },
+        lafflabItems: true
+      }
     });
 
     if (!user) {
