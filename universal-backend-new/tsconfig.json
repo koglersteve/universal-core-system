@@ -18,19 +18,18 @@
   "exclude": [
     "node_modules",
     "dist",
-    "src/lib/api",
-    "src/autonomy",
-    "src/dashboard",
-    "src/eventbus",
-    "src/health",
-    "src/index.ts",
-    "src/insight",
-    "src/kernel",
-    "src/middleware",
     "src/os",
     "src/plugins",
+    "src/autonomy",
+    "src/kernel",
+    "src/eventbus",
+    "src/insight",
     "src/routes.api",
     "src/services",
-    "src/types"
+    "src/dashboard",
+    "src/health",
+    "src/middleware",
+    "src/types",
+    "src/index.ts"
   ]
 }

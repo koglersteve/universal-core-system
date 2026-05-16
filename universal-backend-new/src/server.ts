@@ -7,7 +7,7 @@ import fastify from "fastify";
 import feedRoutes from "./routes/feed";
 import lafflabRoutes from "./routes/lafflab.routes";
 import postRoutes from "./routes/post.routes";
-import profileRoutes from "./routes/profile.routes"; // ← ADD THIS
+import profileRoutes from "./routes/profile.routes";
 
 async function start() {
   const app = fastify({ logger: true });
@@ -19,7 +19,7 @@ async function start() {
     feed: "/feed",
     lafflab: "/lafflab",
     post: "/post",
-    profile: "/profile/:id" // optional but helpful
+    profile: "/profile/:id"
   }));
 
   // Health check
@@ -29,7 +29,7 @@ async function start() {
   app.register(feedRoutes);
   app.register(lafflabRoutes);
   app.register(postRoutes);
-  app.register(profileRoutes); // ← ADD THIS
+  app.register(profileRoutes);
 
   try {
     await app.listen({

@@ -5,24 +5,18 @@ export default async function profileRoutes(app: FastifyInstance) {
   app.get("/profile/:id", async (req, reply) => {
     const { id } = req.params as { id: string };
 
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id },
-        include: {
-          posts: true,
-          lafflabItems: true
-        }
-      });
-
-      if (!user) {
-        return reply.status(404).send({ error: "User not found" });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        posts: true
       }
+    });
 
-      return reply.send(user);
-    } catch (err) {
-      app.log.error(err);
-      return reply.status(500).send({ error: "Internal server error" });
+    if (!user) {
+      return reply.status(404).send({ error: "User not found" });
     }
+
+    return reply.send(user);
   });
 }
 
