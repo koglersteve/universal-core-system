@@ -1,15 +1,16 @@
-import { Router } from "express";
+import { Hono } from "hono";
 import bcrypt from "bcryptjs";
-import prisma from "../../lib/prisma";
+import prisma from "../../../shared/api/prisma";
 
-const router = Router();
+const router = new Hono();
 
-router.post("/reset", async (req, res) => {
+router.post("/reset", async (c) => {
   try {
-    const { token, password } = req.body;
+    const body = await c.req.json();
+    const { token, password } = body;
 
     if (!token || !password) {
-      return res.status(400).json({ error: "Token and password are required" });
+      return c.json({ error: "Token and password are required" }, 400);
     }
 
     const record = await prisma.passwordResetToken.findUnique({
@@ -18,11 +19,11 @@ router.post("/reset", async (req, res) => {
     });
 
     if (!record) {
-      return res.status(400).json({ error: "Invalid token" });
+      return c.json({ error: "Invalid token" }, 400);
     }
 
     if (record.expires < new Date()) {
-      return res.status(400).json({ error: "Token expired" });
+      return c.json({ error: "Token expired" }, 400);
     }
 
     const hashed = await bcrypt.hash(password, 12);
@@ -36,10 +37,10 @@ router.post("/reset", async (req, res) => {
       where: { token },
     });
 
-    return res.json({ ok: true });
+    return c.json({ ok: true });
   } catch (err) {
     console.error("Reset error:", err);
-    return res.status(500).json({ error: "Password reset failed" });
+    return c.json({ error: "Password reset failed" }, 500);
   }
 });
 

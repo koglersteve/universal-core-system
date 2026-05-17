@@ -1,29 +1,29 @@
-import { Router } from "express";
+import { Hono } from "hono";
 import crypto from "crypto";
-import prisma from "../../lib/prisma";
+import prisma from "../../../shared/api/prisma";
 import sendEmail from "../../services/sendEmail";
 
-const router = Router();
+const router = new Hono();
 
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", async (c) => {
   try {
-    const { email } = req.body;
+    const body = await c.req.json();
+    const { email } = body;
 
     if (!email) {
-      return res.status(400).json({ error: "Email is required" });
+      return c.json({ error: "Email is required" }, 400);
     }
 
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
-    // Always return ok to avoid user enumeration
     if (!user) {
-      return res.json({ ok: true });
+      return c.json({ ok: true });
     }
 
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
+    const expires = new Date(Date.now() + 1000 * 60 * 15);
 
     await prisma.passwordResetToken.create({
       data: {
@@ -46,10 +46,10 @@ router.post("/reset-password", async (req, res) => {
       `,
     });
 
-    return res.json({ ok: true });
+    return c.json({ ok: true });
   } catch (err) {
     console.error("Reset-password error:", err);
-    return res.status(500).json({ error: "Failed to send reset email" });
+    return c.json({ error: "Failed to send reset email" }, 500);
   }
 });
 

@@ -13,10 +13,16 @@
   },
   "dependencies": {
     "@fastify/cors": "9.0.0",
+    "@hono/node-server": "^2.0.2",
     "@prisma/client": "6.19.0",
-    "fastify": "4.28.1"
+    "bcryptjs": "^3.0.3",
+    "fastify": "4.28.1",
+    "hono": "^4.12.19",
+    "nodemailer": "^8.0.7"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/nodemailer": "^8.0.0",
     "prisma": "6.19.0",
     "ts-node": "10.9.2",
     "ts-node-dev": "2.0.0",

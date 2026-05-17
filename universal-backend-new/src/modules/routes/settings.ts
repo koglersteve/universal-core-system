@@ -1,32 +1,33 @@
-import { Router } from "express";
-import prisma from "../../core/lib/prisma";
+import { Hono } from "hono";
+import prisma from "../../shared/api/prisma";
 
-const router = Router();
-
-// TEMP: replace with real auth later
 const USER_ID = "demo-user-123";
 
-router.get("/", async (req, res) => {
+const router = new Hono();
+
+router.get("/", async (c) => {
   let settings = await prisma.userSettings.findUnique({
-    where: { userId: USER_ID }
+    where: { userId: USER_ID },
   });
 
   if (!settings) {
     settings = await prisma.userSettings.create({
-      data: { userId: USER_ID }
+      data: { userId: USER_ID },
     });
   }
 
-  res.json(settings);
+  return c.json(settings);
 });
 
-router.patch("/", async (req, res) => {
+router.patch("/", async (c) => {
+  const body = await c.req.json();
+
   const updated = await prisma.userSettings.update({
     where: { userId: USER_ID },
-    data: req.body
+    data: body,
   });
 
-  res.json(updated);
+  return c.json(updated);
 });
 
 export default router;
