@@ -1,10 +1,10 @@
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export async function apiGet(path) {
+export async function apiGet(path: string) {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-    cache: "no-store"
+    cache: "no-store",
   });
 
   if (!res.ok) {
@@ -14,11 +14,11 @@ export async function apiGet(path) {
   return res.json();
 }
 
-export async function apiPost(path, body) {
+export async function apiPost(path: string, body: any) {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {

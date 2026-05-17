@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { multiverse } from "../core/os/multiverse";
+import { multiverse } from "./multiverse";
 
-export const registerMultiverseRoutes = (app: Hono) => {
+export const registerMultiverseRoutes = (app) => {
   app.route("/multiverse", multiverse);
 };

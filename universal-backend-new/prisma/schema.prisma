@@ -12,7 +12,8 @@ model User {
   email      String   @unique
   screenName String
   avatarUrl  String?
-  createdAt  DateTime @default(now())
+ password String
+ createdAt  DateTime @default(now())
 
   posts               Post[]
   lafflabItems        LAFFItem[]

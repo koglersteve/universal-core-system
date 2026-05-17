@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import prisma from "../shared/api/prisma";
+import prisma from "../../shared/api/prisma";
 
 const router = new Hono();
 
@@ -12,7 +12,7 @@ router.post("/toggle", async (c) => {
   }
 
   const existing = await prisma.favorite.findUnique({
-    where: { id }
+    where: { id },
   });
 
   if (existing) {
@@ -21,7 +21,7 @@ router.post("/toggle", async (c) => {
   }
 
   await prisma.favorite.create({
-    data: { id }
+    data: { id, userId: "default", itemId: id },
   });
 
   return c.json({ favorited: true });
