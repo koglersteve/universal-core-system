@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../prisma";
 
 export default async function profileRoutes(app: FastifyInstance) {
   app.get("/profile/:id", async (req, reply) => {

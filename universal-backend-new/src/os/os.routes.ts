@@ -15,7 +15,7 @@ import {
   state,
   tempo,
   world,
-} from "../os";
+} from "../core/os";
 
 export const registerOSRoutes = (app: Hono) => {
   const os = new Hono();

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../../core/lib/prisma";
 
 export function registerDramaNextDoorRoutes(app: Hono) {
   const route = new Hono();
