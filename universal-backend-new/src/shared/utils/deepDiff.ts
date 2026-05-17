@@ -1,57 +1,42 @@
-type Json = any;
+export function deepDiff(a: any, b: any): any {
+  if (a === b) return {};
 
-export type DiffResult =
-  | { type: "equal"; value: Json }
-  | { type: "changed"; before: Json; after: Json }
-  | { type: "added"; after: Json }
-  | { type: "removed"; before: Json }
-  | { type: "object"; children: Record<string, DiffResult> }
-  | { type: "array"; children: DiffResult[] };
-
-export const deepDiff = (a: Json, b: Json): DiffResult => {
-  if (a === b) {
-    return { type: "equal", value: a };
+  if (typeof a !== "object" || typeof b !== "object" || !a || !b) {
+    return b;
   }
 
-  const aIsObj = a && typeof a === "object";
-  const bIsObj = b && typeof b === "object";
+  const diff: any = {};
 
-  // Arrays
-  if (Array.isArray(a) && Array.isArray(b)) {
-    const maxLen = Math.max(a.length, b.length);
-    const children: DiffResult[] = [];
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
 
-    for (let i = 0; i < maxLen; i++) {
-      if (i in a && i in b) {
-        children.push(deepDiff(a[i], b[i]));
-      } else if (i in a) {
-        children.push({ type: "removed", before: a[i] });
-      } else {
-        children.push({ type: "added", after: b[i] });
-      }
+  for (const key of keys) {
+    if (!(key in b)) {
+      diff[key] = undefined;
+      continue;
     }
 
-    return { type: "array", children };
-  }
-
-  // Objects
-  if (aIsObj && bIsObj && !Array.isArray(a) && !Array.isArray(b)) {
-    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-    const children: Record<string, DiffResult> = {};
-
-    for (const key of keys) {
-      if (key in a && key in b) {
-        children[key] = deepDiff(a[key], b[key]);
-      } else if (key in a) {
-        children[key] = { type: "removed", before: a[key] };
-      } else {
-        children[key] = { type: "added", after: b[key] };
-      }
+    if (!(key in a)) {
+      diff[key] = b[key];
+      continue;
     }
 
-    return { type: "object", children };
+    const valueA = a[key];
+    const valueB = b[key];
+
+    if (valueA === valueB) continue;
+
+    if (
+      typeof valueA === "object" &&
+      typeof valueB === "object" &&
+      valueA &&
+      valueB
+    ) {
+      const nested = deepDiff(valueA, valueB);
+      if (Object.keys(nested).length > 0) diff[key] = nested;
+    } else {
+      diff[key] = valueB;
+    }
   }
 
-  // Primitive or type mismatch
-  return { type: "changed", before: a, after: b };
-};
+  return diff;
+}
