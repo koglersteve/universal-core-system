@@ -1,3 +1,4 @@
+// src/os/autonomy/planner.ts
 export type AutonomyDecision =
   | { status: "idle" }
   | {
@@ -9,16 +10,14 @@ export type AutonomyDecision =
     };
 
 import { pluginAutonomyActions } from "./pluginActions";
-import { pluginCapabilityRouter } from "../plugins/runtime/capabilityRouter";
+import { pluginCapabilityRouter } from "../../modules/plugins/runtime/capabilityRouter";
 
 export async function planNextAction(
   state: any,
   policies: any
 ): Promise<AutonomyDecision> {
-  // Core actions placeholder (restore later if needed)
   const coreActions: any[] = [];
 
-  // Plugin autonomy actions
   const pluginActions = pluginAutonomyActions.list().map((pa) => ({
     name: pa.actionName,
     priority: pa.priority,
@@ -37,7 +36,6 @@ export async function planNextAction(
     return { status: "idle" };
   }
 
-  // Pick highest priority action
   const best = allActions.sort((a, b) => b.priority - a.priority)[0];
 
   return {

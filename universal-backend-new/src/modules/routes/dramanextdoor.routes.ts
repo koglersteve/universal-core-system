@@ -1,10 +1,9 @@
 import { Hono } from "hono";
-import { prisma } from "../../core/lib/prisma";
+import prisma from "../../shared/api/prisma";
 
 export function registerDramaNextDoorRoutes(app: Hono) {
   const route = new Hono();
 
-  // FEED
   route.get("/feed", async (c) => {
     const clips = await prisma.dramaClip.findMany({
       orderBy: { createdAt: "desc" },
@@ -13,14 +12,12 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ items: clips });
   });
 
-  // FAVORITE
   route.post("/favorite", async (c) => {
     const { userId, clipId } = await c.req.json();
     await prisma.dramaFavorite.create({ data: { userId, clipId } });
     return c.json({ ok: true });
   });
 
-  // FAVORITES LIST
   route.get("/favorites", async (c) => {
     const userId = c.req.query("userId") || "anon";
     const items = await prisma.dramaFavorite.findMany({
@@ -31,7 +28,6 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ items: items.map((f: any) => f.clip) });
   });
 
-  // HISTORY
   route.get("/history", async (c) => {
     const userId = c.req.query("userId") || "anon";
     const views = await prisma.dramaView.findMany({
@@ -42,7 +38,6 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ items: views.map((v: any) => v.clip) });
   });
 
-  // POST CLIP
   route.post("/post", async (c) => {
     const { type, url, title } = await c.req.json();
 
@@ -55,14 +50,13 @@ export function registerDramaNextDoorRoutes(app: Hono) {
       data: {
         type,
         title: title ?? "Untitled",
-        videoUrl: url
+        videoUrl: url,
       },
     });
 
     return c.json({ clip });
   });
 
-  // REACT
   route.post("/react", async (c) => {
     const { clipId, reaction } = await c.req.json();
 
@@ -88,7 +82,6 @@ export function registerDramaNextDoorRoutes(app: Hono) {
     return c.json({ ok: true });
   });
 
-  // Mount namespace
   app.route("/api/dramanextdoor", route);
 }
 

@@ -1,6 +1,8 @@
+// src/os/insight/engine.ts
+import crypto from "crypto";
 import { insightStore } from "./store";
 import { Insight } from "./types";
-import { dashboardAggregator } from "../dashboard/aggregator";
+import { dashboardAggregator } from "../../modules/dashboard/aggregator";
 
 function createInsight(
   type: string,

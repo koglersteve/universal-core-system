@@ -1,34 +1,31 @@
+// src/modules/routes/jokes.ts
 import { Hono } from "hono";
 import {
   getAllJokes,
   getJokeById,
   getRandomJoke,
-  getJokesByCategory
-} from "@/services/useJokes";
+  getJokesByCategory,
+} from "../services/useJokes";
 
 export const jokesRoute = new Hono();
 
-// GET /jokes
-jokesRoute.get("/", async (c) => {
+jokesRoute.get("/", async (c: any) => {
   const jokes = await getAllJokes();
   return c.json(jokes);
 });
 
-// GET /jokes/:id
-jokesRoute.get("/:id", async (c) => {
+jokesRoute.get("/:id", async (c: any) => {
   const id = c.req.param("id");
   const joke = await getJokeById(id);
   return c.json(joke);
 });
 
-// GET /jokes/random
-jokesRoute.get("/random", async (c) => {
+jokesRoute.get("/random", async (c: any) => {
   const joke = await getRandomJoke();
   return c.json(joke);
 });
 
-// GET /jokes/by-category?categoryId=...
-jokesRoute.get("/by-category", async (c) => {
+jokesRoute.get("/by-category", async (c: any) => {
   const categoryId = c.req.query("categoryId");
   if (!categoryId) {
     return c.json([]);

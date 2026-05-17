@@ -1,5 +1,5 @@
 import { pluginRegistry } from "./registry";
-import { eventBus } from "../../eventbus/bus";
+import { eventBus } from "../../../os/eventbus/bus";
 import type { PluginCapabilityContext } from "./types";
 
 class PluginCapabilityRouter {
@@ -20,10 +20,7 @@ class PluginCapabilityRouter {
       console.warn(
         `[PluginCapabilityRouter] Capability not declared: ${pluginId}.${capability}`
       );
-      // Hybrid mode: warn but do not throw hard by default
-      throw new Error(
-        `Capability not available: ${pluginId}.${capability}`
-      );
+      throw new Error(`Capability not available: ${pluginId}.${capability}`);
     }
 
     const context: PluginCapabilityContext = {

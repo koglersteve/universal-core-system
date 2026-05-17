@@ -1,5 +1,5 @@
 import { runHealthChecks } from "./checks";
-import { eventBus } from "../eventbus/bus";
+import { eventBus } from "../../os/eventbus/bus";
 
 export class KernelHealthMonitor {
   private interval: NodeJS.Timeout | null = null;
@@ -33,3 +33,4 @@ export class KernelHealthMonitor {
     }
   }
 }
+

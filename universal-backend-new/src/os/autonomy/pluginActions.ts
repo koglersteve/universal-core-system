@@ -1,4 +1,5 @@
-import { pluginRegistry } from "../plugins/runtime/registry";
+// src/os/autonomy/pluginActions.ts
+import { pluginRegistry } from "../../modules/plugins/runtime/registry";
 
 export interface PluginAutonomyAction {
   pluginId: string;
@@ -20,13 +21,14 @@ class PluginAutonomyActionRegistry {
       const defs = manifest.autonomyActions ?? {};
 
       for (const [actionName, def] of Object.entries(defs)) {
+        const typedDef = def as any;
         this.actions.push({
           pluginId: manifest.id,
           actionName,
-          capability: def.capability,
-          description: def.description,
-          defaultArgs: def.defaultArgs,
-          priority: def.priority ?? 1,
+          capability: typedDef.capability,
+          description: typedDef.description,
+          defaultArgs: typedDef.defaultArgs,
+          priority: typedDef.priority ?? 1,
         });
       }
     }

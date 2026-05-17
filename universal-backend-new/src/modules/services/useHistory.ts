@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+// src/modules/services/useHistory.ts
+import prisma from "../../shared/api/prisma";
 
 export async function getHistory(userId: string) {
   return prisma.history.findMany({
@@ -12,7 +13,7 @@ export async function addHistory(userId: string, jokeId: string) {
     data: {
       userId,
       jokeId,
-      viewedAt: Date.now(),
+      viewedAt: new Date(),
     },
   });
 }

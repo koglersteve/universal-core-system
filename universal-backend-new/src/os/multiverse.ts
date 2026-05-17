@@ -1,14 +1,14 @@
+// src/os/multiverse.ts
+import crypto from "crypto";
 import { Hono } from "hono";
-import { deepDiff } from "../utils/deepDiff";
+import { deepDiff } from "../shared/utils/deepDiff";
 
-// --- Exported universe registry (used by middleware + routes) ---
 export const universes: Record<string, any> = {};
 
-// --- Universe Factory ---
 export const createUniverse = () => ({
   id: crypto.randomUUID(),
   createdAt: Date.now(),
-  parent: null as string | null,   // <-- FIXED: allow string or null
+  parent: null as string | null,
   state: {
     emotion: { mood: "neutral", intensity: 0 },
     signal: { tone: "soft", intensity: 0 },
@@ -27,11 +27,9 @@ export const createUniverse = () => ({
   },
 });
 
-// --- Multiverse Router ---
 export const multiverse = new Hono();
 
-// --- Create a new universe ---
-multiverse.post("/create", (c) => {
+multiverse.post("/create", (c: any) => {
   const u = createUniverse();
   universes[u.id] = u;
 
@@ -41,15 +39,13 @@ multiverse.post("/create", (c) => {
   });
 });
 
-// --- List universes ---
-multiverse.get("/list", (c) => {
+multiverse.get("/list", (c: any) => {
   return c.json({
     universes: Object.values(universes),
   });
 });
 
-// --- Get universe snapshot ---
-multiverse.get("/snapshot/:id", (c) => {
+multiverse.get("/snapshot/:id", (c: any) => {
   const id = c.req.param("id");
   const universe = universes[id];
 
@@ -60,8 +56,7 @@ multiverse.get("/snapshot/:id", (c) => {
   return c.json(universe);
 });
 
-// --- Branch a universe ---
-multiverse.post("/branch/:id", (c) => {
+multiverse.post("/branch/:id", (c: any) => {
   const id = c.req.param("id");
   const parent = universes[id];
 
@@ -70,9 +65,7 @@ multiverse.post("/branch/:id", (c) => {
   }
 
   const child = createUniverse();
-  child.parent = id; // now valid because parent: string | null
-
-  // Deep clone parent state
+  child.parent = id;
   child.state = JSON.parse(JSON.stringify(parent.state));
 
   universes[child.id] = child;
@@ -83,8 +76,7 @@ multiverse.post("/branch/:id", (c) => {
   });
 });
 
-// --- Deep diff two universes ---
-multiverse.get("/diff/:a/:b", (c) => {
+multiverse.get("/diff/:a/:b", (c: any) => {
   const a = universes[c.req.param("a")];
   const b = universes[c.req.param("b")];
 

@@ -1,13 +1,12 @@
+// src/os/middleware/universe.ts
 import { MiddlewareHandler } from "hono";
-import { universes } from "../os/multiverse";
+import { universes } from "../multiverse";
 
 export const universeMiddleware: MiddlewareHandler = async (c, next) => {
-  // Read cookie
   const cookie = c.req.header("Cookie") || "";
   const match = cookie.match(/universeId=([^;]+)/);
   const universeId = match ? match[1] : "default";
 
-  // Ensure universe exists
   if (!universes[universeId]) {
     universes[universeId] = {
       id: universeId,
@@ -32,7 +31,6 @@ export const universeMiddleware: MiddlewareHandler = async (c, next) => {
     };
   }
 
-  // Attach context
   c.set("universeId", universeId);
   c.set("universe", universes[universeId]);
   c.set("universeState", universes[universeId].state);
