@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
-  screenName   String
-  avatarUrl    String?
-  createdAt    DateTime   @default(now())
+  id         String   @id @default(cuid())
+  email      String   @unique
+  screenName String
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
 
-  posts        Post[]
-  lafflabItems LAFFItem[]
-  history      History[]
-  favorites    Favorite[]
-  dramaFavorites DramaFavorite[]
-  dramaViews     DramaView[]
+  posts               Post[]
+  lafflabItems        LAFFItem[]
+  history             History[]
+  favorites           Favorite[]
+  dramaFavorites      DramaFavorite[]
+  dramaViews          DramaView[]
+  passwordResetTokens PasswordResetToken[]
+  settings            UserSettings?
 }
 
 model Post {
@@ -32,7 +34,7 @@ model Post {
   creatorId String
   app       String?
 
-  creator   User     @relation(fields: [creatorId], references: [id])
+  creator User @relation(fields: [creatorId], references: [id])
 }
 
 model LAFFItem {
@@ -46,7 +48,7 @@ model LAFFItem {
   creatorId String
   app       String?
 
-  creator   User     @relation(fields: [creatorId], references: [id])
+  creator User @relation(fields: [creatorId], references: [id])
 }
 
 model PasswordResetToken {
@@ -63,7 +65,7 @@ model UserSettings {
   language  String?  @default("en")
   updatedAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Joke {
@@ -74,12 +76,12 @@ model Joke {
 }
 
 model History {
-  id        String   @id @default(cuid())
-  userId    String
-  jokeId    String
-  viewedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  userId   String
+  jokeId   String
+  viewedAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Favorite {
@@ -88,7 +90,7 @@ model Favorite {
   itemId    String
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model DramaClip {
@@ -98,13 +100,13 @@ model DramaClip {
   videoUrl  String?
   createdAt DateTime @default(now())
 
-  laugh     Int      @default(0)
-  smile     Int      @default(0)
-  shock     Int      @default(0)
-  sad       Int      @default(0)
-  angry     Int      @default(0)
-  mindblown Int      @default(0)
-  chaos     Int      @default(0)
+  laugh     Int @default(0)
+  smile     Int @default(0)
+  shock     Int @default(0)
+  sad       Int @default(0)
+  angry     Int @default(0)
+  mindblown Int @default(0)
+  chaos     Int @default(0)
 
   favorites DramaFavorite[]
   views     DramaView[]
@@ -116,8 +118,8 @@ model DramaFavorite {
   clipId    String
   createdAt DateTime @default(now())
 
-  user      User      @relation(fields: [userId], references: [id])
-  clip      DramaClip @relation(fields: [clipId], references: [id])
+  user User      @relation(fields: [userId], references: [id])
+  clip DramaClip @relation(fields: [clipId], references: [id])
 }
 
 model DramaView {
@@ -126,6 +128,6 @@ model DramaView {
   clipId    String
   createdAt DateTime @default(now())
 
-  user      User      @relation(fields: [userId], references: [id])
-  clip      DramaClip @relation(fields: [clipId], references: [id])
+  user User      @relation(fields: [userId], references: [id])
+  clip DramaClip @relation(fields: [clipId], references: [id])
 }
