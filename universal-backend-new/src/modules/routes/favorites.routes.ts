@@ -5,7 +5,7 @@ const router = new Hono();
 
 router.post("/toggle", async (c) => {
   const body = await c.req.json();
-  const { id } = body;
+  const { id, userId } = body;
 
   if (!id) {
     return c.json({ error: "id is required" }, 400);
@@ -20,11 +20,16 @@ router.post("/toggle", async (c) => {
     return c.json({ favorited: false });
   }
 
-  await prisma.favorite.create({
-    data: { id, userId: "default", itemId: id },
+  const created = await prisma.favorite.create({
+    data: {
+      id,
+      itemId: id,
+      userId: userId || "anonymous",
+    },
   });
 
-  return c.json({ favorited: true });
+  return c.json({ favorited: true, favorite: created });
 });
 
+export const favoritesRoute = router;
 export default router;

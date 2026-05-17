@@ -1,23 +1,32 @@
-// src/modules/routes/history.ts
 import { Hono } from "hono";
-import { getHistory, addHistory, clearHistory } from "../services/useHistory";
+import prisma from "../../shared/api/prisma";
 
-export const historyRoute = new Hono();
+const router = new Hono();
 
-historyRoute.get("/list", async (c: any) => {
-  const userId = "default";
-  return c.json(await getHistory(userId));
+router.get("/list", async (c) => {
+  const history = await prisma.history.findMany({
+    orderBy: { viewedAt: "desc" },
+  });
+  return c.json(history);
 });
 
-historyRoute.post("/add", async (c: any) => {
-  const userId = "default";
-  const { jokeId } = await c.req.json();
-  await addHistory(userId, jokeId);
-  return c.json({ ok: true });
+router.post("/add", async (c) => {
+  const body = await c.req.json();
+  const { jokeId, userId } = body;
+
+  if (!jokeId) {
+    return c.json({ error: "jokeId is required" }, 400);
+  }
+
+  const record = await prisma.history.create({
+    data: {
+      jokeId,
+      userId: userId || "anonymous",
+    },
+  });
+
+  return c.json(record);
 });
 
-historyRoute.post("/clear", async (c: any) => {
-  const userId = "default";
-  await clearHistory(userId);
-  return c.json({ ok: true });
-});
+export const historyRoute = router;
+export default router;

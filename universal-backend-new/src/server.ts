@@ -2,9 +2,10 @@ import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { registerOSRoutes } from "./os/os.routes";
 import { registerMultiverseRoutes } from "./os/multiverse.routes";
-import { registerDramaNextDoorRoutes } from "./modules/routes/dramanextdoor.routes";
+import { dramaNextDoorRoute } from "./modules/routes/dramanextdoor.routes";
 import { jokesRoute } from "./modules/routes/jokes";
 import { historyRoute } from "./modules/routes/history";
+import { favoritesRoute } from "./modules/routes/favorites.routes";
 import { corsMiddleware } from "./os/middleware/cors";
 import { universeMiddleware } from "./os/middleware/universe";
 
@@ -15,10 +16,11 @@ app.use("*", universeMiddleware);
 
 registerOSRoutes(app);
 registerMultiverseRoutes(app);
-registerDramaNextDoorRoutes(app);
 
+app.route("/api/dramanextdoor", dramaNextDoorRoute);
 app.route("/jokes", jokesRoute);
 app.route("/history", historyRoute);
+app.route("/favorites", favoritesRoute);
 
 serve({
   fetch: app.fetch,
