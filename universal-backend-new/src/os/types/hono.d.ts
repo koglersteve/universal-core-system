@@ -1,10 +1,7 @@
-import "hono";
+import type { UniverseContext } from "../middleware/universe.types";
 
 declare module "hono" {
   interface ContextVariableMap {
-    universeId: string;
-    universe: any;
-    universeState: any;
-    personaId: string;
+    universe: UniverseContext;
   }
 }
