@@ -13,8 +13,13 @@ model User {
   screenName   String
   avatarUrl    String?
   createdAt    DateTime   @default(now())
-  lafflabItems LAFFItem[]
+
   posts        Post[]
+  lafflabItems LAFFItem[]
+  history      History[]
+  favorites    Favorite[]
+  dramaFavorites DramaFavorite[]
+  dramaViews     DramaView[]
 }
 
 model Post {
@@ -26,6 +31,7 @@ model Post {
   createdAt DateTime @default(now())
   creatorId String
   app       String?
+
   creator   User     @relation(fields: [creatorId], references: [id])
 }
 
@@ -39,5 +45,87 @@ model LAFFItem {
   createdAt DateTime @default(now())
   creatorId String
   app       String?
+
   creator   User     @relation(fields: [creatorId], references: [id])
+}
+
+model PasswordResetToken {
+  token     String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expires   DateTime
+  createdAt DateTime @default(now())
+}
+
+model UserSettings {
+  userId    String   @id
+  theme     String?  @default("light")
+  language  String?  @default("en")
+  updatedAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Joke {
+  id         String   @id @default(cuid())
+  text       String
+  categoryId String?
+  createdAt  DateTime @default(now())
+}
+
+model History {
+  id        String   @id @default(cuid())
+  userId    String
+  jokeId    String
+  viewedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  itemId    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model DramaClip {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  videoUrl  String?
+  createdAt DateTime @default(now())
+
+  laugh     Int      @default(0)
+  smile     Int      @default(0)
+  shock     Int      @default(0)
+  sad       Int      @default(0)
+  angry     Int      @default(0)
+  mindblown Int      @default(0)
+  chaos     Int      @default(0)
+
+  favorites DramaFavorite[]
+  views     DramaView[]
+}
+
+model DramaFavorite {
+  id        String   @id @default(cuid())
+  userId    String
+  clipId    String
+  createdAt DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  clip      DramaClip @relation(fields: [clipId], references: [id])
+}
+
+model DramaView {
+  id        String   @id @default(cuid())
+  userId    String
+  clipId    String
+  createdAt DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  clip      DramaClip @relation(fields: [clipId], references: [id])
 }
