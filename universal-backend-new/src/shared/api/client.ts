@@ -1,6 +1,6 @@
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export async function apiGet<T>(path: string): Promise<T> {
+export async function apiGet(path) {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -14,7 +14,7 @@ export async function apiGet<T>(path: string): Promise<T> {
   return res.json();
 }
 
-export async function apiPost<T>(path: string, body: any): Promise<T> {
+export async function apiPost(path, body) {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

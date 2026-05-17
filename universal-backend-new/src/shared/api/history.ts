@@ -5,7 +5,7 @@ const router = new Hono();
 router.get("/", (c) => {
   return c.json({
     items: [],
-    message: "Categories API stubbed.",
+    message: "History API stubbed.",
   });
 });
 

@@ -1,5 +1,16 @@
-import { apiPost } from "./client";
+import { Hono } from "hono";
 
-export function generateDailyRitual(mood?: string) {
-  return apiPost("/daily-ritual/generate", { mood });
-}
+const router = new Hono();
+
+router.post("/generate", async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const { mood } = body || {};
+  return c.json({
+    mood: mood ?? null,
+    ritual: null,
+    message: "Daily ritual generation stubbed.",
+  });
+});
+
+export default router;
+
