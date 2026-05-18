@@ -1,45 +1,17 @@
-import { Hono } from "hono";
+export interface HarmonyState {
+  balance: number;
+  coherence: number;
+}
 
-export const harmony = new Hono();
+export const Harmony = {
+  getDefault(): HarmonyState {
+    return {
+      balance: 0.5,
+      coherence: 0.5
+    };
+  },
 
-harmony.get("/", (c) =>
-  c.json({
-    message: "Harmony OS online",
-    canonical: true,
-    model: "cross-system-integrator",
-  })
-);
-
-harmony.get("/state", (c) =>
-  c.json({
-    harmony: "balanced",
-    confidence: 0.5,
-    sources: [
-      "emotion",
-      "signal",
-      "state",
-      "identity",
-      "persona",
-      "cognitive",
-      "memory",
-      "intent",
-      "boundary",
-      "tempo",
-      "energy",
-      "attention",
-      "ethics",
-      "world",
-    ],
-    timestamp: Date.now(),
-  })
-);
-
-harmony.post("/synchronize", async (c) => {
-  const body = await c.req.json();
-  return c.json({
-    received: body,
-    status: "ok",
-    synchronized: true,
-    timestamp: Date.now(),
-  });
-});
+  update(state: HarmonyState, balance: number, coherence: number): HarmonyState {
+    return { balance, coherence };
+  }
+};

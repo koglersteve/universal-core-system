@@ -1,33 +1,23 @@
-import { Hono } from "hono";
+export interface AttentionState {
+  focus: string | null;
+  intensity: number;
+  timestamp: number;
+}
 
-export const attention = new Hono();
+export const Attention = {
+  getDefault(): AttentionState {
+    return {
+      focus: null,
+      intensity: 0,
+      timestamp: Date.now()
+    };
+  },
 
-attention.get("/", (c) =>
-  c.json({
-    message: "Attention OS online",
-    canonical: true,
-    model: "spotlight-priority-salience",
-  })
-);
-
-attention.get("/focus", (c) =>
-  c.json({
-    target: "none",
-    priority: "low",
-    salience: 0,
-    lastUpdated: null,
-  })
-);
-
-attention.post("/focus", async (c) => {
-  const body = await c.req.json();
-  return c.json({ received: body, status: "ok", focused: true });
-});
-
-attention.get("/salience", (c) =>
-  c.json({
-    items: [],
-    mode: "stub",
-    lastComputed: null,
-  })
-);
+  update(state: AttentionState, focus: string, intensity: number): AttentionState {
+    return {
+      focus,
+      intensity,
+      timestamp: Date.now()
+    };
+  }
+};

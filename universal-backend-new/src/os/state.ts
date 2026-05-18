@@ -1,25 +1,37 @@
-import { Hono } from "hono";
+export interface OSState {
+  emotion: any;
+  signal: any;
+  identity: any;
+  persona: any;
+  cognitive: any;
+  memory: any;
+  intent: any;
+  boundary: any;
+  tempo: any;
+  energy: any;
+  attention: any;
+  ethics: any;
+  world: any;
+  harmony: any;
+}
 
-export const state = new Hono();
-
-state.get("/", (c) =>
-  c.json({
-    emotional: { mood: "neutral", intensity: 0 },
-    signal: { tone: "soft", intensity: 0 },
-    timestamp: Date.now(),
-  })
-);
-
-state.get("/full", (c) =>
-  c.json({
-    emotional: { mood: "neutral", intensity: 0, lastUpdated: null },
-    signal: {
-      tone: "soft",
-      intensity: 0,
-      channel: "default",
-      lastBroadcast: null,
-    },
-    system: { kernel: "stable", uptimeHint: "boot-sequence" },
-    timestamp: Date.now(),
-  })
-);
+export const OSStateManager = {
+  getDefault(): OSState {
+    return {
+      emotion: {},
+      signal: {},
+      identity: {},
+      persona: {},
+      cognitive: {},
+      memory: {},
+      intent: {},
+      boundary: {},
+      tempo: {},
+      energy: {},
+      attention: {},
+      ethics: {},
+      world: {},
+      harmony: {}
+    };
+  }
+};

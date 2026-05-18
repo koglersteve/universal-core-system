@@ -1,38 +1,17 @@
-import { Hono } from "hono";
+export interface EthicsState {
+  alignment: string;
+  integrity: number;
+}
 
-export const ethics = new Hono();
+export const Ethics = {
+  getDefault(): EthicsState {
+    return {
+      alignment: "neutral",
+      integrity: 1.0
+    };
+  },
 
-ethics.get("/", (c) =>
-  c.json({
-    message: "Ethics OS online",
-    canonical: true,
-    model: "principle-constraint-hybrid",
-  })
-);
-
-ethics.get("/principles", (c) =>
-  c.json({
-    principles: [],
-    mode: "stub",
-    lastUpdated: null,
-  })
-);
-
-ethics.post("/evaluate", async (c) => {
-  const body = await c.req.json();
-  return c.json({
-    received: body,
-    ethicalDecision: "allow",
-    confidence: 0.5,
-    reasons: [],
-    status: "ok",
-  });
-});
-
-ethics.get("/alignment", (c) =>
-  c.json({
-    aligned: true,
-    confidence: 0.5,
-    lastChecked: null,
-  })
-);
+  update(state: EthicsState, alignment: string, integrity: number): EthicsState {
+    return { alignment, integrity };
+  }
+};

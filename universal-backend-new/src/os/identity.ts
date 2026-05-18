@@ -1,26 +1,20 @@
-import { Hono } from "hono";
+export interface IdentityState {
+  id: string;
+  traits: Record<string, any>;
+}
 
-export const identity = new Hono();
+export const Identity = {
+  getDefault(): IdentityState {
+    return {
+      id: "anonymous",
+      traits: {}
+    };
+  },
 
-identity.get("/", (c) =>
-  c.json({
-    message: "Identity OS online",
-    canonical: true,
-    model: "persistent",
-  })
-);
-
-identity.get("/profile", (c) =>
-  c.json({
-    id: "anonymous",
-    displayName: "Guest",
-    roles: [],
-    traits: { mode: "observer" },
-    lastUpdated: null,
-  })
-);
-
-identity.post("/update", async (c) => {
-  const body = await c.req.json();
-  return c.json({ received: body, status: "ok" });
-});
+  update(state: IdentityState, traits: Record<string, any>): IdentityState {
+    return {
+      id: state.id,
+      traits: { ...state.traits, ...traits }
+    };
+  }
+};

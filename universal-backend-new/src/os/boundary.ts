@@ -1,29 +1,17 @@
-import { Hono } from "hono";
+export interface BoundaryState {
+  openness: number;
+  protection: number;
+}
 
-export const boundary = new Hono();
+export const Boundary = {
+  getDefault(): BoundaryState {
+    return {
+      openness: 0.5,
+      protection: 0.5
+    };
+  },
 
-boundary.get("/", (c) =>
-  c.json({
-    message: "Boundary OS online",
-    canonical: true,
-    model: "policy-based",
-  })
-);
-
-boundary.get("/policies", (c) =>
-  c.json({
-    policies: [],
-    mode: "stub",
-    lastUpdated: null,
-  })
-);
-
-boundary.post("/evaluate", async (c) => {
-  const body = await c.req.json();
-  return c.json({
-    received: body,
-    decision: "allow",
-    reasons: [],
-    status: "ok",
-  });
-});
+  update(state: BoundaryState, openness: number, protection: number): BoundaryState {
+    return { openness, protection };
+  }
+};

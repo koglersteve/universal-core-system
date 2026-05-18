@@ -1,25 +1,17 @@
-import { Hono } from "hono";
+export interface TempoState {
+  speed: number;
+  rhythm: number;
+}
 
-export const tempo = new Hono();
+export const Tempo = {
+  getDefault(): TempoState {
+    return {
+      speed: 1.0,
+      rhythm: 1.0
+    };
+  },
 
-tempo.get("/", (c) =>
-  c.json({
-    message: "Tempo OS online",
-    canonical: true,
-    model: "rhythm-flow-pacing",
-  })
-);
-
-tempo.get("/state", (c) =>
-  c.json({
-    pace: "steady",
-    urgency: "low",
-    rhythm: "neutral",
-    lastAdjusted: null,
-  })
-);
-
-tempo.post("/adjust", async (c) => {
-  const body = await c.req.json();
-  return c.json({ received: body, status: "ok", adjusted: true });
-});
+  update(state: TempoState, speed: number, rhythm: number): TempoState {
+    return { speed, rhythm };
+  }
+};

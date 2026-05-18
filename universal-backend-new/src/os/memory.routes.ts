@@ -1,42 +1,19 @@
-import { Hono } from "hono";
-
-const memoryEvents: any[] = [];
+import type { Hono } from "hono";
 
 export function registerMemoryRoutes(app: Hono) {
-  // Log event
-  app.post("/memory/event", async (c) => {
+  app.get("/memory/recent", (c) =>
+    c.json({
+      items: [],
+      updatedAt: Date.now()
+    })
+  );
+
+  app.post("/memory/add", async (c) => {
     const body = await c.req.json();
-
-    const event = {
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: body.type || "event",
-      universe: c.get("universeId"),
-      persona: c.get("personaId"),
-      payload: body.payload || {},
-    };
-
-    memoryEvents.push(event);
-
-    return c.json({ success: true, event });
-  });
-
-  // Recent events
-  app.get("/memory/recent", (c) => {
-    return c.json({ events: memoryEvents.slice(-50) });
-  });
-
-  // Universe-specific memory
-  app.get("/memory/universe/:id", (c) => {
-    const id = c.req.param("id");
-    const filtered = memoryEvents.filter((e) => e.universe === id);
-    return c.json({ events: filtered });
-  });
-
-  // Persona-specific memory
-  app.get("/memory/persona/:id", (c) => {
-    const id = c.req.param("id");
-    const filtered = memoryEvents.filter((e) => e.persona === id);
-    return c.json({ events: filtered });
+    return c.json({
+      added: body,
+      updatedAt: Date.now()
+    });
   });
 }
+
