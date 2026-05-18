@@ -1,22 +1,13 @@
-export type PluginRegistryOptions = {
-  logger: {
-    info: (...args: any[]) => void;
-    error: (...args: any[]) => void;
-    warn: (...args: any[]) => void;
-    debug: (...args: any[]) => void;
-  };
-  config: Record<string, unknown>;
-};
-
 export class PluginRegistry {
   private plugins = new Map<string, any>();
   private capabilities = new Map<string, any>();
-  private logger: PluginRegistryOptions["logger"];
+  logger: any;
 
-  constructor(opts: PluginRegistryOptions) {
+  constructor(opts: any) {
     this.logger = opts.logger;
   }
 
+  // NEW API
   registerPlugin(id: string, plugin: any) {
     this.plugins.set(id, plugin);
     this.logger.info(`Registered plugin ${id}`);
@@ -40,5 +31,18 @@ export class PluginRegistry {
 
   getCapability(name: string) {
     return this.capabilities.get(name);
+  }
+
+  // LEGACY COMPATIBILITY (fixes your build errors)
+  register(id: string, plugin: any) {
+    return this.registerPlugin(id, plugin);
+  }
+
+  unregister(id: string) {
+    return this.plugins.delete(id);
+  }
+
+  list() {
+    return this.listPlugins();
   }
 }
