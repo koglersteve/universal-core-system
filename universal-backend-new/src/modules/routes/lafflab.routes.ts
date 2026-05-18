@@ -1,13 +1,11 @@
-import { Hono } from "hono";
+diff --git a/src/modules/routes/lafflab.routes.ts b/src/modules/routes/lafflab.routes.ts
+index 1111111..2222222 100644
+--- a/src/modules/routes/lafflab.routes.ts
++++ b/src/modules/routes/lafflab.routes.ts
+@@ -1,5 +1,5 @@
+-import prisma from "../../shared/prisma";
+-import { z } from "zod";
++import prisma from "@/shared/prisma.js";
++import { z } from "zod";
 
-const router = new Hono();
-
-router.get("/feed", (c) =>
-  c.json({
-    items: [],
-    message: "LaffLab feed online",
-    updatedAt: Date.now()
-  })
-);
-
-export default router;
+ export default function lafflabRoutes(app: any) {

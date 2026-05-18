@@ -1,16 +1,9 @@
-import { Hono } from "hono";
-import prisma from "../../shared/prisma";
+diff --git a/src/modules/routes/categories.ts b/src/modules/routes/categories.ts
+index 1111111..2222222 100644
+--- a/src/modules/routes/categories.ts
++++ b/src/modules/routes/categories.ts
+@@ -1,4 +1,4 @@
+-import prisma from "../../shared/prisma";
++import prisma from "@/shared/prisma.js";
 
-const router = new Hono();
-
-router.get("/", async (c) => {
-  const categories = await prisma.joke.findMany({
-    where: { categoryId: { not: null } },
-    select: { categoryId: true },
-    distinct: ["categoryId"]
-  });
-
-  return c.json(categories.map((c) => c.categoryId));
-});
-
-export default router;
+ export default function categoriesRoutes(app: any) {

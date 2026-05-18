@@ -1,13 +1,9 @@
-import { Hono } from "hono";
+diff --git a/src/modules/routes/mememydog.routes.ts b/src/modules/routes/mememydog.routes.ts
+index 1111111..2222222 100644
+--- a/src/modules/routes/mememydog.routes.ts
++++ b/src/modules/routes/mememydog.routes.ts
+@@ -1,4 +1,4 @@
+-import prisma from "../../shared/prisma";
++import prisma from "@/shared/prisma.js";
 
-const router = new Hono();
-
-router.get("/feed", (c) =>
-  c.json({
-    items: [],
-    message: "MemeMyDog feed online",
-    updatedAt: Date.now()
-  })
-);
-
-export default router;
+ export default function memeMyDogRoutes(app: any) {
