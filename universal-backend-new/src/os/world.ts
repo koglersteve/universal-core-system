@@ -1,20 +1,23 @@
 export interface WorldState {
   environment: string;
   context: Record<string, any>;
+  lastUpdated: number;
 }
 
 export const World = {
-  getDefault(): WorldState {
+  default(): WorldState {
     return {
       environment: "default",
-      context: {}
+      context: {},
+      lastUpdated: Date.now()
     };
   },
 
-  update(state: WorldState, context: Record<string, any>): WorldState {
+  updateContext(state: WorldState, patch: Record<string, any>): WorldState {
     return {
       environment: state.environment,
-      context: { ...state.context, ...context }
+      context: { ...state.context, ...patch },
+      lastUpdated: Date.now()
     };
   }
 };

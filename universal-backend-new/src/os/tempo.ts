@@ -1,17 +1,21 @@
 export interface TempoState {
-  speed: number;
-  rhythm: number;
+  speed: number; // 0–1
+  rhythm: number; // 0–1
+  lastUpdated: number;
 }
 
 export const Tempo = {
-  getDefault(): TempoState {
+  default(): TempoState {
     return {
-      speed: 1.0,
-      rhythm: 1.0
+      speed: 0.8,
+      rhythm: 0.8,
+      lastUpdated: Date.now()
     };
   },
 
-  update(state: TempoState, speed: number, rhythm: number): TempoState {
-    return { speed, rhythm };
+  fromBehavior(activation: number): TempoState {
+    const speed = Math.max(0, Math.min(1, 0.5 + activation * 0.4));
+    const rhythm = Math.max(0, Math.min(1, 0.5 + activation * 0.3));
+    return { speed, rhythm, lastUpdated: Date.now() };
   }
 };

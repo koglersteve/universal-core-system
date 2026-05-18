@@ -17,11 +17,17 @@ function resolveTenant(host: string | null): UniverseTenant {
 }
 
 function resolveApp(path: string): UniverseApp {
+  if (path.startsWith("/lafflab")) {
+    return { id: "lafflab", name: "LaffLab", slug: "lafflab", basePath: "/lafflab" };
+  }
+  if (path.startsWith("/dramanextdoor")) {
+    return { id: "dramanextdoor", name: "Drama Next Door", slug: "dramanextdoor", basePath: "/dramanextdoor" };
+  }
   if (path.startsWith("/mememycat")) {
     return { id: "mememycat", name: "Meme My Cat", slug: "mememycat", basePath: "/mememycat" };
   }
-  if (path.startsWith("/hoameme")) {
-    return { id: "hoameme", name: "HOA Meme", slug: "hoameme", basePath: "/hoameme" };
+  if (path.startsWith("/mememydog")) {
+    return { id: "mememydog", name: "Meme My Dog", slug: "mememydog", basePath: "/mememydog" };
   }
   return { id: "core", name: "Core Dashboard", slug: "dashboard", basePath: "/" };
 }
@@ -34,8 +40,11 @@ function resolveLocale(): UniverseLocale {
   return { locale: "en-US", timezone: "America/New_York" };
 }
 
-function resolveFlags(): UniverseFlags {
-  return {};
+function resolveFlags(appId: string): UniverseFlags {
+  return {
+    "feature.lafflab": appId === "lafflab",
+    "feature.dramanextdoor": appId === "dramanextdoor"
+  };
 }
 
 export const universeMiddleware: MiddlewareHandler = async (c, next) => {
@@ -46,7 +55,7 @@ export const universeMiddleware: MiddlewareHandler = async (c, next) => {
   const app = resolveApp(path);
   const user = resolveUser();
   const locale = resolveLocale();
-  const flags = resolveFlags();
+  const flags = resolveFlags(app.id);
 
   const universe: UniverseContext = {
     tenant,

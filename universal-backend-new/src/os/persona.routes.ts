@@ -1,18 +1,13 @@
 import type { Hono } from "hono";
+import { Multiverse } from "./multiverse";
+import { Persona } from "./persona";
 
 export function registerPersonaRoutes(app: Hono) {
-  app.get("/persona/list", (c) =>
-    c.json({
-      persona: "neutral-guide",
-      updatedAt: Date.now()
-    })
-  );
-
-  app.post("/persona/update", async (c) => {
-    const body = await c.req.json();
-    return c.json({
-      persona: body.persona || "neutral-guide",
-      updatedAt: Date.now()
-    });
+  app.get("/persona/state", (c) => {
+    const universe = Multiverse.ensureDefault();
+    const traits = universe.state.identity.traits;
+    const emotion = universe.state.emotion;
+    const persona = Persona.fromTraitsAndEmotion(traits, emotion.label, emotion.intensity);
+    return c.json(persona);
   });
 }

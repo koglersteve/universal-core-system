@@ -1,17 +1,21 @@
 export interface BoundaryState {
-  openness: number;
-  protection: number;
+  openness: number; // 0–1
+  protection: number; // 0–1
+  lastUpdated: number;
 }
 
 export const Boundary = {
-  getDefault(): BoundaryState {
+  default(): BoundaryState {
     return {
       openness: 0.5,
-      protection: 0.5
+      protection: 0.5,
+      lastUpdated: Date.now()
     };
   },
 
-  update(state: BoundaryState, openness: number, protection: number): BoundaryState {
-    return { openness, protection };
+  adjust(state: BoundaryState, deltaOpenness: number, deltaProtection: number): BoundaryState {
+    const openness = Math.max(0, Math.min(1, state.openness + deltaOpenness));
+    const protection = Math.max(0, Math.min(1, state.protection + deltaProtection));
+    return { openness, protection, lastUpdated: Date.now() };
   }
 };
