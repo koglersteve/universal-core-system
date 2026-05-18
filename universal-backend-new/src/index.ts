@@ -14,11 +14,10 @@ import { createKernel } from "./os/kernel/kernel";
 import { universeMiddleware } from "./os/middleware/universe";
 
 // -----------------------------------------------------
-// Core System Routes
+// Emotional OS Routes
 // -----------------------------------------------------
 import { registerOSRoutes } from "./os/os.routes";
 import { registerMultiverseRoutes } from "./os/multiverse.routes";
-import { registerMultiverseSwitchRoutes } from "./os/multiverse.switch.routes";
 import { registerPersonaRoutes } from "./os/persona.routes";
 import { registerMemoryRoutes } from "./os/memory.routes";
 import { registerCognitiveRoutes } from "./os/cognitive.routes";
@@ -26,119 +25,64 @@ import { registerEmotionRoutes } from "./os/emotion.routes";
 import { registerBehaviorRoutes } from "./os/behavior.routes";
 
 // -----------------------------------------------------
-// Module Routes
+// Module Routes (Production Versions)
 // -----------------------------------------------------
-import { registerHistoryRoutes } from "./modules/routes/history.routes";
-import { registerMemeMyCatRoutes } from "./modules/routes/mememycat.routes";
-import { registerMemeMyDogRoutes } from "./modules/routes/mememydog.routes";
-import { registerDramaNextDoorRoutes } from "./modules/routes/dramanextdoor.routes";
-import { registerHoaMemeRoutes } from "./modules/routes/hoameme.routes";
-import { registerIDLYILYRoutes } from "./modules/routes/idlyily.routes";
-import { registerLaffLabRoutes } from "./modules/routes/lafflab.routes";
+import historyRoutes from "./modules/routes/history";
+import memeMyCatRoutes from "./modules/routes/mememycat.routes";
+import memeMyDogRoutes from "./modules/routes/mememydog.routes";
+import dramaNextDoorRoutes from "./modules/routes/dramanextdoor.routes";
+import hoaMemeRoutes from "./modules/routes/hoameme.routes";
+import idlyilyRoutes from "./modules/routes/idlyily.routes";
+import lafflabRoutes from "./modules/routes/lafflab.routes";
 
 // -----------------------------------------------------
-// Plugin Runtime
+// Plugin Runtime (Production Versions)
 // -----------------------------------------------------
-import { loadAllPlugins } from "./modules/plugins/runtime/loader";
-import { initializePlugins } from "./modules/plugins/runtime/lifecycle";
-import { pluginRegistry } from "./modules/plugins/runtime/registry";
-import { pluginCapabilityRouter } from "./modules/plugins/runtime/capabilityRouter";
-import { registerPluginRoutes } from "./modules/plugins/routes/plugin.routes";
-import { registerPluginUIRoutes } from "./modules/plugins/ui/routes";
+import { PluginRegistry } from "./modules/plugins/runtime/registry";
+import { PluginLoader } from "./modules/plugins/runtime/loader";
+import { PluginLifecycleManager } from "./modules/plugins/runtime/lifecycle";
+import pluginRoutes from "./modules/plugins/routes/plugin.routes";
+import pluginUiRoutes from "./modules/plugins/ui/routes";
+import { capabilityRouter } from "./modules/plugins/runtime/capabilityRouter";
 
 // -----------------------------------------------------
-// Autonomy Engine
-// -----------------------------------------------------
-import { AutonomyEngine } from "./os/autonomy/engine";
-import { loadPolicies } from "./os/autonomy/policies";
-import { pluginAutonomyActions } from "./os/autonomy/pluginActions";
-import { ActionRegistry, listActions } from "./os/autonomy/actions";
-import { goalManager } from "./os/autonomy/goals";
-
-// -----------------------------------------------------
-// Event Bus
-// -----------------------------------------------------
-import { eventBus } from "./os/eventbus/bus";
-import { registerAutonomyEventHandlers } from "./os/eventbus/handlers/autonomy.handler";
-
-// -----------------------------------------------------
-// Health Monitor
-// -----------------------------------------------------
-import { KernelHealthMonitor } from "./core/health/monitor";
-
-// -----------------------------------------------------
-// Dashboard
-// -----------------------------------------------------
-import { dashboardAggregator } from "./modules/dashboard/aggregator";
-import { registerDashboardRoutes } from "./modules/dashboard/routes";
-
-// -----------------------------------------------------
-// Insight Engine
-// -----------------------------------------------------
-import { insightEngine } from "./os/insight/engine";
-import { registerInsightEventHandlers } from "./os/insight/handlers";
-import { registerInsightRoutes } from "./os/insight/routes";
-
-// -----------------------------------------------------
-// Agent Mesh
-// -----------------------------------------------------
-import { agentMesh } from "./os/agents/mesh";
-
-// -----------------------------------------------------
-// API Routes
+// Shared API Routes
 // -----------------------------------------------------
 import jokesRouter from "./shared/api/jokes";
 import categoriesRouter from "./shared/api/categories";
 import historyApiRouter from "./shared/api/history";
-import dailyRitualRouter from "./shared/api/dailyRitual";
 
+// -----------------------------------------------------
+// Emotional Engine (Global)
+// -----------------------------------------------------
+import { EmotionalEngine } from "./os/engine";
+
+// -----------------------------------------------------
+// Initialize App
+// -----------------------------------------------------
 const app = new Hono();
 
 // -----------------------------------------------------
-// Global Bindings
+// Plugin System Boot
 // -----------------------------------------------------
-globalThis.actions = {
-  registry: ActionRegistry,
-  list: listActions,
-};
-
-globalThis.goals = {
-  add: goalManager.addGoal.bind(goalManager),
-  list: goalManager.getActiveGoals.bind(goalManager),
-  top: goalManager.getTopGoal.bind(goalManager),
-  complete: goalManager.completeGoal.bind(goalManager),
-};
-
-(globalThis as any).eventBus = eventBus;
-(globalThis as any).dashboardAggregator = dashboardAggregator;
-(globalThis as any).insightEngine = insightEngine;
-(globalThis as any).plugins = pluginRegistry;
-(globalThis as any).pluginCapabilities = pluginCapabilityRouter;
-
-// -----------------------------------------------------
-// Event Handlers
-// -----------------------------------------------------
-registerAutonomyEventHandlers();
-registerInsightEventHandlers();
-
-// -----------------------------------------------------
-// Plugin Boot
-// -----------------------------------------------------
-loadAllPlugins();
-initializePlugins();
-pluginAutonomyActions.loadFromPlugins();
-
-// -----------------------------------------------------
-// Agent Mesh Boot
-// -----------------------------------------------------
-agentMesh.startAll().then(() => {
-  console.log("Agent Mesh v1 online");
+const pluginRegistry = new PluginRegistry({
+  logger: console,
+  config: {}
 });
+
+const pluginLoader = new PluginLoader(pluginRegistry);
+const pluginLifecycle = new PluginLifecycleManager(pluginRegistry);
+
+await pluginLoader.loadFromDir("./src/modules/plugins/manifests");
+console.log("Plugins loaded");
+
+process.on("SIGTERM", () => pluginLifecycle.shutdown());
+process.on("SIGINT", () => pluginLifecycle.shutdown());
 
 // -----------------------------------------------------
 // CORS
 // -----------------------------------------------------
-app.use("*", cors({ origin: config.cors.origin }));
+app.use("*", cors({ origin: "*" }));
 
 // -----------------------------------------------------
 // Kernel
@@ -151,11 +95,10 @@ app.route("/kernel", createKernel());
 app.use("*", universeMiddleware);
 
 // -----------------------------------------------------
-// Core OS Routes
+// Emotional OS Routes
 // -----------------------------------------------------
 registerOSRoutes(app);
 registerMultiverseRoutes(app);
-registerMultiverseSwitchRoutes(app);
 registerPersonaRoutes(app);
 registerMemoryRoutes(app);
 registerCognitiveRoutes(app);
@@ -165,37 +108,27 @@ registerBehaviorRoutes(app);
 // -----------------------------------------------------
 // Module Routes
 // -----------------------------------------------------
-registerHistoryRoutes(app);
-registerMemeMyCatRoutes(app);
-registerMemeMyDogRoutes(app);
-registerDramaNextDoorRoutes(app);
-registerHoaMemeRoutes(app);
-registerIDLYILYRoutes(app);
-registerLaffLabRoutes(app);
+app.route("/history", historyRoutes);
+app.route("/mememycat", memeMyCatRoutes);
+app.route("/mememydog", memeMyDogRoutes);
+app.route("/dramanextdoor", dramaNextDoorRoutes);
+app.route("/hoameme", hoaMemeRoutes);
+app.route("/idlyily", idlyilyRoutes);
+app.route("/lafflab", lafflabRoutes);
 
 // -----------------------------------------------------
 // Plugin Routes
 // -----------------------------------------------------
-registerPluginRoutes(app);
-registerPluginUIRoutes(app);
+app.route("/plugins", pluginRoutes(pluginRegistry));
+app.route("/plugins/ui", pluginUiRoutes(pluginRegistry));
+app.route("/capabilities", capabilityRouter(pluginRegistry));
 
 // -----------------------------------------------------
-// Dashboard Routes
-// -----------------------------------------------------
-registerDashboardRoutes(app);
-
-// -----------------------------------------------------
-// Insight Routes
-// -----------------------------------------------------
-registerInsightRoutes(app);
-
-// -----------------------------------------------------
-// API Routes
+// Shared API Routes
 // -----------------------------------------------------
 app.route("/jokes", jokesRouter);
 app.route("/categories", categoriesRouter);
-app.route("/history", historyApiRouter);
-app.route("/daily-ritual", dailyRitualRouter);
+app.route("/history-api", historyApiRouter);
 
 // -----------------------------------------------------
 // Root Endpoint
@@ -206,36 +139,15 @@ app.get("/", (c) =>
     kernel: "/kernel/health",
     os: "/os",
     multiverse: "/multiverse/list",
-    persona: "/persona/list",
+    persona: "/persona/state",
     memory: "/memory/recent",
     cognitive: "/cognitive/state",
     emotion: "/emotion/state",
     behavior: "/behavior/state",
-    insights: "/insights/recent",
-    dashboard: "/os/dashboard/state",
-    plugins: "/plugins/list",
-    pluginsUI: "/plugins/ui",
-    version: "1.0.0",
+    plugins: "/plugins",
+    version: "2.0.0"
   })
 );
-
-// -----------------------------------------------------
-// Autonomy Engine Boot
-// -----------------------------------------------------
-const autonomy = new AutonomyEngine({
-  policies: loadPolicies(),
-  tickInterval: 1000,
-});
-
-autonomy.start();
-console.log("Autonomy Engine v1 online");
-
-// -----------------------------------------------------
-// Kernel Health Monitor Boot
-// -----------------------------------------------------
-const healthMonitor = new KernelHealthMonitor({ interval: 5000 });
-healthMonitor.start();
-console.log("Kernel Health Monitor online");
 
 // -----------------------------------------------------
 // Server Boot
@@ -243,4 +155,4 @@ console.log("Kernel Health Monitor online");
 const port = Number(config.port) || 8080;
 serve({ fetch: app.fetch, port });
 
-console.log(`Universal Core Backend running on port ${port}`);
+console.log(`Universal Backend running on port ${port}`);
