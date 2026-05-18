@@ -1,15 +1,9 @@
-import { PluginRegistry } from "./registry";
+diff --git a/src/modules/plugins/runtime/lifecycle.ts b/src/modules/plugins/runtime/lifecycle.ts
+index 1111111..2222222 100644
+--- a/src/modules/plugins/runtime/lifecycle.ts
++++ b/src/modules/plugins/runtime/lifecycle.ts
+@@ -1,4 +1,4 @@
+-import { PluginRegistry } from "./registry";
++import { PluginRegistry } from "@/modules/plugins/runtime/registry.js";
 
-export class PluginLifecycleManager {
-  constructor(private registry: PluginRegistry) {}
-
-  async shutdown() {
-    const plugins = this.registry.list(); // legacy-compatible list()
-
-    for (const plugin of plugins) {
-      if (plugin?.id) {
-        await this.registry.unregister(plugin.id); // legacy-compatible unregister()
-      }
-    }
-  }
-}
+ export class PluginLifecycleManager {

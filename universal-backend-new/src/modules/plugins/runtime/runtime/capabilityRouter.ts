@@ -1,20 +1,11 @@
-import { Hono } from "hono";
-import type { PluginRegistry } from "../registry";
+diff --git a/src/modules/plugins/runtime/runtime/capabilityRouter.ts b/src/modules/plugins/runtime/runtime/capabilityRouter.ts
+index 1111111..2222222 100644
+--- a/src/modules/plugins/runtime/runtime/capabilityRouter.ts
++++ b/src/modules/plugins/runtime/runtime/capabilityRouter.ts
+@@ -1,5 +1,5 @@
+-import { PluginRegistry } from "../registry";
+-import { PluginDefinition } from "../types";
++import { PluginRegistry } from "@/modules/plugins/runtime/registry.js";
++import { PluginDefinition } from "@/modules/plugins/runtime/types.js";
 
-export function capabilityRouter(registry: PluginRegistry) {
-  const router = new Hono();
-
-  router.get("/", (c) => c.json(registry.listCapabilities()));
-
-  router.post("/:name", async (c) => {
-    const name = c.req.param("name");
-    const capability = registry.getCapability(name);
-    if (!capability) return c.json({ error: "Capability not found" }, 404);
-
-    const body = await c.req.json().catch(() => ({}));
-    const result = await capability(body);
-    return c.json(result);
-  });
-
-  return router;
-}
+ export function capabilityRouter(registry: PluginRegistry) {
