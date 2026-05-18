@@ -1,19 +1,16 @@
-import { Router } from "express";
-import { prisma } from "../prisma";
+import { Hono } from "hono";
+import { prisma } from "../../shared/api/prisma";
 
-export const feedRouter = Router();
+const router = new Hono();
 
-// GET /feed
-feedRouter.get("/", async (req, res, next) => {
-  try {
-    const feed = await prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-      include: { author: true },
-      take: 100,
-    });
+router.get("/", async (c) => {
+  const feed = await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { creator: true },
+    take: 100
+  });
 
-    res.json(feed);
-  } catch (err) {
-    next(err);
-  }
+  return c.json(feed);
 });
+
+export default router;

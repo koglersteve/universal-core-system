@@ -1,46 +1,40 @@
-import { Router } from "express";
-import { prisma } from "../prisma";
+import { Hono } from "hono";
+import { prisma } from "../../shared/api/prisma";
 
-export const postRouter = Router();
+const router = new Hono();
 
 // GET /posts
-postRouter.get("/", async (req, res, next) => {
-  try {
-    const posts = await prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    });
-    res.json(posts);
-  } catch (err) {
-    next(err);
-  }
+router.get("/", async (c) => {
+  const posts = await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { creator: true }
+  });
+  return c.json(posts);
 });
 
 // POST /posts
-postRouter.post("/", async (req, res, next) => {
-  try {
-    const { authorId, content, title } = req.body; // validate in real code
+router.post("/", async (c) => {
+  const body = await c.req.json();
+  const { creatorId, type, text, mediaUrl, app } = body;
 
-    const post = await prisma.post.create({
-      data: { authorId, content, title },
-    });
+  const post = await prisma.post.create({
+    data: { creatorId, type, text, mediaUrl, app }
+  });
 
-    res.status(201).json(post);
-  } catch (err) {
-    next(err);
-  }
+  return c.json(post);
 });
 
 // GET /posts/:id
-postRouter.get("/:id", async (req, res, next) => {
-  try {
-    const post = await prisma.post.findUnique({
-      where: { id: req.params.id },
-    });
+router.get("/:id", async (c) => {
+  const id = c.req.param("id");
 
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    res.json(post);
-  } catch (err) {
-    next(err);
-  }
+  const post = await prisma.post.findUnique({
+    where: { id },
+    include: { creator: true }
+  });
+
+  if (!post) return c.json({ error: "Post not found" }, 404);
+  return c.json(post);
 });
+
+export default router;

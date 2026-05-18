@@ -1,16 +1,25 @@
 import { Hono } from "hono";
-import { getAllJokes, getRandomJoke } from "../../shared/api/jokes";
+import { prisma } from "../../shared/api/prisma";
 
 const router = new Hono();
 
+// GET /jokes
 router.get("/", async (c) => {
-  const jokes = await getAllJokes();
+  const jokes = await prisma.joke.findMany({
+    orderBy: { createdAt: "desc" }
+  });
   return c.json(jokes);
 });
 
-router.get("/random", async (c) => {
-  const joke = await getRandomJoke();
-  if (!joke) return c.json({ error: "No jokes available" }, 404);
+// POST /jokes
+router.post("/", async (c) => {
+  const body = await c.req.json();
+  const { text, categoryId } = body;
+
+  const joke = await prisma.joke.create({
+    data: { text, categoryId }
+  });
+
   return c.json(joke);
 });
 

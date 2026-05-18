@@ -1,19 +1,27 @@
-import { Router } from "express";
-// import { someLaffLabService } from "../../modules/plugins/..."; // wire to plugin/capability
+import { Hono } from "hono";
+import { prisma } from "../../shared/api/prisma";
 
-export const lafflabRouter = Router();
+const router = new Hono();
 
-// POST /lafflab/generate
-lafflabRouter.post("/generate", async (req, res, next) => {
-  try {
-    const { prompt } = req.body;
-    if (!prompt) return res.status(400).json({ error: "prompt is required" });
-
-    // const result = await someLaffLabService.generate(prompt);
-    const result = { text: `Mock lafflab output for: ${prompt}` };
-
-    res.json(result);
-  } catch (err) {
-    next(err);
-  }
+// GET /lafflab
+router.get("/", async (c) => {
+  const items = await prisma.lAFFItem.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { creator: true }
+  });
+  return c.json(items);
 });
+
+// POST /lafflab
+router.post("/", async (c) => {
+  const body = await c.req.json();
+  const { creatorId, type, text, mediaUrl, caption, app } = body;
+
+  const item = await prisma.lAFFItem.create({
+    data: { creatorId, type, text, mediaUrl, caption, app }
+  });
+
+  return c.json(item);
+});
+
+export default router;

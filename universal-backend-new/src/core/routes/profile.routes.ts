@@ -1,37 +1,39 @@
-import { Router } from "express";
-import { prisma } from "../prisma";
+import { Hono } from "hono";
+import { prisma } from "../../shared/api/prisma";
 
-export const profileRouter = Router();
+const router = new Hono();
 
 // GET /profile/:id
-profileRouter.get("/:id", async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const profile = await prisma.user.findUnique({ where: { id } });
+router.get("/:id", async (c) => {
+  const id = c.req.param("id");
 
-    if (!profile) {
-      return res.status(404).json({ error: "Profile not found" });
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: {
+      posts: true,
+      lafflabItems: true,
+      favorites: true,
+      dramaFavorites: true,
+      dramaViews: true,
+      settings: true
     }
+  });
 
-    res.json(profile);
-  } catch (err) {
-    next(err);
-  }
+  if (!user) return c.json({ error: "User not found" }, 404);
+  return c.json(user);
 });
 
 // PATCH /profile/:id
-profileRouter.patch("/:id", async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const data = req.body; // ideally validate with zod
+router.patch("/:id", async (c) => {
+  const id = c.req.param("id");
+  const data = await c.req.json();
 
-    const updated = await prisma.user.update({
-      where: { id },
-      data,
-    });
+  const updated = await prisma.user.update({
+    where: { id },
+    data
+  });
 
-    res.json(updated);
-  } catch (err) {
-    next(err);
-  }
+  return c.json(updated);
 });
+
+export default router;

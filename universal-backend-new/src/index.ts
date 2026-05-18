@@ -25,7 +25,7 @@ import { registerEmotionRoutes } from "./os/emotion.routes";
 import { registerBehaviorRoutes } from "./os/behavior.routes";
 
 // -----------------------------------------------------
-// Module Routes (Production Versions)
+// Module Routes (Actual Files)
 // -----------------------------------------------------
 import historyRoutes from "./modules/routes/history";
 import memeMyCatRoutes from "./modules/routes/mememycat.routes";
@@ -34,9 +34,14 @@ import dramaNextDoorRoutes from "./modules/routes/dramanextdoor.routes";
 import hoaMemeRoutes from "./modules/routes/hoameme.routes";
 import idlyilyRoutes from "./modules/routes/idlyily.routes";
 import lafflabRoutes from "./modules/routes/lafflab.routes";
+import favoritesRoutes from "./modules/routes/favorites.routes";
+import jokesRoutes from "./modules/routes/jokes";
+import postsRoutes from "./modules/routes/posts";
+import moodcheckRoutes from "./modules/routes/moodcheck.routes";
+import settingsRoutes from "./modules/routes/settings";
 
 // -----------------------------------------------------
-// Plugin Runtime (Production Versions)
+// Plugin Runtime
 // -----------------------------------------------------
 import { PluginRegistry } from "./modules/plugins/runtime/registry";
 import { PluginLoader } from "./modules/plugins/runtime/loader";
@@ -48,14 +53,10 @@ import { capabilityRouter } from "./modules/plugins/runtime/capabilityRouter";
 // -----------------------------------------------------
 // Shared API Routes
 // -----------------------------------------------------
-import jokesRouter from "./shared/api/jokes";
-import categoriesRouter from "./shared/api/categories";
-import historyApiRouter from "./shared/api/history";
-
-// -----------------------------------------------------
-// Emotional Engine (Global)
-// -----------------------------------------------------
-import { EmotionalEngine } from "./os/engine";
+import categoriesApi from "./shared/api/categories";
+import favoritesApi from "./shared/api/favorites";
+import historyApi from "./shared/api/history";
+import jokesApi from "./shared/api/jokes";
 
 // -----------------------------------------------------
 // Initialize App
@@ -115,6 +116,11 @@ app.route("/dramanextdoor", dramaNextDoorRoutes);
 app.route("/hoameme", hoaMemeRoutes);
 app.route("/idlyily", idlyilyRoutes);
 app.route("/lafflab", lafflabRoutes);
+app.route("/favorites", favoritesRoutes);
+app.route("/jokes", jokesRoutes);
+app.route("/posts", postsRoutes);
+app.route("/moodcheck", moodcheckRoutes);
+app.route("/settings", settingsRoutes);
 
 // -----------------------------------------------------
 // Plugin Routes
@@ -126,9 +132,10 @@ app.route("/capabilities", capabilityRouter(pluginRegistry));
 // -----------------------------------------------------
 // Shared API Routes
 // -----------------------------------------------------
-app.route("/jokes", jokesRouter);
-app.route("/categories", categoriesRouter);
-app.route("/history-api", historyApiRouter);
+app.route("/api/categories", categoriesApi);
+app.route("/api/favorites", favoritesApi);
+app.route("/api/history", historyApi);
+app.route("/api/jokes", jokesApi);
 
 // -----------------------------------------------------
 // Root Endpoint

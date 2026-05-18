@@ -1,13 +1,31 @@
 import { Hono } from "hono";
+import { prisma } from "../../shared/api/prisma";
 
 const router = new Hono();
 
-router.get("/", (c) =>
-  c.json({
-    settings: {},
-    message: "Settings API online",
-    updatedAt: Date.now()
-  })
-);
+// GET /settings/:userId
+router.get("/:userId", async (c) => {
+  const userId = c.req.param("userId");
+
+  const settings = await prisma.userSettings.findUnique({
+    where: { userId }
+  });
+
+  return c.json(settings ?? {});
+});
+
+// PATCH /settings/:userId
+router.patch("/:userId", async (c) => {
+  const userId = c.req.param("userId");
+  const data = await c.req.json();
+
+  const updated = await prisma.userSettings.upsert({
+    where: { userId },
+    update: data,
+    create: { userId, ...data }
+  });
+
+  return c.json(updated);
+});
 
 export default router;
