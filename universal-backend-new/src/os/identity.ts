@@ -1,20 +1,30 @@
 export interface IdentityState {
   id: string;
-  traits: Record<string, any>;
+  traits: Record<string, number>;
+  lastUpdated: number;
 }
 
 export const Identity = {
-  getDefault(): IdentityState {
+  default(): IdentityState {
     return {
-      id: "anonymous",
-      traits: {}
+      id: "emotional-os",
+      traits: {},
+      lastUpdated: Date.now()
     };
   },
 
-  update(state: IdentityState, traits: Record<string, any>): IdentityState {
+  reinforceTrait(
+    state: IdentityState,
+    trait: string,
+    delta: number,
+    now: number = Date.now()
+  ): IdentityState {
+    const current = state.traits[trait] ?? 0.5;
+    const next = Math.max(0, Math.min(1, current + delta));
     return {
-      id: state.id,
-      traits: { ...state.traits, ...traits }
+      ...state,
+      traits: { ...state.traits, [trait]: next },
+      lastUpdated: now
     };
   }
 };

@@ -1,37 +1,28 @@
+import { Emotion, EmotionState } from "./emotion";
+import { Cognitive, CognitiveState } from "./cognitive";
+import { Memory, MemoryState } from "./memory";
+import { Behavior, BehaviorState } from "./behavior";
+import { Intent, IntentState } from "./intent";
+import { Identity, IdentityState } from "./identity";
+
 export interface OSState {
-  emotion: any;
-  signal: any;
-  identity: any;
-  persona: any;
-  cognitive: any;
-  memory: any;
-  intent: any;
-  boundary: any;
-  tempo: any;
-  energy: any;
-  attention: any;
-  ethics: any;
-  world: any;
-  harmony: any;
+  emotion: EmotionState;
+  cognitive: CognitiveState;
+  memory: MemoryState;
+  behavior: BehaviorState;
+  intent: IntentState;
+  identity: IdentityState;
 }
 
 export const OSStateManager = {
-  getDefault(): OSState {
+  create(): OSState {
     return {
-      emotion: {},
-      signal: {},
-      identity: {},
-      persona: {},
-      cognitive: {},
-      memory: {},
-      intent: {},
-      boundary: {},
-      tempo: {},
-      energy: {},
-      attention: {},
-      ethics: {},
-      world: {},
-      harmony: {}
+      emotion: Emotion.default(),
+      cognitive: Cognitive.default(),
+      memory: Memory.default(),
+      behavior: Behavior.default(),
+      intent: Intent.default(),
+      identity: Identity.default()
     };
   }
 };

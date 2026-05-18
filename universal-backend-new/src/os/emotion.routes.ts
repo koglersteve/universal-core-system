@@ -1,20 +1,20 @@
 import type { Hono } from "hono";
+import { OSStateManager } from "./state";
+import { EmotionalEngine } from "./engine";
+
+const state = OSStateManager.create();
 
 export function registerEmotionRoutes(app: Hono) {
-  app.get("/emotion/state", (c) =>
-    c.json({
-      mood: "neutral",
-      intensity: 0,
-      updatedAt: Date.now()
-    })
-  );
+  app.get("/emotion/state", (c) => c.json(state.emotion));
 
-  app.post("/emotion/update", async (c) => {
+  app.post("/emotion/event", async (c) => {
     const body = await c.req.json();
-    return c.json({
-      mood: body.mood || "neutral",
-      intensity: body.intensity || 0,
-      updatedAt: Date.now()
+    const next = EmotionalEngine.applyEvent(state, {
+      type: body.type,
+      payload: body.payload
     });
+    Object.assign(state, next);
+    return c.json(state.emotion);
   });
 }
+
