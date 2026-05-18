@@ -1,8 +1,13 @@
-import type { Hono } from "hono";
-import { OSStateManager } from "./state";
+import { Hono } from "hono";
+import { state } from "./state.js";
 
-const state = OSStateManager.create();
+const router = new Hono();
 
-export function registerCognitiveRoutes(app: Hono) {
-  app.get("/cognitive/state", (c) => c.json(state.cognitive));
-}
+router.get("/", (c) =>
+  c.json({
+    cognitive: state.cognitive,
+    updatedAt: Date.now()
+  })
+);
+
+export default router;

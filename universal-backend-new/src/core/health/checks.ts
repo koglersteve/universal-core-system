@@ -1,10 +1,8 @@
-import prisma from "../../shared/prisma";
+import prisma from "@/shared/prisma.js";
 
 export async function healthChecks() {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    return { database: "ok" };
-  } catch (err) {
-    return { database: "error", details: String(err) };
-  }
+  return {
+    database: await prisma.$queryRaw`SELECT 1`.then(() => "ok").catch(() => "error"),
+    timestamp: Date.now()
+  };
 }

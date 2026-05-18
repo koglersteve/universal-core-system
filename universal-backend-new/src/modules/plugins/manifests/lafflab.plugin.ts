@@ -15,3 +15,15 @@ export const LaffLabPlugin: PluginManifest = {
     }
   }
 };
+import type { PluginDefinition } from "../runtime/types.js";
+
+export const LafflabPlugin: PluginDefinition = {
+  id: "lafflab",
+  name: "Lafflab Plugin",
+  version: "1.0.0",
+  capabilities: ["laugh"]
+};
+
+export function laugh(ctx: any) {
+  return { ok: true, ctx };
+}

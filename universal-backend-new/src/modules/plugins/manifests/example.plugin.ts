@@ -1,17 +1,12 @@
-import { PluginManifest } from "../runtime/types";
+import type { PluginDefinition } from "../runtime/types.js";
 
-export const ExamplePlugin: PluginManifest = {
+export const ExamplePlugin: PluginDefinition = {
   id: "example",
   name: "Example Plugin",
   version: "1.0.0",
-  capabilities: ["example:run"],
-
-  runtime: {
-    onLoad: async (ctx) => {
-      ctx.logger.info("[example] Plugin loaded");
-    },
-    onUnload: async (ctx) => {
-      ctx.logger.info("[example] Plugin unloaded");
-    }
-  }
+  capabilities: ["example"]
 };
+
+export function exampleCapability(ctx: any) {
+  return { ok: true, ctx };
+}
