@@ -1,11 +1,11 @@
-diff --git a/src/modules/routes/lafflab.routes.ts b/src/modules/routes/lafflab.routes.ts
-index 1111111..2222222 100644
---- a/src/modules/routes/lafflab.routes.ts
-+++ b/src/modules/routes/lafflab.routes.ts
-@@ -1,5 +1,5 @@
--import prisma from "../../shared/prisma";
--import { z } from "zod";
-+import prisma from "@/shared/prisma.js";
-+import { z } from "zod";
+import prisma from "@/shared/prisma.js";
+import { z } from "zod";
 
- export default function lafflabRoutes(app: any) {
+export default function lafflabRoutes(app: any) {
+  app.get("/", async (c: any) => {
+    return c.json({
+      message: "Module Lafflab API online",
+      updatedAt: Date.now()
+    });
+  });
+}

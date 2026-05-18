@@ -1,9 +1,35 @@
-diff --git a/src/modules/plugins/runtime/registry.ts b/src/modules/plugins/runtime/registry.ts
-index 1111111..2222222 100644
---- a/src/modules/plugins/runtime/registry.ts
-+++ b/src/modules/plugins/runtime/registry.ts
-@@ -1,4 +1,4 @@
--import { PluginDefinition } from "./types";
-+import { PluginDefinition } from "@/modules/plugins/runtime/types.js";
+export class PluginRegistry {
+  private plugins = new Map<string, any>();
+  private capabilities = new Map<string, any>();
+  logger: any;
 
- export class PluginRegistry {
+  constructor(opts: { logger: any }) {
+    this.logger = opts.logger;
+  }
+
+  registerPlugin(id: string, plugin: any) {
+    this.plugins.set(id, plugin);
+    this.logger.info?.(`Registered plugin: ${id}`);
+  }
+
+  registerCapability(name: string, handler: any) {
+    this.capabilities.set(name, handler);
+    this.logger.info?.(`Registered capability: ${name}`);
+  }
+
+  listPlugins() {
+    return Array.from(this.plugins.values());
+  }
+
+  getPlugin(id: string) {
+    return this.plugins.get(id);
+  }
+
+  listCapabilities() {
+    return Array.from(this.capabilities.keys());
+  }
+
+  getCapability(name: string) {
+    return this.capabilities.get(name);
+  }
+}

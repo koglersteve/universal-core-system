@@ -1,11 +1,13 @@
-diff --git a/src/modules/plugins/runtime/runtime/capabilityRouter.ts b/src/modules/plugins/runtime/runtime/capabilityRouter.ts
-index 1111111..2222222 100644
---- a/src/modules/plugins/runtime/runtime/capabilityRouter.ts
-+++ b/src/modules/plugins/runtime/runtime/capabilityRouter.ts
-@@ -1,5 +1,5 @@
--import { PluginRegistry } from "../registry";
--import { PluginDefinition } from "../types";
-+import { PluginRegistry } from "@/modules/plugins/runtime/registry.js";
-+import { PluginDefinition } from "@/modules/plugins/runtime/types.js";
+import { Hono } from "hono";
+import { PluginRegistry } from "@/modules/plugins/runtime/registry.js";
 
- export function capabilityRouter(registry: PluginRegistry) {
+export function capabilityRouter(registry: PluginRegistry) {
+  const router = new Hono();
+
+  router.get("/", (c) => {
+    const capabilities = registry.listCapabilities();
+    return c.json({ capabilities });
+  });
+
+  return router;
+}

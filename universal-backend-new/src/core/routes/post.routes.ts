@@ -1,14 +1,29 @@
-diff --git a/src/core/routes/post.routes.ts b/src/core/routes/post.routes.ts
-index 1111111..2222222 100644
---- a/src/core/routes/post.routes.ts
-+++ b/src/core/routes/post.routes.ts
-@@ -1,6 +1,6 @@
--import prisma from "../../shared/prisma";
--import { z } from "zod";
--import { nanoid } from "nanoid";
-+import prisma from "@/shared/prisma.js";
-+import { z } from "zod";
-+import { nanoid } from "nanoid";
+import prisma from "@/shared/prisma.js";
+import { z } from "zod";
+import { nanoid } from "nanoid";
 
- export default function postRoutes(app: any) {
-   app.get("/", async (c: any) => {
+export default function postRoutes(app: any) {
+  app.get("/", async (c: any) => {
+    const posts = await prisma.post.findMany().catch(() => []);
+    return c.json({ posts });
+  });
+
+  app.post("/", async (c: any) => {
+    const body = await c.req.json();
+    const schema = z.object({
+      content: z.string()
+    });
+    const data = schema.parse(body);
+
+    const created = await prisma.post
+      .create({
+        data: {
+          id: nanoid(),
+          content: data.content
+        }
+      })
+      .catch(() => null);
+
+    return c.json({ ok: true, created });
+  });
+}
