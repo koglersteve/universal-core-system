@@ -1,30 +1,18 @@
-import { HealthStatus } from "./types";
+import prisma from "../../shared/api/prisma";
 
-export async function runHealthChecks(): Promise<HealthStatus> {
-  const warnings: string[] = [];
-  const critical: string[] = [];
-
-  // Kernel status
-  const kernelStatus = await globalThis.kernel?.getStatus?.();
-  if (!kernelStatus) {
-    critical.push("Kernel did not respond");
+export async function databaseCheck() {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return { database: "ok" };
+  } catch (err) {
+    return { database: "error" };
   }
+}
 
-  // OS sync
-  const osState = await globalThis.os?.getState?.();
-  if (!osState) {
-    warnings.push("OS state unavailable");
-  }
+export async function uptimeCheck() {
+  return { uptime: process.uptime() };
+}
 
-  // Memory engine
-  const memorySnapshot = await globalThis.memory?.getSnapshot?.();
-  if (!memorySnapshot) {
-    warnings.push("Memory snapshot unavailable");
-  }
-
-  return {
-    ok: warnings.length === 0 && critical.length === 0,
-    warnings,
-    critical,
-  };
+export async function basicCheck() {
+  return { alive: true };
 }

@@ -1,36 +1,36 @@
-import { runHealthChecks } from "./checks";
-import { eventBus } from "../../os/eventbus/bus";
+import { databaseCheck, uptimeCheck, basicCheck } from "./checks";
+import type { HealthStatus } from "./types";
 
 export class KernelHealthMonitor {
-  private interval: NodeJS.Timeout | null = null;
+  interval: number;
+  timer: any = null;
 
-  constructor(private config: { interval: number }) {}
+  constructor(options: { interval: number }) {
+    this.interval = options.interval;
+  }
+
+  async runChecks(): Promise<HealthStatus> {
+    const checks = {
+      ...(await basicCheck()),
+      ...(await uptimeCheck()),
+      ...(await databaseCheck())
+    };
+
+    return {
+      status: "ok",
+      timestamp: Date.now(),
+      checks
+    };
+  }
 
   start() {
-    console.log("[HealthMonitor] Starting...");
-    this.interval = setInterval(() => this.tick(), this.config.interval);
+    this.timer = setInterval(async () => {
+      const status = await this.runChecks();
+      console.log("Health Monitor:", status);
+    }, this.interval);
   }
 
   stop() {
-    if (this.interval) clearInterval(this.interval);
-  }
-
-  private async tick() {
-    try {
-      const status = await runHealthChecks();
-
-      if (status.critical.length > 0) {
-        await eventBus.emit("kernel:health_critical", {
-          message: status.critical.join("; "),
-        });
-      } else if (status.warnings.length > 0) {
-        await eventBus.emit("kernel:health_warning", {
-          message: status.warnings.join("; "),
-        });
-      }
-    } catch (err) {
-      console.error("[HealthMonitor] Error:", err);
-    }
+    if (this.timer) clearInterval(this.timer);
   }
 }
-

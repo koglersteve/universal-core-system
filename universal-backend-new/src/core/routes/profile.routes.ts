@@ -1,22 +1,14 @@
-import { FastifyInstance } from "fastify";
-import { prisma } from "../prisma";
+import { Hono } from "hono";
 
-export default async function profileRoutes(app: FastifyInstance) {
-  app.get("/profile/:id", async (req, reply) => {
-    const { id } = req.params as { id: string };
+const router = new Hono();
 
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: {
-        posts: true
-      }
-    });
+router.get("/", (c) =>
+  c.json({
+    profile: {},
+    message: "Core profile route online",
+    updatedAt: Date.now()
+  })
+);
 
-    if (!user) {
-      return reply.status(404).send({ error: "User not found" });
-    }
-
-    return reply.send(user);
-  });
-}
+export default router;
 

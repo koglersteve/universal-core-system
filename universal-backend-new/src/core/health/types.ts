@@ -1,5 +1,5 @@
 export interface HealthStatus {
-  ok: boolean;
-  warnings: string[];
-  critical: string[];
+  status: "ok" | "error";
+  timestamp: number;
+  checks: Record<string, any>;
 }
