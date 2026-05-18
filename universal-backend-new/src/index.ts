@@ -25,6 +25,13 @@ import { registerEmotionRoutes } from "./os/emotion.routes";
 import { registerBehaviorRoutes } from "./os/behavior.routes";
 
 // -----------------------------------------------------
+// Core Routes (Feed, Posts, Profile)
+// -----------------------------------------------------
+import feedRoutes from "./core/routes/feed";
+import postRoutes from "./core/routes/post.routes";
+import profileRoutes from "./core/routes/profile.routes";
+
+// -----------------------------------------------------
 // Module Routes (Actual Files)
 // -----------------------------------------------------
 import historyRoutes from "./modules/routes/history";
@@ -88,7 +95,11 @@ app.use("*", cors({ origin: "*" }));
 // -----------------------------------------------------
 // Kernel
 // -----------------------------------------------------
-app.route("/kernel", createKernel());
+const kernelApp = createKernel();
+app.route("/kernel", kernelApp);
+
+// direct /health alias for convenience
+app.get("/health", (c) => c.redirect("/kernel/health"));
 
 // -----------------------------------------------------
 // Universe Middleware
@@ -107,6 +118,13 @@ registerEmotionRoutes(app);
 registerBehaviorRoutes(app);
 
 // -----------------------------------------------------
+// Core Routes
+// -----------------------------------------------------
+app.route("/feed", feedRoutes);
+app.route("/posts", postRoutes);
+app.route("/profile", profileRoutes);
+
+// -----------------------------------------------------
 // Module Routes
 // -----------------------------------------------------
 app.route("/history", historyRoutes);
@@ -118,7 +136,7 @@ app.route("/idlyily", idlyilyRoutes);
 app.route("/lafflab", lafflabRoutes);
 app.route("/favorites", favoritesRoutes);
 app.route("/jokes", jokesRoutes);
-app.route("/posts", postsRoutes);
+app.route("/posts-module", postsRoutes);
 app.route("/moodcheck", moodcheckRoutes);
 app.route("/settings", settingsRoutes);
 
@@ -151,6 +169,9 @@ app.get("/", (c) =>
     cognitive: "/cognitive/state",
     emotion: "/emotion/state",
     behavior: "/behavior/state",
+    feed: "/feed",
+    posts: "/posts",
+    profile: "/profile",
     plugins: "/plugins",
     version: "2.0.0"
   })
