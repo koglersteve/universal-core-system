@@ -1,37 +1,12 @@
-import { Hono } from "hono";
-import prisma from "../../shared/prisma";
+diff --git a/src/core/routes/profile.routes.ts b/src/core/routes/profile.routes.ts
+index 1111111..2222222 100644
+--- a/src/core/routes/profile.routes.ts
++++ b/src/core/routes/profile.routes.ts
+@@ -1,5 +1,5 @@
+-import prisma from "../../shared/prisma";
+-import { z } from "zod";
++import prisma from "@/shared/prisma.js";
++import { z } from "zod";
 
-const router = new Hono();
-
-router.get("/:id", async (c) => {
-  const id = c.req.param("id");
-
-  const user = await prisma.user.findUnique({
-    where: { id },
-    include: {
-      posts: true,
-      lafflabItems: true,
-      favorites: true,
-      dramaFavorites: true,
-      dramaViews: true,
-      settings: true
-    }
-  });
-
-  if (!user) return c.json({ error: "User not found" }, 404);
-  return c.json(user);
-});
-
-router.patch("/:id", async (c) => {
-  const id = c.req.param("id");
-  const data = await c.req.json();
-
-  const updated = await prisma.user.update({
-    where: { id },
-    data
-  });
-
-  return c.json(updated);
-});
-
-export default router;
+ export default function profileRoutes(app: any) {
+   app.get("/", async (c: any) => {

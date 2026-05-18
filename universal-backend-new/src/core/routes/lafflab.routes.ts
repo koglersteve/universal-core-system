@@ -1,25 +1,12 @@
-import { Hono } from "hono";
-import prisma from "../../shared/prisma";
+diff --git a/src/core/routes/lafflab.routes.ts b/src/core/routes/lafflab.routes.ts
+index 1111111..2222222 100644
+--- a/src/core/routes/lafflab.routes.ts
++++ b/src/core/routes/lafflab.routes.ts
+@@ -1,5 +1,5 @@
+-import prisma from "../../shared/prisma";
+-import { z } from "zod";
++import prisma from "@/shared/prisma.js";
++import { z } from "zod";
 
-const router = new Hono();
-
-router.get("/", async (c) => {
-  const items = await prisma.lAFFItem.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { creator: true }
-  });
-  return c.json(items);
-});
-
-router.post("/", async (c) => {
-  const body = await c.req.json();
-  const { creatorId, type, text, mediaUrl, caption, app } = body;
-
-  const item = await prisma.lAFFItem.create({
-    data: { creatorId, type, text, mediaUrl, caption, app }
-  });
-
-  return c.json(item);
-});
-
-export default router;
+ export default function lafflabRoutes(app: any) {
+   app.get("/", async (c: any) => {
