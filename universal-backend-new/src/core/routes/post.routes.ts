@@ -1,13 +1,46 @@
-import { Hono } from "hono";
+import { Router } from "express";
+import { prisma } from "../prisma";
 
-const router = new Hono();
+export const postRouter = Router();
 
-router.get("/", (c) =>
-  c.json({
-    posts: [],
-    message: "Core posts route online",
-    updatedAt: Date.now()
-  })
-);
+// GET /posts
+postRouter.get("/", async (req, res, next) => {
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+    res.json(posts);
+  } catch (err) {
+    next(err);
+  }
+});
 
-export default router;
+// POST /posts
+postRouter.post("/", async (req, res, next) => {
+  try {
+    const { authorId, content, title } = req.body; // validate in real code
+
+    const post = await prisma.post.create({
+      data: { authorId, content, title },
+    });
+
+    res.status(201).json(post);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /posts/:id
+postRouter.get("/:id", async (req, res, next) => {
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: req.params.id },
+    });
+
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    next(err);
+  }
+});

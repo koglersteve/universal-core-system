@@ -1,13 +1,19 @@
-import { Hono } from "hono";
+import { Router } from "express";
+import { prisma } from "../prisma";
 
-const router = new Hono();
+export const feedRouter = Router();
 
-router.get("/", (c) =>
-  c.json({
-    feed: [],
-    message: "Core feed online",
-    updatedAt: Date.now()
-  })
-);
+// GET /feed
+feedRouter.get("/", async (req, res, next) => {
+  try {
+    const feed = await prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { author: true },
+      take: 100,
+    });
 
-export default router;
+    res.json(feed);
+  } catch (err) {
+    next(err);
+  }
+});

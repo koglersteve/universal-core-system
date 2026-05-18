@@ -1,14 +1,26 @@
-import { pluginRegistry } from "./registry";
+import { Router } from "express";
+import { PluginRegistry } from "./registry";
 
-export const pluginCapabilityRouter = {
-  hasCapability(pluginId: string, capability: string): boolean {
-    const plugin = pluginRegistry.get(pluginId);
-    if (!plugin) return false;
-    return plugin.capabilities.includes(capability);
-  },
+export const capabilityRouter = (registry: PluginRegistry) => {
+  const router = Router();
 
-  listCapabilities(pluginId: string): string[] {
-    const plugin = pluginRegistry.get(pluginId);
-    return plugin ? plugin.capabilities : [];
-  }
+  router.post("/:capability", async (req, res) => {
+    const capability = req.params.capability;
+
+    const plugin = registry
+      .list()
+      .find(p => p.capabilities.includes(capability));
+
+    if (!plugin) {
+      return res.status(404).json({ error: "Capability not found" });
+    }
+
+    res.json({
+      plugin: plugin.id,
+      capability,
+      message: "Capability executed (stub)"
+    });
+  });
+
+  return router;
 };

@@ -1,36 +1,22 @@
-import { databaseCheck, uptimeCheck, basicCheck } from "./checks";
-import type { HealthStatus } from "./types";
+import { HealthSnapshot, HealthStatus } from "./types";
 
-export class KernelHealthMonitor {
-  interval: number;
-  timer: any = null;
+type HealthCheckFn = () => Promise<import("./types").HealthCheckResult>;
 
-  constructor(options: { interval: number }) {
-    this.interval = options.interval;
+export class HealthMonitor {
+  constructor(private checks: HealthCheckFn[]) {}
+
+  private aggregateStatus(results: HealthSnapshot["checks"]): HealthStatus {
+    if (results.some((c) => c.status === "down")) return "down";
+    if (results.some((c) => c.status === "degraded")) return "degraded";
+    return "up";
   }
 
-  async runChecks(): Promise<HealthStatus> {
-    const checks = {
-      ...(await basicCheck()),
-      ...(await uptimeCheck()),
-      ...(await databaseCheck())
-    };
-
+  async snapshot(): Promise<HealthSnapshot> {
+    const results = await Promise.all(this.checks.map((fn) => fn()));
     return {
-      status: "ok",
-      timestamp: Date.now(),
-      checks
+      status: this.aggregateStatus(results),
+      checks: results,
+      timestamp: new Date().toISOString(),
     };
-  }
-
-  start() {
-    this.timer = setInterval(async () => {
-      const status = await this.runChecks();
-      console.log("Health Monitor:", status);
-    }, this.interval);
-  }
-
-  stop() {
-    if (this.timer) clearInterval(this.timer);
   }
 }

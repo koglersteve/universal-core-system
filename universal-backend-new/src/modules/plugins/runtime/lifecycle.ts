@@ -1,9 +1,12 @@
-import { pluginRegistry } from "./registry";
+import { PluginRegistry } from "./registry";
 
-export function initializePlugins() {
-  const plugins = pluginRegistry.list();
+export class PluginLifecycleManager {
+  constructor(private registry: PluginRegistry) {}
 
-  for (const plugin of plugins) {
-    if (!plugin.enabled) continue;
+  async shutdown() {
+    const plugins = this.registry.list();
+    for (const plugin of plugins) {
+      await this.registry.unregister(plugin.id);
+    }
   }
 }

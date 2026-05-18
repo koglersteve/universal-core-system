@@ -1,18 +1,25 @@
-import prisma from "../../shared/api/prisma";
+import { prisma } from "../prisma";
+import { HealthCheckResult } from "./types";
 
-export async function databaseCheck() {
+export const dbHealthCheck = async (): Promise<HealthCheckResult> => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { database: "ok" };
-  } catch (err) {
-    return { database: "error" };
+    return { name: "database", status: "up" };
+  } catch (err: any) {
+    return {
+      name: "database",
+      status: "down",
+      error: err?.message ?? "Unknown DB error",
+    };
   }
-}
+};
 
-export async function uptimeCheck() {
-  return { uptime: process.uptime() };
-}
+export const makeBasicChecks = () => {
+  const uptimeCheck = async (): Promise<HealthCheckResult> => ({
+    name: "uptime",
+    status: "up",
+    details: { uptimeSeconds: process.uptime() },
+  });
 
-export async function basicCheck() {
-  return { alive: true };
-}
+  return [uptimeCheck, dbHealthCheck];
+};

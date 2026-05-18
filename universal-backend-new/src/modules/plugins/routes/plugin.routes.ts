@@ -1,26 +1,18 @@
-import { Hono } from "hono";
-import { pluginRegistry } from "../runtime/registry";
+import { Router } from "express";
+import { PluginRegistry } from "../runtime/registry";
 
-const router = new Hono();
+export const pluginRouter = (registry: PluginRegistry) => {
+  const router = Router();
 
-router.get("/list", (c) => {
-  return c.json({
-    plugins: pluginRegistry.list(),
-    count: pluginRegistry.list().length
+  router.get("/", (req, res) => {
+    res.json(registry.list());
   });
-});
 
-router.get("/:id", (c) => {
-  const id = c.req.param("id");
-  const plugin = pluginRegistry.get(id);
+  router.get("/:id", (req, res) => {
+    const plugin = registry.get(req.params.id);
+    if (!plugin) return res.status(404).json({ error: "Plugin not found" });
+    res.json(plugin);
+  });
 
-  if (!plugin) {
-    return c.json({ error: "Plugin not found" }, 404);
-  }
-
-  return c.json(plugin);
-});
-
-export function registerPluginRoutes(app: Hono) {
-  app.route("/plugins", router);
-}
+  return router;
+};
