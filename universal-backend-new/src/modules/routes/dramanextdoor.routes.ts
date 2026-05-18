@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import prisma from "../../shared/api/prisma";
+import prisma from "../../shared/prisma";
 
 const router = new Hono();
 

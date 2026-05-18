@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import { prisma } from "../../shared/api/prisma";
+import prisma from "../../shared/prisma";
 
 const router = new Hono();
 
-// GET /history/:userId
 router.get("/:userId", async (c) => {
   const userId = c.req.param("userId");
 
@@ -16,7 +15,6 @@ router.get("/:userId", async (c) => {
   return c.json(history);
 });
 
-// POST /history
 router.post("/", async (c) => {
   const body = await c.req.json();
   const { userId, jokeId } = body;

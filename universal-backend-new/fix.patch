@@ -1,0 +1,195 @@
+diff --git a/tsconfig.json b/tsconfig.json
+index 1234567..abcdef0 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -1,6 +1,17 @@
+ {
+   "compilerOptions": {
+-    "module": "commonjs",
+-    "target": "es2017",
++    "target": "es2020",
++    "module": "esnext",
++    "moduleResolution": "node",
++    "esModuleInterop": true,
++    "strict": true,
++    "skipLibCheck": true,
++    "resolveJsonModule": true,
++    "outDir": "dist"
+   },
+-  "include": ["src"]
++  "include": ["src"]
+ }
++
++
+diff --git a/src/index.ts b/src/index.ts
+index 1111111..2222222 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,7 +1,6 @@
+ import dotenv from "dotenv";
+ dotenv.config();
+
+-import { registerEmotionRoutes } from "./os/emotion.routes";   // REMOVE
+-
+ import { Hono } from "hono";
+ import { serve } from "@hono/node-server";
+ import { cors } from "hono/cors";
+@@ -24,7 +23,6 @@ import { registerMemoryRoutes } from "./os/memory.routes";
+ import { registerCognitiveRoutes } from "./os/cognitive.routes";
+ import { registerBehaviorRoutes } from "./os/behavior.routes";
+
+-import { registerEmotionRoutes } from "./os/emotion.routes";   // REMOVE
+
+ // Core Routes
+ import feedRoutes from "./core/routes/feed";
+@@ -57,10 +55,10 @@ import pluginRoutes from "./modules/plugins/routes/plugin.routes";
+-import pluginUiRoutes from "./modules/plugins/ui/routes";   // missing default export
++import pluginUiRoutes from "./modules/plugins/ui/routes";
+
+-import { capabilityRouter } from "./modules/plugins/runtime/capabilityRouter";
++import { capabilityRouter } from "./modules/plugins/runtime/runtime/capabilityRouter";
+
+-logger: console,
++logger: { info: console.log, error: console.error, warn: console.warn, debug: console.debug },
+
+@@ -120,7 +118,6 @@ registerMemoryRoutes(app);
+ registerCognitiveRoutes(app);
+ registerBehaviorRoutes(app);
+-registerEmotionRoutes(app);   // REMOVE
+
+diff --git a/src/shared/api/prisma.ts b/src/shared/prisma.ts
+similarity index 100%
+rename from src/shared/api/prisma.ts
+rename to src/shared/prisma.ts
+
+diff --git a/src/core/routes/feed.ts b/src/core/routes/feed.ts
+index 3333333..4444444 100644
+--- a/src/core/routes/feed.ts
++++ b/src/core/routes/feed.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/core/routes/lafflab.routes.ts b/src/core/routes/lafflab.routes.ts
+index 5555555..6666666 100644
+--- a/src/core/routes/lafflab.routes.ts
++++ b/src/core/routes/lafflab.routes.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/core/routes/post.routes.ts b/src/core/routes/post.routes.ts
+index 7777777..8888888 100644
+--- a/src/core/routes/post.routes.ts
++++ b/src/core/routes/post.routes.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/core/routes/profile.routes.ts b/src/core/routes/profile.routes.ts
+index 9999999..aaaaaaa 100644
+--- a/src/core/routes/profile.routes.ts
++++ b/src/core/routes/profile.routes.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/routes/categories.ts b/src/modules/routes/categories.ts
+index bbbbbbb..ccccccc 100644
+--- a/src/modules/routes/categories.ts
++++ b/src/modules/routes/categories.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/routes/dramanextdoor.routes.ts b/src/modules/routes/dramanextdoor.routes.ts
+index ddddddd..eeeeeee 100644
+--- a/src/modules/routes/dramanextdoor.routes.ts
++++ b/src/modules/routes/dramanextdoor.routes.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import prisma from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/routes/favorites.routes.ts b/src/modules/routes/favorites.routes.ts
+index fffffff..0101010 100644
+--- a/src/modules/routes/favorites.routes.ts
++++ b/src/modules/routes/favorites.routes.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/routes/history.ts b/src/modules/routes/history.ts
+index 0202020..0303030 100644
+--- a/src/modules/routes/history.ts
++++ b/src/modules/routes/history.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/routes/jokes.ts b/src/modules/routes/jokes.ts
+index 0404040..0505050 100644
+--- a/src/modules/routes/jokes.ts
++++ b/src/modules/routes/jokes.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/routes/settings.ts b/src/modules/routes/settings.ts
+index 0606060..0707070 100644
+--- a/src/modules/routes/settings.ts
++++ b/src/modules/routes/settings.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { prisma } from "../../shared/api/prisma";
++import prisma from "../../shared/prisma";
+
+diff --git a/src/modules/plugins/runtime/registry.ts b/src/modules/plugins/runtime/registry.ts
+index 0808080..0909090 100644
+--- a/src/modules/plugins/runtime/registry.ts
++++ b/src/modules/plugins/runtime/registry.ts
+@@ -1,6 +1,26 @@
+ export class PluginRegistry {
+   private plugins = new Map<string, any>();
+   private capabilities = new Map<string, any>();
++  logger: any;
+
++  constructor(opts: any) {
++    this.logger = opts.logger;
++  }
+
++  listPlugins() {
++    return Array.from(this.plugins.values());
++  }
+
++  getPlugin(id: string) {
++    return this.plugins.get(id);
++  }
+
++  listCapabilities() {
++    return Array.from(this.capabilities.keys());
++  }
+
++  getCapability(name: string) {
++    return this.capabilities.get(name);
++  }
+
+diff --git a/src/modules/plugins/runtime/runtime/capabilityRouter.ts b/src/modules/plugins/runtime/runtime/capabilityRouter.ts
+index 0a0a0a0..0b0b0b0 100644
+--- a/src/modules/plugins/runtime/runtime/capabilityRouter.ts
++++ b/src/modules/plugins/runtime/runtime/capabilityRouter.ts
+@@ -1,5 +1,5 @@
+ import { Hono } from "hono";
+-import { PluginRegistry } from "./registry";
++import { PluginRegistry } from "../registry";
+
+ export function capabilityRouter(registry: PluginRegistry) {
+   const router = new Hono();

@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import { prisma } from "../../shared/api/prisma";
+import prisma from "../../shared/prisma";
 
 const router = new Hono();
 
-// GET /favorites/:userId
 router.get("/:userId", async (c) => {
   const userId = c.req.param("userId");
 
@@ -15,7 +14,6 @@ router.get("/:userId", async (c) => {
   return c.json(favorites);
 });
 
-// POST /favorites
 router.post("/", async (c) => {
   const body = await c.req.json();
   const { userId, itemId } = body;
@@ -27,7 +25,6 @@ router.post("/", async (c) => {
   return c.json(fav);
 });
 
-// DELETE /favorites/:id
 router.delete("/:id", async (c) => {
   const id = c.req.param("id");
 

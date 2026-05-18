@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import { prisma } from "../../shared/api/prisma";
+import prisma from "../../shared/prisma";
 
 const router = new Hono();
 
-// GET /posts
 router.get("/", async (c) => {
   const posts = await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
@@ -12,7 +11,6 @@ router.get("/", async (c) => {
   return c.json(posts);
 });
 
-// POST /posts
 router.post("/", async (c) => {
   const body = await c.req.json();
   const { creatorId, type, text, mediaUrl, app } = body;
@@ -24,7 +22,6 @@ router.post("/", async (c) => {
   return c.json(post);
 });
 
-// GET /posts/:id
 router.get("/:id", async (c) => {
   const id = c.req.param("id");
 

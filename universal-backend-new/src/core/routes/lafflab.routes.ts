@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import { prisma } from "../../shared/api/prisma";
+import prisma from "../../shared/prisma";
 
 const router = new Hono();
 
-// GET /lafflab
 router.get("/", async (c) => {
   const items = await prisma.lAFFItem.findMany({
     orderBy: { createdAt: "desc" },
@@ -12,7 +11,6 @@ router.get("/", async (c) => {
   return c.json(items);
 });
 
-// POST /lafflab
 router.post("/", async (c) => {
   const body = await c.req.json();
   const { creatorId, type, text, mediaUrl, caption, app } = body;

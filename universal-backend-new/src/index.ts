@@ -21,18 +21,17 @@ import { registerMultiverseRoutes } from "./os/multiverse.routes";
 import { registerPersonaRoutes } from "./os/persona.routes";
 import { registerMemoryRoutes } from "./os/memory.routes";
 import { registerCognitiveRoutes } from "./os/cognitive.routes";
-import { registerEmotionRoutes } from "./os/emotion.routes";
 import { registerBehaviorRoutes } from "./os/behavior.routes";
 
 // -----------------------------------------------------
-// Core Routes (Feed, Posts, Profile)
+// Core Routes
 // -----------------------------------------------------
 import feedRoutes from "./core/routes/feed";
 import postRoutes from "./core/routes/post.routes";
 import profileRoutes from "./core/routes/profile.routes";
 
 // -----------------------------------------------------
-// Module Routes (Actual Files)
+// Module Routes
 // -----------------------------------------------------
 import historyRoutes from "./modules/routes/history";
 import memeMyCatRoutes from "./modules/routes/mememycat.routes";
@@ -43,9 +42,9 @@ import idlyilyRoutes from "./modules/routes/idlyily.routes";
 import lafflabRoutes from "./modules/routes/lafflab.routes";
 import favoritesRoutes from "./modules/routes/favorites.routes";
 import jokesRoutes from "./modules/routes/jokes";
-import postsRoutes from "./modules/routes/posts";
 import moodcheckRoutes from "./modules/routes/moodcheck.routes";
 import settingsRoutes from "./modules/routes/settings";
+import categoriesRoutes from "./modules/routes/categories";
 
 // -----------------------------------------------------
 // Plugin Runtime
@@ -55,15 +54,7 @@ import { PluginLoader } from "./modules/plugins/runtime/loader";
 import { PluginLifecycleManager } from "./modules/plugins/runtime/lifecycle";
 import pluginRoutes from "./modules/plugins/routes/plugin.routes";
 import pluginUiRoutes from "./modules/plugins/ui/routes";
-import { capabilityRouter } from "./modules/plugins/runtime/capabilityRouter";
-
-// -----------------------------------------------------
-// Shared API Routes
-// -----------------------------------------------------
-import categoriesApi from "./shared/api/categories";
-import favoritesApi from "./shared/api/favorites";
-import historyApi from "./shared/api/history";
-import jokesApi from "./shared/api/jokes";
+import { capabilityRouter } from "./modules/plugins/runtime/runtime/capabilityRouter";
 
 // -----------------------------------------------------
 // Initialize App
@@ -74,7 +65,12 @@ const app = new Hono();
 // Plugin System Boot
 // -----------------------------------------------------
 const pluginRegistry = new PluginRegistry({
-  logger: console,
+  logger: {
+    info: console.log,
+    error: console.error,
+    warn: console.warn,
+    debug: console.debug
+  },
   config: {}
 });
 
@@ -98,7 +94,7 @@ app.use("*", cors({ origin: "*" }));
 const kernelApp = createKernel();
 app.route("/kernel", kernelApp);
 
-// direct /health alias for convenience
+// direct /health alias
 app.get("/health", (c) => c.redirect("/kernel/health"));
 
 // -----------------------------------------------------
@@ -114,7 +110,6 @@ registerMultiverseRoutes(app);
 registerPersonaRoutes(app);
 registerMemoryRoutes(app);
 registerCognitiveRoutes(app);
-registerEmotionRoutes(app);
 registerBehaviorRoutes(app);
 
 // -----------------------------------------------------
@@ -136,9 +131,9 @@ app.route("/idlyily", idlyilyRoutes);
 app.route("/lafflab", lafflabRoutes);
 app.route("/favorites", favoritesRoutes);
 app.route("/jokes", jokesRoutes);
-app.route("/posts-module", postsRoutes);
 app.route("/moodcheck", moodcheckRoutes);
 app.route("/settings", settingsRoutes);
+app.route("/categories", categoriesRoutes);
 
 // -----------------------------------------------------
 // Plugin Routes
@@ -146,14 +141,6 @@ app.route("/settings", settingsRoutes);
 app.route("/plugins", pluginRoutes(pluginRegistry));
 app.route("/plugins/ui", pluginUiRoutes(pluginRegistry));
 app.route("/capabilities", capabilityRouter(pluginRegistry));
-
-// -----------------------------------------------------
-// Shared API Routes
-// -----------------------------------------------------
-app.route("/api/categories", categoriesApi);
-app.route("/api/favorites", favoritesApi);
-app.route("/api/history", historyApi);
-app.route("/api/jokes", jokesApi);
 
 // -----------------------------------------------------
 // Root Endpoint
@@ -167,7 +154,6 @@ app.get("/", (c) =>
     persona: "/persona/state",
     memory: "/memory/recent",
     cognitive: "/cognitive/state",
-    emotion: "/emotion/state",
     behavior: "/behavior/state",
     feed: "/feed",
     posts: "/posts",

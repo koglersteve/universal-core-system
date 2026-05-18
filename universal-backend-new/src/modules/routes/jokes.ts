@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import { prisma } from "../../shared/api/prisma";
+import prisma from "../../shared/prisma";
 
 const router = new Hono();
 
-// GET /jokes
 router.get("/", async (c) => {
   const jokes = await prisma.joke.findMany({
     orderBy: { createdAt: "desc" }
@@ -11,7 +10,6 @@ router.get("/", async (c) => {
   return c.json(jokes);
 });
 
-// POST /jokes
 router.post("/", async (c) => {
   const body = await c.req.json();
   const { text, categoryId } = body;
