@@ -1,7 +1,18 @@
-diff --git a/src/shared/utils/deepDiff.ts b/src/shared/utils/deepDiff.ts
-index 1111111..2222222 100644
---- a/src/shared/utils/deepDiff.ts
-+++ b/src/shared/utils/deepDiff.ts
-@@ -1 +1 @@
- export {};
+export function deepDiff(a: any, b: any): any {
+  if (a === b) return {};
+
+  if (typeof a !== "object" || typeof b !== "object") {
+    return b;
+  }
+
+  const diff: any = {};
+
+  for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) {
+    if (a[key] !== b[key]) {
+      diff[key] = deepDiff(a[key], b[key]);
+    }
+  }
+
+  return diff;
+}
 
