@@ -1,33 +1,17 @@
-import { LoadedPlugin, PluginManifest } from "./types";
+import type { PluginManifest } from "./types";
 
-class PluginRegistry {
-  private plugins: Map<string, LoadedPlugin> = new Map();
+const registry = new Map<string, PluginManifest>();
 
+export const pluginRegistry = {
   register(manifest: PluginManifest) {
-    if (this.plugins.has(manifest.id)) {
-      throw new Error(`Plugin already registered: ${manifest.id}`);
-    }
-
-    this.plugins.set(manifest.id, {
-      manifest,
-      active: false,
-      loadedAt: Date.now(),
-    });
-  }
-
-  list() {
-    return Array.from(this.plugins.values());
-  }
+    registry.set(manifest.id, manifest);
+  },
 
   get(id: string) {
-    return this.plugins.get(id);
-  }
+    return registry.get(id) || null;
+  },
 
-  activate(id: string) {
-    const plugin = this.plugins.get(id);
-    if (!plugin) throw new Error(`Plugin not found: ${id}`);
-    plugin.active = true;
+  list(): PluginManifest[] {
+    return Array.from(registry.values());
   }
-}
-
-export const pluginRegistry = new PluginRegistry();
+};

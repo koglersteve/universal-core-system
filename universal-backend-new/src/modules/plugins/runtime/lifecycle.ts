@@ -1,22 +1,9 @@
 import { pluginRegistry } from "./registry";
-import { eventBus } from "../../../os/eventbus/bus";
 
-export async function initializePlugins() {
-  for (const plugin of pluginRegistry.list()) {
-    const manifest = plugin.manifest;
+export function initializePlugins() {
+  const plugins = pluginRegistry.list();
 
-    if (manifest.init) {
-      await manifest.init();
-    }
-
-    if (manifest.events) {
-      for (const [eventName, handler] of Object.entries(manifest.events)) {
-        eventBus.on(eventName, handler);
-      }
-    }
-
-    plugin.active = true;
+  for (const plugin of plugins) {
+    if (!plugin.enabled) continue;
   }
-
-  console.log("[PluginRuntime] All plugins initialized");
 }
