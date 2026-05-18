@@ -1,14 +1,22 @@
 import { Hono } from "hono";
 
-export function registerMoodCheckRoutes(app: Hono) {
-  app.post("/plugins/moodcheck/api/submit", async (c) => {
-    const body = await c.req.json();
+const router = new Hono();
 
-    // For now, just echo back what we received
-    return c.json({
-      ok: true,
-      received: body,
-      timestamp: Date.now(),
-    });
+router.get("/", (c) =>
+  c.json({
+    mood: "neutral",
+    intensity: 0,
+    updatedAt: Date.now()
+  })
+);
+
+router.post("/", async (c) => {
+  const body = await c.req.json();
+  return c.json({
+    mood: body.mood || "neutral",
+    intensity: body.intensity || 0,
+    updatedAt: Date.now()
   });
-}
+});
+
+export default router;

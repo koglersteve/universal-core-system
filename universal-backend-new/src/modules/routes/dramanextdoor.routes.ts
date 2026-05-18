@@ -5,7 +5,7 @@ const router = new Hono();
 
 router.get("/feed", async (c) => {
   const clips = await prisma.dramaClip.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "desc" }
   });
 
   return c.json(
@@ -22,11 +22,10 @@ router.get("/feed", async (c) => {
         sad: clip.sad,
         angry: clip.angry,
         mindblown: clip.mindblown,
-        chaos: clip.chaos,
-      },
+        chaos: clip.chaos
+      }
     }))
   );
 });
 
-export const dramaNextDoorRoute = router;
 export default router;
