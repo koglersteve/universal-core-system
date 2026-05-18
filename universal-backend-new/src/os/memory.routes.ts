@@ -1,23 +1,10 @@
-import type { Hono } from "hono";
-import { OSStateManager } from "./state";
-import { Memory } from "./memory";
+diff --git a/src/os/memory.routes.ts b/src/os/memory.routes.ts
+index 1111111..2222222 100644
+--- a/src/os/memory.routes.ts
++++ b/src/os/memory.routes.ts
+@@ -1,4 +1,4 @@
+-import { Hono } from "hono";
++import { Hono } from "hono";
 
-const state = OSStateManager.create();
-
-export function registerMemoryRoutes(app: Hono) {
-  app.get("/memory/recent", (c) => c.json(state.memory.shortTerm));
-
-  app.get("/memory/long-term", (c) => c.json(state.memory.longTerm));
-
-  app.post("/memory/add", async (c) => {
-    const body = await c.req.json();
-    state.memory = Memory.add(state.memory, {
-      id: body.id || `custom-${Date.now()}`,
-      type: body.type || "event",
-      payload: body.payload || {},
-      weight: body.weight ?? 0.5
-    });
-    return c.json(state.memory.shortTerm);
-  });
-}
+ export function registerMemoryRoutes(app: any) {
 

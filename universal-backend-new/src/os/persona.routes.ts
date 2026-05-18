@@ -1,13 +1,9 @@
-import type { Hono } from "hono";
-import { Multiverse } from "./multiverse";
-import { Persona } from "./persona";
+diff --git a/src/os/persona.routes.ts b/src/os/persona.routes.ts
+index 1111111..2222222 100644
+--- a/src/os/persona.routes.ts
++++ b/src/os/persona.routes.ts
+@@ -1,4 +1,4 @@
+-import { Hono } from "hono";
++import { Hono } from "hono";
 
-export function registerPersonaRoutes(app: Hono) {
-  app.get("/persona/state", (c) => {
-    const universe = Multiverse.ensureDefault();
-    const traits = universe.state.identity.traits;
-    const emotion = universe.state.emotion;
-    const persona = Persona.fromTraitsAndEmotion(traits, emotion.label, emotion.intensity);
-    return c.json(persona);
-  });
-}
+ export function registerPersonaRoutes(app: any) {

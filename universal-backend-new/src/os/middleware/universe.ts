@@ -1,7 +1,9 @@
-import { nanoid } from "nanoid";
-import type { MiddlewareHandler } from "hono";
+diff --git a/src/os/middleware/universe.ts b/src/os/middleware/universe.ts
+index 1111111..2222222 100644
+--- a/src/os/middleware/universe.ts
++++ b/src/os/middleware/universe.ts
+@@ -1,4 +1,4 @@
+-import { UniverseContext } from "./universe.types";
++import { UniverseContext } from "@/os/middleware/universe.types.js";
 
-export const universeMiddleware: MiddlewareHandler = async (c, next) => {
-  c.set("requestId", nanoid());
-  await next();
-};
+ export const universeMiddleware = async (c: any, next: any) => {

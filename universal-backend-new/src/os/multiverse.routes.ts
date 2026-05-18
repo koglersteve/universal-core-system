@@ -1,34 +1,9 @@
-import type { Hono } from "hono";
-import { Multiverse } from "./multiverse";
+diff --git a/src/os/multiverse.routes.ts b/src/os/multiverse.routes.ts
+index 1111111..2222222 100644
+--- a/src/os/multiverse.routes.ts
++++ b/src/os/multiverse.routes.ts
+@@ -1,4 +1,4 @@
+-import { Hono } from "hono";
++import { Hono } from "hono";
 
-export function registerMultiverseRoutes(app: Hono) {
-  app.get("/multiverse/list", (c) => {
-    const universes = Multiverse.list().map((u) => ({
-      id: u.id,
-      label: u.label,
-      createdAt: u.createdAt
-    }));
-    return c.json({ universes });
-  });
-
-  app.post("/multiverse/create", async (c) => {
-    const body = await c.req.json().catch(() => ({}));
-    const label = body.label || "Unnamed Universe";
-    const universe = Multiverse.create(label);
-    return c.json({
-      status: "ok",
-      universe: {
-        id: universe.id,
-        label: universe.label,
-        createdAt: universe.createdAt
-      }
-    });
-  });
-
-  app.get("/multiverse/:id/state", (c) => {
-    const id = c.req.param("id");
-    const universe = Multiverse.get(id);
-    if (!universe) return c.json({ error: "Universe not found" }, 404);
-    return c.json(universe.state);
-  });
-}
+ export function registerMultiverseRoutes(app: any) {

@@ -1,8 +1,9 @@
-import type { Hono } from "hono";
-import { OSStateManager } from "./state";
+diff --git a/src/os/behavior.routes.ts b/src/os/behavior.routes.ts
+index 1111111..2222222 100644
+--- a/src/os/behavior.routes.ts
++++ b/src/os/behavior.routes.ts
+@@ -1,4 +1,4 @@
+-import { Hono } from "hono";
++import { Hono } from "hono";
 
-const state = OSStateManager.create();
-
-export function registerBehaviorRoutes(app: Hono) {
-  app.get("/behavior/state", (c) => c.json(state.behavior));
-}
+ export function registerBehaviorRoutes(app: any) {
