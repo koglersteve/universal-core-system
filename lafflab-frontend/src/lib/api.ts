@@ -22,59 +22,63 @@ export const LaffLabApi = {
   // -------------------------
   // Categories
   // -------------------------
-  getCategories: () => get("/categories"),
-  getCategory: (id: string) => get(`/categories/${id}`),
+  getCategories: () => get("/modules/categories"),
+  getCategory: (id: string) => get(`/modules/categories/${id}`),
 
   // -------------------------
   // Posts
   // -------------------------
-  getPosts: () => get("/posts"),
-  getPost: (id: string) => get(`/posts/${id}`),
+  getPosts: () => get("/modules/posts"),
+  getPost: (id: string) => get(`/modules/posts/${id}`),
 
   // -------------------------
   // History
   // -------------------------
-  getHistory: () => get("/history"),
-  addHistory: (postId: string) => post("/history/add", { postId }),
-  clearHistory: () => post("/history/clear"),
+  getHistory: () => get("/modules/history"),
+  addHistory: (postId: string) => post("/modules/history/add", { postId }),
+  clearHistory: () => post("/modules/history/clear"),
 
   // -------------------------
   // Ritual
   // -------------------------
-  getRitual: () => get("/ritual"),
+  getRitual: () => get("/modules/ritual"),
 
   // -------------------------
   // Notifications
   // -------------------------
-  getNotifications: () => get("/notifications"),
-  getNotificationInbox: () => get("/notifications/inbox"),
-  getNotificationPreferences: () => get("/notifications/preferences"),
+  getNotifications: () => get("/modules/notifications"),
+  getNotificationInbox: () => get("/modules/notifications/inbox"),
+  getNotificationPreferences: () => get("/modules/notifications/preferences"),
 
   // -------------------------
   // Settings
   // -------------------------
-  getSettings: () => get("/settings"),
-  updateSettings: (patch: any) => post("/settings/update", patch),
+  getSettings: () => get("/modules/settings"),
+  updateSettings: (patch: any) => post("/modules/settings/update", patch),
 
   // -------------------------
   // Personalization
   // -------------------------
-  getPersonalizationProfile: () => get("/personalization/profile"),
+  getPersonalizationProfile: () => get("/core/profile"),
 
   // -------------------------
   // Reactions
   // -------------------------
-  sendReaction: (emoji: string) => post("/reactions", { emoji }),
-  getReactionSummary: () => get("/reactions/summary"),
+  sendReaction: (emoji: string) => post("/modules/reactions", { emoji }),
+  getReactionSummary: () => get("/modules/reactions/summary"),
 
   // -------------------------
   // Feed (new backend)
   // -------------------------
   fetchFeed: (params: { app: string; cursor?: string | null; limit?: number }) => {
-    const url = new URL("/feed", API_BASE);
-    url.searchParams.set("app", params.app);
-    if (params.cursor) url.searchParams.set("cursor", params.cursor);
-    if (params.limit) url.searchParams.set("limit", String(params.limit));
-    return get(url.pathname + url.search);
+    const search = new URLSearchParams();
+    search.set("app", params.app);
+    if (params.cursor) search.set("cursor", params.cursor);
+    if (params.limit) search.set("limit", String(params.limit));
+
+    const query = search.toString();
+    const path = query ? `/core/feed?${query}` : "/core/feed";
+
+    return get(path);
   },
 };
