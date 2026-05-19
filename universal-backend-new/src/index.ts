@@ -89,10 +89,7 @@ app.route("/modules/categories", categoriesRoutes);
 app.route("/modules/posts", postsRouter);
 
 // Plugin system
-const pluginRegistry = new PluginRegistry({
-  logger: console
-});
-
+const pluginRegistry = new PluginRegistry({ logger: console });
 const pluginLifecycle = new PluginLifecycleManager(pluginRegistry);
 const pluginLoader = new PluginLoader(pluginRegistry, pluginLifecycle);
 
