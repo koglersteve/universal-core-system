@@ -1,12 +1,8 @@
-import { Hono } from "hono";
+import { Hono } from "hono"
 
-const router = new Hono();
+const os = new Hono()
 
-router.get("/", (c) =>
-  c.json({
-    message: "OS routes online",
-    updatedAt: Date.now()
-  })
-);
+os.get("/", (c) => c.json({ message: "OS root" }))
+os.get("/status", (c) => c.json({ ok: true }))
 
-export default router;
+export default os

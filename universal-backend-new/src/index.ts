@@ -7,16 +7,17 @@ import { cors } from "hono/cors";
 
 import { config } from "@/core/config/config.js";
 
-// OS / kernel
+// Kernel / OS
 import { createKernel } from "@/os/kernel/kernel.js";
 import { universeMiddleware } from "@/os/middleware/universe.js";
 
-import { registerOSRoutes } from "@/os/os.routes.js";
-import { registerMultiverseRoutes } from "@/os/multiverse.routes.js";
-import { registerPersonaRoutes } from "@/os/persona.routes.js";
-import { registerMemoryRoutes } from "@/os/memory.routes.js";
-import { registerCognitiveRoutes } from "@/os/cognitive.routes.js";
-import { registerBehaviorRoutes } from "@/os/behavior.routes.js";
+// OS Routers
+import osRoutes from "@/os/os.routes.js";
+import multiverseRoutes from "@/os/multiverse.routes.js";
+import personaRoutes from "@/os/persona.routes.js";
+import memoryRoutes from "@/os/memory.routes.js";
+import cognitiveRoutes from "@/os/cognitive.routes.js";
+import behaviorRoutes from "@/os/behavior.routes.js";
 
 // Core routes
 import feedRoutes from "@/core/routes/feed.js";
@@ -38,7 +39,7 @@ import settingsRoutes from "@/modules/routes/settings.js";
 import categoriesRoutes from "@/modules/routes/categories.js";
 import postsRouter from "@/modules/routes/posts.js";
 
-// Plugin runtime
+// Plugin system
 import { PluginRegistry } from "@/modules/plugins/runtime/registry.js";
 import { PluginLoader } from "@/modules/plugins/runtime/loader.js";
 import { PluginLifecycleManager } from "@/modules/plugins/runtime/lifecycle.js";
@@ -51,22 +52,21 @@ const app = new Hono();
 // CORS
 app.use("*", cors());
 
-// Kernel / OS
+// Kernel
 const kernel = createKernel();
 
 app.use("*", async (c, next) => {
-  // attach kernel if you want
   (c as any).kernel = kernel;
   await universeMiddleware(c, next);
 });
 
 // OS routes
-registerOSRoutes(app);
-registerMultiverseRoutes(app);
-registerPersonaRoutes(app);
-registerMemoryRoutes(app);
-registerCognitiveRoutes(app);
-registerBehaviorRoutes(app);
+app.route("/os", osRoutes);
+app.route("/multiverse", multiverseRoutes);
+app.route("/persona", personaRoutes);
+app.route("/memory", memoryRoutes);
+app.route("/cognitive", cognitiveRoutes);
+app.route("/behavior", behaviorRoutes);
 
 // Core routes
 app.route("/core/feed", feedRoutes);
@@ -90,12 +90,7 @@ app.route("/modules/posts", postsRouter);
 
 // Plugin system
 const pluginRegistry = new PluginRegistry({
-  logger: {
-    info: console.log,
-    error: console.error,
-    warn: console.warn,
-    debug: console.debug
-  }
+  logger: console
 });
 
 const pluginLifecycle = new PluginLifecycleManager(pluginRegistry);
@@ -115,7 +110,7 @@ app.get("/", (c) =>
   })
 );
 
-const port = config.port ?? 8080;
+const port = Number(config.port) || 8080;
 
 serve({
   fetch: app.fetch,

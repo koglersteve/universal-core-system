@@ -1,14 +1,31 @@
-import { registerOSRoutes } from "@/os/os.routes.js";
-import { registerCognitiveRoutes } from "@/os/cognitive.routes.js";
-import { registerBehaviorRoutes } from "@/os/behavior.routes.js";
+import { state } from "@/os/state.js";
 
 export function createKernel() {
-  // In a more advanced version, this would wire up internal OS subsystems.
   return {
-    register(app: any) {
-      registerOSRoutes(app);
-      registerCognitiveRoutes(app);
-      registerBehaviorRoutes(app);
+    state,
+
+    getEmotion() {
+      return state.emotion;
+    },
+
+    getCognitive() {
+      return state.cognitive;
+    },
+
+    getMemory() {
+      return state.memory;
+    },
+
+    getBehavior() {
+      return state.behavior;
+    },
+
+    getIntent() {
+      return state.intent;
+    },
+
+    getIdentity() {
+      return state.identity;
     }
   };
 }
