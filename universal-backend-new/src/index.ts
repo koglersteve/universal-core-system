@@ -57,7 +57,7 @@ app.use("*", cors());
 const kernel = createKernel();
 
 app.use("*", async (c, next) => {
-  (c).kernel = kernel;
+  (c as any).kernel = kernel;
   await universeMiddleware(c, next);
 });
 
