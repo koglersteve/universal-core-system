@@ -1,23 +1,11 @@
-export interface WorldState {
-  environment: string;
-  context: Record<string, any>;
-  lastUpdated: number;
+import state, { OSState } from "./state.js";
+
+export interface World {
+  state: OSState;
 }
 
-export const World = {
-  default(): WorldState {
-    return {
-      environment: "default",
-      context: {},
-      lastUpdated: Date.now()
-    };
-  },
-
-  updateContext(state: WorldState, patch: Record<string, any>): WorldState {
-    return {
-      environment: state.environment,
-      context: { ...state.context, ...patch },
-      lastUpdated: Date.now()
-    };
-  }
+const world: World = {
+  state
 };
+
+export default world;

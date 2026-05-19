@@ -1,6 +1,6 @@
-import type { PluginManifest } from "../runtime/types.js";
+import type { PluginDefinition } from "../runtime/types.js";
 
-export const LaffLabPlugin: PluginManifest = {
+export const LaffLabPlugin: PluginDefinition = {
   id: "lafflab",
   name: "LaffLab",
   version: "2.1.0",
@@ -9,17 +9,16 @@ export const LaffLabPlugin: PluginManifest = {
 
   runtime: {
     onLoad: async (ctx: any) => {
-      ctx.logger.info("[lafflab] Plugin initialized");
+      ctx.logger.info?.("[lafflab] Plugin initialized");
     },
 
     onUnload: async (ctx: any) => {
-      ctx.logger.info("[lafflab] Plugin shutdown");
+      ctx.logger.info?.("[lafflab] Plugin shutdown");
     }
   }
 };
 
-// Optional helper function exposed by the plugin
 export function laugh(ctx: any) {
-  ctx.logger.info("[lafflab] laugh() called");
+  ctx.logger.info?.("[lafflab] laugh() called");
   return { ok: true };
 }

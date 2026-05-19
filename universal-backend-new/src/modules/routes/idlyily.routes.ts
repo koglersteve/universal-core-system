@@ -1,10 +1,13 @@
+import { Hono } from "hono";
 import prisma from "@/shared/prisma.js";
 
-export default function idlyilyRoutes(app: any) {
-  app.get("/", async (c: any) => {
-    return c.json({
-      message: "Idlyily API online",
-      updatedAt: Date.now()
-    });
+const router = new Hono();
+
+router.get("/", async (c) => {
+  return c.json({
+    message: "Idlyily API online",
+    updatedAt: Date.now()
   });
-}
+});
+
+export default router;
