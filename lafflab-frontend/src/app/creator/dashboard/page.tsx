@@ -1,8 +1,7 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import CreatorDashboard from "@/components/creator/CreatorDashboard";
+export const dynamic = "force-dynamic";
 
-export default function CreatorDashboardPage() {
-  return <CreatorDashboard />;
+export default function CreatorPage() {
+  redirect("/creator/dashboard");
 }
-

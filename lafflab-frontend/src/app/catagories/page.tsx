@@ -1,11 +1,13 @@
 import CategoryCard from "@components/CategoryCard";
 import EmptyState from "@components/ui/EmptyState";
 import ErrorState from "@components/ui/ErrorState";
-import { getCategories } from "@lib/server/categories";
+import { prisma } from "@/lib/prisma";
 
 export default async function CategoriesPage() {
   try {
-    const categories = await getCategories();
+    const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+    });
 
     if (!categories || categories.length === 0) {
       return <EmptyState title="No Categories" message="Nothing to show yet." />;

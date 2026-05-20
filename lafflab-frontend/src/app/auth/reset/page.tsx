@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {
@@ -10,6 +10,13 @@ export default function ResetPasswordPage() {
 
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect if token is missing
+  useEffect(() => {
+    if (!token) {
+      router.push("/auth/forgot");
+    }
+  }, [token, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -53,4 +60,3 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
-
