@@ -1,11 +1,11 @@
 export const dynamic = "force-dynamic";
 
 import { getUser } from "@/lib/server/user";
-import FeedList from "@/app/feed/components/FeedList";
+import { prisma } from "@/lib/prisma";
+import FeedList from "@/components/FeedList";
 
-export default async function Component() {
-  const result = await getUser();
-  const user = result?.user || null;
+export default async function ProfilePostsPage() {
+  const { user } = await getUser();
 
   if (!user) {
     return (
@@ -16,10 +16,10 @@ export default async function Component() {
     );
   }
 
-  const posts = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts?userId=${user.id}`,
-    { cache: "no-store" }
-  ).then((r) => r.json());
+  const posts = await prisma.post.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div className="p-6 text-white">
