@@ -1,6 +1,6 @@
 import UploadScreen from "@components/upload/UploadScreen";
 import ErrorState from "@components/ui/ErrorState";
-import { getUploadSession } from "@lib/server/upload";
+import { getUploadSession } from "@/lib/server/upload";
 
 export default async function UploadPage() {
   try {
@@ -11,8 +11,7 @@ export default async function UploadPage() {
         <UploadScreen session={session} />
       </div>
     );
-  } catch {
+  } catch (err) {
     return <ErrorState message="Failed to initialize upload session." />;
   }
 }
-

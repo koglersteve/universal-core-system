@@ -4,9 +4,21 @@ import ProfileHeader from "@/components/ProfileHeader";
 import ProfileTabs from "@/components/ProfileTabs";
 import { isFollowing } from "@/lib/server/follow";
 
-export default async function Page({ params }: { params: { id: string } }) {
+interface UserPageProps {
+  params: { id: string };
+}
+
+export default async function Page({ params }: UserPageProps) {
   const profile = await prisma.user.findUnique({
     where: { id: params.id },
+    select: {
+      id: true,
+      username: true,
+      screenName: true,
+      avatarUrl: true,
+      bio: true,
+      createdAt: true,
+    },
   });
 
   if (!profile) {

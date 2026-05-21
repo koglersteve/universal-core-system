@@ -9,12 +9,12 @@ export default function RitualScreen({ rituals = [] }: { rituals?: any[] }) {
         <p className="text-white/60">No rituals available.</p>
       ) : (
         <ul className="space-y-3">
-          {rituals.map((ritual, i) => (
+          {rituals.map((ritual) => (
             <li
-              key={i}
+              key={ritual.id}
               className="p-4 bg-white/5 border border-white/10 rounded-lg"
             >
-              {ritual.name || "Ritual"}
+              {ritual.title || "Ritual"}
             </li>
           ))}
         </ul>

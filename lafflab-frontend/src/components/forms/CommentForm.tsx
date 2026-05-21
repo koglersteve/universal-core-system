@@ -18,10 +18,10 @@ export default function CommentForm({
 
     try {
       await onSubmit?.({ comment });
-      toast("Comment posted like a legend.", "success");
+      toast("Comment posted.", "success");
       setComment("");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }

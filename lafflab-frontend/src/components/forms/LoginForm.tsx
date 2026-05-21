@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export default function LoginForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
+export default function LoginForm({
+  onSubmit,
+}: {
+  onSubmit?: (data: { email: string; password: string }) => Promise<void> | void;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,9 +19,9 @@ export default function LoginForm({ onSubmit }: { onSubmit?: (data: any) => Prom
 
     try {
       await onSubmit?.({ email, password });
-      toast("Welcome back, legend.", "success");
+      toast("Welcome back.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Invalid login.", "error");
     } finally {
       setLoading(false);
     }
@@ -40,7 +44,10 @@ export default function LoginForm({ onSubmit }: { onSubmit?: (data: any) => Prom
         className="w-full p-2 rounded bg-white/10 border border-white/20"
       />
 
-      <button disabled={loading} className="px-4 py-2 rounded bg-green-600 hover:bg-green-700 disabled:opacity-50">
+      <button
+        disabled={loading}
+        className="px-4 py-2 rounded bg-green-600 hover:bg-green-700 disabled:opacity-50"
+      >
         {loading ? "Logging in…" : "Log In"}
       </button>
     </form>

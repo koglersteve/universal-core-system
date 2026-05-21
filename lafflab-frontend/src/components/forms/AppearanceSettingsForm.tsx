@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export default function AppearanceSettingsForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
+export default function AppearanceSettingsForm({
+  onSubmit,
+}: {
+  onSubmit?: (data: { theme: string }) => Promise<void> | void;
+}) {
   const [theme, setTheme] = useState("dark");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -14,9 +18,9 @@ export default function AppearanceSettingsForm({ onSubmit }: { onSubmit?: (data:
 
     try {
       await onSubmit?.({ theme });
-      toast("Theme updated. Looking fresh.", "success");
+      toast("Theme updated.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
@@ -33,9 +37,13 @@ export default function AppearanceSettingsForm({ onSubmit }: { onSubmit?: (data:
         <option value="light">Light</option>
       </select>
 
-      <button disabled={loading} className="px-4 py-2 rounded bg-white/20 hover:bg-white/30 disabled:opacity-50">
+      <button
+        disabled={loading}
+        className="px-4 py-2 rounded bg-white/20 hover:bg-white/30 disabled:opacity-50"
+      >
         {loading ? "Saving…" : "Save"}
       </button>
     </form>
   );
 }
+

@@ -1,11 +1,24 @@
+import { prisma } from "@/lib/prisma";
 import TrendingList from "@components/trending/TrendingList";
 import EmptyState from "@components/ui/EmptyState";
 import ErrorState from "@components/ui/ErrorState";
-import { getTrending } from "@lib/server/trending";
 
 export default async function TrendingPage() {
   try {
-    const items = await getTrending();
+    const items = await prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            screenName: true,
+            avatarUrl: true,
+          },
+        },
+      },
+      take: 20,
+    });
 
     if (!items || items.length === 0) {
       return (
@@ -25,3 +38,4 @@ export default async function TrendingPage() {
     return <ErrorState message="Failed to load trending posts." />;
   }
 }
+

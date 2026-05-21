@@ -1,7 +1,7 @@
 import Link from "next/link";
 import CheckCircleIcon from "@components/icons/CheckCircleIcon";
 
-export default function VerifyUploadVerifyReviewRetrySuccessPage() {
+export default function VerifyUploadVerifyReviewRetryReviewSuccessPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6 text-center text-white">
       <div className="space-y-6">
@@ -9,7 +9,7 @@ export default function VerifyUploadVerifyReviewRetrySuccessPage() {
           <CheckCircleIcon className="w-16 h-16 text-green-400" />
         </div>
 
-        <h1 className="text-3xl font-bold">Retry Submitted</h1>
+        <h1 className="text-3xl font-bold">Review Submitted</h1>
         <p className="text-gray-300">
           Your corrected documents have been successfully resubmitted for review.
         </p>
@@ -24,3 +24,4 @@ export default function VerifyUploadVerifyReviewRetrySuccessPage() {
     </div>
   );
 }
+

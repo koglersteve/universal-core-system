@@ -6,7 +6,14 @@ import { useSettings } from "@/hooks/useSettings";
 export default function CreatorSettingsPage() {
   const { settings, updateSetting } = useSettings();
 
-  if (!settings) return null;
+  // Optional improvement: graceful loading state
+  if (!settings) {
+    return (
+      <div className="p-4 text-white/60">
+        Loading…
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -24,3 +31,4 @@ export default function CreatorSettingsPage() {
     </div>
   );
 }
+

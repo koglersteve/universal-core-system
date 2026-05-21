@@ -30,7 +30,7 @@ export default function NotificationTemplateRenderer({
   return (
     <div className="p-4 rounded bg-white/10 border border-white/20 text-white">
       <h2 className="font-bold">{template.title}</h2>
-      <p>{template.body}</p>
+      <p>{template.message}</p>
     </div>
   );
 }

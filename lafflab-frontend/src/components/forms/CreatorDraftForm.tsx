@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export default function CreatorDraftForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
+export default function CreatorDraftForm({
+  onSubmit,
+}: {
+  onSubmit?: (data: { text: string }) => Promise<void> | void;
+}) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -14,9 +18,9 @@ export default function CreatorDraftForm({ onSubmit }: { onSubmit?: (data: any) 
 
     try {
       await onSubmit?.({ text });
-      toast("Draft saved. Comedy genius unlocked.", "success");
+      toast("Draft saved.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
@@ -31,7 +35,10 @@ export default function CreatorDraftForm({ onSubmit }: { onSubmit?: (data: any) 
         rows={4}
       />
 
-      <button disabled={loading} className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 disabled:opacity-50">
+      <button
+        disabled={loading}
+        className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
+      >
         {loading ? "Saving…" : "Save Draft"}
       </button>
     </form>

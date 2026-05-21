@@ -1,10 +1,14 @@
 export const dynamic = "force-dynamic";
 
+import { prisma } from "@/lib/prisma";
 import { getUserById } from "@/lib/server/user";
 import FeedList from "@/app/feed/components/FeedList";
-import { headers } from "next/headers";
 
-export default async function UserPostsPage({ params }) {
+interface UserPostsPageProps {
+  params: { id: string };
+}
+
+export default async function UserPostsPage({ params }: UserPostsPageProps) {
   const user = await getUserById(params.id);
 
   if (!user) {
@@ -16,16 +20,26 @@ export default async function UserPostsPage({ params }) {
     );
   }
 
-  // Build absolute URL (required for RSC)
-  const host = headers().get("host");
-  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  const url = `${protocol}://${host}/api/posts?userId=${params.id}`;
-
-  const posts = await fetch(url, { cache: "no-store" }).then((r) => r.json());
+  const posts = await prisma.post.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          screenName: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
 
   return (
     <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">Posts by {user.username}</div>
+      <div className="text-xl font-semibold mb-4">
+        Posts by {user.username}
+      </div>
       <FeedList posts={posts} />
     </div>
   );

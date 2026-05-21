@@ -18,10 +18,10 @@ export default function ResetPasswordForm({
 
     try {
       await onSubmit?.({ email });
-      toast("Password reset link sent. You’re unstoppable.", "success");
+      toast("Password reset link sent.", "success");
       setEmail("");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }

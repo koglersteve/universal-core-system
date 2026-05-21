@@ -21,3 +21,4 @@ export default function TemplatesIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+

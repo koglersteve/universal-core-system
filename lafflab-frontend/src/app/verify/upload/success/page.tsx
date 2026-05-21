@@ -10,7 +10,9 @@ export default function VerifyUploadSuccessPage() {
         </div>
 
         <h1 className="text-3xl font-bold">Documents Submitted</h1>
-        <p className="text-gray-300">Your verification upload is complete. We’ll notify you once reviewed.</p>
+        <p className="text-gray-300">
+          Your verification upload is complete. We’ll notify you once reviewed.
+        </p>
 
         <Link
           href="/verify"

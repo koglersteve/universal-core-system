@@ -7,12 +7,12 @@ export default function SearchResults({ results = [] }: { results?: any[] }) {
 
   return (
     <ul className="space-y-3 text-white">
-      {results.map((item, i) => (
+      {results.map((item) => (
         <li
-          key={i}
+          key={item.id}
           className="p-4 bg-white/5 border border-white/10 rounded-lg"
         >
-          {item.title || "Result"}
+          {item.title || item.name || item.label || "Result"}
         </li>
       ))}
     </ul>

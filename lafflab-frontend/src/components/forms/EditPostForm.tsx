@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import LoadingButton from "@/components/ui/LoadingButton";
 import { useToast } from "@/components/ui/ToastProvider";
 
 export default function EditPostForm({
@@ -21,9 +20,9 @@ export default function EditPostForm({
 
     try {
       await onSubmit?.({ text });
-      toast("Boom! Saved.", "success");
+      toast("Saved.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }

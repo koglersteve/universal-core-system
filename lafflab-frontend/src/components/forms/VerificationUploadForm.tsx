@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export default function VerificationUploadForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
+export default function VerificationUploadForm({
+  onSubmit,
+}: {
+  onSubmit?: (data: { file: File | null }) => Promise<void> | void;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -14,9 +18,9 @@ export default function VerificationUploadForm({ onSubmit }: { onSubmit?: (data:
 
     try {
       await onSubmit?.({ file });
-      toast("Verification submitted. You're official.", "success");
+      toast("Verification submitted.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
@@ -30,7 +34,10 @@ export default function VerificationUploadForm({ onSubmit }: { onSubmit?: (data:
         className="text-sm text-white/70"
       />
 
-      <button disabled={loading} className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-50">
+      <button
+        disabled={loading}
+        className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+      >
         {loading ? "Submitting…" : "Submit Document"}
       </button>
     </form>

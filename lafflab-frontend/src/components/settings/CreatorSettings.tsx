@@ -1,6 +1,6 @@
 "use client";
 
-import CreatorSettings from "@/components/settings/CreatorSettings";
+import CreatorSettings from "@/components/settings/creator/CreatorSettings";
 
 export default function CreatorSettingsPage() {
   return (

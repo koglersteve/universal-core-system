@@ -21,9 +21,9 @@ export default function ProfileForm({
 
     try {
       await onSubmit?.({ name, bio });
-      toast("Profile updated. Looking sharp.", "success");
+      toast("Profile updated.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
@@ -55,3 +55,4 @@ export default function ProfileForm({
     </form>
   );
 }
+

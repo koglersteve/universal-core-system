@@ -1,4 +1,8 @@
-export default function UserLayout({ children }) {
+interface UserLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function UserLayout({ children }: UserLayoutProps) {
   return (
     <div className="min-h-screen bg-black text-white">
       {children}

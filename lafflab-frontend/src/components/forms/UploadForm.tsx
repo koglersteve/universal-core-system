@@ -18,10 +18,10 @@ export default function UploadForm({
 
     try {
       await onSubmit?.({ file });
-      toast("Uploaded like a champ.", "success");
+      toast("Uploaded.", "success");
       setFile(null);
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }

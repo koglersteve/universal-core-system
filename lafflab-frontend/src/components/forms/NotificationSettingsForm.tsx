@@ -8,7 +8,7 @@ export default function NotificationSettingsForm({
   onSubmit,
 }: {
   initial?: { trending: boolean };
-  onSubmit?: (data: any) => Promise<void> | void;
+  onSubmit?: (data: { trending: boolean }) => Promise<void> | void;
 }) {
   const [trending, setTrending] = useState(initial.trending);
   const [loading, setLoading] = useState(false);
@@ -20,9 +20,9 @@ export default function NotificationSettingsForm({
 
     try {
       await onSubmit?.({ trending });
-      toast("Notifications tuned. You're dialed in.", "success");
+      toast("Notification settings updated.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,10 @@ export default function NotificationSettingsForm({
         Notify me when posts trend
       </label>
 
-      <button disabled={loading} className="px-4 py-2 rounded bg-white/20 hover:bg-white/30 disabled:opacity-50">
+      <button
+        disabled={loading}
+        className="px-4 py-2 rounded bg-white/20 hover:bg-white/30 disabled:opacity-50"
+      >
         {loading ? "Saving…" : "Save"}
       </button>
     </form>

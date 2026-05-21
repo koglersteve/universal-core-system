@@ -4,7 +4,11 @@ import { useState } from "react";
 import LoadingButton from "@/components/ui/LoadingButton";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export default function CreateForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
+export default function CreateForm({
+  onSubmit,
+}: {
+  onSubmit?: (data: { text: string; media: File | null }) => Promise<void> | void;
+}) {
   const [text, setText] = useState("");
   const [media, setMedia] = useState<File | null>(null);
   const toast = useToast();
@@ -12,11 +16,11 @@ export default function CreateForm({ onSubmit }: { onSubmit?: (data: any) => Pro
   async function handleSubmit() {
     try {
       await onSubmit?.({ text, media });
-      toast("Post published!", "success");
+      toast("Post published.", "success");
       setText("");
       setMedia(null);
-    } catch (err) {
-      toast("Failed to publish post", "error");
+    } catch {
+      toast("Failed to publish post.", "error");
     }
   }
 
@@ -25,7 +29,7 @@ export default function CreateForm({ onSubmit }: { onSubmit?: (data: any) => Pro
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Write something funny..."
+        placeholder="Write something…"
         className="w-full p-3 rounded bg-white/10 border border-white/20"
         rows={4}
       />

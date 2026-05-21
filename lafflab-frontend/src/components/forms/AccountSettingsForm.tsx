@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 
-export default function AccountSettingsForm({ onSubmit }: { onSubmit?: (data: any) => Promise<void> | void }) {
+export default function AccountSettingsForm({
+  onSubmit,
+}: {
+  onSubmit?: (data: { email: string }) => Promise<void> | void;
+}) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -14,9 +18,9 @@ export default function AccountSettingsForm({ onSubmit }: { onSubmit?: (data: an
 
     try {
       await onSubmit?.({ email });
-      toast("Boom! Saved.", "success");
+      toast("Saved successfully.", "success");
     } catch {
-      toast("Try again, champ.", "error");
+      toast("Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
@@ -31,7 +35,10 @@ export default function AccountSettingsForm({ onSubmit }: { onSubmit?: (data: an
         className="w-full p-2 rounded bg-white/10 border border-white/20"
       />
 
-      <button disabled={loading} className="px-4 py-2 rounded bg-white/20 hover:bg-white/30 disabled:opacity-50">
+      <button
+        disabled={loading}
+        className="px-4 py-2 rounded bg-white/20 hover:bg-white/30 disabled:opacity-50"
+      >
         {loading ? "Saving…" : "Save"}
       </button>
     </form>

@@ -12,7 +12,7 @@ export default function NotificationsList({ items = [] }: { items?: any[] }) {
           key={i}
           className="p-4 bg-white/5 rounded-lg border border-white/10"
         >
-          {item.message || "Notification"}
+          {item.body || "Notification"}
         </li>
       ))}
     </ul>
