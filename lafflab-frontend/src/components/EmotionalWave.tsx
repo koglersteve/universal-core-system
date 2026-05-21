@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useReactionStream } from "@/hooks/useReactionStream";
 
-type LocalReactionEvent = { timestamp: number };
+type LocalReactionEvent = { createdAt: string };
 type Bucket = { timestamp: number; count: number };
 
 export default function EmotionalWave() {
@@ -15,12 +15,16 @@ export default function EmotionalWave() {
     const now = Date.now();
     const windowMs = 10_000;
 
-    const filtered = events.filter((e) => now - e.timestamp <= windowMs);
+    const filtered = events.filter((e) => {
+      const ts = new Date(e.createdAt).getTime();
+      return now - ts <= windowMs;
+    });
 
     const bucketMap: Record<number, number> = {};
 
     for (const e of filtered) {
-      const bucket = Math.floor(e.timestamp / 1000);
+      const ts = new Date(e.createdAt).getTime();
+      const bucket = Math.floor(ts / 1000);
       bucketMap[bucket] = (bucketMap[bucket] ?? 0) + 1;
     }
 

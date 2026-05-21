@@ -4,62 +4,49 @@ import { useState } from "react";
 
 export default function PostComposer({ onPostCreated }) {
   const [content, setContent] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  async function handleMediaDuration(file: File) {
-    return new Promise<number>((resolve) => {
-      const url = URL.createObjectURL(file);
-      const media = document.createElement(
-        file.type.startsWith("audio") ? "audio" : "video"
-      );
-      media.src = url;
-      media.addEventListener("loadedmetadata", () => {
-        resolve(media.duration);
-      });
-    });
-  }
-
   async function handleSubmit() {
-    if (!content.trim() && !imageFile) return;
+    if (!content.trim() && !file) return;
 
     setUploading(true);
 
-    let imageUrl = null;
+    let mediaUrl = null;
 
-    if (imageFile) {
-      const uploadRes = await fetch("/api/post/upload-url", {
+    if (file) {
+      const res = await fetch("/api/upload/post", {
         method: "POST",
         body: JSON.stringify({
-          fileName: imageFile.name,
-          fileType: imageFile.type,
+          fileName: file.name,
+          fileType: file.type,
         }),
       });
 
-      const { uploadUrl, publicUrl } = await uploadRes.json();
+      const { uploadUrl, publicUrl } = await res.json();
 
       await fetch(uploadUrl, {
         method: "PUT",
-        headers: { "Content-Type": imageFile.type },
-        body: imageFile,
+        headers: { "Content-Type": file.type },
+        body: file,
       });
 
-      imageUrl = publicUrl;
+      mediaUrl = publicUrl;
     }
 
-    await fetch("/api/post/create", {
+    await fetch("/api/posts", {
       method: "POST",
       body: JSON.stringify({
         content,
-        imageUrl,
+        media: mediaUrl,
       }),
     });
 
     setContent("");
-    setImageFile(null);
+    setFile(null);
     setUploading(false);
 
-    if (onPostCreated) onPostCreated();
+    onPostCreated?.();
   }
 
   return (
@@ -84,20 +71,7 @@ export default function PostComposer({ onPostCreated }) {
       <input
         type="file"
         accept="image/*,video/*,audio/*"
-        onChange={async (e) => {
-          const file = e.target.files?.[0] || null;
-          if (!file) return;
-
-          if (file.type.startsWith("video") || file.type.startsWith("audio")) {
-            const duration = await handleMediaDuration(file);
-            if (duration > 30) {
-              alert("Video and audio posts must be 30 seconds or less.");
-              return;
-            }
-          }
-
-          setImageFile(file);
-        }}
+        onChange={(e) => setFile(e.target.files?.[0] || null)}
         className="text-sm text-white/70"
       />
 

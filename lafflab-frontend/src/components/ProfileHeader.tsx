@@ -13,7 +13,7 @@ export default function ProfileHeader({
     id: string;
     username: string | null;
     screenName: string | null;
-    avatarUrl: string | null;
+    avatar: string | null;
     bio: string | null;
   };
   stats: {
@@ -26,13 +26,11 @@ export default function ProfileHeader({
 }) {
   return (
     <div className="w-full bg-black text-white border-b border-white/10">
-      {/* Banner */}
       <div className="h-32 w-full bg-gradient-to-r from-blue-700 to-purple-700" />
 
-      {/* Avatar + Info */}
       <div className="px-6 -mt-12 flex items-end gap-4">
         <img
-          src={user.avatarUrl || "/default-avatar.png"}
+          src={user.avatar || "/default-avatar.png"}
           className="w-24 h-24 rounded-full border-4 border-black object-cover"
         />
 
@@ -49,12 +47,10 @@ export default function ProfileHeader({
         )}
       </div>
 
-      {/* Bio */}
       {user.bio && (
         <div className="px-6 mt-4 text-white/90">{user.bio}</div>
       )}
 
-      {/* Stats */}
       <div className="px-6 py-4 flex gap-6 text-sm text-white/80">
         <Link href={`/user/${user.id}/followers`} className="hover:text-white">
           <strong className="text-white">{stats.followers}</strong> Followers

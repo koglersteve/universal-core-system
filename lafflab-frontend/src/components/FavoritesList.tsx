@@ -7,16 +7,12 @@ interface FavoritesListProps {
 }
 
 export default function FavoritesList({ posts }: FavoritesListProps) {
-  const { favorites } = useFavoritesStore(); // Set<string>
+  const { favorites } = useFavoritesStore();
 
   const favoritePosts = posts.filter((post) => favorites.has(post.id));
 
   if (!favoritePosts.length) {
-    return (
-      <p className="text-white/60">
-        No favorites yet.
-      </p>
-    );
+    return <p className="text-white/60">No favorites yet.</p>;
   }
 
   return (
@@ -26,7 +22,8 @@ export default function FavoritesList({ posts }: FavoritesListProps) {
           key={post.id}
           className="p-4 rounded bg-white/10 border border-white/20 text-white"
         >
-          {JSON.stringify(post)}
+          <p className="font-semibold">{post.title}</p>
+          <p className="text-white/60 text-sm mt-1">{post.content}</p>
         </div>
       ))}
     </div>

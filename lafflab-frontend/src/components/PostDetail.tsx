@@ -1,4 +1,3 @@
-// src/components/PostDetail.tsx
 "use client";
 
 import type { Post } from "@/types/jokes";
@@ -16,7 +15,7 @@ export default function PostDetail({ post }: PostDetailProps) {
 
       <div className="space-y-2">
         <h2 className="text-xl font-semibold text-white">
-          {post.text}
+          {post.title || post.text}
         </h2>
 
         <p className="text-sm text-white/70 leading-relaxed">

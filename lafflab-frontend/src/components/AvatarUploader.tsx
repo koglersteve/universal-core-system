@@ -15,7 +15,7 @@ export default function AvatarUploader({
 
     setUploading(true);
 
-    const res = await fetch("/api/avatar/upload-url");
+    const res = await fetch("/api/upload/avatar");
     const { uploadUrl, fileUrl } = await res.json();
 
     await fetch(uploadUrl, {

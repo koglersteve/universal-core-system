@@ -3,13 +3,19 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function HamburgerMenu({ open, onClose }) {
+export default function HamburgerMenu({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
   const router = useRouter();
   if (!open) return null;
 
   useEffect(() => {
-    function handleClick(e) {
-      if (!document.getElementById("hamburger-menu")?.contains(e.target)) {
+    function handleClick(e: MouseEvent) {
+      if (!document.getElementById("hamburger-menu")?.contains(e.target as Node)) {
         onClose();
       }
     }
@@ -27,22 +33,40 @@ export default function HamburgerMenu({ open, onClose }) {
         <button
           onClick={() => {
             onClose();
-            router.push("/profile");
+            router.push("/profile/edit");
           }}
           className="px-4 py-2 text-left text-white/80 hover:bg-white/10"
         >
           Edit Profile
         </button>
 
-        <button className="px-4 py-2 text-left text-white/80 hover:bg-white/10">
+        <button
+          onClick={() => {
+            onClose();
+            router.push("/settings");
+          }}
+          className="px-4 py-2 text-left text-white/80 hover:bg-white/10"
+        >
           Settings
         </button>
 
-        <button className="px-4 py-2 text-left text-white/80 hover:bg-white/10">
+        <button
+          onClick={() => {
+            onClose();
+            router.push("/notifications");
+          }}
+          className="px-4 py-2 text-left text-white/80 hover:bg-white/10"
+        >
           Notifications
         </button>
 
-        <button className="px-4 py-2 text-left text-white/80 hover:bg-white/10">
+        <button
+          onClick={() => {
+            onClose();
+            router.push("/creator");
+          }}
+          className="px-4 py-2 text-left text-white/80 hover:bg-white/10"
+        >
           Creator
         </button>
 

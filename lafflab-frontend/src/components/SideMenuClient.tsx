@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export default function Component({ open, onClose }) {
+export default function SideMenuClient({ open, onClose }) {
   return (
     <>
       {open && (
@@ -23,10 +23,12 @@ export default function Component({ open, onClose }) {
           <Link href="/" className="block px-3 py-2 hover:bg-white/10 rounded-md">
             Home
           </Link>
+
           <Link href="/feed" className="block px-3 py-2 hover:bg-white/10 rounded-md">
             Feed
           </Link>
-          <Link href="/profile" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+
+          <Link href="/user/me" className="block px-3 py-2 hover:bg-white/10 rounded-md">
             Profile
           </Link>
         </nav>

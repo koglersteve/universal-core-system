@@ -1,5 +1,5 @@
 import TopBarClient from "./TopBarClient";
 
-export default function Component(props) {
+export default function TopBar(props) {
   return <TopBarClient {...props} />;
 }

@@ -7,9 +7,9 @@ export default function ExploreFeed({ items = [] }: { items?: any[] }) {
 
   return (
     <ul className="space-y-3">
-      {items.map((item, i) => (
+      {items.map((item) => (
         <li
-          key={i}
+          key={item.id}
           className="p-4 bg-white/5 rounded-lg border border-white/10 text-white"
         >
           {item.title || "Untitled"}

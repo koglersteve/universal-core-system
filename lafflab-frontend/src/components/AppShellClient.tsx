@@ -4,7 +4,7 @@ import { useState } from "react";
 import SideMenu from "@/components/SideMenu";
 import TopBar from "@/components/TopBar";
 
-export default function Component({ children }) {
+export default function AppShellClient({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (

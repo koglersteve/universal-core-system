@@ -1,4 +1,3 @@
-// src/components/PostMedia.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -25,7 +24,7 @@ export default function PostMedia({ post, active }: PostMediaProps) {
   const isVideo = post.type === "video";
   const isAudio = post.type === "audio";
 
-  const mediaUrl = post.imageUrl || post.videoUrl || post.audioUrl || null;
+  const mediaUrl = post.image || post.video || post.audio || null;
 
   if (!mediaUrl) return safeText ? <p>{safeText}</p> : null;
 
@@ -42,11 +41,7 @@ export default function PostMedia({ post, active }: PostMediaProps) {
     const media = videoRef.current || audioRef.current;
     if (!media) return;
 
-    if (active) {
-      media.play().catch(() => {});
-    } else {
-      media.pause();
-    }
+    active ? media.play().catch(() => {}) : media.pause();
   }, [active]);
 
   useEffect(() => {
@@ -86,7 +81,7 @@ export default function PostMedia({ post, active }: PostMediaProps) {
 
       {isImage && !error && (
         <img
-          src={post.imageUrl!}
+          src={post.image!}
           alt=""
           onLoad={() => setLoaded(true)}
           onError={() => setError(true)}
@@ -99,8 +94,8 @@ export default function PostMedia({ post, active }: PostMediaProps) {
       {isVideo && !error && (
         <video
           ref={videoRef}
-          src={post.videoUrl!}
-          poster={post.thumbnailUrl}
+          src={post.video!}
+          poster={post.thumbnail}
           playsInline
           muted
           loop
@@ -118,7 +113,7 @@ export default function PostMedia({ post, active }: PostMediaProps) {
       {isAudio && !error && (
         <audio
           ref={audioRef}
-          src={post.audioUrl!}
+          src={post.audio!}
           controls
           onLoadedData={(e) => {
             enforceDuration(e.currentTarget);

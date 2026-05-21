@@ -1,15 +1,15 @@
 "use client";
 
-export default function Component({ post }) {
+export default function PostCard({ post }: { post: any }) {
   return (
     <div className="bg-white/5 p-4 rounded-lg border border-white/10">
       <div className="text-white font-semibold mb-2">
         {post.title || "Untitled Post"}
       </div>
 
-      {post.mediaUrl && (
+      {post.media && (
         <img
-          src={post.mediaUrl}
+          src={post.media}
           alt=""
           className="w-full rounded-md mb-3"
         />
@@ -21,3 +21,4 @@ export default function Component({ post }) {
     </div>
   );
 }
+

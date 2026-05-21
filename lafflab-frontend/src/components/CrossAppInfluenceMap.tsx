@@ -15,8 +15,8 @@ export default function CrossAppInfluenceMap({ log }: { log: any[] }) {
 
     log.forEach((entry) => {
       entry.actions.forEach((action: any) => {
-        if (map[action.to] !== undefined) {
-          map[action.to] += action.weight;
+        if (map[action.target] !== undefined) {
+          map[action.target] += action.weight;
         }
       });
     });

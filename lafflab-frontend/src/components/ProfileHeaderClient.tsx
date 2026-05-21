@@ -2,32 +2,32 @@
 
 import { useState } from "react";
 
-export default function Component({ user, editable }) {
-  const [avatar, setAvatar] = useState(user?.avatarUrl || "/default-avatar.png");
-  const [banner, setBanner] = useState(user?.bannerUrl || "/default-banner.jpg");
+export default function ProfileHeaderClient({
+  user,
+  editable,
+}: {
+  user: any;
+  editable: boolean;
+}) {
+  const [avatar, setAvatar] = useState(user?.avatar || "/default-avatar.png");
+  const [banner, setBanner] = useState(user?.banner || "/default-banner.jpg");
 
-  function changeAvatar(e) {
+  function changeAvatar(e: any) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAvatar(url);
+    setAvatar(URL.createObjectURL(file));
   }
 
-  function changeBanner(e) {
+  function changeBanner(e: any) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setBanner(url);
+    setBanner(URL.createObjectURL(file));
   }
 
   return (
     <div className="w-full bg-black rounded-b-xl overflow-hidden border-b border-white/10">
       <div className="relative w-full h-40 bg-white/5">
-        <img
-          src={banner}
-          className="w-full h-full object-cover"
-          alt=""
-        />
+        <img src={banner} className="w-full h-full object-cover" alt="" />
 
         {editable && (
           <label className="absolute top-3 right-3 px-3 py-1.5 bg-black/60 text-white text-xs rounded cursor-pointer hover:bg-black/80 transition">
@@ -54,8 +54,8 @@ export default function Component({ user, editable }) {
         </div>
 
         <div className="mt-4">
-          <div className="text-xl font-semibold text-white">{user?.username}</div>
-          <div className="text-gray-400 text-sm">@{user?.id}</div>
+          <div className="text-xl font-semibold text-white">{user?.screenName}</div>
+          <div className="text-gray-400 text-sm">@{user?.username}</div>
         </div>
       </div>
     </div>

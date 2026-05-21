@@ -1,6 +1,6 @@
 "use client";
 
-export default function Component({ onMenuToggle }) {
+export default function TopBarClient({ onMenuToggle }) {
   return (
     <div className="h-14 flex items-center px-4 bg-black border-b border-white/10">
       <button

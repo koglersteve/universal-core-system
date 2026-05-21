@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useFavoritesStore } from "@/store/useFavoritesStore";
 import PostMedia from "./PostMedia";
-import ImpressionBar from "@/components/ImpressionBar";
+import ImpressionBar from "@/components/impressionbar";
 import type { Post } from "@/types/jokes";
 
 export default function JokeCard({ post }: { post: Post }) {
