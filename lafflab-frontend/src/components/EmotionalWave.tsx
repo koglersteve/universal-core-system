@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useReactionStream } from "@/hooks/useReactionStream";
+import type { LocalReactionEvent } from "@/core/reactions/stream";
 
-type LocalReactionEvent = { createdAt: string };
 type Bucket = { timestamp: number; count: number };
 
 export default function EmotionalWave() {
