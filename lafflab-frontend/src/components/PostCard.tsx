@@ -1,22 +1,23 @@
 "use client";
 
-export default function PostCard({ post }: { post: any }) {
+import type { Post } from "@/types/jokes";
+import PostMedia from "./PostMedia";
+
+export default function PostCard({ post }: { post: Post }) {
   return (
-    <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-      <div className="text-white font-semibold mb-2">
-        {post.title || "Untitled Post"}
+    <div className="bg-white/5 p-4 rounded-lg border border-white/10 space-y-3">
+      <PostMedia post={post} active={false} />
+
+      <div className="text-white font-semibold">
+        {post.text || "Untitled Post"}
       </div>
 
-      {post.media && (
-        <img
-          src={post.media}
-          alt=""
-          className="w-full rounded-md mb-3"
-        />
-      )}
-
       <div className="text-gray-300 text-sm">
-        {post.content || "No content"}
+        {post.text || "No content"}
+      </div>
+
+      <div className="text-xs text-white/40">
+        {new Date(post.createdAt).toLocaleString()}
       </div>
     </div>
   );

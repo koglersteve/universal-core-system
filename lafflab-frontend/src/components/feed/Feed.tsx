@@ -1,41 +1,22 @@
 "use client";
 
-interface FeedProps {
-  items?: Array<{
-    id: string;
-    title?: string;
-    content?: string;
-    [key: string]: any;
-  }>;
-}
+import type { Post } from "@/types/jokes";
+import JokeCard from "@/components/JokeCard";
 
-export default function Feed({ items = [] }: FeedProps) {
+export default function FeedList({ items }: { items: Post[] }) {
+  if (!items || items.length === 0) {
+    return (
+      <div className="text-center text-white/50 py-8">
+        No posts yet.
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4 text-white">
-      <h1 className="text-xl font-semibold">Feed</h1>
-
-      {items.length === 0 ? (
-        <p className="text-white/60">No posts yet.</p>
-      ) : (
-        <ul className="space-y-3">
-          {items.map((item) => (
-            <li
-              key={item.id}
-              className="p-4 bg-white/5 border border-white/10 rounded-lg"
-            >
-              <div className="font-semibold">
-                {item.title || "Untitled"}
-              </div>
-
-              {item.content && (
-                <p className="text-white/60 mt-1 text-sm line-clamp-3">
-                  {item.content}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="space-y-4">
+      {items.map((post) => (
+        <JokeCard key={post.id} post={post} />
+      ))}
     </div>
   );
 }

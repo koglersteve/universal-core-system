@@ -1,6 +1,6 @@
 export type Post = {
   id: string;
-  type: string;
+  type: string; // "image" | "video" | "audio" | "text"
   text?: string | null;
   mediaUrl?: string | null;
   score: number;
@@ -8,4 +8,3 @@ export type Post = {
   creatorId: string;
   app?: string | null;
 };
-

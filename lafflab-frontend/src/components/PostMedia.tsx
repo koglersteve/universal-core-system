@@ -3,7 +3,13 @@
 import React, { useState } from "react";
 import type { Post } from "@/types/jokes";
 
-export default function PostMedia({ post, active }: { post: Post; active: boolean }) {
+export default function PostMedia({
+  post,
+  active,
+}: {
+  post: Post;
+  active: boolean;
+}) {
   const [error, setError] = useState(false);
 
   const isImage = post.type === "image";
@@ -12,8 +18,10 @@ export default function PostMedia({ post, active }: { post: Post; active: boolea
 
   const mediaUrl = post.mediaUrl || null;
 
-  if (!mediaUrl) {
-    return post.text ? <p className="text-white">{post.text}</p> : null;
+  if (!mediaUrl || error) {
+    return post.text ? (
+      <p className="text-white whitespace-pre-wrap">{post.text}</p>
+    ) : null;
   }
 
   if (isImage) {
