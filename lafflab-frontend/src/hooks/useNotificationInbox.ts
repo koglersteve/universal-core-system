@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useNotificationStore } from "@/store/notificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 import { LaffLabApi } from "@/lib/api";
 
 export function useNotificationInbox(userId: string) {

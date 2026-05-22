@@ -1,6 +1,6 @@
 "use client";
 
-import { useNotificationStore } from "@/store/notificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 
 export default function NotificationBubble() {
   const { inbox } = useNotificationStore();
