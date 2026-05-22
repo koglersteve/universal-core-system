@@ -1,128 +1,53 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import type { Post } from "@/types/jokes";
 
-type PostMediaProps = {
-  post: Post;
-  active: boolean;
-};
-
-export default function PostMedia({ post, active }: PostMediaProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const [loaded, setLoaded] = useState(false);
+export default function PostMedia({ post, active }: { post: Post; active: boolean }) {
   const [error, setError] = useState(false);
 
-  const safeText =
-    post.text && post.text.length > 150
-      ? post.text.slice(0, 150)
-      : post.text;
-
-  const isImage = post.type === "image" || post.type === "meme";
+  const isImage = post.type === "image";
   const isVideo = post.type === "video";
   const isAudio = post.type === "audio";
 
-  const mediaUrl = post.image || post.video || post.audio || null;
+  const mediaUrl = post.mediaUrl || null;
 
-  if (!mediaUrl) return safeText ? <p>{safeText}</p> : null;
+  if (!mediaUrl) {
+    return post.text ? <p className="text-white">{post.text}</p> : null;
+  }
 
-  const enforceDuration = (el: HTMLMediaElement | null) => {
-    if (!el) return;
-    if (el.duration > 30) {
-      el.pause();
-      el.src = "";
-      setError(true);
-    }
-  };
-
-  useEffect(() => {
-    const media = videoRef.current || audioRef.current;
-    if (!media) return;
-
-    active ? media.play().catch(() => {}) : media.pause();
-  }, [active]);
-
-  useEffect(() => {
-    const media = videoRef.current || audioRef.current;
-    if (!media) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries?.[0];
-        if (!entry) return;
-
-        if (!entry.isIntersecting) {
-          media.pause();
-        } else if (active) {
-          media.play().catch(() => {});
-        }
-      },
-      { threshold: 0.25 }
+  if (isImage) {
+    return (
+      <img
+        src={mediaUrl}
+        alt="Post media"
+        className="w-full rounded-lg"
+        onError={() => setError(true)}
+      />
     );
+  }
 
-    observer.observe(media);
+  if (isVideo) {
+    return (
+      <video
+        src={mediaUrl}
+        controls={active}
+        className="w-full rounded-lg"
+        onError={() => setError(true)}
+      />
+    );
+  }
 
-    return () => observer.disconnect();
-  }, [active]);
+  if (isAudio) {
+    return (
+      <audio
+        src={mediaUrl}
+        controls={active}
+        className="w-full"
+        onError={() => setError(true)}
+      />
+    );
+  }
 
-  return (
-    <div className="relative w-full overflow-hidden rounded-xl bg-black/20">
-      {!loaded && !error && (
-        <div className="absolute inset-0 animate-pulse bg-white/10 rounded-xl" />
-      )}
-
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center text-white/60 text-sm">
-          Media unavailable
-        </div>
-      )}
-
-      {isImage && !error && (
-        <img
-          src={post.image!}
-          alt=""
-          onLoad={() => setLoaded(true)}
-          onError={() => setError(true)}
-          className={`w-full h-auto object-cover transition-opacity duration-300 ${
-            loaded ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      )}
-
-      {isVideo && !error && (
-        <video
-          ref={videoRef}
-          src={post.video!}
-          poster={post.thumbnail}
-          playsInline
-          muted
-          loop
-          onLoadedData={(e) => {
-            enforceDuration(e.currentTarget);
-            setLoaded(true);
-          }}
-          onError={() => setError(true)}
-          className={`w-full h-auto object-cover transition-opacity duration-300 ${
-            loaded ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      )}
-
-      {isAudio && !error && (
-        <audio
-          ref={audioRef}
-          src={post.audio!}
-          controls
-          onLoadedData={(e) => {
-            enforceDuration(e.currentTarget);
-            setLoaded(true);
-          }}
-          onError={() => setError(true)}
-          className="w-full mt-2"
-        />
-      )}
-    </div>
-  );
+  return null;
 }
