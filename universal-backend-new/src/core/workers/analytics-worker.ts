@@ -1,11 +1,18 @@
 // src/core/workers/analytics-worker.ts
 
-import { onEvent } from "../events/subscriber";
-import { EVENT_TYPES } from "../events/event-types";
-import { prisma } from "../../prisma"; // adjust if needed
+import { onEvent } from "../events/subscriber.js";
+import { EVENT_TYPES } from "../events/event-types.js";
+import { prisma } from "../../prisma.js"; // FIXED
 
-// Reaction analytics
-onEvent(EVENT_TYPES.REACTION_STORED, async (event) => {
+type AnalyticsEventPayload = {
+  userId: string;
+  appId: string;
+  postId: string;
+  emoji?: string;
+  timestamp: number;
+};
+
+onEvent(EVENT_TYPES.REACTION_STORED, async (event: AnalyticsEventPayload) => {
   try {
     await prisma.analyticsEvent.create({
       data: {
@@ -13,7 +20,7 @@ onEvent(EVENT_TYPES.REACTION_STORED, async (event) => {
         userId: event.userId,
         appId: event.appId,
         postId: event.postId,
-        emoji: event.emoji,
+        emoji: event.emoji ?? null,
         timestamp: new Date(event.timestamp),
       },
     });
@@ -22,8 +29,7 @@ onEvent(EVENT_TYPES.REACTION_STORED, async (event) => {
   }
 });
 
-// Impression analytics
-onEvent(EVENT_TYPES.IMPRESSION_STORED, async (event) => {
+onEvent(EVENT_TYPES.IMPRESSION_STORED, async (event: AnalyticsEventPayload) => {
   try {
     await prisma.analyticsEvent.create({
       data: {

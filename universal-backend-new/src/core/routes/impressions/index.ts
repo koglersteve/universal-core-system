@@ -1,3 +1,3 @@
 // src/core/routes/impressions/index.ts
 
-export * from "./record";
+export * from "./record.js";

@@ -1,12 +1,19 @@
 // src/core/workers/impression-sync-worker.ts
 
-import { onEvent } from "../events/subscriber";
-import { EVENT_TYPES } from "../events/event-types";
-import { prisma } from "../../prisma"; // adjust if needed
-import { getEnabledApps } from "../apps/registry";
-import { createId } from "../utils/id";
+import { onEvent } from "../events/subscriber.js";
+import { EVENT_TYPES } from "../events/event-types.js";
+import { prisma } from "../../prisma.js"; // FIXED
+import { getEnabledApps } from "../apps/registry.js";
+import { createId } from "../utils/id.js";
 
-onEvent(EVENT_TYPES.IMPRESSION_FANOUT_REQUEST, async (event) => {
+type ImpressionFanoutPayload = {
+  userId: string;
+  postId: string;
+  appId: string;
+  timestamp?: number;
+};
+
+onEvent(EVENT_TYPES.IMPRESSION_FANOUT_REQUEST, async (event: ImpressionFanoutPayload) => {
   try {
     const apps = getEnabledApps();
     const timestamp = event.timestamp ?? Date.now();
@@ -22,11 +29,6 @@ onEvent(EVENT_TYPES.IMPRESSION_FANOUT_REQUEST, async (event) => {
         },
       });
     }
-
-    // Notify analytics worker
-    // (optional but recommended)
-    // publishEvent(EVENT_TYPES.IMPRESSION_STORED, event);
-
   } catch (err) {
     console.error("Impression sync worker failed:", err);
   }

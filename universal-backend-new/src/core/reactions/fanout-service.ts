@@ -1,10 +1,10 @@
 // src/core/reactions/fanout-service.ts
 
-import { getEnabledApps } from "../apps/registry";
-import { createId } from "../utils/id";
-import { publishEvent } from "../events/publisher";
-import { EVENT_TYPES } from "../events/event-types";
-import type { LocalReactionEvent } from "./reaction-types";
+import { getEnabledApps } from "../apps/registry.js";
+import { createId } from "../utils/id.js";
+import { publishEvent } from "../events/publisher.js";
+import { EVENT_TYPES } from "../events/event-types.js";
+import type { LocalReactionEvent } from "./reaction-types.js";
 
 export async function fanOutReaction(event: LocalReactionEvent) {
   const apps = getEnabledApps();

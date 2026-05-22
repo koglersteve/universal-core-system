@@ -1,6 +1,6 @@
 // src/core/apps/registry.ts
 
-import type { AppDefinition, AppId } from "./app-types";
+import type { AppDefinition, AppId } from "./app-types.js";
 
 export const APP_REGISTRY: AppDefinition[] = [
   {

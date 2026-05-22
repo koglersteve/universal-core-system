@@ -1,20 +1,16 @@
 // src/core/workers/reaction-fanout-worker.ts
 
-import { onEvent } from "../events/subscriber";
-import { EVENT_TYPES } from "../events/event-types";
-import { fanOutReaction } from "../reactions/fanout-service";
-import { storeReaction } from "../reactions/reaction-service";
-import { publishEvent } from "../events/publisher";
+import { onEvent } from "../events/subscriber.js";
+import { EVENT_TYPES } from "../events/event-types.js";
+import { fanOutReaction } from "../reactions/fanout-service.js";
+import { storeReaction } from "../reactions/reaction-service.js";
+import { publishEvent } from "../events/publisher.js";
+import type { LocalReactionEvent } from "../reactions/reaction-types.js";
 
-onEvent(EVENT_TYPES.REACTION_FANOUT_REQUEST, async (event) => {
+onEvent(EVENT_TYPES.REACTION_FANOUT_REQUEST, async (event: LocalReactionEvent) => {
   try {
-    // 1. Store the original reaction
     await storeReaction(event);
-
-    // 2. Fan out to all apps
     await fanOutReaction(event);
-
-    // 3. Notify analytics worker
     publishEvent(EVENT_TYPES.REACTION_STORED, event);
   } catch (err) {
     console.error("Reaction fanout worker failed:", err);

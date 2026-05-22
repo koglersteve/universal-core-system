@@ -1,9 +1,9 @@
 // src/core/routes/reactions/post-reaction.ts
 
 import type { Request, Response } from "express";
-import { createId } from "../../utils/id";
-import { publishEvent } from "../../events/publisher";
-import { EVENT_TYPES } from "../../events/event-types";
+import { createId } from "../../utils/id.js";
+import { publishEvent } from "../../events/publisher.js";
+import { EVENT_TYPES } from "../../events/event-types.js";
 
 export async function postReaction(req: Request, res: Response) {
   try {
@@ -22,7 +22,6 @@ export async function postReaction(req: Request, res: Response) {
       timestamp: Date.now(),
     };
 
-    // Kick off the backend fanout pipeline
     publishEvent(EVENT_TYPES.REACTION_FANOUT_REQUEST, event);
 
     return res.json({ success: true });

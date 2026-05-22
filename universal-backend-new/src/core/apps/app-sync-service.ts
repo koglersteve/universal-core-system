@@ -1,14 +1,14 @@
 // src/core/apps/app-sync-service.ts
 
-import { getEnabledApps, getOtherApps } from "./registry";
+import { getEnabledApps, getOtherApps } from "./registry.js";
 import type {
   AppId,
   CrossAppReactionInput,
   CrossAppImpressionInput,
-} from "./app-types";
-import { createId } from "../utils/id";
-import { publishEvent } from "../events/publisher";
-import type { LocalReactionEvent } from "../reactions/reaction-types";
+} from "./app-types.js";
+import { createId } from "../utils/id.js";
+import { publishEvent } from "../events/publisher.js";
+import type { LocalReactionEvent } from "../reactions/reaction-types.js";
 
 const REACTION_FANOUT_EVENT = "reaction.fanout.request" as const;
 const IMPRESSION_FANOUT_EVENT = "impression.fanout.request" as const;
