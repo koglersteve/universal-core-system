@@ -1,13 +1,11 @@
-export type PostType = "text" | "image" | "meme" | "video" | "audio";
-
-export interface Post {
+export type Post = {
   id: string;
-  type: PostType;
-  text?: string;
-  imageUrl?: string;
-  videoUrl?: string;
-  audioUrl?: string;
-  thumbnailUrl?: string;
-  createdAt: string | number;
-}
+  type: string;
+  text?: string | null;
+  mediaUrl?: string | null;
+  score: number;
+  createdAt: string;
+  creatorId: string;
+  app?: string | null;
+};
 
