@@ -7,9 +7,9 @@ export default function RootPage() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/feed`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/core/feed`)
       .then((res) => res.json())
-      .then(setItems);
+      .then((data) => setItems(data.posts || []));
   }, []);
 
   return <Feed items={items} />;
