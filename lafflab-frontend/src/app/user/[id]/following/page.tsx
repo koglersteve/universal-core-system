@@ -1,67 +1,29 @@
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/lib/server/user";
-import FollowButton from "@/components/FollowButton";
-import Link from "next/link";
+"use client";
 
-interface FollowingPageProps {
-  params: { id: string };
-}
+import { useEffect, useState } from "react";
 
-export default async function FollowingPage({ params }: FollowingPageProps) {
-  const profileId = params.id;
+export default function UserFollowingPage({ params }: any) {
+  const { id } = params;
+  const [following, setFollowing] = useState([]);
 
-  const [following, current] = await Promise.all([
-    prisma.follow.findMany({
-      where: { followerId: profileId },
-      include: {
-        following: {
-          select: {
-            id: true,
-            username: true,
-            screenName: true,
-            avatarUrl: true,
-          },
-        },
-      },
-    }),
-    getUser(),
-  ]);
-
-  const user = current.user;
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}/following`)
+      .then((res) => res.json())
+      .then(setFollowing);
+  }, [id]);
 
   return (
-    <div className="p-6 text-white space-y-4">
-      <h1 className="text-xl font-semibold">Following</h1>
+    <div className="p-4 space-y-4 text-white">
+      <h1 className="text-2xl font-semibold">Following</h1>
 
-      {following.length === 0 && (
-        <div className="text-white/60">Not following anyone yet.</div>
-      )}
-
-      {following.map((f) => {
-        const u = f.following;
-
-        return (
-          <div
-            key={u.id}
-            className="flex items-center justify-between py-3 border-b border-white/10"
-          >
-            <Link href={`/user/${u.id}`} className="flex items-center gap-3">
-              <img
-                src={u.avatarUrl || "/default-avatar.png"}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div>
-                <div className="font-medium">{u.screenName}</div>
-                <div className="text-sm text-white/60">@{u.username}</div>
-              </div>
-            </Link>
-
-            {user && user.id !== u.id && (
-              <FollowButton userId={u.id} initialFollowing={true} />
-            )}
-          </div>
-        );
-      })}
+      {following.map((f: any) => (
+        <div
+          key={f.id}
+          className="p-4 rounded-lg bg-white/5 border border-white/10"
+        >
+          {f.following?.username}
+        </div>
+      ))}
     </div>
   );
 }

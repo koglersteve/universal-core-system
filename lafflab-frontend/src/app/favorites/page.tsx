@@ -1,40 +1,28 @@
-import { prisma } from "@/lib/prisma";
-import { getUser } from "@/lib/server/user";
-import FavoritesList from "@/components/favorites/FavoritesList";
+"use client";
 
-export default async function FavoritesPage() {
-  const { user } = await getUser();
+import { useEffect, useState } from "react";
 
-  if (!user) {
-    return (
-      <div className="p-4 text-white/60">
-        You must be logged in to view favorites.
-      </div>
-    );
-  }
+export default function FavoritesPage() {
+  const [items, setItems] = useState([]);
 
-  const items = await prisma.favorite.findMany({
-    where: { userId: user.id },
-    include: {
-      post: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              username: true,
-              screenName: true,
-              avatarUrl: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/favorites`)
+      .then((res) => res.json())
+      .then(setItems);
+  }, []);
 
   return (
-    <div className="p-4">
-      <FavoritesList items={items.map((f) => f.post)} />
+    <div className="p-4 space-y-4 text-white">
+      <h1 className="text-2xl font-semibold">Favorites</h1>
+
+      {items.map((f: any) => (
+        <div
+          key={f.id}
+          className="p-4 rounded-lg bg-white/5 border border-white/10"
+        >
+          {f.post?.text}
+        </div>
+      ))}
     </div>
   );
 }

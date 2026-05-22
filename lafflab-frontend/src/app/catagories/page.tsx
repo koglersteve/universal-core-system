@@ -1,26 +1,28 @@
-import CategoryCard from "@components/CategoryCard";
-import EmptyState from "@components/ui/EmptyState";
-import ErrorState from "@components/ui/ErrorState";
-import { prisma } from "@/lib/prisma";
+"use client";
 
-export default async function CategoriesPage() {
-  try {
-    const categories = await prisma.category.findMany({
-      orderBy: { name: "asc" },
-    });
+import { useEffect, useState } from "react";
 
-    if (!categories || categories.length === 0) {
-      return <EmptyState title="No Categories" message="Nothing to show yet." />;
-    }
+export default function CategoriesPage() {
+  const [categories, setCategories] = useState([]);
 
-    return (
-      <div className="grid grid-cols-2 gap-4 p-4">
-        {categories.map((cat) => (
-          <CategoryCard key={cat.id} category={cat} />
-        ))}
-      </div>
-    );
-  } catch {
-    return <ErrorState message="Failed to load categories." />;
-  }
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/categories`)
+      .then((res) => res.json())
+      .then(setCategories);
+  }, []);
+
+  return (
+    <div className="p-4 space-y-4 text-white">
+      <h1 className="text-2xl font-semibold">Categories</h1>
+
+      {categories.map((c: any) => (
+        <div
+          key={c.id}
+          className="p-4 rounded-lg bg-white/5 border border-white/10"
+        >
+          {c.name}
+        </div>
+      ))}
+    </div>
+  );
 }

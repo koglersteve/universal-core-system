@@ -1,30 +1,28 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import { getUser } from "@/lib/server/user";
-import { prisma } from "@/lib/prisma";
-import FeedList from "@/components/FeedList";
+import { useEffect, useState } from "react";
 
-export default async function ProfilePostsPage() {
-  const { user } = await getUser();
+export default function MyPostsPage() {
+  const [posts, setPosts] = useState([]);
 
-  if (!user) {
-    return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">My Posts</div>
-        <div className="text-gray-300">You are not logged in.</div>
-      </div>
-    );
-  }
-
-  const posts = await prisma.post.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: "desc" },
-  });
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/posts/me`)
+      .then((res) => res.json())
+      .then(setPosts);
+  }, []);
 
   return (
-    <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">My Posts</div>
-      <FeedList posts={posts} />
+    <div className="p-4 space-y-4 text-white">
+      <h1 className="text-2xl font-semibold">My Posts</h1>
+
+      {posts.map((p: any) => (
+        <div
+          key={p.id}
+          className="p-4 rounded-lg bg-white/5 border border-white/10"
+        >
+          {p.text}
+        </div>
+      ))}
     </div>
   );
 }
