@@ -2,27 +2,27 @@
 
 import { create } from "zustand";
 
-type Tone = "neutral" | "playful" | "urgent" | "celebratory";
-
 export type NotificationItem = {
   id: string;
-  title: string;
-  body: string;
-  url?: string;
-  tone: Tone;
-  read?: boolean;
+  message: string;
+  read: boolean;
+  createdAt: string;
 };
 
-type NotificationState = {
+type NotificationStore = {
   inbox: NotificationItem[];
-  setInbox: (items: NotificationItem[]) => void;
+  add: (n: NotificationItem) => void;
   markRead: (id: string) => void;
+  clear: () => void;
 };
 
-export const useNotificationStore = create<NotificationState>((set) => ({
+export const useNotificationStore = create<NotificationStore>((set) => ({
   inbox: [],
 
-  setInbox: (items) => set({ inbox: items }),
+  add: (n) =>
+    set((state) => ({
+      inbox: [n, ...state.inbox],
+    })),
 
   markRead: (id) =>
     set((state) => ({
@@ -30,4 +30,6 @@ export const useNotificationStore = create<NotificationState>((set) => ({
         n.id === id ? { ...n, read: true } : n
       ),
     })),
+
+  clear: () => set({ inbox: [] }),
 }));
