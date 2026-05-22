@@ -2,37 +2,26 @@
 
 import Link from "next/link";
 
-export default function SideMenuClient({ open, onClose }) {
+export default function SideMenuClient(props: any) {
   return (
-    <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/70 z-40"
-          onClick={onClose}
-        />
-      )}
+    <nav className="space-y-2 p-4 text-white">
+      <Link href="/" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+        Home
+      </Link>
 
-      <div
-        className={`fixed top-0 left-0 h-full w-64 bg-black text-white z-50 transform transition-transform ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="p-6 text-xl font-semibold">Menu</div>
+      <Link href="/explore" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+        Explore
+      </Link>
 
-        <nav className="space-y-1 px-4">
-          <Link href="/" className="block px-3 py-2 hover:bg-white/10 rounded-md">
-            Home
-          </Link>
+      <Link href="/favorites" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+        Favorites
+      </Link>
 
-          <Link href="/feed" className="block px-3 py-2 hover:bg-white/10 rounded-md">
-            Feed
-          </Link>
+      <Link href="/profile/posts" className="block px-3 py-2 hover:bg-white/10 rounded-md">
+        My Posts
+      </Link>
 
-          <Link href="/user/me" className="block px-3 py-2 hover:bg-white/10 rounded-md">
-            Profile
-          </Link>
-        </nav>
-      </div>
-    </>
+      {/* Add any other menu items you want */}
+    </nav>
   );
 }
