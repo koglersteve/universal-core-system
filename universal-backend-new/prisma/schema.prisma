@@ -12,8 +12,8 @@ model User {
   email      String   @unique
   screenName String
   avatarUrl  String?
- password String
- createdAt  DateTime @default(now())
+  password   String
+  createdAt  DateTime @default(now())
 
   posts               Post[]
   lafflabItems        LAFFItem[]
@@ -131,4 +131,37 @@ model DramaView {
 
   user User      @relation(fields: [userId], references: [id])
   clip DramaClip @relation(fields: [clipId], references: [id])
+}
+
+//
+// ─────────────────────────────────────────────────────────────
+//   EMOTIONAL OS BACKEND MODELS (NEW)
+// ─────────────────────────────────────────────────────────────
+//
+
+model Reaction {
+  id        String   @id @default(cuid())
+  userId    String
+  appId     String
+  postId    String
+  emoji     String
+  timestamp DateTime @default(now())
+}
+
+model Impression {
+  id        String   @id @default(cuid())
+  userId    String
+  appId     String
+  postId    String
+  timestamp DateTime @default(now())
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  type      String
+  userId    String
+  appId     String
+  postId    String
+  emoji     String?
+  timestamp DateTime @default(now())
 }
