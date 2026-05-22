@@ -1,25 +1,37 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 
-type CreatorDashboardCardProps = {
-  title: string;
-  description: string;
-  href: string;
-};
+export default function CreatorDraftForm({
+  onSubmit,
+}: {
+  onSubmit: (data: { text: string }) => void;
+}) {
+  const [text, setText] = useState("");
 
-export default function CreatorDashboardCard({
-  title,
-  description,
-  href,
-}: CreatorDashboardCardProps) {
   return (
-    <Link
-      href={href}
-      className="block p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition"
+    <form
+      className="space-y-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit({ text });
+        setText("");
+      }}
     >
-      <h3 className="text-lg font-semibold text-white">{title}</h3>
-      <p className="text-sm text-white/60 mt-1">{description}</p>
-    </Link>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Write your draft..."
+        className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white"
+        rows={4}
+      />
+
+      <button
+        type="submit"
+        className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition"
+      >
+        Save Draft
+      </button>
+    </form>
   );
 }
