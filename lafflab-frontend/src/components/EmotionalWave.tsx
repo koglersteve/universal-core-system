@@ -16,14 +16,20 @@ export default function EmotionalWave() {
     const windowMs = 10_000;
 
     const filtered = events.filter((e) => {
-      const ts = new Date(e.createdAt).getTime();
+      const ts =
+        typeof e.timestamp === "number"
+          ? e.timestamp
+          : new Date(e.timestamp as any).getTime();
       return now - ts <= windowMs;
     });
 
     const bucketMap: Record<number, number> = {};
 
     for (const e of filtered) {
-      const ts = new Date(e.createdAt).getTime();
+      const ts =
+        typeof e.timestamp === "number"
+          ? e.timestamp
+          : new Date(e.timestamp as any).getTime();
       const bucket = Math.floor(ts / 1000);
       bucketMap[bucket] = (bucketMap[bucket] ?? 0) + 1;
     }
@@ -37,7 +43,10 @@ export default function EmotionalWave() {
   }, [events]);
 
   return (
-    <div ref={ref} className="w-full h-24 bg-white/5 border border-white/10 rounded-lg">
+    <div
+      ref={ref}
+      className="w-full h-24 bg-white/5 border border-white/10 rounded-lg"
+    >
       {buckets.length === 0 && (
         <div className="text-center text-white/50 p-4">No activity</div>
       )}
