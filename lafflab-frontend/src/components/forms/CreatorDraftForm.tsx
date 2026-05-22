@@ -1,46 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { useToast } from "@/components/ui/ToastProvider";
+import Link from "next/link";
 
-export default function CreatorDraftForm({
-  onSubmit,
-}: {
-  onSubmit?: (data: { text: string }) => Promise<void> | void;
-}) {
-  const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
-  const toast = useToast();
+type CreatorDashboardCardProps = {
+  title: string;
+  description: string;
+  href: string;
+};
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      await onSubmit?.({ text });
-      toast("Draft saved.", "success");
-    } catch {
-      toast("Something went wrong.", "error");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export default function CreatorDashboardCard({
+  title,
+  description,
+  href,
+}: CreatorDashboardCardProps) {
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-white">
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        className="w-full p-3 rounded bg-white/10 border border-white/20"
-        rows={4}
-      />
-
-      <button
-        disabled={loading}
-        className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
-      >
-        {loading ? "Saving…" : "Save Draft"}
-      </button>
-    </form>
+    <Link
+      href={href}
+      className="block p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition"
+    >
+      <h3 className="text-lg font-semibold text-white">{title}</h3>
+      <p className="text-sm text-white/60 mt-1">{description}</p>
+    </Link>
   );
 }
