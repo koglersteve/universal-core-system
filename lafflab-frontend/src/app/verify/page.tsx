@@ -1,35 +1,27 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import { getUserIdentity } from "@/lib/server/user";
+import { useEffect, useState } from "react";
 
-export default async function Component() {
-  const user = await getUserIdentity();
+export default function VerifyPage() {
+  const [status, setStatus] = useState(null);
 
-  if (!user) {
-    return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Verification</div>
-        <div className="text-gray-300">You must be logged in.</div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/verify/status`)
+      .then((res) => res.json())
+      .then(setStatus);
+  }, []);
 
   return (
-    <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">Verification</div>
+    <div className="p-6 text-white space-y-4">
+      <h1 className="text-2xl font-semibold">Verification</h1>
 
-      <div className="text-gray-300">
-        User ID: {user.id}
-      </div>
-
-      <div className="mt-4">
-        <a
-          href="/verify/upload"
-          className="px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Start Verification
-        </a>
-      </div>
+      {status ? (
+        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+          <p>Status: {status.state}</p>
+        </div>
+      ) : (
+        <p className="text-white/60">Loading…</p>
+      )}
     </div>
   );
 }

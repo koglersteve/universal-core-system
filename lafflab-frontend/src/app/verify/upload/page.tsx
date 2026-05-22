@@ -1,34 +1,51 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import { getUserIdentity } from "@/lib/server/user";
+import { useState } from "react";
 
-export default async function Component() {
-  const user = await getUserIdentity();
+export default function VerifyUploadPage() {
+  const [file, setFile] = useState<File | null>(null);
+  const [result, setResult] = useState(null);
 
-  if (!user) {
-    return (
-      <div className="p-6 text-white">
-        <div className="text-xl font-semibold mb-4">Upload Verification</div>
-        <div className="text-gray-300">You must be logged in.</div>
-      </div>
+  async function handleUpload() {
+    if (!file) return;
+
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/verify/upload`,
+      {
+        method: "POST",
+        body: form,
+      }
     );
+
+    const data = await res.json();
+    setResult(data);
   }
 
   return (
-    <div className="p-6 text-white">
-      <div className="text-xl font-semibold mb-4">Upload Verification</div>
+    <div className="p-6 text-white space-y-4">
+      <h1 className="text-2xl font-semibold">Upload Verification</h1>
 
-      <form
-        action="/verify/upload/verify"
-        method="get"
-        className="space-y-4"
+      <input
+        type="file"
+        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        className="text-white"
+      />
+
+      <button
+        onClick={handleUpload}
+        className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 hover:bg-white/20 transition"
       >
-        <button
-          className="px-4 py-3 bg-white/10 rounded-md hover:bg-white/20 transition"
-        >
-          Continue
-        </button>
-      </form>
+        Upload
+      </button>
+
+      {result && (
+        <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+          <p>Upload Result: {result.status}</p>
+        </div>
+      )}
     </div>
   );
 }
