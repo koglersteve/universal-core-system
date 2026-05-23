@@ -1,9 +1,11 @@
-// FILE: src/lib/server/feed.ts
+import { LaffLabApi } from "@/lib/api";
 
 export async function getFeed() {
-  return [];
+  const data = await LaffLabApi.fetchFeed();
+  return data.posts ?? [];
 }
 
 export async function getForYouFeed() {
-  return [];
+  const data = await LaffLabApi.fetchFeed({ app: "lafflab" });
+  return data.posts ?? [];
 }
