@@ -3,22 +3,31 @@ import { JokeViewer } from "./JokeViewer";
 import { FavoritesScreen } from "./FavoritesScreen";
 import { HistoryScreen } from "./HistoryScreen";
 import { DailyRitualScreen } from "./DailyRitualScreen";
-import { CoupleModeScreen } from "./CoupleModeScreen";
-import { PremiumUpsell } from "./PremiumUpsell";
+import { ReactionBar } from "./ReactionBar";
 
 export const LaffLabHome: React.FC = () => {
   const [screen, setScreen] = useState<
-    "home" | "favorites" | "history" | "ritual" | "couples" | "premium"
+    "home" | "favorites" | "history" | "ritual"
   >("home");
 
-  const [isPremium, setIsPremium] = useState(false);
+  const [feed, setFeed] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Load social feed
   useEffect(() => {
-    fetch("/lafflab/premium")
-      .then(r => r.json())
-      .then(res => setIsPremium(res.premium));
-  }, []);
+    if (screen !== "home") return;
 
+    setLoading(true);
+
+    fetch("/core/feed")
+      .then(r => r.json())
+      .then(res => {
+        setFeed(res.posts || []);
+        setLoading(false);
+      });
+  }, [screen]);
+
+  // Secondary screens
   if (screen === "favorites") {
     return <FavoritesScreen onClose={() => setScreen("home")} />;
   }
@@ -31,44 +40,85 @@ export const LaffLabHome: React.FC = () => {
     return <DailyRitualScreen onClose={() => setScreen("home")} />;
   }
 
-  if (screen === "couples") {
-    if (!isPremium) return <PremiumUpsell onClose={() => setScreen("home")} />;
-    return <CoupleModeScreen onClose={() => setScreen("home")} />;
-  }
-
-  if (screen === "premium") {
-    return <PremiumUpsell onClose={() => setScreen("home")} />;
-  }
-
-  // HOME SCREEN
+  // MAIN SOCIAL HOME SCREEN
   return (
     <div style={{ padding: 16 }}>
       <h1 style={{ marginBottom: 12 }}>LAFFlab</h1>
 
-      <JokeViewer />
+      {/* FEED */}
+      {loading ? (
+        <p>Loading feed…</p>
+      ) : feed.length === 0 ? (
+        <p>No posts yet. Be the first to post!</p>
+      ) : (
+        <div>
+          {feed.map(post => (
+            <div
+              key={post.id}
+              style={{
+                border: "1px solid #ddd",
+                padding: 12,
+                borderRadius: 8,
+                marginBottom: 16,
+              }}
+            >
+              <div style={{ fontWeight: "bold", marginBottom: 4 }}>
+                {post.author.displayName} @{post.author.username}
+              </div>
 
+              <div style={{ marginBottom: 8 }}>{post.text}</div>
+
+              {post.mediaUrl && (
+                <div style={{ marginBottom: 8 }}>
+                  {post.type === "image" && (
+                    <img
+                      src={post.mediaUrl}
+                      style={{ width: "100%", borderRadius: 8 }}
+                    />
+                  )}
+
+                  {post.type === "video" && (
+                    <video
+                      src={post.mediaUrl}
+                      controls
+                      style={{ width: "100%", borderRadius: 8 }}
+                    />
+                  )}
+
+                  {post.type === "audio" && (
+                    <audio src={post.mediaUrl} controls />
+                  )}
+                </div>
+              )}
+
+              <ReactionBar post={post} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* NAVIGATION */}
       <div style={{ marginTop: 24 }}>
-        <button onClick={() => setScreen("favorites")} style={{ display: "block", marginBottom: 8 }}>
+        <button
+          onClick={() => setScreen("favorites")}
+          style={{ display: "block", marginBottom: 8 }}
+        >
           ⭐ Favorites
         </button>
 
-        <button onClick={() => setScreen("history")} style={{ display: "block", marginBottom: 8 }}>
+        <button
+          onClick={() => setScreen("history")}
+          style={{ display: "block", marginBottom: 8 }}
+        >
           📜 History
         </button>
 
-        <button onClick={() => setScreen("ritual")} style={{ display: "block", marginBottom: 8 }}>
+        <button
+          onClick={() => setScreen("ritual")}
+          style={{ display: "block", marginBottom: 8 }}
+        >
           🔥 Daily Laugh Ritual
         </button>
-
-        <button onClick={() => setScreen("couples")} style={{ display: "block", marginBottom: 8 }}>
-          ❤️ Couples Mode
-        </button>
-
-        {!isPremium && (
-          <button onClick={() => setScreen("premium")} style={{ display: "block", marginTop: 12 }}>
-            💎 Go Premium
-          </button>
-        )}
       </div>
     </div>
   );
