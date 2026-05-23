@@ -1,28 +1,15 @@
-"use client";
+import { LaffLabApi } from "@/lib/LaffLabApi";
+import UserProfile from "@/components/user/UserProfile";
 
-import { useEffect, useState } from "react";
+const USERNAME = "me"; // TODO: replace with real identity
 
-export default function MyPostsPage() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/posts/me`)
-      .then((res) => res.json())
-      .then(setPosts);
-  }, []);
+export default async function ProfilePostsPage() {
+  const profile = await LaffLabApi.getProfile(USERNAME);
+  const posts = await LaffLabApi.getProfilePosts(USERNAME);
 
   return (
-    <div className="p-4 space-y-4 text-white">
-      <h1 className="text-2xl font-semibold">My Posts</h1>
-
-      {posts.map((p: any) => (
-        <div
-          key={p.id}
-          className="p-4 rounded-lg bg-white/5 border border-white/10"
-        >
-          {p.text}
-        </div>
-      ))}
+    <div className="max-w-xl mx-auto">
+      <UserProfile profile={profile} posts={posts} />
     </div>
   );
 }

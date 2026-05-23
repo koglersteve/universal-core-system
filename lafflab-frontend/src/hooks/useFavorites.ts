@@ -1,11 +1,15 @@
-"use client";
-
-import { useFavoritesStore } from "@/store/useFavoritesStore";
+import { useEffect, useState } from "react";
+import { LaffLabApi } from "@/lib/LaffLabApi";
 
 export function useFavorites() {
-  const favorites = useFavoritesStore((s) => s.favorites);
-  const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
-  const isFavorite = useFavoritesStore((s) => s.isFavorite);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  return { favorites, toggleFavorite, isFavorite };
+  useEffect(() => {
+    LaffLabApi.getFavorites()
+      .then(setFavorites)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { favorites, loading };
 }

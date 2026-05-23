@@ -1,8 +1,15 @@
-"use client";
+import { LaffLabApi } from "@/lib/LaffLabApi";
+import PostView from "@/components/post/PostView";
 
-import Feed from "@/components/feed/Feed";
+type Props = { params: { id: string } };
 
-export default function UserPostsPage({ posts = [] }: { posts?: any[] }) {
-  return <Feed items={posts} />;
+export default async function PostPage({ params }: Props) {
+  const post = await LaffLabApi.getPost(params.id);
+
+  return (
+    <div className="max-w-xl mx-auto">
+      <PostView post={post} />
+    </div>
+  );
 }
 
