@@ -45,7 +45,6 @@ app.get("/", (c) => {
   });
 });
 
-// Health
 app.get("/core/health", (c) => {
   return c.json({
     status: "ok",
@@ -54,7 +53,6 @@ app.get("/core/health", (c) => {
   });
 });
 
-// Feed: main app feed
 app.get("/core/feed", (c) => {
   return c.json({
     posts,
@@ -63,7 +61,6 @@ app.get("/core/feed", (c) => {
   });
 });
 
-// Posts: all posts
 app.get("/core/posts", (c) => {
   return c.json({
     posts,
@@ -71,7 +68,6 @@ app.get("/core/posts", (c) => {
   });
 });
 
-// Single post by id
 app.get("/core/posts/:id", (c) => {
   const id = c.req.param("id");
   const post = posts.find((p) => p.id === id);
@@ -83,7 +79,6 @@ app.get("/core/posts/:id", (c) => {
   return c.json({ post });
 });
 
-// Favorites
 app.get("/core/favorites", (c) => {
   const favorites = posts.filter((p) => p.isFavorite);
   return c.json({
@@ -92,7 +87,6 @@ app.get("/core/favorites", (c) => {
   });
 });
 
-// Explore: simple “explore” = all posts sorted by score desc
 app.get("/core/explore", (c) => {
   const sorted = [...posts].sort((a, b) => (b.score || 0) - (a.score || 0));
   return c.json({
@@ -101,7 +95,6 @@ app.get("/core/explore", (c) => {
   });
 });
 
-// Trending: top N by score
 app.get("/core/trending", (c) => {
   const sorted = [...posts]
     .sort((a, b) => (b.score || 0) - (a.score || 0))
@@ -113,7 +106,6 @@ app.get("/core/trending", (c) => {
   });
 });
 
-// Search: by text or tags
 app.get("/core/search", (c) => {
   const q = (c.req.query("q") || "").toLowerCase().trim();
 
@@ -138,7 +130,6 @@ app.get("/core/search", (c) => {
   });
 });
 
-// Profile: simple stub
 app.get("/core/profile", (c) => {
   return c.json({
     message: "Profile API online",
@@ -149,6 +140,33 @@ app.get("/core/profile", (c) => {
       favoritesCount: posts.filter((p) => p.isFavorite).length,
       postsCount: posts.length,
     },
+  });
+});
+
+// NEW: Profile by username
+app.get("/core/profile/:username", (c) => {
+  const username = c.req.param("username");
+
+  return c.json({
+    id: `user-${username}`,
+    username,
+    avatarUrl: "https://i.pravatar.cc/150?img=3",
+    bio: `This is the profile for ${username}.`,
+    createdAt: Date.now(),
+  });
+});
+
+// NEW: Profile posts by username
+app.get("/core/profile/:username/posts", (c) => {
+  const username = c.req.param("username");
+
+  const userPosts = posts.filter((p) =>
+    p.tags.some((t) => t.toLowerCase().includes(username.toLowerCase()))
+  );
+
+  return c.json({
+    posts: userPosts,
+    count: userPosts.length,
   });
 });
 
