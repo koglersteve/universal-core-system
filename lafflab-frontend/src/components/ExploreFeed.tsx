@@ -1,20 +1,23 @@
-"use client";
+import PostCard from "@/components/PostCard";
 
-export default function ExploreFeed({ items = [] }: { items?: any[] }) {
-  if (!items.length) {
-    return <p className="text-white/60">No posts to explore yet.</p>;
+type Props = {
+  posts: any[];
+};
+
+export default function ExploreFeed({ posts }: Props) {
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="py-8 text-center text-sm text-neutral-500">
+        No explore content yet.
+      </div>
+    );
   }
 
   return (
-    <ul className="space-y-3">
-      {items.map((item) => (
-        <li
-          key={item.id}
-          className="p-4 bg-white/5 rounded-lg border border-white/10 text-white"
-        >
-          {item.title || "Untitled"}
-        </li>
+    <div className="space-y-4">
+      {posts.map((post: any) => (
+        <PostCard key={post.id} post={post} />
       ))}
-    </ul>
+    </div>
   );
 }

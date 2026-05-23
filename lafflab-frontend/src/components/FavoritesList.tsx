@@ -1,30 +1,22 @@
-"use client";
+import PostCard from "@/components/PostCard";
 
-import { useFavoritesStore } from "@/store/useFavoritesStore";
-
-interface FavoritesListProps {
+type Props = {
   posts: any[];
-}
+};
 
-export default function FavoritesList({ posts }: FavoritesListProps) {
-  const { favorites } = useFavoritesStore();
-
-  const favoritePosts = posts.filter((post) => favorites.has(post.id));
-
-  if (!favoritePosts.length) {
-    return <p className="text-white/60">No favorites yet.</p>;
+export default function FavoritesList({ posts }: Props) {
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="py-8 text-center text-sm text-neutral-500">
+        You haven’t favorited anything yet.
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      {favoritePosts.map((post) => (
-        <div
-          key={post.id}
-          className="p-4 rounded bg-white/10 border border-white/20 text-white"
-        >
-          <p className="font-semibold">{post.title}</p>
-          <p className="text-white/60 text-sm mt-1">{post.content}</p>
-        </div>
+      {posts.map((post: any) => (
+        <PostCard key={post.id} post={post} />
       ))}
     </div>
   );

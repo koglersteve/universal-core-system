@@ -1,24 +1,23 @@
-"use client";
+import PostCard from "@/components/PostCard";
 
-type TrendingListProps = {
-  items: any[];
+type Props = {
+  posts: any[];
 };
 
-export default function TrendingList({ items }: TrendingListProps) {
-  if (!items.length) {
-    return <p className="text-white/60">No trending posts right now.</p>;
+export default function TrendingList({ posts }: Props) {
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="py-8 text-center text-sm text-neutral-500">
+        No trending posts right now.
+      </div>
+    );
   }
 
   return (
-    <ul className="space-y-3 text-white">
-      {items.map((item) => (
-        <li
-          key={item.id}
-          className="p-4 rounded-lg bg-white/5 border border-white/10"
-        >
-          {typeof item === "string" ? item : item.title || "Untitled"}
-        </li>
+    <div className="space-y-4">
+      {posts.map((post: any) => (
+        <PostCard key={post.id} post={post} />
       ))}
-    </ul>
+    </div>
   );
 }

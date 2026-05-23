@@ -1,17 +1,24 @@
-"use client";
+import PostCard from "@/components/PostCard";
 
-import PostCard from "./PostCard";
+type Props = {
+  posts: any[];
+};
 
-export default function FeedList({ posts }: { posts: any[] }) {
+export default function FeedList({ posts }: Props) {
   if (!posts || posts.length === 0) {
-    return <div className="text-gray-400 p-6">No posts available.</div>;
+    return (
+      <div className="py-8 text-center text-sm text-neutral-500">
+        No posts in your feed yet.
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
+      {posts.map((post: any) => (
         <PostCard key={post.id} post={post} />
       ))}
     </div>
   );
 }
+

@@ -1,36 +1,22 @@
-"use client";
+import PostCard from "@/components/PostCard";
 
-interface FavoritesListProps {
-  items: Array<{
-    id: string;
-    title?: string;
-    content?: string;
-    [key: string]: any;
-  }>;
-}
+type Props = {
+  posts: any[];
+};
 
-export default function FavoritesList({ items }: FavoritesListProps) {
-  if (!items || items.length === 0) {
-    return <p className="text-white/60">No favorites yet.</p>;
+export default function FavoritesList({ posts }: Props) {
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="py-8 text-center text-sm text-neutral-500">
+        You haven’t favorited anything yet.
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      {items.map((item) => (
-        <div
-          key={item.id}
-          className="p-4 rounded-lg bg-white/10 border border-white/20 text-white"
-        >
-          <div className="font-semibold text-lg">
-            {item.title || "Untitled"}
-          </div>
-
-          {item.content && (
-            <p className="text-white/60 mt-1 text-sm line-clamp-3">
-              {item.content}
-            </p>
-          )}
-        </div>
+      {posts.map((post: any) => (
+        <PostCard key={post.id} post={post} />
       ))}
     </div>
   );

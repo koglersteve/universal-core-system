@@ -1,20 +1,23 @@
-"use client";
+import PostCard from "@/components/PostCard";
 
-export default function SearchResults({ results = [] }: { results?: any[] }) {
-  if (!results.length) {
-    return <p className="text-white/60">No results found.</p>;
+type Props = {
+  results: any[];
+};
+
+export default function SearchResults({ results }: Props) {
+  if (!results || results.length === 0) {
+    return (
+      <div className="py-8 text-center text-sm text-neutral-500">
+        No results found.
+      </div>
+    );
   }
 
   return (
-    <ul className="space-y-3 text-white">
-      {results.map((item) => (
-        <li
-          key={item.id}
-          className="p-4 bg-white/5 border border-white/10 rounded-lg"
-        >
-          {item.title || item.name || item.label || "Result"}
-        </li>
+    <div className="space-y-4">
+      {results.map((post: any) => (
+        <PostCard key={post.id} post={post} />
       ))}
-    </ul>
+    </div>
   );
 }
