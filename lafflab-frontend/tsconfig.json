@@ -15,7 +15,6 @@
     "incremental": true,
     "baseUrl": ".",
     "types": ["node"],
-
     "paths": {
       "@/*": ["src/*"],
       "@lib/*": ["src/lib/*"],
@@ -26,14 +25,10 @@
       "@types/*": ["src/types/*"],
       "@store/*": ["src/store/*"],
       "@components/*": ["src/components/*"],
-
-      // PLUGIN UI IMPORTS (IMPORTANT)
-      "@/plugins/*": ["../universal-backend-new/plugins/*"]
+      "@/plugins/*": ["src/plugins/*"]
     },
-
     "plugins": [{ "name": "next" }]
   },
-
   "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

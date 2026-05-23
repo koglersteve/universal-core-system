@@ -7,14 +7,11 @@ const __dirname = path.dirname(__filename);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    typedRoutes: false,
+    typedRoutes: false
   },
-
   webpack: (config) => {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-
-      // FRONTEND SRC
       "@": path.resolve(__dirname, "src"),
       "@components": path.resolve(__dirname, "src/components"),
       "@personalization": path.resolve(__dirname, "src/personalization"),
@@ -22,16 +19,10 @@ const nextConfig = {
       "@core": path.resolve(__dirname, "src/core"),
       "@lib": path.resolve(__dirname, "src/lib"),
       "@hooks": path.resolve(__dirname, "src/hooks"),
-
-      // PLUGIN UI IMPORTS (IMPORTANT)
-      "@plugins": path.resolve(
-        __dirname,
-        "../universal-backend-new/plugins"
-      ),
+      "@plugins": path.resolve(__dirname, "src/plugins")
     };
-
     return config;
-  },
+  }
 };
 
 export default nextConfig;
