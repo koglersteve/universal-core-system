@@ -1,11 +1,11 @@
 import { LaffLabApi } from "@/lib/LaffLabApi";
 import UserProfile from "@/components/user/UserProfile";
 
-const USERNAME = "me"; // TODO: replace with real identity
-
 export default async function ProfilePostsPage() {
-  const profile = await LaffLabApi.getProfile(USERNAME);
-  const posts = await LaffLabApi.getProfilePosts(USERNAME);
+  const username = "me"; // TODO: replace with real session username
+
+  const profile = await LaffLabApi.getProfile(username);
+  const posts = await LaffLabApi.getProfilePosts(username);
 
   return (
     <div className="max-w-xl mx-auto">
