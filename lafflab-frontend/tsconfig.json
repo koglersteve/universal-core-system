@@ -25,7 +25,10 @@
       "@notifications/*": ["src/notifications/*"],
       "@types/*": ["src/types/*"],
       "@store/*": ["src/store/*"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+
+      // PLUGIN UI IMPORTS (IMPORTANT)
+      "@/plugins/*": ["../universal-backend-new/plugins/*"]
     },
 
     "plugins": [{ "name": "next" }]
@@ -34,4 +37,3 @@
   "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
-

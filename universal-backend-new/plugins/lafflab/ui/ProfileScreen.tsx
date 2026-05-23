@@ -1,174 +1,83 @@
-import React, { useEffect, useState } from "react";
-import { ReactionBar } from "./ReactionBar";
-import { FollowButton } from "./FollowButton";
+import React, { useState } from "react";
+import { CreatePost } from "./CreatePost";
+import { FeedList } from "./FeedList";
+import { FavoritesScreen } from "./FavoritesScreen";
+import { HistoryScreen } from "./HistoryScreen";
+import { DailyRitualScreen } from "./DailyRitualScreen";
+import { ProfileScreen } from "./ProfileScreen";
 
-type Props = {
-  username: string;
-  onClose?: () => void;
-};
+export const LaffLabHome: React.FC = () => {
+  const [screen, setScreen] = useState<
+    "home" | "favorites" | "history" | "ritual" | "profile"
+  >("home");
 
-type Profile = {
-  id: string;
-  username: string;
-  displayName: string;
-  avatarUrl?: string | null;
-  bio?: string | null;
-  followerCount: number;
-  followingCount: number;
-  isFollowing: boolean;
-};
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-type ProfilePost = {
-  id: string;
-  authorId: string;
-  text: string;
-  type: "text" | "image" | "video" | "audio";
-  mediaUrl?: string | null;
-  mediaDurationSeconds?: number | null;
-  createdAt: string;
-  reactions: {
-    laugh: number;
-    smile: number;
-    expressionless: number;
-    shock: number;
-    mindblown: number;
-    angry: number;
-    crickets: number;
+  const openProfile = (username: string) => {
+    setProfileUsername(username);
+    setScreen("profile");
   };
-  viewerReaction: any;
-};
 
-export const ProfileScreen: React.FC<Props> = ({ username, onClose }) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [posts, setPosts] = useState<ProfilePost[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Secondary screens
+  if (screen === "favorites") {
+    return <FavoritesScreen onClose={() => setScreen("home")} />;
+  }
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        const [profileRes, postsRes] = await Promise.all([
-          fetch(`/core/profile/${encodeURIComponent(username)}`),
-          fetch(`/core/profile/${encodeURIComponent(username)}/posts`),
-        ]);
+  if (screen === "history") {
+    return <HistoryScreen onClose={() => setScreen("home")} />;
+  }
 
-        const profileData = await profileRes.json();
-        const postsData = await postsRes.json();
+  if (screen === "ritual") {
+    return <DailyRitualScreen onClose={() => setScreen("home")} />;
+  }
 
-        if (profileRes.ok) {
-          setProfile({
-            id: profileData.profile.id,
-            username: profileData.profile.username,
-            displayName: profileData.profile.displayName,
-            avatarUrl: profileData.profile.avatarUrl,
-            bio: profileData.profile.bio,
-            followerCount: profileData.profile.followerCount,
-            followingCount: profileData.profile.followingCount,
-            isFollowing: profileData.profile.isFollowing,
-          });
-        }
+  if (screen === "profile" && profileUsername) {
+    return (
+      <ProfileScreen
+        username={profileUsername}
+        onClose={() => setScreen("home")}
+      />
+    );
+  }
 
-        if (postsRes.ok) {
-          setPosts(postsData.posts || []);
-        }
-      } catch (err) {
-        console.error("Failed to load profile", err);
-      }
-      setLoading(false);
-    };
-
-    load();
-  }, [username]);
-
-  if (loading) return <p>Loading profile…</p>;
-
-  if (!profile) return <p>Profile not found.</p>;
-
+  // MAIN HOME SCREEN
   return (
     <div style={{ padding: 16 }}>
-      <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 12 }}>
-        {onClose && (
-          <button onClick={onClose} style={{ marginRight: 8 }}>
-            ← Back
-          </button>
-        )}
+      <h1 style={{ marginBottom: 12 }}>LAFFlab</h1>
 
-        {profile.avatarUrl && (
-          <img
-            src={profile.avatarUrl}
-            alt={profile.username}
-            style={{ width: 48, height: 48, borderRadius: "50%" }}
-          />
-        )}
+      {/* CREATE POST */}
+      <CreatePost onPostCreated={() => setRefreshKey(k => k + 1)} />
 
-        <div>
-          <div style={{ fontWeight: "bold" }}>{profile.displayName}</div>
-          <div>@{profile.username}</div>
-          {profile.bio && (
-            <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>
-              {profile.bio}
-            </div>
-          )}
-        </div>
+      {/* FEED */}
+      <FeedList
+        refreshKey={refreshKey}
+        onOpenProfile={openProfile}
+      />
+
+      {/* NAVIGATION */}
+      <div style={{ marginTop: 24 }}>
+        <button
+          onClick={() => setScreen("favorites")}
+          style={{ display: "block", marginBottom: 8 }}
+        >
+          ⭐ Favorites
+        </button>
+
+        <button
+          onClick={() => setScreen("history")}
+          style={{ display: "block", marginBottom: 8 }}
+        >
+          📜 History
+        </button>
+
+        <button
+          onClick={() => setScreen("ritual")}
+          style={{ display: "block", marginBottom: 8 }}
+        >
+          🔥 Daily Laugh Ritual
+        </button>
       </div>
-
-      <div style={{ marginBottom: 12 }}>
-        <FollowButton
-          username={profile.username}
-          initialFollowing={profile.isFollowing}
-          initialFollowerCount={profile.followerCount}
-        />
-        <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>
-          Following {profile.followingCount}
-        </div>
-      </div>
-
-      <h3 style={{ marginBottom: 8 }}>Posts</h3>
-
-      {posts.length === 0 ? (
-        <p>No posts yet.</p>
-      ) : (
-        <div>
-          {posts.map(post => (
-            <div
-              key={post.id}
-              style={{
-                border: "1px solid #ddd",
-                padding: 12,
-                borderRadius: 8,
-                marginBottom: 16,
-              }}
-            >
-              <div style={{ marginBottom: 8 }}>{post.text}</div>
-
-              {post.mediaUrl && (
-                <div style={{ marginBottom: 8 }}>
-                  {post.type === "image" && (
-                    <img
-                      src={post.mediaUrl}
-                      style={{ width: "100%", borderRadius: 8 }}
-                    />
-                  )}
-
-                  {post.type === "video" && (
-                    <video
-                      src={post.mediaUrl}
-                      controls
-                      style={{ width: "100%", borderRadius: 8 }}
-                    />
-                  )}
-
-                  {post.type === "audio" && (
-                    <audio src={post.mediaUrl} controls />
-                  )}
-                </div>
-              )}
-
-              <ReactionBar post={post as any} />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

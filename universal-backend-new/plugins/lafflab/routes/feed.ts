@@ -1,43 +1,40 @@
 import { Hono } from "hono";
-import { prisma } from "../../../src/core/config/prisma"; // adjust if needed
+import { prisma } from "../../../src/core/config/prisma";
 
 const feed = new Hono();
 
-// GET /lafflab/feed
+// GET /lafflab/feed?page=1
 feed.get("/feed", async c => {
   const userId = c.get("userId") as string | undefined;
   if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
   const url = new URL(c.req.url);
-  const limit = Number(url.searchParams.get("limit") ?? "20");
-  const cursor = url.searchParams.get("cursor");
+  const page = Number(url.searchParams.get("page") ?? "1");
+  const PAGE_SIZE = 20;
 
+  const skip = (page - 1) * PAGE_SIZE;
+
+  // Get following list
   const following = await prisma.follow.findMany({
     where: { followerId: userId },
     select: { followingId: true },
   });
 
   const followingIds = following.map(f => f.followingId);
-  if (followingIds.length === 0) {
-    return c.json({ posts: [], nextCursor: null });
-  }
+
+  // Include self in feed
+  const visibleAuthorIds = [...followingIds, userId];
 
   const posts = await prisma.post.findMany({
-    where: { authorId: { in: followingIds } },
+    where: { authorId: { in: visibleAuthorIds } },
     include: {
       author: true,
       reactions: true,
     },
     orderBy: { createdAt: "desc" },
-    take: limit + 1,
-    cursor: cursor ? { id: cursor } : undefined,
+    skip,
+    take: PAGE_SIZE,
   });
-
-  let nextCursor: string | null = null;
-  if (posts.length > limit) {
-    nextCursor = posts[limit].id;
-    posts.pop();
-  }
 
   const formatted = posts.map(post => {
     const counts = {
@@ -77,7 +74,13 @@ feed.get("/feed", async c => {
     };
   });
 
-  return c.json({ posts: formatted, nextCursor });
+  const hasMore = posts.length === PAGE_SIZE;
+
+  return c.json({
+    posts: formatted,
+    hasMore,
+    nextPage: hasMore ? page + 1 : null,
+  });
 });
 
 export default feed;

@@ -1,17 +1,7 @@
-import "./globals.css";
-import AppShell from "@/components/AppShell";
-
-export const metadata = {
-  title: "LAFFlab",
-  description: "LAFFlab App",
-};
-
-export default function RootLayout({ children }) {
+export default function LaffLabLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <AppShell>{children}</AppShell>
-      </body>
-    </html>
+    <div style={{ width: "100%", minHeight: "100vh" }}>
+      {children}
+    </div>
   );
 }

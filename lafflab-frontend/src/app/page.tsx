@@ -1,9 +1,8 @@
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import Feed from "@/components/feed/Feed";
+"use client";
 
-export default async function HomePage() {
-  const posts = await LaffLabApi.fetchFeed();
+import { LaffLabHome } from "@plugins/lafflab/ui/LaffLabHome";
 
-  return <Feed posts={posts} />;
+export default function Page() {
+  return <LaffLabHome />;
 }
 
