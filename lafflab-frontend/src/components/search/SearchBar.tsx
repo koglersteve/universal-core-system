@@ -3,26 +3,29 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function SearchBar() {
-  const router = useRouter();
-  const [value, setValue] = useState("");
+type Props = {
+  initialQuery: string;
+};
 
-  function submit(e: React.FormEvent) {
+export default function SearchBar({ initialQuery }: Props) {
+  const router = useRouter();
+  const [value, setValue] = useState(initialQuery);
+
+  function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    router.push(`/search?q=${encodeURIComponent(value)}`);
+    const q = value.trim();
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
   }
 
   return (
-    <form onSubmit={submit} className="flex gap-2">
+    <form onSubmit={onSubmit} className="w-full">
       <input
+        type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Search..."
-        className="flex-1 p-2 rounded bg-white/10 text-white border border-white/20"
+        className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <button className="px-4 py-2 bg-white/20 rounded text-white hover:bg-white/30 transition">
-        Go
-      </button>
     </form>
   );
 }
