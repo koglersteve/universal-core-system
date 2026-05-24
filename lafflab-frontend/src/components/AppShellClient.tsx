@@ -8,20 +8,31 @@ export default function AppShellClient({ children }: { children: React.ReactNode
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <>
-      <TopBar
-        onRefresh={() => window.location.reload()}
-        onOpenMenu={() => setMenuOpen(true)}
-      />
-
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "12px 12px 32px",
+        background:
+          "linear-gradient(135deg, #0A0F1F 0%, #1A1440 35%, #4A1F6A 70%, #FF2F7A 100%)",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       <MenuDrawer
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
       />
 
-      <div style={{ marginTop: 56 }}>
-        {children}
+      <div style={{ width: "100%", maxWidth: 600 }}>
+        <TopBar
+          onRefresh={() => window.location.reload()}
+          onOpenMenu={() => setMenuOpen(true)}
+        />
+
+        <div style={{ marginTop: 16 }}>
+          {children}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
