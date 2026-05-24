@@ -8,14 +8,22 @@ type Post = {
 };
 
 export default function HistoryList({ posts }: { posts: Post[] }) {
+  if (!posts || posts.length === 0) {
+    return (
+      <div
+        style={{
+          color: "rgba(255,255,255,0.7)",
+          textAlign: "center",
+          marginTop: 24,
+        }}
+      >
+        No history yet.
+      </div>
+    );
+  }
+
   return (
     <div style={{ color: "#FFFFFF" }}>
-      {posts.length === 0 && (
-        <div style={{ opacity: 0.7, textAlign: "center", marginTop: 20 }}>
-          No history yet.
-        </div>
-      )}
-
       {posts.map(post => (
         <div
           key={post.id}
@@ -30,6 +38,7 @@ export default function HistoryList({ posts }: { posts: Post[] }) {
           <div style={{ fontSize: 12, opacity: 0.7 }}>
             {new Date(post.createdAt).toLocaleString()}
           </div>
+
           <div style={{ marginTop: 6 }}>{post.content}</div>
         </div>
       ))}

@@ -1,25 +1,37 @@
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
-import HistoryList from "@/components/history/HistoryList"; // FIXED
+import HistoryList from "@/components/history/HistoryList";
+
+export const dynamic = "force-dynamic";
 
 export default async function HistoryPage() {
-  const history = await LaffLabApi.getHistory();
+  // Fetch the authenticated user's posts (timeline)
+  const username = "steve"; // You can replace this with real auth later
+  const history = await LaffLabApi.getProfilePosts(username);
 
   return (
     <div
       style={{
         minHeight: "100vh",
         padding: "12px 12px 32px",
-        background: "#05060A",
+        background:
+          "linear-gradient(135deg, #0A0F1F 0%, #1A1440 35%, #4A1F6A 70%, #FF2F7A 100%)",
         display: "flex",
         justifyContent: "center",
       }}
     >
       <div style={{ width: "100%", maxWidth: 600 }}>
-        <SimpleHeader title="History" />
-        <div style={{ marginTop: 20 }}>
-          <HistoryList posts={history} />
-        </div>
+        <h2
+          style={{
+            color: "#FFFFFF",
+            fontSize: 22,
+            marginBottom: 16,
+            fontWeight: 600,
+          }}
+        >
+          Your History
+        </h2>
+
+        <HistoryList posts={history} />
       </div>
     </div>
   );
