@@ -14,41 +14,22 @@ type Post = {
 
 type FeedListProps = {
   initialPosts: Post[];
-  loadMore: (cursor: number) => Promise<{ items: Post[]; nextCursor: string | null } | Post[]>;
+  loadMore: () => Promise<Post[]>;
 };
 
 export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [cursor, setCursor] = useState<string | null>("2");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Skeleton loader for infinite scroll
-  const Skeleton = () => (
-    <div
-      style={{
-        marginBottom: 12,
-        padding: 12,
-        borderRadius: 16,
-        background: "rgba(255,255,255,0.05)",
-        border: "1px solid rgba(255,255,255,0.08)",
-        height: 90,
-        animation: "pulse 1.4s ease-in-out infinite",
-      }}
-    />
-  );
-
-  // Observe sentinel for infinite scroll
+  // Infinite scroll observer
   useEffect(() => {
-    if (!hasMore || loading) return;
-
     const observer = new IntersectionObserver(
       entries => {
         const [entry] = entries;
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !loading) {
           void fetchMore();
         }
       },
@@ -57,29 +38,22 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
 
     if (sentinelRef.current) observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasMore, loading]);
+  }, [loading]);
 
-  // Fetch next page using cursor
   const fetchMore = async () => {
-    if (!cursor) {
-      setHasMore(false);
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
     try {
-      const result = await loadMore(Number(cursor));
+      const newPosts = await loadMore();
 
-      const newItems = Array.isArray(result) ? result : result.items;
-      const nextCursor = Array.isArray(result) ? null : result.nextCursor;
+      // Append only posts we don't already have
+      const unique = newPosts.filter(
+        p => !posts.some(existing => existing.id === p.id)
+      );
 
-      if (!newItems || newItems.length === 0) {
-        setHasMore(false);
-      } else {
-        setPosts(prev => [...prev, ...newItems]);
-        setCursor(nextCursor);
+      if (unique.length > 0) {
+        setPosts(prev => [...prev, ...unique]);
       }
     } catch (err) {
       setError("Failed to load more posts.");
@@ -88,7 +62,6 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     }
   };
 
-  // Optimistic reaction update (LAFFlab 7-emoji taxonomy)
   const handleReaction = (postId: string, key: ReactionEmojiKey) => {
     setPosts(prev =>
       prev.map(p =>
@@ -105,63 +78,50 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     );
   };
 
-  // Render posts with ads every 8 items
-  const renderPosts = () => {
-    const items: React.ReactNode[] = [];
-
-    posts.forEach((post, index) => {
-      if (index > 0 && index % 8 === 0) {
-        items.push(
-          <div
-            key={`ad-${post.id}-${index}`}
-            style={{
-              margin: "12px 0",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <AdBanner />
-          </div>
-        );
-      }
-
-      items.push(
-        <div
-          key={post.id}
-          style={{
-            marginBottom: 12,
-            padding: 12,
-            borderRadius: 16,
-            background: "rgba(0,0,0,0.35)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            color: "#FFFFFF",
-          }}
-        >
-          {post.author?.username && (
+  return (
+    <div style={{ marginTop: 16 }}>
+      {posts.map((post, index) => (
+        <React.Fragment key={post.id}>
+          {index > 0 && index % 8 === 0 && (
             <div
               style={{
-                fontSize: 12,
-                opacity: 0.8,
-                marginBottom: 4,
+                margin: "12px 0",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
-              @{post.author.username}
+              <AdBanner />
             </div>
           )}
 
-          <div style={{ fontSize: 14, lineHeight: 1.5 }}>{post.content}</div>
+          <div
+            style={{
+              marginBottom: 12,
+              padding: 12,
+              borderRadius: 16,
+              background: "rgba(0,0,0,0.35)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#FFFFFF",
+            }}
+          >
+            {post.author?.username && (
+              <div
+                style={{
+                  fontSize: 12,
+                  opacity: 0.8,
+                  marginBottom: 4,
+                }}
+              >
+                @{post.author.username}
+              </div>
+            )}
 
-          <ReactionBar onReact={(key) => handleReaction(post.id, key)} />
-        </div>
-      );
-    });
+            <div style={{ fontSize: 14, lineHeight: 1.5 }}>{post.content}</div>
 
-    return items;
-  };
-
-  return (
-    <div style={{ marginTop: 16 }}>
-      {renderPosts()}
+            <ReactionBar onReact={key => handleReaction(post.id, key)} />
+          </div>
+        </React.Fragment>
+      ))}
 
       {error && (
         <div
@@ -177,49 +137,28 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
       )}
 
       {loading && (
-        <>
-          <Skeleton />
-          <Skeleton />
-        </>
-      )}
-
-      {hasMore && (
-        <div
-          ref={sentinelRef}
-          style={{
-            height: 40,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        />
-      )}
-
-      {!hasMore && posts.length > 0 && (
         <div
           style={{
             color: "rgba(255,255,255,0.6)",
             textAlign: "center",
-            marginTop: 20,
+            marginTop: 12,
             fontSize: 13,
           }}
         >
-          You’ve reached the end.
+          Loading…
         </div>
       )}
 
-      {!hasMore && posts.length === 0 && (
-        <div
-          style={{
-            color: "rgba(255,255,255,0.7)",
-            fontSize: 14,
-            textAlign: "center",
-            marginTop: 24,
-          }}
-        >
-          No posts yet. Be the first to laugh.
-        </div>
-      )}
+      {/* Infinite scroll sentinel */}
+      <div
+        ref={sentinelRef}
+        style={{
+          height: 40,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      />
     </div>
   );
 }
