@@ -1,5 +1,5 @@
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import HistoryList from "@/components/history/HistoryList";
+import HistoryList from "@/components/ui/lafflab/HistoryList";
 
 export const dynamic = "force-dynamic";
 

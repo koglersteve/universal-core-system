@@ -1,5 +1,5 @@
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import FavoritesList from "@/components/favorites/FavoritesList";
+import FavoritesList from "@/components/ui/lafflab/FavoritesList";
 import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
 
 export default async function FavoritesPage() {
