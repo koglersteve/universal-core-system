@@ -21,16 +21,12 @@ export default function FeedShell({ initialFeed }: { initialFeed: Post[] }) {
 
   /**
    * IMPORTANT:
-   * Your API signature is:
-   *   fetchFeed(params?: { cursor?: string; limit?: number; app?: string })
-   *
-   * So we must call it like:
-   *   fetchFeed({ cursor: "2" })
+   * Your backend fetchFeed() takes NO arguments.
+   * So we call it exactly like this:
+   *   LaffLabApi.fetchFeed()
    */
-  const loadMore = async (page: number) => {
-    return await LaffLabApi.fetchFeed({
-      cursor: String(page),
-    });
+  const loadMore = async () => {
+    return await LaffLabApi.fetchFeed();
   };
 
   return (
