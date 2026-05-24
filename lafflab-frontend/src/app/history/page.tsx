@@ -1,9 +1,9 @@
 import { LaffLabApi } from "@/lib/LaffLabApi";
-import FavoritesList from "@/components/favorites/FavoritesList";
 import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
+import HistoryList from "@/components/history/HistoryList";
 
-export default async function FavoritesPage() {
-  const favorites = await LaffLabApi.getFavorites();
+export default async function HistoryPage() {
+  const history = await LaffLabApi.getHistory();
 
   return (
     <div
@@ -16,9 +16,9 @@ export default async function FavoritesPage() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 600 }}>
-        <SimpleHeader title="Favorites" />
+        <SimpleHeader title="History" />
         <div style={{ marginTop: 20 }}>
-          <FavoritesList posts={favorites} />
+          <HistoryList posts={history} />
         </div>
       </div>
     </div>

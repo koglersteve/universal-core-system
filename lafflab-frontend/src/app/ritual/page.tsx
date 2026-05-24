@@ -1,10 +1,7 @@
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import FavoritesList from "@/components/favorites/FavoritesList";
 import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
+import DailyRitualScreen from "@/components/ritual/DailyRitualScreen";
 
-export default async function FavoritesPage() {
-  const favorites = await LaffLabApi.getFavorites();
-
+export default function RitualPage() {
   return (
     <div
       style={{
@@ -16,9 +13,9 @@ export default async function FavoritesPage() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 600 }}>
-        <SimpleHeader title="Favorites" />
+        <SimpleHeader title="Daily Ritual" />
         <div style={{ marginTop: 20 }}>
-          <FavoritesList posts={favorites} />
+          <DailyRitualScreen />
         </div>
       </div>
     </div>
