@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { JokeViewer } from "./JokeViewer";
+import React, { useState } from "react";
+import { CreatePost } from "./CreatePost";
+import { FeedList } from "./FeedList";
 import { FavoritesScreen } from "./FavoritesScreen";
 import { HistoryScreen } from "./HistoryScreen";
 import { DailyRitualScreen } from "./DailyRitualScreen";
-import { ReactionBar } from "./ReactionBar";
+// ❌ Removed circular import of ProfileScreen from itself
+import { ProfileScreen } from "./ProfileScreen";
 
 export const LaffLabHome: React.FC = () => {
   const [screen, setScreen] = useState<
-    "home" | "favorites" | "history" | "ritual"
+    "home" | "favorites" | "history" | "ritual" | "profile"
   >("home");
 
-  const [feed, setFeed] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // Load social feed
-  useEffect(() => {
-    if (screen !== "home") return;
-
-    setLoading(true);
-
-    fetch("/core/feed")
-      .then(r => r.json())
-      .then(res => {
-        setFeed(res.posts || []);
-        setLoading(false);
-      });
-  }, [screen]);
+  const openProfile = (username: string) => {
+    setProfileUsername(username);
+    setScreen("profile");
+  };
 
   // Secondary screens
   if (screen === "favorites") {
@@ -40,62 +33,28 @@ export const LaffLabHome: React.FC = () => {
     return <DailyRitualScreen onClose={() => setScreen("home")} />;
   }
 
-  // MAIN SOCIAL HOME SCREEN
+  if (screen === "profile" && profileUsername) {
+    return (
+      <ProfileScreen
+        username={profileUsername}
+        onClose={() => setScreen("home")}
+      />
+    );
+  }
+
+  // MAIN HOME SCREEN
   return (
     <div style={{ padding: 16 }}>
       <h1 style={{ marginBottom: 12 }}>LAFFlab</h1>
 
+      {/* CREATE POST */}
+      <CreatePost onPostCreated={() => setRefreshKey(k => k + 1)} />
+
       {/* FEED */}
-      {loading ? (
-        <p>Loading feed…</p>
-      ) : feed.length === 0 ? (
-        <p>No posts yet. Be the first to post!</p>
-      ) : (
-        <div>
-          {feed.map(post => (
-            <div
-              key={post.id}
-              style={{
-                border: "1px solid #ddd",
-                padding: 12,
-                borderRadius: 8,
-                marginBottom: 16,
-              }}
-            >
-              <div style={{ fontWeight: "bold", marginBottom: 4 }}>
-                {post.author.displayName} @{post.author.username}
-              </div>
-
-              <div style={{ marginBottom: 8 }}>{post.text}</div>
-
-              {post.mediaUrl && (
-                <div style={{ marginBottom: 8 }}>
-                  {post.type === "image" && (
-                    <img
-                      src={post.mediaUrl}
-                      style={{ width: "100%", borderRadius: 8 }}
-                    />
-                  )}
-
-                  {post.type === "video" && (
-                    <video
-                      src={post.mediaUrl}
-                      controls
-                      style={{ width: "100%", borderRadius: 8 }}
-                    />
-                  )}
-
-                  {post.type === "audio" && (
-                    <audio src={post.mediaUrl} controls />
-                  )}
-                </div>
-              )}
-
-              <ReactionBar post={post} />
-            </div>
-          ))}
-        </div>
-      )}
+      <FeedList
+        refreshKey={refreshKey}
+        onOpenProfile={openProfile}
+      />
 
       {/* NAVIGATION */}
       <div style={{ marginTop: 24 }}>

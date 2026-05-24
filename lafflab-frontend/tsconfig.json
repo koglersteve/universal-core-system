@@ -25,7 +25,7 @@
       "@types/*": ["src/types/*"],
       "@store/*": ["src/store/*"],
       "@components/*": ["src/components/*"],
-      "@/plugins/*": ["src/plugins/*"]
+      "@plugins/*": ["src/plugins/*"]
     },
     "plugins": [{ "name": "next" }]
   },
