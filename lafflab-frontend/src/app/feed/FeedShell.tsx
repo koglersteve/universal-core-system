@@ -19,8 +19,18 @@ export default function FeedShell({ initialFeed }: { initialFeed: Post[] }) {
 
   const handleRefresh = () => setRefreshKey(k => k + 1);
 
+  /**
+   * IMPORTANT:
+   * Your API signature is:
+   *   fetchFeed(params?: { cursor?: string; limit?: number; app?: string })
+   *
+   * So we must call it like:
+   *   fetchFeed({ cursor: "2" })
+   */
   const loadMore = async (page: number) => {
-    return await LaffLabApi.fetchFeed(page);
+    return await LaffLabApi.fetchFeed({
+      cursor: String(page),
+    });
   };
 
   return (
