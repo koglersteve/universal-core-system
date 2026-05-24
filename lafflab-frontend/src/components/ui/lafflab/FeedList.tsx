@@ -9,26 +9,46 @@ type Post = {
   content: string;
   createdAt: string;
   author?: { username?: string };
+  reactions?: {
+    likes?: number;
+    laughs?: number;
+    comments?: number;
+    shares?: number;
+  };
 };
 
 type FeedListProps = {
   initialPosts: Post[];
-  loadMore: (page: number) => Promise<Post[]>;
+  loadMore: (cursor: number) => Promise<{ items: Post[]; nextCursor: string | null } | Post[]>;
 };
 
-const FeedList: React.FC<FeedListProps> = ({ initialPosts, loadMore }) => {
-  const [posts, setPosts] = useState<Post[]>(() =>
-    [...initialPosts].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-  );
-  const [page, setPage] = useState(2);
+export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [cursor, setCursor] = useState<string | null>("2");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
+  // Skeleton loader for infinite scroll
+  const Skeleton = () => (
+    <div
+      style={{
+        marginBottom: 12,
+        padding: 12,
+        borderRadius: 16,
+        background: "rgba(255,255,255,0.05)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        height: 90,
+        animation: "pulse 1.4s ease-in-out infinite",
+      }}
+    />
+  );
+
+  // Observe sentinel for infinite scroll
   useEffect(() => {
-    if (!hasMore || loadingMore) return;
+    if (!hasMore || loading) return;
 
     const observer = new IntersectionObserver(
       entries => {
@@ -42,31 +62,59 @@ const FeedList: React.FC<FeedListProps> = ({ initialPosts, loadMore }) => {
 
     if (sentinelRef.current) observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasMore, loadingMore]);
+  }, [hasMore, loading]);
 
+  // Fetch next page using cursor
   const fetchMore = async () => {
-    setLoadingMore(true);
+    if (!cursor) {
+      setHasMore(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      const next = await loadMore(page);
-      if (!next || next.length === 0) {
+      const result = await loadMore(Number(cursor));
+
+      // Support both { items, nextCursor } and array fallback
+      const newItems = Array.isArray(result) ? result : result.items;
+      const nextCursor = Array.isArray(result) ? null : result.nextCursor;
+
+      if (!newItems || newItems.length === 0) {
         setHasMore(false);
       } else {
-        setPosts(prev => [
-          ...prev,
-          ...next.sort(
-            (a, b) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          ),
-        ]);
-        setPage(p => p + 1);
+        setPosts(prev => [...prev, ...newItems]);
+        setCursor(nextCursor);
       }
+    } catch (err) {
+      setError("Failed to load more posts.");
     } finally {
-      setLoadingMore(false);
+      setLoading(false);
     }
   };
 
-  const renderWithAds = () => {
+  // Optimistic reaction update
+  const handleReaction = (postId: string, field: keyof Post["reactions"]) => {
+    setPosts(prev =>
+      prev.map(p =>
+        p.id === postId
+          ? {
+              ...p,
+              reactions: {
+                ...p.reactions,
+                [field]: (p.reactions?.[field] ?? 0) + 1,
+              },
+            }
+          : p
+      )
+    );
+  };
+
+  // Render posts with ads every 8 items
+  const renderPosts = () => {
     const items: React.ReactNode[] = [];
+
     posts.forEach((post, index) => {
       if (index > 0 && index % 8 === 0) {
         items.push(
@@ -106,29 +154,74 @@ const FeedList: React.FC<FeedListProps> = ({ initialPosts, loadMore }) => {
               @{post.author.username}
             </div>
           )}
+
           <div style={{ fontSize: 14, lineHeight: 1.5 }}>{post.content}</div>
-          <ReactionBar />
+
+          <ReactionBar
+            likes={post.reactions?.likes ?? 0}
+            laughs={post.reactions?.laughs ?? 0}
+            comments={post.reactions?.comments ?? 0}
+            shares={post.reactions?.shares ?? 0}
+            onReact={(field: keyof Post["reactions"]) =>
+              handleReaction(post.id, field)
+            }
+          />
         </div>
       );
     });
+
     return items;
   };
 
   return (
     <div style={{ marginTop: 16 }}>
-      {renderWithAds()}
+      {renderPosts()}
+
+      {error && (
+        <div
+          style={{
+            color: "#ff9aa5",
+            textAlign: "center",
+            marginTop: 12,
+            fontSize: 13,
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      {loading && (
+        <>
+          <Skeleton />
+          <Skeleton />
+        </>
+      )}
+
       {hasMore && (
         <div
           ref={sentinelRef}
-          style={{ height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{
+            height: 40,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        />
+      )}
+
+      {!hasMore && posts.length > 0 && (
+        <div
+          style={{
+            color: "rgba(255,255,255,0.6)",
+            textAlign: "center",
+            marginTop: 20,
+            fontSize: 13,
+          }}
         >
-          {loadingMore && (
-            <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12 }}>
-              Loading more…
-            </span>
-          )}
+          You’ve reached the end.
         </div>
       )}
+
       {!hasMore && posts.length === 0 && (
         <div
           style={{
@@ -143,6 +236,4 @@ const FeedList: React.FC<FeedListProps> = ({ initialPosts, loadMore }) => {
       )}
     </div>
   );
-};
-
-export default FeedList;
+}
