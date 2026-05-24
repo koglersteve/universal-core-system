@@ -4,7 +4,8 @@ import FeedShell from "./FeedShell";
 export const dynamic = "force-dynamic";
 
 export default async function FeedPage() {
-  const initialFeed = await LaffLabApi.fetchFeed(1);
+  // IMPORTANT: fetchFeed() takes ZERO arguments
+  const initialFeed = await LaffLabApi.fetchFeed();
 
   return (
     <div
