@@ -1,58 +1,66 @@
 "use client";
 
 import React from "react";
-import { FiSmile, FiHeart, FiMessageCircle, FiShare2 } from "react-icons/fi";
 
-type ReactionBarProps = {
-  likes?: number;
-  laughs?: number;
-  comments?: number;
-  shares?: number;
+export type ReactionEmojiKey =
+  | "laugh"
+  | "smile"
+  | "expressionless"
+  | "shock"
+  | "mindblown"
+  | "angry"
+  | "crickets";
+
+const REACTIONS: { key: ReactionEmojiKey; emoji: string }[] = [
+  { key: "laugh", emoji: "😂" },
+  { key: "smile", emoji: "🙂" },
+  { key: "expressionless", emoji: "😐" },
+  { key: "shock", emoji: "😱" },
+  { key: "mindblown", emoji: "🤯" },
+  { key: "angry", emoji: "😡" },
+  { key: "crickets", emoji: "🦗" },
+];
+
+export type ReactionBarProps = {
+  onReact: (key: ReactionEmojiKey) => void;
 };
 
-const ReactionBar: React.FC<ReactionBarProps> = ({
-  likes = 0,
-  laughs = 0,
-  comments = 0,
-  shares = 0,
-}) => {
-  const itemStyle: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    color: "rgba(255,255,255,0.85)",
-    fontSize: 12,
-    cursor: "pointer",
-  };
-
+export default function ReactionBar({ onReact }: ReactionBarProps) {
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: "space-between",
-        marginTop: 8,
-        paddingTop: 6,
-        borderTop: "1px solid rgba(255,255,255,0.12)",
+        gap: 10,
+        marginTop: 10,
+        flexWrap: "wrap",
       }}
     >
-      <div style={itemStyle}>
-        <FiHeart size={16} />
-        <span>{likes}</span>
-      </div>
-      <div style={itemStyle}>
-        <FiSmile size={16} />
-        <span>{laughs}</span>
-      </div>
-      <div style={itemStyle}>
-        <FiMessageCircle size={16} />
-        <span>{comments}</span>
-      </div>
-      <div style={itemStyle}>
-        <FiShare2 size={16} />
-        <span>{shares}</span>
-      </div>
+      {REACTIONS.map(r => (
+        <button
+          key={r.key}
+          onClick={() => onReact(r.key)}
+          style={{
+            fontSize: 22,
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            padding: "6px 10px",
+            borderRadius: 12,
+            cursor: "pointer",
+            transition: "transform 0.12s ease",
+          }}
+          onMouseDown={e => {
+            (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.9)";
+          }}
+          onMouseUp={e => {
+            (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+          }}
+        >
+          {r.emoji}
+        </button>
+      ))}
     </div>
   );
-};
-
-export default ReactionBar;
+}
