@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import ReactionBar from "./ReactionBar";
+import ReactionBar, { ReactionEmojiKey } from "./ReactionBar";
 import AdBanner from "./AdBanner";
 
 type Post = {
@@ -9,12 +9,7 @@ type Post = {
   content: string;
   createdAt: string;
   author?: { username?: string };
-  reactions?: {
-    likes?: number;
-    laughs?: number;
-    comments?: number;
-    shares?: number;
-  };
+  reactions?: Partial<Record<ReactionEmojiKey, number>>;
 };
 
 type FeedListProps = {
@@ -77,7 +72,6 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     try {
       const result = await loadMore(Number(cursor));
 
-      // Support both { items, nextCursor } and array fallback
       const newItems = Array.isArray(result) ? result : result.items;
       const nextCursor = Array.isArray(result) ? null : result.nextCursor;
 
@@ -94,8 +88,8 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     }
   };
 
-  // Optimistic reaction update
-  const handleReaction = (postId: string, field: keyof Post["reactions"]) => {
+  // Optimistic reaction update (LAFFlab 7-emoji taxonomy)
+  const handleReaction = (postId: string, key: ReactionEmojiKey) => {
     setPosts(prev =>
       prev.map(p =>
         p.id === postId
@@ -103,7 +97,7 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
               ...p,
               reactions: {
                 ...p.reactions,
-                [field]: (p.reactions?.[field] ?? 0) + 1,
+                [key]: (p.reactions?.[key] ?? 0) + 1,
               },
             }
           : p
@@ -157,15 +151,7 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
 
           <div style={{ fontSize: 14, lineHeight: 1.5 }}>{post.content}</div>
 
-          <ReactionBar
-            likes={post.reactions?.likes ?? 0}
-            laughs={post.reactions?.laughs ?? 0}
-            comments={post.reactions?.comments ?? 0}
-            shares={post.reactions?.shares ?? 0}
-            onReact={(field: keyof Post["reactions"]) =>
-              handleReaction(post.id, field)
-            }
-          />
+          <ReactionBar onReact={(key) => handleReaction(post.id, key)} />
         </div>
       );
     });
@@ -237,3 +223,4 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     </div>
   );
 }
+
