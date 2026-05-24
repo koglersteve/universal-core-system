@@ -1,6 +1,6 @@
 import { LaffLabApi } from "@/lib/LaffLabApi";
 import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
-import HistoryList from "@/components/history/HistoryList";
+import HistoryList from "@/components/history/HistoryList"; // FIXED
 
 export default async function HistoryPage() {
   const history = await LaffLabApi.getHistory();

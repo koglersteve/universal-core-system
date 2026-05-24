@@ -1,5 +1,5 @@
 import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
-import DailyRitualScreen from "@/components/ritual/DailyRitualScreen";
+import DailyRitualScreen from "@/components/ritual/DailyRitualScreen"; // FIXED
 
 export default function RitualPage() {
   return (
