@@ -10,16 +10,18 @@ export default function AppShellClient({ children }: { children: React.ReactNode
   return (
     <>
       <TopBar
-        onRefresh={() => {
-          // simple refresh behavior
-          window.location.reload();
-        }}
+        onRefresh={() => window.location.reload()}
         onOpenMenu={() => setMenuOpen(true)}
       />
 
-      <MenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MenuDrawer
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+      />
 
-      <div style={{ marginTop: 56 }}>{children}</div>
+      <div style={{ marginTop: 56 }}>
+        {children}
+      </div>
     </>
   );
 }
