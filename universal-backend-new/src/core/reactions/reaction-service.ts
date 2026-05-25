@@ -1,21 +1,62 @@
-// src/core/reactions/reaction-service.ts
+import prisma from "@/shared/prisma.js";
 
-import { prisma } from "../../prisma.js"; // FIXED
-import { publishEvent } from "../events/publisher.js";
-import { EVENT_TYPES } from "../events/event-types.js";
-import type { LocalReactionEvent } from "./reaction-types.js";
+export type ReactionEmoji = string;
 
-export async function storeReaction(event: LocalReactionEvent) {
-  await prisma.reaction.create({
-    data: {
-      id: event.id,
-      userId: event.userId,
-      appId: event.appId,
-      postId: event.postId,
-      emoji: event.emoji,
-      timestamp: new Date(event.timestamp),
-    },
-  });
+export type AddReactionInput = {
+  userId: string;
+  postId: string;
+  app: string; // e.g. "lafflab", "drama", "northstar"
+  emoji: ReactionEmoji;
+};
 
-  publishEvent(EVENT_TYPES.REACTION_STORED, event);
-}
+export type RemoveReactionInput = {
+  userId: string;
+  postId: string;
+  app: string;
+  emoji: ReactionEmoji;
+};
+
+export const ReactionService = {
+  async addReaction(input: AddReactionInput) {
+    const { userId, postId, app, emoji } = input;
+
+    return prisma.reaction.create({
+      data: {
+        userId,
+        postId,
+        app,
+        emoji,
+      },
+    });
+  },
+
+  async removeReaction(input: RemoveReactionInput) {
+    const { userId, postId, app, emoji } = input;
+
+    const existing = await prisma.reaction.findFirst({
+      where: {
+        userId,
+        postId,
+        app,
+        emoji,
+      },
+    });
+
+    if (!existing) return null;
+
+    await prisma.reaction.delete({
+      where: { id: existing.id },
+    });
+
+    return existing;
+  },
+
+  async getReactionsForPost(postId: string, app: string) {
+    return prisma.reaction.findMany({
+      where: {
+        postId,
+        app,
+      },
+    });
+  },
+};

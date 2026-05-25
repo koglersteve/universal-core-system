@@ -1,46 +1,46 @@
-// src/core/workers/analytics-worker.ts
+import prisma from "@/shared/prisma.js";
 
-import { onEvent } from "../events/subscriber.js";
-import { EVENT_TYPES } from "../events/event-types.js";
-import { prisma } from "../../prisma.js"; // FIXED
-
-type AnalyticsEventPayload = {
+export type AnalyticsEventPayload = {
+  type: string;          // e.g. "view", "click", "share", "open_settings"
   userId: string;
-  appId: string;
-  postId: string;
+  app: string;           // e.g. "lafflab", "drama", "northstar"
+  postId?: string;
   emoji?: string;
-  timestamp: number;
+  metadata?: Record<string, unknown>;
 };
 
-onEvent(EVENT_TYPES.REACTION_STORED, async (event: AnalyticsEventPayload) => {
-  try {
-    await prisma.analyticsEvent.create({
-      data: {
-        type: "reaction",
-        userId: event.userId,
-        appId: event.appId,
-        postId: event.postId,
-        emoji: event.emoji ?? null,
-        timestamp: new Date(event.timestamp),
-      },
-    });
-  } catch (err) {
-    console.error("Analytics worker failed (reaction):", err);
-  }
-});
+export class AnalyticsWorker {
+  static async recordEvent(payload: AnalyticsEventPayload) {
+    const { type, userId, app, postId, emoji, metadata } = payload;
 
-onEvent(EVENT_TYPES.IMPRESSION_STORED, async (event: AnalyticsEventPayload) => {
-  try {
     await prisma.analyticsEvent.create({
       data: {
-        type: "impression",
-        userId: event.userId,
-        appId: event.appId,
-        postId: event.postId,
-        timestamp: new Date(event.timestamp),
+        type,
+        userId,
+        app,
+        postId: postId ?? null,
+        emoji: emoji ?? null,
+        metadata: metadata ?? undefined,
       },
     });
-  } catch (err) {
-    console.error("Analytics worker failed (impression):", err);
   }
-});
+
+  static async recordBatch(events: AnalyticsEventPayload[]) {
+    if (events.length === 0) return;
+
+    await prisma.$transaction(
+      events.map((e) =>
+        prisma.analyticsEvent.create({
+          data: {
+            type: e.type,
+            userId: e.userId,
+            app: e.app,
+            postId: e.postId ?? null,
+            emoji: e.emoji ?? null,
+            metadata: e.metadata ?? undefined,
+          },
+        })
+      )
+    );
+  }
+}

@@ -1,35 +1,37 @@
-// src/core/workers/impression-sync-worker.ts
+import prisma from "@/shared/prisma.js";
 
-import { onEvent } from "../events/subscriber.js";
-import { EVENT_TYPES } from "../events/event-types.js";
-import { prisma } from "../../prisma.js"; // FIXED
-import { getEnabledApps } from "../apps/registry.js";
-import { createId } from "../utils/id.js";
-
-type ImpressionFanoutPayload = {
+export type ImpressionPayload = {
   userId: string;
   postId: string;
-  appId: string;
-  timestamp?: number;
+  app: string; // e.g. "lafflab", "drama", "northstar"
 };
 
-onEvent(EVENT_TYPES.IMPRESSION_FANOUT_REQUEST, async (event: ImpressionFanoutPayload) => {
-  try {
-    const apps = getEnabledApps();
-    const timestamp = event.timestamp ?? Date.now();
+export class ImpressionSyncWorker {
+  static async recordImpression(payload: ImpressionPayload) {
+    const { userId, postId, app } = payload;
 
-    for (const app of apps) {
-      await prisma.impression.create({
-        data: {
-          id: createId(),
-          userId: event.userId,
-          appId: app.id,
-          postId: event.postId,
-          timestamp: new Date(timestamp),
-        },
-      });
-    }
-  } catch (err) {
-    console.error("Impression sync worker failed:", err);
+    await prisma.impression.create({
+      data: {
+        userId,
+        postId,
+        app,
+      },
+    });
   }
-});
+
+  static async recordBatch(impressions: ImpressionPayload[]) {
+    if (impressions.length === 0) return;
+
+    await prisma.$transaction(
+      impressions.map((imp) =>
+        prisma.impression.create({
+          data: {
+            userId: imp.userId,
+            postId: imp.postId,
+            app: imp.app,
+          },
+        })
+      )
+    );
+  }
+}
