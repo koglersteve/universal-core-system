@@ -1,9 +1,9 @@
 import prisma from "@/shared/prisma.js";
 
 export type AnalyticsEventPayload = {
-  type: string;          // e.g. "view", "click", "share", "open_settings"
+  type: string;
   userId: string;
-  app: string;           // e.g. "lafflab", "drama", "northstar"
+  app: string;
   postId?: string;
   emoji?: string;
   metadata?: Record<string, unknown>;
@@ -20,7 +20,7 @@ export class AnalyticsWorker {
         app,
         postId: postId ?? null,
         emoji: emoji ?? null,
-        metadata: metadata ?? undefined,
+        metadata: metadata ? (metadata as any) : undefined,
       },
     });
   }
@@ -37,7 +37,7 @@ export class AnalyticsWorker {
             app: e.app,
             postId: e.postId ?? null,
             emoji: e.emoji ?? null,
-            metadata: e.metadata ?? undefined,
+            metadata: e.metadata ? (e.metadata as any) : undefined,
           },
         })
       )
