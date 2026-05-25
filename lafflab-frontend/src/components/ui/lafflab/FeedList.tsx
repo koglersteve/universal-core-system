@@ -22,14 +22,23 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Prevent observer from firing during hydration
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Infinite scroll observer
+  // Infinite scroll observer (hydration-safe)
   useEffect(() => {
+    if (!hydrated) return; // <-- prevents early crash
+    if (loading) return;
+
     const observer = new IntersectionObserver(
       entries => {
         const [entry] = entries;
-        if (entry.isIntersecting && !loading) {
+        if (entry.isIntersecting) {
           void fetchMore();
         }
       },
@@ -38,7 +47,7 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
 
     if (sentinelRef.current) observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [loading]);
+  }, [hydrated, loading]);
 
   const fetchMore = async () => {
     setLoading(true);
@@ -47,7 +56,7 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     try {
       const newPosts = await loadMore();
 
-      // Append only posts we don't already have
+      // Append only unique posts
       const unique = newPosts.filter(
         p => !posts.some(existing => existing.id === p.id)
       );
