@@ -14,10 +14,22 @@ type Post = {
 
 type FeedListProps = {
   initialPosts: Post[];
-  loadMore: () => Promise<Post[]>;
 };
 
-export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
+// Client-side loadMore using the API route
+async function loadMoreClient(): Promise<Post[]> {
+  const res = await fetch("/api/feed", { cache: "no-store" });
+
+  if (!res.ok) {
+    console.error("Failed to load more posts");
+    return [];
+  }
+
+  const data = await res.json();
+  return data.posts ?? [];
+}
+
+export default function FeedList({ initialPosts }: FeedListProps) {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +44,7 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
 
   // Infinite scroll observer (hydration-safe)
   useEffect(() => {
-    if (!hydrated) return; // <-- prevents early crash
+    if (!hydrated) return;
     if (loading) return;
 
     const observer = new IntersectionObserver(
@@ -54,9 +66,8 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
     setError(null);
 
     try {
-      const newPosts = await loadMore();
+      const newPosts = await loadMoreClient();
 
-      // Append only unique posts
       const unique = newPosts.filter(
         p => !posts.some(existing => existing.id === p.id)
       );
@@ -65,6 +76,7 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
         setPosts(prev => [...prev, ...unique]);
       }
     } catch (err) {
+      console.error(err);
       setError("Failed to load more posts.");
     } finally {
       setLoading(false);
@@ -158,7 +170,6 @@ export default function FeedList({ initialPosts, loadMore }: FeedListProps) {
         </div>
       )}
 
-      {/* Infinite scroll sentinel */}
       <div
         ref={sentinelRef}
         style={{
