@@ -1,14 +1,8 @@
-import { NextResponse } from "next/server";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  env: {
+    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
+  },
+};
 
-export const dynamic = "force-dynamic";
-
-export async function GET() {
-  const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  const res = await fetch(`${backend}/core/lafflab/feed`, {
-    cache: "no-store",
-  });
-
-  const data = await res.json();
-  return NextResponse.json({ posts: data.posts ?? [] });
-}
+module.exports = nextConfig;
