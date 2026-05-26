@@ -1,9 +1,11 @@
-import { LaffLabApi } from "@/lib/api";
+"use client";
 
 export async function fetchPosts() {
-  return LaffLabApi.getPosts();
+  const res = await fetch("/api/posts");
+  return res.json();
 }
 
 export async function fetchPost(id: string) {
-  return LaffLabApi.getPost(id);
+  const res = await fetch(`/api/posts/${id}`);
+  return res.json();
 }

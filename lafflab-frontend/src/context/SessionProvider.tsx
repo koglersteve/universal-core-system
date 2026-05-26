@@ -1,42 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { SessionContext } from "@/hooks/useSession";
-import { getUser, updateUserProfile } from "@/lib/server/user";
+import { createContext, useContext, useEffect, useState } from "react";
 
-export default function Component({ children }) {
+const SessionContext = createContext(null);
+
+export function SessionProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  async function load() {
-    setLoading(true);
-    const data = await getUser();
-    setUser(data?.user || null);
-    setSession(data?.session || null);
-    setLoading(false);
-  }
-
-  async function updateProfile(values: any) {
-    const updated = await updateUserProfile(values);
-    setUser(updated);
-  }
 
   useEffect(() => {
+    async function load() {
+      const res = await fetch("/api/profile/me");
+      const data = await res.json();
+      setUser(data.user ?? null);
+    }
     load();
   }, []);
 
   return (
-    <SessionContext.Provider
-      value={{
-        user,
-        session,
-        loading,
-        isAuthenticated: !!user,
-        updateProfile,
-      }}
-    >
+    <SessionContext.Provider value={{ user, setUser }}>
       {children}
     </SessionContext.Provider>
   );
+}
+
+export function useSession() {
+  return useContext(SessionContext);
 }
