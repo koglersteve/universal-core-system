@@ -1,14 +1,15 @@
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import PostView from "@/components/post/PostView";
+import { LaffLabApi } from "@/lib/api";
 
-type Props = { params: { id: string } };
+export const dynamic = "force-dynamic";
 
-export default async function PostPage({ params }: Props) {
-  const post = await LaffLabApi.getPost(params.id);
+export default async function PostPage({ params }) {
+  const id = params.id;
+  const post = await LaffLabApi.getPost(id);
 
   return (
-    <div className="max-w-xl mx-auto">
-      <PostView post={post} />
+    <div style={{ padding: 24 }}>
+      <h1>Post {id}</h1>
+      <pre>{JSON.stringify(post, null, 2)}</pre>
     </div>
   );
 }
