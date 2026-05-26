@@ -1,11 +1,12 @@
+// src/store/usePostsStore.ts
 "use client";
 
+import { LaffLabApi } from "@/lib/api";
+
 export async function fetchPosts() {
-  const res = await fetch("/api/posts");
-  return res.json();
+  return LaffLabApi.getPosts();
 }
 
 export async function fetchPost(id: string) {
-  const res = await fetch(`/api/posts/${id}`);
-  return res.json();
+  return LaffLabApi.getPost(id);
 }

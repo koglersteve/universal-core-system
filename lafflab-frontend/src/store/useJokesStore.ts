@@ -1,11 +1,13 @@
+// src/store/useJokesStore.ts
 "use client";
 
+import { LaffLabApi } from "@/lib/api";
+
 export async function fetchPosts() {
-  const res = await fetch("/api/jokes");
-  return res.json();
+  // Assuming jokes are just posts filtered server-side
+  return LaffLabApi.getPosts();
 }
 
 export async function fetchPost(id: string) {
-  const res = await fetch(`/api/jokes/${id}`);
-  return res.json();
+  return LaffLabApi.getPost(id);
 }

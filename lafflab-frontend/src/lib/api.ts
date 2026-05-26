@@ -1,29 +1,60 @@
+// src/lib/api.ts
+
+// ---------------------------------------------
+// Backend base URL resolution
+// ---------------------------------------------
 const API_BASE =
   process.env.NEXT_PUBLIC_BACKEND_URL ??
   process.env.NEXT_PUBLIC_API_URL ??
   "https://universal-core-backend-production.up.railway.app";
 
+// ---------------------------------------------
+// Core GET wrapper
+// ---------------------------------------------
 async function get(path: string) {
-  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`GET ${path} failed with ${res.status}`);
+  const url = `${API_BASE}${path}`;
+
+  const res = await fetch(url, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error(`GET ${url} failed with ${res.status}`);
+  }
+
   return res.json();
 }
 
+// ---------------------------------------------
+// Core POST wrapper
+// ---------------------------------------------
 async function post(path: string, body?: any) {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const url = `${API_BASE}${path}`;
+
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) throw new Error(`POST ${path} failed with ${res.status}`);
+
+  if (!res.ok) {
+    throw new Error(`POST ${url} failed with ${res.status}`);
+  }
+
   return res.json();
 }
 
+// ---------------------------------------------
+// Unified LAFFlab API
+// ---------------------------------------------
 export const LaffLabApi = {
-  // Core feed
+  // -----------------------------
+  // FEED (cursor‑based pagination)
+  // -----------------------------
   fetchFeed: (params?: { app?: string; cursor?: string | null; limit?: number }) => {
     const search = new URLSearchParams();
-    if (params?.app) search.set("app", params.app);
+
+    // Default app = lafflab
+    search.set("app", params?.app ?? "lafflab");
+
     if (params?.cursor) search.set("cursor", params.cursor);
     if (params?.limit) search.set("limit", String(params.limit));
 
@@ -33,33 +64,49 @@ export const LaffLabApi = {
     return get(path);
   },
 
-  // Posts
+  // -----------------------------
+  // POSTS
+  // -----------------------------
   getPosts: () => get("/core/posts"),
   getPost: (id: string) => get(`/core/posts/${id}`),
 
-  // Favorites
+  // -----------------------------
+  // FAVORITES
+  // -----------------------------
   getFavorites: () => get("/core/favorites"),
 
-  // Explore
+  // -----------------------------
+  // EXPLORE
+  // -----------------------------
   getExplore: () => get("/core/explore"),
 
-  // Trending
+  // -----------------------------
+  // TRENDING
+  // -----------------------------
   getTrending: () => get("/core/trending"),
 
-  // Search
+  // -----------------------------
+  // SEARCH
+  // -----------------------------
   searchPosts: (q: string) => {
     const search = new URLSearchParams();
     search.set("q", q);
     return get(`/core/search?${search.toString()}`);
   },
 
-  // Profile
+  // -----------------------------
+  // PROFILE
+  // -----------------------------
   getProfile: () => get("/core/profile"),
 
-  // Health
+  // -----------------------------
+  // HEALTH
+  // -----------------------------
   getHealth: () => get("/core/health"),
 
-  // Generic helpers if needed later
+  // -----------------------------
+  // Raw helpers
+  // -----------------------------
   rawGet: get,
   rawPost: post,
 };
