@@ -43,7 +43,7 @@ async function post(path: string, body?: any) {
 }
 
 // ---------------------------------------------
-// Unified LAFFlab API
+// Unified LAFFlab API (app‑aware)
 // ---------------------------------------------
 export const LaffLabApi = {
   // -----------------------------
@@ -59,9 +59,7 @@ export const LaffLabApi = {
     if (params?.limit) search.set("limit", String(params.limit));
 
     const query = search.toString();
-    const path = query ? `/core/feed?${query}` : "/core/feed";
-
-    return get(path);
+    return get(`/core/feed?${query}`);
   },
 
   // -----------------------------
@@ -81,9 +79,13 @@ export const LaffLabApi = {
   getExplore: () => get("/core/explore"),
 
   // -----------------------------
-  // TRENDING
+  // TRENDING (app‑specific)
   // -----------------------------
-  getTrending: () => get("/core/trending"),
+  getTrending: (app: string = "lafflab") => {
+    const search = new URLSearchParams();
+    search.set("app", app);
+    return get(`/core/trending?${search.toString()}`);
+  },
 
   // -----------------------------
   // SEARCH
@@ -95,7 +97,7 @@ export const LaffLabApi = {
   },
 
   // -----------------------------
-  // PROFILE
+  // PROFILE (logged‑in user)
   // -----------------------------
   getProfile: () => get("/core/profile"),
 
