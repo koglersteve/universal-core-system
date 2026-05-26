@@ -5,7 +5,11 @@ import TopBar from "@/components/ui/lafflab/TopBar";
 import MenuDrawer from "@/components/ui/lafflab/MenuDrawer";
 import FeedList from "@/components/ui/lafflab/FeedList";
 
-export default function FeedShell({ initialFeed }) {
+type FeedShellProps = {
+  initialFeed: any[];
+};
+
+export default function FeedShell({ initialFeed }: FeedShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
