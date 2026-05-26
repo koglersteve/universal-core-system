@@ -1,8 +1,21 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  env: {
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
-  },
-};
+import { NextResponse } from "next/server";
 
-module.exports = nextConfig;
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  if (!backend) {
+    return NextResponse.json(
+      { error: "Backend URL not configured" },
+      { status: 500 }
+    );
+  }
+
+  const res = await fetch(`${backend}/core/lafflab/feed`, {
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+  return NextResponse.json({ posts: data.posts ?? [] });
+}
