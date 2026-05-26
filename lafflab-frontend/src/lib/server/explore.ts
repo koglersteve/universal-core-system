@@ -1,6 +1,5 @@
-// FILE: src/lib/server/explore.ts
+import { LaffLabApi } from "@/lib/api";
 
 export async function getExploreFeed() {
-  // Placeholder until backend integration
-  return [];
+  return LaffLabApi.getExplore();
 }

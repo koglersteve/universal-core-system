@@ -1,3 +1,5 @@
+import { LaffLabApi } from "@/lib/api";
+
 export async function search(query: string) {
-  return [];
+  return LaffLabApi.searchPosts(query);
 }

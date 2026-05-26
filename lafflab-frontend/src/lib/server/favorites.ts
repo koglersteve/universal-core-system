@@ -1,6 +1,5 @@
-// FILE: src/lib/server/favorites.ts
+import { LaffLabApi } from "@/lib/api";
 
 export async function getFavorites() {
-  // Placeholder until backend integration
-  return [];
+  return LaffLabApi.getFavorites();
 }

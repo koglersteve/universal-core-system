@@ -1,17 +1,13 @@
+import { LaffLabApi } from "@/lib/api";
+
 export async function getPosts() {
-  return [];
+  return LaffLabApi.getPosts();
 }
 
 export async function getPostsByUser(userId: string) {
-  return [];
+  return LaffLabApi.rawGet(`/core/posts?userId=${userId}`);
 }
 
 export async function createPost(data: { title: string; content: string; authorId: string }) {
-  return {
-    id: Math.random().toString(36).slice(2),
-    title: data.title,
-    content: data.content,
-    authorId: data.authorId,
-    createdAt: new Date().toISOString(),
-  };
+  return LaffLabApi.rawPost("/core/posts", data);
 }
