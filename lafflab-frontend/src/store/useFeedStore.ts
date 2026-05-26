@@ -1,8 +1,20 @@
-// src/store/useFeedStore.ts
-"use client";
-
 import { create } from "zustand";
-import { LaffLabApi, type FeedItem, type FeedResponse } from "@/lib/api";
+import { LaffLabApi } from "@/lib/api";
+
+// ---------------------------------------------
+// Local types (same as useFeed + server/feed)
+// ---------------------------------------------
+export type FeedItem = {
+  id: string;
+  content: string;
+  createdAt: string;
+  author?: { username?: string };
+};
+
+export type FeedResponse = {
+  items: FeedItem[];
+  nextCursor: string | null;
+};
 
 type FeedState = {
   posts: FeedItem[];
@@ -10,9 +22,8 @@ type FeedState = {
   loading: boolean;
   error: string | null;
 
-  loadInitial: (app?: string) => Promise<void>;
-  loadMore: (app?: string) => Promise<void>;
-  refresh: (app?: string) => Promise<void>;
+  loadInitial: () => Promise<void>;
+  loadMore: () => Promise<void>;
 };
 
 export const useFeedStore = create<FeedState>((set, get) => ({
@@ -21,12 +32,12 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   loading: false,
   error: null,
 
-  loadInitial: async (app = "lafflab") => {
-    try {
-      set({ loading: true, error: null });
+  loadInitial: async () => {
+    set({ loading: true, error: null });
 
+    try {
       const data: FeedResponse = await LaffLabApi.fetchFeed({
-        app,
+        app: "lafflab",
         limit: 10,
       });
 
@@ -36,20 +47,20 @@ export const useFeedStore = create<FeedState>((set, get) => ({
         loading: false,
         error: null,
       });
-    } catch {
-      set({ error: "Failed to load feed", loading: false });
+    } catch (err) {
+      set({ loading: false, error: "Failed to load feed" });
     }
   },
 
-  loadMore: async (app = "lafflab") => {
-    const { cursor, posts, loading } = get();
-    if (loading || !cursor) return;
+  loadMore: async () => {
+    const { cursor, posts } = get();
+    if (!cursor) return;
+
+    set({ loading: true });
 
     try {
-      set({ loading: true });
-
       const data: FeedResponse = await LaffLabApi.fetchFeed({
-        app,
+        app: "lafflab",
         cursor,
         limit: 10,
       });
@@ -58,29 +69,10 @@ export const useFeedStore = create<FeedState>((set, get) => ({
         posts: [...posts, ...data.items],
         cursor: data.nextCursor,
         loading: false,
-      });
-    } catch {
-      set({ loading: false });
-    }
-  },
-
-  refresh: async (app = "lafflab") => {
-    try {
-      set({ loading: true, error: null });
-
-      const data: FeedResponse = await LaffLabApi.fetchFeed({
-        app,
-        limit: 10,
-      });
-
-      set({
-        posts: data.items,
-        cursor: data.nextCursor,
-        loading: false,
         error: null,
       });
-    } catch {
-      set({ error: "Failed to refresh feed", loading: false });
+    } catch (err) {
+      set({ loading: false, error: "Failed to load more posts" });
     }
   },
 }));
