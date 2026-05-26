@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { LaffLabApi } from "@/lib/LaffLabApi";
+import { LaffLabApi } from "@/lib/api";
 import { getTrendingPosts } from "@/core/feed/trending";
 
 export async function GET() {
-  const posts = await LaffLabApi.getPosts();
-  const trending = getTrendingPosts(posts);
-  return NextResponse.json({ trending });
+  // If getTrendingPosts() already fetches from backend, use it.
+  // Otherwise, use LaffLabApi.getTrending()
+
+  const posts = await getTrendingPosts();
+
+  return NextResponse.json({ posts });
 }
