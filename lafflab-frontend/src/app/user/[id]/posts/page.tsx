@@ -1,29 +1,15 @@
-"use client";
+import { LaffLabApi } from "@/lib/api";
 
-import { useEffect, useState } from "react";
+export const dynamic = "force-dynamic";
 
-export default function UserPostsPage({ params }: any) {
-  const { id } = params;
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}/posts`)
-      .then((res) => res.json())
-      .then(setPosts);
-  }, [id]);
+export default async function PostPage({ params }) {
+  const id = params.id;
+  const post = await LaffLabApi.getPost(id);
 
   return (
-    <div className="p-4 space-y-4 text-white">
-      <h1 className="text-2xl font-semibold">Posts</h1>
-
-      {posts.map((p: any) => (
-        <div
-          key={p.id}
-          className="p-4 rounded-lg bg-white/5 border border-white/10"
-        >
-          {p.text}
-        </div>
-      ))}
+    <div style={{ padding: 24 }}>
+      <h1>Post {id}</h1>
+      <pre>{JSON.stringify(post, null, 2)}</pre>
     </div>
   );
 }
