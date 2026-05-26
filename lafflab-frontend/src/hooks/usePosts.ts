@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/LaffLabApi";
+import { LaffLabApi } from "@/lib/api";
 
 export function usePosts() {
   const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    LaffLabApi.getPosts()
-      .then(setPosts)
-      .finally(() => setLoading(false));
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const data = await LaffLabApi.getPosts();
+        if (!cancelled) {
+          setPosts(Array.isArray(data.posts) ? data.posts : []);
+        }
+      } catch (err) {
+        console.error("Failed to load posts:", err);
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  return { posts, loading };
-}
-
-export function usePost(id: string) {
-  const [post, setPost] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    LaffLabApi.getPost(id)
-      .then(setPost)
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  return { post, loading };
+  return posts;
 }
 
