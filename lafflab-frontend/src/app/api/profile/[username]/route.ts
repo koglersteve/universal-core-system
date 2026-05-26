@@ -3,6 +3,10 @@ import { LaffLabApi } from "@/lib/api";
 
 export async function GET(req, { params }) {
   const username = params.username;
-  const profile = await LaffLabApi.getProfile(username);
+
+  // Correct backend endpoint for username-based profiles
+  const profile = await LaffLabApi.rawGet(`/core/profile/${username}`);
+
   return NextResponse.json({ profile });
 }
+
