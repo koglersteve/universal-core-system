@@ -1,11 +1,12 @@
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import FeedList from "@/components/ui/lafflab/FeedList";
+import FeedShell from "./FeedShell";
 
-export const dynamic = "force-dynamic";
+export default async function Page() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/core/lafflab/feed`, {
+    cache: "no-store",
+  });
 
-export default async function FeedPage() {
-  // Server-side fetch for initial posts
-  const initialFeed = await LaffLabApi.fetchFeed();
+  const data = await res.json();
+  const posts = data.posts ?? [];
 
-  return <FeedList initialPosts={initialFeed} />;
+  return <FeedShell initialFeed={posts} />;
 }

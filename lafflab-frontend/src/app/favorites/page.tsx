@@ -1,26 +1,12 @@
-import { LaffLabApi } from "@/lib/LaffLabApi";
-import FavoritesList from "@/components/ui/lafflab/FavoritesList";
-import SimpleHeader from "@/components/ui/lafflab/SimpleHeader";
+export default async function Page() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/core/lafflab/favorites?userId=USER_ID_HERE`,
+    { cache: "no-store" }
+  );
 
-export default async function FavoritesPage() {
-  const favorites = await LaffLabApi.getFavorites();
+  const data = await res.json();
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        padding: "12px 12px 32px",
-        background: "#05060A",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: 600 }}>
-        <SimpleHeader title="Favorites" />
-        <div style={{ marginTop: 20 }}>
-          <FavoritesList posts={favorites} />
-        </div>
-      </div>
-    </div>
+    <pre>{JSON.stringify(data.favorites, null, 2)}</pre>
   );
 }
