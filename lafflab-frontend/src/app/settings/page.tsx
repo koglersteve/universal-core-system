@@ -1,5 +1,12 @@
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/core/lafflab/settings`);
+  const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  const res = await fetch(`${backend}/core/lafflab/settings`, {
+    cache: "no-store",
+  });
+
   const data = await res.json();
 
   return (
