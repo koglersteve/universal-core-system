@@ -1,8 +1,22 @@
-// src/hooks/useFeed.ts
 "use client";
 
 import { useEffect, useState } from "react";
-import { LaffLabApi, type FeedItem, type FeedResponse } from "@/lib/api";
+import { LaffLabApi } from "@/lib/api";
+
+// ---------------------------------------------
+// Local types (based on backend feed response)
+// ---------------------------------------------
+export type FeedItem = {
+  id: string;
+  content: string;
+  createdAt: string;
+  author?: { username?: string };
+};
+
+export type FeedResponse = {
+  items: FeedItem[];
+  nextCursor: string | null;
+};
 
 type UseFeedState = {
   items: FeedItem[];
