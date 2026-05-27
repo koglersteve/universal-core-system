@@ -2,16 +2,18 @@
 
 import { LaffLabApi } from "@/lib/api";
 
-// Local types (same as useFeed)
+// Local types (updated to match backend)
 export type FeedItem = {
   id: string;
-  content: string;
-  createdAt: string;
-  author?: { username?: string };
+  text: string;
+  tags?: string[];
+  isFavorite?: boolean;
+  score?: number;
+  mediaUrl?: string;
 };
 
 export type FeedResponse = {
-  items: FeedItem[];
+  posts: FeedItem[];
   nextCursor: string | null;
 };
 
@@ -21,5 +23,5 @@ export async function getFeed(): Promise<FeedItem[]> {
     limit: 10,
   });
 
-  return data.items;
+  return data.posts;
 }
