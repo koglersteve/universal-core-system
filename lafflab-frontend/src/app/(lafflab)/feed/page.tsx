@@ -11,5 +11,6 @@ export default async function Page() {
     limit: 10,
   });
 
-  return <FeedShell initialFeed={data.items} />;
+  // Backend returns { posts: [...] }
+  return <FeedShell initialFeed={data.posts} />;
 }
