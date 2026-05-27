@@ -1,23 +1,26 @@
+// lafflab-frontend/src/store/useFeedStore.ts
+
+"use client";
+
 import { create } from "zustand";
 import { LaffLabApi } from "@/lib/api";
 
-// ---------------------------------------------
-// Local types (same as useFeed + server/feed)
-// ---------------------------------------------
 export type FeedItem = {
   id: string;
-  content: string;
-  createdAt: string;
-  author?: { username?: string };
+  text: string;
+  tags?: string[];
+  isFavorite?: boolean;
+  score?: number;
+  mediaUrl?: string;
 };
 
 export type FeedResponse = {
-  items: FeedItem[];
+  posts: FeedItem[];
   nextCursor: string | null;
 };
 
-type FeedState = {
-  posts: FeedItem[];
+type FeedStore = {
+  items: FeedItem[];
   cursor: string | null;
   loading: boolean;
   error: string | null;
@@ -26,8 +29,8 @@ type FeedState = {
   loadMore: () => Promise<void>;
 };
 
-export const useFeedStore = create<FeedState>((set, get) => ({
-  posts: [],
+export const useFeedStore = create<FeedStore>((set, get) => ({
+  items: [],
   cursor: null,
   loading: false,
   error: null,
@@ -42,19 +45,21 @@ export const useFeedStore = create<FeedState>((set, get) => ({
       });
 
       set({
-        posts: data.items,
+        items: data.posts,
         cursor: data.nextCursor,
         loading: false,
-        error: null,
       });
     } catch (err) {
-      set({ loading: false, error: "Failed to load feed" });
+      set({
+        loading: false,
+        error: "Failed to load feed",
+      });
     }
   },
 
   loadMore: async () => {
-    const { cursor, posts } = get();
-    if (!cursor) return;
+    const { cursor, loading, items } = get();
+    if (loading || !cursor) return;
 
     set({ loading: true });
 
@@ -66,13 +71,15 @@ export const useFeedStore = create<FeedState>((set, get) => ({
       });
 
       set({
-        posts: [...posts, ...data.items],
+        items: [...items, ...data.posts],
         cursor: data.nextCursor,
         loading: false,
-        error: null,
       });
     } catch (err) {
-      set({ loading: false, error: "Failed to load more posts" });
+      set({
+        loading: false,
+        error: "Failed to load more feed",
+      });
     }
   },
 }));
