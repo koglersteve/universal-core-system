@@ -1,12 +1,22 @@
 // src/lib/api.ts
 
 // ---------------------------------------------
-// Backend base URL resolution
+// Backend base URL resolution (safe + correct)
 // ---------------------------------------------
-const API_BASE =
+
+// 1. Prefer explicit env vars
+let API_BASE =
   process.env.NEXT_PUBLIC_BACKEND_URL ??
   process.env.NEXT_PUBLIC_API_URL ??
-  "https://universal-core-backend-production.up.railway.app";
+  "http://universal-core-backend-production.up.railway.app";
+
+// 2. Normalize: remove trailing slash
+API_BASE = API_BASE.replace(/\/+$/, "");
+
+// 3. Force HTTP for Railway default domains (they do NOT support HTTPS)
+if (API_BASE.includes("railway.app") && API_BASE.startsWith("https://")) {
+  API_BASE = API_BASE.replace("https://", "http://");
+}
 
 // ---------------------------------------------
 // Core GET wrapper
