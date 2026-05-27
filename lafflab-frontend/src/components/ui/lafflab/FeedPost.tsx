@@ -1,23 +1,23 @@
 "use client";
 
 import React from "react";
+import { LaffLabApi } from "@/lib/api";
 
 export default function FeedPost({ post }) {
   const handleReaction = async (emoji: string) => {
-    await fetch("/api/reactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        postId: post.id,
-        reaction: emoji,
-      }),
-    });
+    try {
+      await LaffLabApi.react(post.id, emoji);
+    } catch (err) {
+      console.error("Reaction failed:", err);
+    }
   };
 
   return (
     <div style={{ padding: 16, background: "#fff", borderRadius: 12 }}>
+      {/* Backend uses `text`, not `content` */}
       {post.text && <p>{post.text}</p>}
 
+      {/* Optional media support */}
       {post.mediaUrl && (
         <img
           src={post.mediaUrl}

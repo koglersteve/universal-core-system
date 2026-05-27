@@ -1,12 +1,16 @@
+// src/app/(lafflab)/feed/page.tsx
+
+import { LaffLabApi } from "@/lib/api";
+import FeedShell from "./FeedShell";
+
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/core/lafflab/favorites?userId=USER_ID_HERE`,
-    { cache: "no-store" }
-  );
+  const data = await LaffLabApi.fetchFeed({
+    app: "lafflab",
+    limit: 10,
+  });
 
-  const data = await res.json();
-
-  return (
-    <pre>{JSON.stringify(data.favorites, null, 2)}</pre>
-  );
+  // Backend returns { posts: [...] }
+  return <FeedShell initialFeed={data.posts} />;
 }

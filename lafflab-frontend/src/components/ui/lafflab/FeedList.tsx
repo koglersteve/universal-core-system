@@ -1,3 +1,4 @@
+// src/components/ui/lafflab/FeedList.tsx
 "use client";
 
 import React from "react";

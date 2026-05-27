@@ -47,20 +47,32 @@ async function post(path: string, body?: any) {
 // ---------------------------------------------
 export const LaffLabApi = {
   // -----------------------------
-  // FEED (cursor‑based pagination)
+  // FEED (normalized to { posts, nextCursor })
   // -----------------------------
-  fetchFeed: (params?: { app?: string; cursor?: string | null; limit?: number }) => {
+  fetchFeed: async (params?: {
+    app?: string;
+    cursor?: string | null;
+    limit?: number;
+  }) => {
     const search = new URLSearchParams();
 
-    // Default app = lafflab
     search.set("app", params?.app ?? "lafflab");
-
     if (params?.cursor) search.set("cursor", params.cursor);
     if (params?.limit) search.set("limit", String(params.limit));
 
-    const query = search.toString();
-    return get(`/core/feed?${query}`);
+    const data = await get(`/core/feed?${search.toString()}`);
+
+    return {
+      posts: Array.isArray(data.posts) ? data.posts : [],
+      nextCursor: data.nextCursor ?? null,
+    };
   },
+
+  // -----------------------------
+  // REACTIONS
+  // -----------------------------
+  react: (postId: string, reaction: string) =>
+    post("/core/reactions/toggle", { postId, reaction }),
 
   // -----------------------------
   // POSTS
