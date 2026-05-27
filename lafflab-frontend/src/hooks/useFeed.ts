@@ -4,17 +4,19 @@ import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 
 // ---------------------------------------------
-// Local types (based on backend feed response)
+// Local types (based on NEW backend feed response)
 // ---------------------------------------------
 export type FeedItem = {
   id: string;
-  content: string;
-  createdAt: string;
-  author?: { username?: string };
+  text: string;
+  tags?: string[];
+  isFavorite?: boolean;
+  score?: number;
+  mediaUrl?: string;
 };
 
 export type FeedResponse = {
-  items: FeedItem[];
+  posts: FeedItem[];
   nextCursor: string | null;
 };
 
@@ -46,8 +48,8 @@ export function useFeed() {
         if (cancelled) return;
 
         setState({
-          items: data.items,
-          cursor: data.nextCursor,
+          items: data.posts,       // ← FIXED
+          cursor: data.nextCursor, // ← FIXED
           loading: false,
           error: null,
         });
