@@ -54,3 +54,30 @@ model History {
   postId    String
   viewedAt  DateTime @default(now())
 }
+
+//
+// Added models required by your backend
+//
+
+model Reaction {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  emoji     String?
+  createdAt DateTime @default(now())
+}
+
+model Impression {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  type      String
+  createdAt DateTime @default(now())
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventType String
+  payload   Json
+  createdAt DateTime @default(now())
+}

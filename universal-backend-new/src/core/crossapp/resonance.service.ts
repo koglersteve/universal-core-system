@@ -2,9 +2,14 @@ import type { ResonanceContext, ResonanceResult } from "./crossapp.types.js";
 import { getOSState } from "./os/os-engine.js";
 
 export function computeResonance(context: ResonanceContext): ResonanceResult {
-  const os = getOSState();
+  // FIX 1: pass userId
+  const os = getOSState(context.userId);
 
-  const base = os.harmony + os.energy + os.tempo;
+  // FIX 2: access core.*
+  const base =
+    os.core.harmony.score +
+    os.core.energy.level +
+    os.core.tempo.bpm;
 
   const score = Math.max(1, Math.floor(base / 3));
 
