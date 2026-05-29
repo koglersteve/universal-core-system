@@ -1,4 +1,4 @@
-import type { ResonanceContext, ResonanceResult } from "../crossapp.types";
+import type { ResonanceContext, ResonanceResult } from "../crossapp.types.js";
 
 export type HarmonySnapshot = {
   score: number; // -1 to 1

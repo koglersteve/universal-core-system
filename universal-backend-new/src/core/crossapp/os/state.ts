@@ -1,5 +1,5 @@
-import type { HarmonySnapshot } from "./harmony";
-import type { ResonanceResult } from "../crossapp.types";
+import type { HarmonySnapshot } from "./harmony.js";
+import type { ResonanceResult } from "../crossapp.types.js";
 
 export type OSMode = "calm" | "excited" | "tense";
 

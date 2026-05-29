@@ -1,6 +1,6 @@
-import type { EmotionalOSSnapshot } from "./os-engine";
-import type { BoundarySnapshot } from "./boundary";
-import { Boundary } from "./boundary";
+import type { EmotionalOSSnapshot } from "./os-engine.js";
+import type { BoundarySnapshot } from "./boundary.js";
+import { Boundary } from "./boundary.js";
 
 export type EthicsSnapshot = {
   risk: "low" | "medium" | "high";

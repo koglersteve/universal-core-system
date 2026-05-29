@@ -1,4 +1,8 @@
-import type { EmotionalOSSnapshot } from "./os-engine";
+import type { EmotionalOSSnapshot } from "./os-engine.js";
+
+// small helper to reuse Emotion logic without circular import
+import type { EmotionSnapshot } from "./emotion.js";
+import { Emotion as EmotionModule } from "./emotion.js";
 
 export type EnergySnapshot = {
   level: "low" | "medium" | "high";
@@ -7,10 +11,8 @@ export type EnergySnapshot = {
 
 export class Energy {
   static derive(os: EmotionalOSSnapshot): EnergySnapshot {
-    const { tempo, emotion } = {
-      tempo: os.tempo,
-      emotion: EmotionFallback(os),
-    };
+    const tempo = os.tempo;
+    const emotion = EmotionFallback(os);
 
     if (tempo.band === "fast" || emotion.arousal === "high") {
       return {
@@ -41,10 +43,6 @@ export class Energy {
     };
   }
 }
-
-// small helper to reuse Emotion logic without circular import
-import type { EmotionSnapshot } from "./emotion";
-import { Emotion as EmotionModule } from "./emotion";
 
 function EmotionFallback(os: EmotionalOSSnapshot): EmotionSnapshot {
   return EmotionModule.derive(os);

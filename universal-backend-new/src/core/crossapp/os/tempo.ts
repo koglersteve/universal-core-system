@@ -17,8 +17,8 @@ export class Tempo {
     const cutoff = now - this.windowMs;
     const recent = this.events.filter((t) => t >= cutoff);
     const perMinute = recent.length;
-    let band: TempoSnapshot["band"] = "normal";
 
+    let band: TempoSnapshot["band"] = "normal";
     if (perMinute <= 5) band = "slow";
     else if (perMinute >= 20) band = "fast";
 

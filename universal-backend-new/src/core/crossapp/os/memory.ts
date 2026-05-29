@@ -1,4 +1,4 @@
-import type { ResonanceContext, ResonanceResult } from "../crossapp.types";
+import type { ResonanceContext, ResonanceResult } from "../crossapp.types.js";
 
 export type MemoryEvent = {
   postId: string;
@@ -19,6 +19,7 @@ export class Memory {
 
   static update(ctx: ResonanceContext, res: ResonanceResult) {
     const list = this.perUser.get(ctx.userId) ?? [];
+
     const next: MemoryEvent[] = [
       {
         postId: ctx.postId,

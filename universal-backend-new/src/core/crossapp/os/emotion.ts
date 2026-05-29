@@ -1,4 +1,4 @@
-import type { EmotionalOSSnapshot } from "./os-engine";
+import type { EmotionalOSSnapshot } from "./os-engine.js";
 
 export type EmotionSnapshot = {
   valence: "positive" | "neutral" | "negative";

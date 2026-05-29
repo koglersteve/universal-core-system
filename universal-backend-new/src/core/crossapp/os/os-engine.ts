@@ -1,21 +1,22 @@
-import type { ResonanceContext, ResonanceResult } from "../crossapp.types";
-import { Attention } from "./attention";
-import { Intent } from "./intent";
-import { Harmony } from "./harmony";
-import { Identity } from "./identity";
-import { Memory } from "./memory";
-import { OSState } from "./state";
-import { Tempo } from "./tempo";
+import type { ResonanceContext, ResonanceResult } from "../crossapp.types.js";
 
-import { Behavior } from "./behavior";
-import { Boundary } from "./boundary";
-import { Cognitive } from "./cognitive";
-import { Emotion } from "./emotion";
-import { Energy } from "./energy";
-import { Ethics } from "./ethics";
-import { Persona } from "./persona";
-import { World } from "./world";
-import { Multiverse } from "./multiverse";
+import { Attention } from "./attention.js";
+import { Intent } from "./intent.js";
+import { Harmony } from "./harmony.js";
+import { Identity } from "./identity.js";
+import { Memory } from "./memory.js";
+import { OSState } from "./state.js";
+import { Tempo } from "./tempo.js";
+
+import { Behavior } from "./behavior.js";
+import { Boundary } from "./boundary.js";
+import { Cognitive } from "./cognitive.js";
+import { Emotion } from "./emotion.js";
+import { Energy } from "./energy.js";
+import { Ethics } from "./ethics.js";
+import { Persona } from "./persona.js";
+import { World } from "./world.js";
+import { Multiverse } from "./multiverse.js";
 
 export type EmotionalOSSnapshot = {
   attention: ReturnType<typeof Attention.snapshot>;
@@ -75,4 +76,12 @@ export class EmotionalOS {
       multiverse: Multiverse.derive(core),
     };
   }
+}
+
+/**
+ * Required by resonance.service.ts
+ * This exposes the current OS state for any module that needs it.
+ */
+export function getOSState(userId: string): EmotionalOSView {
+  return EmotionalOS.snapshot(userId);
 }

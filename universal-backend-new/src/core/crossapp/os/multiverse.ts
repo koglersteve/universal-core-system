@@ -1,4 +1,4 @@
-import type { EmotionalOSSnapshot } from "./os-engine";
+import type { EmotionalOSSnapshot } from "./os-engine.js";
 
 export type AppMood = {
   appId: string;
@@ -39,3 +39,4 @@ export class Multiverse {
     };
   }
 }
+
