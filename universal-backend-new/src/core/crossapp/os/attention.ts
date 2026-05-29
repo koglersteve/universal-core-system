@@ -1,4 +1,4 @@
-import type { ResonanceContext, ResonanceResult } from "../crossapp.types";
+import type { ResonanceContext, ResonanceResult } from "../crossapp.types.js";
 
 export type AttentionSnapshot = {
   lastPostId: string | null;
@@ -10,6 +10,7 @@ export class Attention {
 
   static update(ctx: ResonanceContext, _res: ResonanceResult) {
     const key = ctx.userId;
+
     const prev = this.perUser.get(key) ?? {
       lastPostId: null,
       focusCount: 0,
