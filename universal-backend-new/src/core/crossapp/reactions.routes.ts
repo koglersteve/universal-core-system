@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { CrossAppService } from "@/core/crossapp/crossapp.service";
-import type { ReactionEmojiKey } from "@/core/crossapp/crossapp.types";
+import { CrossAppService } from "../crossapp/crossapp.service.js";
+import type { ReactionEmojiKey } from "../crossapp/crossapp.types.js";
 
 const reactions = new Hono();
 
@@ -16,6 +16,7 @@ const ALLOWED_EMOJIS: ReactionEmojiKey[] = [
 
 reactions.post("/:postId", async (c) => {
   const postId = c.req.param("postId");
+
   const body = (await c.req.json().catch(() => ({}))) as {
     userId?: string;
     emoji?: string;
