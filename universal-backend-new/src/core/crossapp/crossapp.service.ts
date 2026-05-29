@@ -50,7 +50,7 @@ export const CrossAppService = {
     const context = buildResonanceContext(payload, "reaction", payload.emoji);
     const resonance = computeResonance(context);
 
-    const reaction = (await prisma.reaction.create({
+    const reaction = (await (prisma as any).reaction.create({
       data: {
         userId: payload.userId,
         postId: payload.postId,
@@ -78,7 +78,7 @@ export const CrossAppService = {
     counts: Record<ReactionEmojiKey, number>;
     latest: StoredReaction[];
   }> {
-    const reactions = (await prisma.reaction.findMany({
+    const reactions = (await (prisma as any).reaction.findMany({
       where: { postId },
       orderBy: { createdAt: "desc" },
       take: 100,
@@ -117,7 +117,7 @@ export const CrossAppService = {
     const context = buildResonanceContext(payload, "impression");
     const resonance = computeResonance(context);
 
-    const impression = (await prisma.impression.create({
+    const impression = (await (prisma as any).impression.create({
       data: {
         userId: payload.userId,
         postId: payload.postId,
@@ -143,7 +143,7 @@ export const CrossAppService = {
     total: number;
     latest: StoredImpression[];
   }> {
-    const impressions = (await prisma.impression.findMany({
+    const impressions = (await (prisma as any).impression.findMany({
       where: { postId },
       orderBy: { createdAt: "desc" },
       take: 100,
@@ -155,5 +155,9 @@ export const CrossAppService = {
       total: impressions.length,
       latest: impressions,
     };
+  },
+
+  async handleImpression(payload: ImpressionPayload) {
+    return this.addImpression(payload);
   },
 };
