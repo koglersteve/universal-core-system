@@ -1,4 +1,4 @@
-iimport type { ResonanceContext, ResonanceResult } from "../crossapp.types.js";
+import type { ResonanceContext, ResonanceResult } from "../crossapp.types.js";
 
 export type IdentitySnapshot = {
   emojiCounts: Record<string, number>;
