@@ -1,24 +1,34 @@
-// src/core/apps/registry.ts
-
 import type { AppDefinition, AppId } from "./app-types.js";
 
-export const APP_REGISTRY: AppDefinition[] = [
-  {
-    id: "lafflab",
-    name: "LAFFlab",
-    slug: "lafflab",
-    enabled: true,
-    isPrimary: true,
-  },
-  // Add additional apps here as they come online
-  // {
-  //   id: "moodpad",
-  //   name: "MoodPad",
-  //   slug: "moodpad",
-  //   enabled: true,
-  // },
-];
+/**
+ * Compact app definitions.
+ * Easy to maintain, scalable, and avoids bloated arrays.
+ */
+const APP_DEFINITIONS: Record<AppId, Omit<AppDefinition, "id">> = {
+  lafflab:       { name: "LAFFlab",       slug: "lafflab",       enabled: true,  isPrimary: true },
+  mememydog:     { name: "MemeMyDog",     slug: "mememydog",     enabled: true },
+  mememycat:     { name: "MemeMyCat",     slug: "mememycat",     enabled: true },
+  "hoa-meme":    { name: "HOA Meme",      slug: "hoa-meme",      enabled: true },
+  dramanextdoor: { name: "DramaNextDoor", slug: "dramanextdoor", enabled: true },
+  idlyily:       { name: "IDLYILY",       slug: "idlyily",       enabled: true },
+  moodcheck:     { name: "MoodCheck",     slug: "moodcheck",     enabled: true },
+  northstar:     { name: "NorthStar",     slug: "northstar",     enabled: true },
+  "aurelia-buildlab": { name: "Aurelia BuildLab", slug: "aurelia-buildlab", enabled: true },
+};
 
+/**
+ * Convert compact map → full registry array.
+ */
+export const APP_REGISTRY: AppDefinition[] = Object.entries(APP_DEFINITIONS).map(
+  ([id, def]) => ({
+    id: id as AppId,
+    ...def,
+  })
+);
+
+/**
+ * Registry helpers
+ */
 export function getAllApps(): AppDefinition[] {
   return APP_REGISTRY;
 }

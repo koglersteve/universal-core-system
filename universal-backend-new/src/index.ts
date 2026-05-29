@@ -1,60 +1,45 @@
 import { Hono } from "hono";
-import { serve } from "@hono/node-server";
 
-// ❌ REMOVE dotenv in production
-// dotenv.config();
+// Core middleware
+import { universeMiddleware } from "@/core/middleware/universe.middleware";
+import { emotionalOSLogger } from "@/core/middleware/os-logger.middleware";
 
-type Post = {
-  id: string;
-  text: string;
-  tags: string[];
-  isFavorite?: boolean;
-  score?: number;
-};
+// Core universal routes
+import feedRoutes from "@/core/routes/feed.routes";
+import favoritesRoutes from "@/core/routes/favorites.routes";
+import historyRoutes from "@/core/routes/history.routes";
+import profileRoutes from "@/core/routes/profile.routes";
+import settingsRoutes from "@/core/routes/settings.routes";
+import searchRoutes from "@/core/routes/search.routes";
 
-const posts: Post[] = [
-  {
-    id: "1",
-    text: "Why did the developer go broke? Because they used up all their cache.",
-    tags: ["dev", "jokes", "cache"],
-    isFavorite: true,
-    score: 10,
-  },
-  {
-    id: "2",
-    text: "I told my computer I needed a break, and it said: 'You seem stressed, want to enter safe mode?'",
-    tags: ["computer", "jokes"],
-    isFavorite: false,
-    score: 7,
-  },
-  {
-    id: "3",
-    text: "Debugging: Being the detective in a crime movie where you are also the murderer.",
-    tags: ["debugging", "dev"],
-    isFavorite: true,
-    score: 15,
-  },
-];
+// Cross-app emotional engine routes
+import reactionsRoutes from "@/core/routes/reactions.routes";
+import impressionsRoutes from "@/core/routes/impressions.routes";
+
+// Emotional OS Dashboard route
+import osRoutes from "@/core/routes/os.routes";
 
 const app = new Hono();
 
-app.get("/", (c) => {
-  return c.json({
-    message: "Universal Backend online",
-    updatedAt: Date.now(),
-  });
-});
+// ⭐ Universe context FIRST
+app.use("*", universeMiddleware);
 
-// ... all your routes unchanged ...
+// ⭐ Emotional OS Logging SECOND
+app.use("*", emotionalOSLogger);
 
-// ⭐ Correct port handling
-const port = Number(process.env.PORT) || 8080;
+// ⭐ Core universal routes
+app.route("/core/feed", feedRoutes);
+app.route("/core/favorites", favoritesRoutes);
+app.route("/core/history", historyRoutes);
+app.route("/core/profile", profileRoutes);
+app.route("/core/settings", settingsRoutes);
+app.route("/core/search", searchRoutes);
 
-// ⭐ Correct host binding for Railway
-console.log(`Universal backend listening on port ${port}`);
+// ⭐ Cross-app emotional engine routes
+app.route("/core/reactions", reactionsRoutes);
+app.route("/core/impressions", impressionsRoutes);
 
-serve({
-  fetch: app.fetch,
-  port,
-  hostname: "0.0.0.0",
-});
+// ⭐ Emotional OS Dashboard
+app.route("/core/os", osRoutes);
+
+export default app;

@@ -1,170 +1,56 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-//
-// ─────────────────────────────────────────────────────────────
-//   UNIVERSAL CORE MODELS (APP-AGNOSTIC, SCALE TO 100+ APPS)
-// ─────────────────────────────────────────────────────────────
-//
+generator client {
+  provider = "prisma-client-js"
+}
 
 model User {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  screenName String
-  avatarUrl  String?
-  password   String
-  createdAt  DateTime @default(now())
-
-  posts               Post[]
-  passwordResetTokens PasswordResetToken[]
-  settings            UserSettings?
-
-  reactions   Reaction[]
-  impressions Impression[]
-  events      AnalyticsEvent[]
-
-  favorites Favorite[]
-  history   History[]
-}
-
-model UserSettings {
-  userId    String   @id
-  theme     String?  @default("light")
-  language  String?  @default("en")
-  updatedAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-}
-
-model PasswordResetToken {
-  token     String   @id
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  expires   DateTime
+  id        String   @id @default(cuid())
+  username  String   @unique
+  name      String?
+  avatarUrl String?
+  bio       String?
   createdAt DateTime @default(now())
-}
 
-//
-// Universal content model
-// Any app can use this for posts, clips, jokes, goals, etc.
-// app        = which app owns this content (e.g. "lafflab", "drama", "northstar")
-// kind       = logical type within the app (e.g. "post", "clip", "joke", "goal")
-// metadata   = app-specific JSON payload
-//
+  posts      Post[]
+  favorites  Favorite[]
+  histories  History[]
+}
 
 model Post {
-  id        String   @id @default(cuid())
-  creatorId String
-  createdAt DateTime @default(now())
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  tags      String[]
+  score     Int       @default(0)
+  createdAt DateTime  @default(now())
 
-  app       String          // app identifier
-  kind      String          // app-level type (post, clip, joke, goal, etc.)
-  text      String?
-  mediaUrl  String?
-  score     Int      @default(0)
-  metadata  Json?           // app-specific data
+  author    User?     @relation(fields: [authorId], references: [id])
+  authorId  String?
 
-  creator User @relation(fields: [creatorId], references: [id])
-
-  reactions   Reaction[]
-  impressions Impression[]
-  events      AnalyticsEvent[]
-  favorites   Favorite[]
-  history     History[]
+  favorites Favorite[]
+  histories History[]
 }
-
-//
-// Universal favorites
-// Any app, any entity type, any target
-// app        = which app
-// targetType = what kind of thing (e.g. "post", "clip", "goal")
-// targetId   = id of the thing (usually Post.id, but not required)
-//
 
 model Favorite {
   id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  app       String
-  targetType String
-  targetId  String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
-
-  // Optional link to Post if targetType = "post" and targetId = Post.id
-  post Post? @relation(fields: [targetId], references: [id])
+  @@unique([userId, postId])
 }
-
-//
-// Universal history
-// Any app, any entity type, any target
-//
 
 model History {
-  id         String   @id @default(cuid())
-  userId     String
-  app        String
-  targetType String
-  targetId   String
-  viewedAt   DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-
-  // Optional link to Post if targetType = "post" and targetId = Post.id
-  post Post? @relation(fields: [targetId], references: [id])
-}
-
-//
-// Universal reactions (emotional OS)
-//
-
-model Reaction {
   id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
   userId    String
+  post      Post     @relation(fields: [postId], references: [id])
   postId    String
-  app       String
-  emoji     String
-  timestamp DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
-}
-
-//
-// Universal impressions (views, exposures)
-//
-
-model Impression {
-  id        String   @id @default(cuid())
-  userId    String
-  postId    String
-  app       String
-  timestamp DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
-}
-
-//
-// Universal analytics events
-//
-
-model AnalyticsEvent {
-  id        String   @id @default(cuid())
-  type      String
-  userId    String
-  app       String
-  postId    String?
-  emoji     String?
-  metadata  Json?
-  timestamp DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-  post Post? @relation(fields: [postId], references: [id])
+  viewedAt  DateTime @default(now())
 }
