@@ -64,6 +64,7 @@ model Reaction {
   userId    String
   postId    String
   emoji     String?
+  app       String?
   createdAt DateTime @default(now())
 }
 
@@ -72,6 +73,7 @@ model Impression {
   userId    String
   postId    String
   type      String
+  app       String?
   createdAt DateTime @default(now())
 }
 
@@ -79,5 +81,6 @@ model AnalyticsEvent {
   id        String   @id @default(cuid())
   eventType String
   payload   Json
+  type      String?
   createdAt DateTime @default(now())
 }

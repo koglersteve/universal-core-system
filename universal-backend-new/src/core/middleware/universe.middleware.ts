@@ -1,5 +1,5 @@
 import type { Context, Next } from "hono";
-import type { UniverseContext } from "./universe.types";
+import type { UniverseContext } from "./universe.types.js";
 
 export const universeMiddleware = async (c: Context, next: Next) => {
   const universe: UniverseContext = {
@@ -9,8 +9,8 @@ export const universeMiddleware = async (c: Context, next: Next) => {
     method: c.req.method,
   };
 
-  // Attach universe context to request
   c.set("universe", universe);
 
   await next();
 };
+

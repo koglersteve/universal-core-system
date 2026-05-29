@@ -1,23 +1,23 @@
 import { Hono } from "hono";
 
 // Core middleware
-import { universeMiddleware } from "@/core/middleware/universe.middleware";
-import { emotionalOSLogger } from "@/core/middleware/os-logger.middleware";
+import { universeMiddleware } from "@/core/middleware/universe.middleware.js";
+import { emotionalOSLogger } from "@/core/middleware/os-logger.middleware.js";
 
 // Core universal routes
-import feedRoutes from "@/core/routes/feed.routes";
-import favoritesRoutes from "@/core/routes/favorites.routes";
-import historyRoutes from "@/core/routes/history.routes";
-import profileRoutes from "@/core/routes/profile.routes";
-import settingsRoutes from "@/core/routes/settings.routes";
-import searchRoutes from "@/core/routes/search.routes";
+import feedRoutes from "@/core/routes/feed.routes.js";
+import favoritesRoutes from "@/core/routes/favorites.routes.js";
+import historyRoutes from "@/core/routes/history.routes.js";
+import profileRoutes from "@/core/routes/profile.routes.js";
+import settingsRoutes from "@/core/routes/settings.routes.js";
+import searchRoutes from "@/core/routes/search.routes.js";
 
 // Cross-app emotional engine routes
-import reactionsRoutes from "@/core/routes/reactions.routes";
-import impressionsRoutes from "@/core/routes/impressions.routes";
+import reactionsRoutes from "@/core/routes/reactions.routes.js";
+import impressionsRoutes from "@/core/routes/impressions.routes.js";
 
 // Emotional OS Dashboard route
-import osRoutes from "@/core/routes/os.routes";
+import osRoutes from "@/core/routes/os.routes.js";
 
 const app = new Hono();
 

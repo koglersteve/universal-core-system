@@ -2,13 +2,13 @@ import type { ResonanceContext, ResonanceResult } from "./crossapp.types.js";
 import { getOSState } from "./os/os-engine.js";
 
 export function computeResonance(context: ResonanceContext): ResonanceResult {
-  // FIX 1: pass userId
+  // Use the userId to get a personalized OS view
   const os = getOSState(context.userId);
 
-  // FIX 2: access core.*
+  // harmony and tempo come from core, energy comes from the derived view
   const base =
     os.core.harmony.score +
-    os.core.energy.level +
+    os.energy.level +
     os.core.tempo.bpm;
 
   const score = Math.max(1, Math.floor(base / 3));
@@ -28,6 +28,6 @@ export function computeResonance(context: ResonanceContext): ResonanceResult {
     magnitude,
     polarity,
     tags: ["emotional", "crossapp"],
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 }
