@@ -1,19 +1,13 @@
+// src/core/routes/os.routes.ts
 import { Hono } from "hono";
-import { EmotionalOS } from "@/core/crossapp/os/os-engine";
+import { EmotionalOS } from "@/core/crossapp/os/os-engine.js";
 
 const osRoutes = new Hono();
 
-// GET /core/os/state?userId=...
-osRoutes.get("/state", (c) => {
-  const userId = c.req.query("userId") ?? "anonymous";
-
-  const view = EmotionalOS.snapshot(userId);
-
-  return c.json({
-    ok: true,
-    userId,
-    os: view,
-  });
+osRoutes.get("/state/:userId", (c) => {
+  const userId = c.req.param("userId");
+  const snapshot = EmotionalOS.snapshot(userId);
+  return c.json(snapshot);
 });
 
 export default osRoutes;

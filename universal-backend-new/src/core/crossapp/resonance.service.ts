@@ -1,9 +1,11 @@
+// src/core/crossapp/resonance.service.ts
 import type { ResonanceContext, ResonanceResult } from "./crossapp.types.js";
 import { getOSState } from "./os/os-engine.js";
 
 export function computeResonance(context: ResonanceContext): ResonanceResult {
   const os = getOSState(context.userId);
 
+  // Force numeric values
   const base =
     Number(os.core.harmony.score) +
     Number(os.energy.level) +
@@ -26,6 +28,6 @@ export function computeResonance(context: ResonanceContext): ResonanceResult {
     magnitude,
     polarity,
     tags: ["emotional", "crossapp"],
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString()
   };
 }

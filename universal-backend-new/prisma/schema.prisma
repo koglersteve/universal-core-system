@@ -56,7 +56,7 @@ model History {
 }
 
 //
-// Added models required by your backend
+// Cross‑app emotional engine models
 //
 
 model Reaction {
@@ -72,7 +72,7 @@ model Impression {
   id        String   @id @default(cuid())
   userId    String
   postId    String
-  type      String
+  type      String?   // <-- FIXED
   app       String?
   createdAt DateTime @default(now())
 }
@@ -82,5 +82,6 @@ model AnalyticsEvent {
   eventType String
   payload   Json
   type      String?
+  userId    String?   // <-- FIXED
   createdAt DateTime @default(now())
 }
