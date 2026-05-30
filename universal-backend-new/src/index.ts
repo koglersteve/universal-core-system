@@ -1,3 +1,4 @@
+// src/index.ts
 import { Hono } from "hono";
 
 // Core middleware
@@ -12,22 +13,22 @@ import profileRoutes from "@/core/routes/profile.routes.js";
 import settingsRoutes from "@/core/routes/settings.routes.js";
 import searchRoutes from "@/core/routes/search.routes.js";
 
-// Cross-app emotional engine routes
-import reactionsRoutes from "@/core/routes/reactions.routes.js";
-import impressionsRoutes from "@/core/routes/impressions.routes.js";
+// Cross-app emotional engine routes (in crossapp/os)
+import reactionsRoutes from "@/core/crossapp/os/reactions.routes.js";
+import impressionsRoutes from "@/core/crossapp/os/impressions.routes.js";
 
 // Emotional OS Dashboard route
 import osRoutes from "@/core/routes/os.routes.js";
 
 const app = new Hono();
 
-// ⭐ Universe context FIRST
+// Universe context
 app.use("*", universeMiddleware);
 
-// ⭐ Emotional OS Logging SECOND
+// Emotional OS logging
 app.use("*", emotionalOSLogger);
 
-// ⭐ Core universal routes
+// Core universal routes
 app.route("/core/feed", feedRoutes);
 app.route("/core/favorites", favoritesRoutes);
 app.route("/core/history", historyRoutes);
@@ -35,11 +36,11 @@ app.route("/core/profile", profileRoutes);
 app.route("/core/settings", settingsRoutes);
 app.route("/core/search", searchRoutes);
 
-// ⭐ Cross-app emotional engine routes
+// Cross-app emotional engine routes
 app.route("/core/reactions", reactionsRoutes);
 app.route("/core/impressions", impressionsRoutes);
 
-// ⭐ Emotional OS Dashboard
+// Emotional OS Dashboard
 app.route("/core/os", osRoutes);
 
 export default app;
