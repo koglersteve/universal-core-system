@@ -1,37 +1,11 @@
 import { Hono } from "hono";
 
-// Core middleware
-import { universeMiddleware } from "@/core/middleware/universe.middleware.js";
-import { emotionalOSLogger } from "@/core/middleware/os-logger.middleware.js";
-
-// Core universal routes
-import feedRoutes from "@/core/routes/feed.routes.js";
-import favoritesRoutes from "@/core/routes/favorites.routes.js";
-import historyRoutes from "@/core/routes/history.routes.js";
-import profileRoutes from "@/core/routes/profile.routes.js";
-import settingsRoutes from "@/core/routes/settings.routes.js";
-import searchRoutes from "@/core/routes/search.routes.js";
-
-// Cross-app emotional engine routes
-import reactionsRoutes from "@/core/crossapp/reactions.routes.js";
-import impressionsRoutes from "@/core/crossapp/impressions.routes.js";
-
-// Emotional OS Dashboard
-import osRoutes from "@/core/routes/os.routes.js";
-
 const app = new Hono();
 
 /* -------------------------------------------------------
-   GLOBAL MIDDLEWARE
--------------------------------------------------------- */
-app.use("*", universeMiddleware);
-app.use("*", emotionalOSLogger);
-
-/* -------------------------------------------------------
-   ROOT + GLOBAL HEALTH CHECKS
+   ROOT + GLOBAL HEALTH CHECKS (SAFE, NO IMPORTS)
 -------------------------------------------------------- */
 
-// Root route
 app.get("/", (c) =>
   c.json({
     status: "Universal Backend Online",
@@ -40,7 +14,6 @@ app.get("/", (c) =>
   })
 );
 
-// Global health check
 app.get("/health", (c) =>
   c.json({
     ok: true,
@@ -51,22 +24,21 @@ app.get("/health", (c) =>
 );
 
 /* -------------------------------------------------------
-   ROUTE-SPECIFIC HEALTH CHECKS
+   ROUTE-SPECIFIC HEALTH CHECKS (SAFE, STATIC)
 -------------------------------------------------------- */
 
-app.get("/core/feed/health", (c) => c.json({ ok: true, route: "/core/feed" }));
-app.get("/core/favorites/health", (c) => c.json({ ok: true, route: "/core/favorites" }));
-app.get("/core/history/health", (c) => c.json({ ok: true, route: "/core/history" }));
-app.get("/core/profile/health", (c) => c.json({ ok: true, route: "/core/profile" }));
-app.get("/core/settings/health", (c) => c.json({ ok: true, route: "/core/settings" }));
-app.get("/core/search/health", (c) => c.json({ ok: true, route: "/core/search" }));
-
-app.get("/core/reactions/health", (c) => c.json({ ok: true, route: "/core/reactions" }));
-app.get("/core/impressions/health", (c) => c.json({ ok: true, route: "/core/impressions" }));
-app.get("/core/os/health", (c) => c.json({ ok: true, route: "/core/os" }));
+app.get("/core/feed/health", (c) => c.json({ ok: true }));
+app.get("/core/favorites/health", (c) => c.json({ ok: true }));
+app.get("/core/history/health", (c) => c.json({ ok: true }));
+app.get("/core/profile/health", (c) => c.json({ ok: true }));
+app.get("/core/settings/health", (c) => c.json({ ok: true }));
+app.get("/core/search/health", (c) => c.json({ ok: true }));
+app.get("/core/reactions/health", (c) => c.json({ ok: true }));
+app.get("/core/impressions/health", (c) => c.json({ ok: true }));
+app.get("/core/os/health", (c) => c.json({ ok: true }));
 
 /* -------------------------------------------------------
-   ROUTE SUMMARY (SUPER USEFUL)
+   ROUTE SUMMARY (SAFE)
 -------------------------------------------------------- */
 
 app.get("/core/routes", (c) =>
@@ -86,7 +58,33 @@ app.get("/core/routes", (c) =>
 );
 
 /* -------------------------------------------------------
-   MOUNT ACTUAL ROUTES
+   NOW IMPORT ROUTES (AFTER HEALTH CHECKS)
+-------------------------------------------------------- */
+
+import { universeMiddleware } from "@/core/middleware/universe.middleware.js";
+import { emotionalOSLogger } from "@/core/middleware/os-logger.middleware.js";
+
+import feedRoutes from "@/core/routes/feed.routes.js";
+import favoritesRoutes from "@/core/routes/favorites.routes.js";
+import historyRoutes from "@/core/routes/history.routes.js";
+import profileRoutes from "@/core/routes/profile.routes.js";
+import settingsRoutes from "@/core/routes/settings.routes.js";
+import searchRoutes from "@/core/routes/search.routes.js";
+
+import reactionsRoutes from "@/core/crossapp/reactions.routes.js";
+import impressionsRoutes from "@/core/crossapp/impressions.routes.js";
+
+import osRoutes from "@/core/routes/os.routes.js";
+
+/* -------------------------------------------------------
+   MIDDLEWARE
+-------------------------------------------------------- */
+
+app.use("*", universeMiddleware);
+app.use("*", emotionalOSLogger);
+
+/* -------------------------------------------------------
+   MOUNT ROUTES
 -------------------------------------------------------- */
 
 app.route("/core/feed", feedRoutes);
