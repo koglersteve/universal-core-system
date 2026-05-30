@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "@/shared/prisma/client";
+import { prisma } from "@/shared/prisma/client.js";
 
 const favorites = new Hono();
 

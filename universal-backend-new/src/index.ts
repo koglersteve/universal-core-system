@@ -14,8 +14,8 @@ import settingsRoutes from "@/core/routes/settings.routes.js";
 import searchRoutes from "@/core/routes/search.routes.js";
 
 // Cross-app emotional engine routes (in crossapp/os)
-import reactionsRoutes from "@/core/crossapp/os/reactions.routes.js";
-import impressionsRoutes from "@/core/crossapp/os/impressions.routes.js";
+import reactionsRoutes from "@/core/crossapp/reactions.routes.js";
+import impressionsRoutes from "@/core/crossapp/impressions.routes.js";
 
 // Emotional OS Dashboard route
 import osRoutes from "@/core/routes/os.routes.js";
