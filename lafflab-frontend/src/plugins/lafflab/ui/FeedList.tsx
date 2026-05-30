@@ -1,5 +1,8 @@
+"use client";
+
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { ReactionBar } from "./ReactionBar";
+import { LaffLabApi } from "@/lib/api";
 
 type FeedPost = {
   id: string;
@@ -34,43 +37,50 @@ type Props = {
 
 export const FeedList: React.FC<Props> = ({ refreshKey, onOpenProfile }) => {
   const [feed, setFeed] = useState<FeedPost[]>([]);
-  const [page, setPage] = useState(1);
+  const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
-  const loadPage = useCallback(
-    async (pageToLoad: number) => {
+  const loadMore = useCallback(
+    async () => {
+      if (loading || !hasMore) return;
+
+      setLoading(true);
+
       try {
-        setLoading(true);
+        const data = await LaffLabApi.fetchFeed({
+          cursor,
+          limit: 10,
+        });
 
-        const res = await fetch(`/core/feed?page=${pageToLoad}`);
-        const data = await res.json();
+        const items = data.items || [];
 
-        const posts = data.posts || [];
-
-        if (posts.length === 0) {
+        if (items.length === 0) {
           setHasMore(false);
         } else {
-          setFeed(prev => [...prev, ...posts]);
+          setFeed(prev => [...prev, ...items]);
+          setCursor(data.nextCursor ?? null);
+          if (!data.nextCursor) setHasMore(false);
         }
       } catch (err) {
-        console.error("Failed to load feed page", err);
+        console.error("Failed to load feed", err);
       }
 
       setLoading(false);
     },
-    []
+    [cursor, hasMore, loading]
   );
 
   // Reset feed when refreshKey changes
   useEffect(() => {
     setFeed([]);
-    setPage(1);
+    setCursor(null);
     setHasMore(true);
-    loadPage(1);
-  }, [refreshKey, loadPage]);
+    setLoading(true);
+    loadMore();
+  }, [refreshKey]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -80,9 +90,7 @@ export const FeedList: React.FC<Props> = ({ refreshKey, onOpenProfile }) => {
       entries => {
         const first = entries[0];
         if (first.isIntersecting && hasMore && !loading) {
-          const nextPage = page + 1;
-          setPage(nextPage);
-          loadPage(nextPage);
+          loadMore();
         }
       },
       { threshold: 1 }
@@ -91,7 +99,7 @@ export const FeedList: React.FC<Props> = ({ refreshKey, onOpenProfile }) => {
     observer.observe(loaderRef.current);
 
     return () => observer.disconnect();
-  }, [page, hasMore, loading, loadPage]);
+  }, [hasMore, loading, loadMore]);
 
   if (feed.length === 0 && loading) return <p>Loading feed…</p>;
   if (feed.length === 0 && !loading) return <p>No posts yet. Be the first to post!</p>;
