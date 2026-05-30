@@ -55,6 +55,10 @@ export const LaffLabApi = {
     return get(`/core/feed?${search.toString()}`);
   },
 
+  // REACTIONS — backend route exists and must be supported
+  react: (postId: string, reaction: string) =>
+    post("/core/reactions/toggle", { postId, reaction }),
+
   // POSTS
   getPosts: () => get("/core/posts"),
   getPost: (id: string) => get(`/core/posts/${id}`),
