@@ -1,22 +1,11 @@
-// src/lib/api.ts
-
 // ---------------------------------------------
-// Backend base URL resolution (safe + correct)
+// Backend base URL
 // ---------------------------------------------
-
-// 1. Prefer explicit env vars
 let API_BASE =
-  process.env.NEXT_PUBLIC_BACKEND_URL ??
   process.env.NEXT_PUBLIC_API_URL ??
-  "http://universal-core-backend-production.up.railway.app";
+  "https://universal-core-backend-production.up.railway.app";
 
-// 2. Normalize: remove trailing slash
 API_BASE = API_BASE.replace(/\/+$/, "");
-
-// 3. Force HTTP for Railway default domains (they do NOT support HTTPS)
-if (API_BASE.includes("railway.app") && API_BASE.startsWith("https://")) {
-  API_BASE = API_BASE.replace("https://", "http://");
-}
 
 // ---------------------------------------------
 // Core GET wrapper
@@ -53,84 +42,42 @@ async function post(path: string, body?: any) {
 }
 
 // ---------------------------------------------
-// Unified LAFFlab API (app‑aware)
+// Unified LAFFlab API (matches backend exactly)
 // ---------------------------------------------
 export const LaffLabApi = {
-  // -----------------------------
-  // FEED (normalized to { posts, nextCursor })
-  // -----------------------------
-  fetchFeed: async (params?: {
-    app?: string;
-    cursor?: string | null;
-    limit?: number;
-  }) => {
+  // FEED — backend returns { items, nextCursor }
+  fetchFeed: async (params?: { cursor?: string | null; limit?: number }) => {
     const search = new URLSearchParams();
 
-    search.set("app", params?.app ?? "lafflab");
     if (params?.cursor) search.set("cursor", params.cursor);
     if (params?.limit) search.set("limit", String(params.limit));
 
-    const data = await get(`/core/feed?${search.toString()}`);
-
-    return {
-      posts: Array.isArray(data.posts) ? data.posts : [],
-      nextCursor: data.nextCursor ?? null,
-    };
+    return get(`/core/feed?${search.toString()}`);
   },
 
-  // -----------------------------
-  // REACTIONS
-  // -----------------------------
-  react: (postId: string, reaction: string) =>
-    post("/core/reactions/toggle", { postId, reaction }),
-
-  // -----------------------------
   // POSTS
-  // -----------------------------
   getPosts: () => get("/core/posts"),
   getPost: (id: string) => get(`/core/posts/${id}`),
 
-  // -----------------------------
   // FAVORITES
-  // -----------------------------
   getFavorites: () => get("/core/favorites"),
 
-  // -----------------------------
   // EXPLORE
-  // -----------------------------
   getExplore: () => get("/core/explore"),
 
-  // -----------------------------
-  // TRENDING (app‑specific)
-  // -----------------------------
-  getTrending: (app: string = "lafflab") => {
-    const search = new URLSearchParams();
-    search.set("app", app);
-    return get(`/core/trending?${search.toString()}`);
-  },
+  // TRENDING
+  getTrending: () => get(`/core/trending?app=lafflab`),
 
-  // -----------------------------
   // SEARCH
-  // -----------------------------
-  searchPosts: (q: string) => {
-    const search = new URLSearchParams();
-    search.set("q", q);
-    return get(`/core/search?${search.toString()}`);
-  },
+  searchPosts: (q: string) => get(`/core/search?q=${encodeURIComponent(q)}`),
 
-  // -----------------------------
-  // PROFILE (logged‑in user)
-  // -----------------------------
+  // PROFILE
   getProfile: () => get("/core/profile"),
 
-  // -----------------------------
   // HEALTH
-  // -----------------------------
   getHealth: () => get("/core/health"),
 
-  // -----------------------------
   // Raw helpers
-  // -----------------------------
   rawGet: get,
   rawPost: post,
 };
