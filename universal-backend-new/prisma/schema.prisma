@@ -82,7 +82,7 @@ model AnalyticsEvent {
   eventType String
   payload   Json
   type      String?
-  userId    String?
-  app       String?
+  userId    String?   //
+  app       String?   //
   createdAt DateTime @default(now())
 }
