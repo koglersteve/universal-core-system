@@ -1,8 +1,8 @@
 import prisma from "@/shared/prisma.js";
 
 export type AnalyticsEventPayload = {
-  eventType: string;                     // REQUIRED
-  payload: Record<string, unknown>;      // REQUIRED (Json)
+  eventType: string;
+  payload: Record<string, unknown>;
   type?: string;
   userId?: string;
   app?: string;
@@ -18,7 +18,7 @@ export class AnalyticsWorker {
     await prisma.analyticsEvent.create({
       data: {
         eventType,
-        payload: dataPayload,
+        payload: dataPayload as any,   // <-- FIXED
         type: type ?? null,
         userId: userId ?? null,
         app: app ?? null,
@@ -37,7 +37,7 @@ export class AnalyticsWorker {
         prisma.analyticsEvent.create({
           data: {
             eventType: e.eventType,
-            payload: e.payload,
+            payload: e.payload as any,   // <-- FIXED
             type: e.type ?? null,
             userId: e.userId ?? null,
             app: e.app ?? null,
