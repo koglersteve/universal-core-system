@@ -24,6 +24,7 @@ feed.get("/", async (c) => {
         select: {
           id: true,
           username: true,
+          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },
@@ -47,6 +48,7 @@ feed.get("/:id", async (c) => {
         select: {
           id: true,
           username: true,
+          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },

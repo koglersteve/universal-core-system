@@ -23,6 +23,7 @@ search.get("/", async (c) => {
         select: {
           id: true,
           username: true,
+          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },

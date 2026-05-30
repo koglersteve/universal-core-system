@@ -23,6 +23,7 @@ favorites.get("/", async (c) => {
             select: {
               id: true,
               username: true,
+              displayName: true,   // ⭐ REQUIRED
               avatarUrl: true,
             },
           },
@@ -48,6 +49,7 @@ favorites.get("/:id", async (c) => {
             select: {
               id: true,
               username: true,
+              displayName: true,   // ⭐ REQUIRED
               avatarUrl: true,
             },
           },
