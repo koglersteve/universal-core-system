@@ -1,74 +1,56 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { LaffLabApi } from "@/lib/api";
 
-// ---------------------------------------------
-// Local types (based on NEW backend feed response)
-// ---------------------------------------------
-export type FeedItem = {
+export interface FeedItem {
   id: string;
-  text: string;
-  tags?: string[];
-  isFavorite?: boolean;
-  score?: number;
-  mediaUrl?: string;
-};
+  content: string;
+  createdAt: string;
+  author: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  };
+}
 
-export type FeedResponse = {
-  posts: FeedItem[];
-  nextCursor: string | null;
-};
-
-type UseFeedState = {
+export interface FeedResponse {
   items: FeedItem[];
-  loading: boolean;
-  error: string | null;
-  cursor: string | null;
-};
+  nextCursor: string | null;
+}
 
 export function useFeed() {
-  const [state, setState] = useState<UseFeedState>({
-    items: [],
-    loading: true,
-    error: null,
-    cursor: null,
-  });
+  const [posts, setPosts] = useState<FeedItem[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  const load = async () => {
+    if (loading || done) return;
 
-    async function load() {
-      try {
-        const data: FeedResponse = await LaffLabApi.fetchFeed({
-          app: "lafflab",
-          limit: 10,
-        });
+    setLoading(true);
 
-        if (cancelled) return;
+    try {
+      const data: FeedResponse = await LaffLabApi.fetchFeed({
+        cursor,
+        limit: 10,
+      });
 
-        setState({
-          items: data.posts,       // ← FIXED
-          cursor: data.nextCursor, // ← FIXED
-          loading: false,
-          error: null,
-        });
-      } catch (err) {
-        if (cancelled) return;
-        setState(prev => ({
-          ...prev,
-          loading: false,
-          error: "Failed to load feed",
-        }));
+      setPosts((prev) => [...prev, ...data.items]);
+
+      if (data.nextCursor) {
+        setCursor(data.nextCursor);
+      } else {
+        setDone(true);
       }
+    } catch (err) {
+      console.error("Feed load failed:", err);
     }
 
-    load();
+    setLoading(false);
+  };
 
-    return () => {
-      cancelled = true;
-    };
+  useEffect(() => {
+    load();
   }, []);
 
-  return state;
+  return { posts, load, loading, done };
 }
