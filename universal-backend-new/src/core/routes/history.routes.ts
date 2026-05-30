@@ -7,6 +7,7 @@ const history = new Hono();
 // TEMP: demo user
 const DEMO_USERNAME = "demo";
 
+// Helper to attach displayName
 function attachAuthorDisplayNameToHistoryItem(item: any) {
   if (item?.post?.author) {
     const author: any = item.post.author;
@@ -50,4 +51,3 @@ history.get("/", async (c) => {
 });
 
 export default history;
-ault history;
