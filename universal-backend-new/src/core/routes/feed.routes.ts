@@ -1,7 +1,22 @@
+// src/core/routes/feed.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const feed = new Hono();
+
+// Helper to attach displayName to author
+function attachAuthorDisplayName<T extends { author: { username: string } }>(
+  item: T
+): T & { author: T["author"] & { displayName: string } } {
+  const anyAuthor = item.author as any;
+  return {
+    ...item,
+    author: {
+      ...item.author,
+      displayName: anyAuthor.displayName ?? item.author.username,
+    },
+  };
+}
 
 // GET /core/feed
 feed.get("/", async (c) => {
@@ -24,17 +39,18 @@ feed.get("/", async (c) => {
         select: {
           id: true,
           username: true,
-          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },
     },
   });
 
+  const items = posts.map(attachAuthorDisplayName);
+
   const nextCursor =
     posts.length === limit ? posts[posts.length - 1].id : null;
 
-  return c.json({ items: posts, nextCursor });
+  return c.json({ items, nextCursor });
 });
 
 // GET /core/feed/:id
@@ -48,7 +64,6 @@ feed.get("/:id", async (c) => {
         select: {
           id: true,
           username: true,
-          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },
@@ -57,7 +72,9 @@ feed.get("/:id", async (c) => {
 
   if (!post) return c.json({ error: "Post not found" }, 404);
 
-  return c.json(post);
+  const item = attachAuthorDisplayName(post);
+
+  return c.json(item);
 });
 
 export default feed;

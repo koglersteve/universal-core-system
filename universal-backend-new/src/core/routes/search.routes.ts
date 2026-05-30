@@ -1,7 +1,19 @@
+// src/core/routes/search.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const search = new Hono();
+
+function attachAuthorDisplayNameToPost(post: any) {
+  if (post?.author) {
+    const author: any = post.author;
+    post.author = {
+      ...author,
+      displayName: author.displayName ?? author.username,
+    };
+  }
+  return post;
+}
 
 // GET /core/search?q=...
 search.get("/", async (c) => {
@@ -9,7 +21,7 @@ search.get("/", async (c) => {
 
   if (!q || q.trim() === "") return c.json({ items: [] });
 
-  const items = await prisma.post.findMany({
+  const itemsRaw = await prisma.post.findMany({
     where: {
       OR: [
         { title: { contains: q, mode: "insensitive" } },
@@ -23,12 +35,13 @@ search.get("/", async (c) => {
         select: {
           id: true,
           username: true,
-          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },
     },
   });
+
+  const items = itemsRaw.map(attachAuthorDisplayNameToPost);
 
   return c.json({ items });
 });

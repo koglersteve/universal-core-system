@@ -1,3 +1,4 @@
+// src/core/routes/profile.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
@@ -5,6 +6,17 @@ const profile = new Hono();
 
 // TEMP: demo user
 const DEMO_USERNAME = "demo";
+
+function attachAuthorDisplayNameToPost(post: any) {
+  if (post?.author) {
+    const author: any = post.author;
+    post.author = {
+      ...author,
+      displayName: author.displayName ?? author.username,
+    };
+  }
+  return post;
+}
 
 // GET /core/profile (current user)
 profile.get("/", async (c) => {
@@ -40,7 +52,7 @@ profile.get("/:username/posts", async (c) => {
 
   if (!user) return c.json({ items: [] });
 
-  const posts = await prisma.post.findMany({
+  const postsRaw = await prisma.post.findMany({
     where: { authorId: user.id },
     orderBy: { createdAt: "desc" },
     include: {
@@ -48,14 +60,15 @@ profile.get("/:username/posts", async (c) => {
         select: {
           id: true,
           username: true,
-          displayName: true,   // ⭐ REQUIRED
           avatarUrl: true,
         },
       },
     },
   });
 
-  return c.json({ items: posts });
+  const items = postsRaw.map(attachAuthorDisplayNameToPost);
+
+  return c.json({ items });
 });
 
 export default profile;
