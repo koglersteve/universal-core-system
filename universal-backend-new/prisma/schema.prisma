@@ -93,5 +93,6 @@ model AnalyticsEvent {
   userId    String?
   postId    String?   // REQUIRED — worker writes this
   app       String?   // REQUIRED — worker writes this
+  emoji     String?   // REQUIRED 
   createdAt DateTime @default(now())
 }
