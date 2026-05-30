@@ -4,18 +4,16 @@ import { prisma } from "@/shared/prisma/client.js";
 
 const feed = new Hono();
 
-// Helper to attach displayName to author
-function attachAuthorDisplayName<T extends { author: { username: string } }>(
-  item: T
-): T & { author: T["author"] & { displayName: string } } {
-  const anyAuthor = item.author as any;
-  return {
-    ...item,
-    author: {
-      ...item.author,
-      displayName: anyAuthor.displayName ?? item.author.username,
-    },
-  };
+// Helper: safely attach displayName
+function attachDisplayName(item: any) {
+  if (item?.author) {
+    const author = item.author;
+    item.author = {
+      ...author,
+      displayName: author.displayName ?? author.username,
+    };
+  }
+  return item;
 }
 
 // GET /core/feed
@@ -45,7 +43,7 @@ feed.get("/", async (c) => {
     },
   });
 
-  const items = posts.map(attachAuthorDisplayName);
+  const items = posts.map(attachDisplayName);
 
   const nextCursor =
     posts.length === limit ? posts[posts.length - 1].id : null;
@@ -72,7 +70,7 @@ feed.get("/:id", async (c) => {
 
   if (!post) return c.json({ error: "Post not found" }, 404);
 
-  const item = attachAuthorDisplayName(post);
+  const item = attachDisplayName(post);
 
   return c.json(item);
 });
