@@ -7,6 +7,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+//
+// ─────────────────────────────────────────────
+//  USER + CORE FEED MODELS
+// ─────────────────────────────────────────────
+//
+
 model User {
   id        String   @id @default(cuid())
   username  String   @unique
@@ -56,7 +62,9 @@ model History {
 }
 
 //
-// Cross‑app emotional engine models
+// ─────────────────────────────────────────────
+//  CROSS‑APP EMOTIONAL ENGINE MODELS
+// ─────────────────────────────────────────────
 //
 
 model Reaction {
@@ -72,7 +80,7 @@ model Impression {
   id        String   @id @default(cuid())
   userId    String
   postId    String
-  type      String?   // <-- FIXED
+  type      String?   // optional because worker does not always send it
   app       String?
   createdAt DateTime @default(now())
 }
@@ -82,7 +90,8 @@ model AnalyticsEvent {
   eventType String
   payload   Json
   type      String?
-  userId    String?   //
-  app       String?   //
+  userId    String?
+  postId    String?   // REQUIRED — worker writes this
+  app       String?   // REQUIRED — worker writes this
   createdAt DateTime @default(now())
 }
