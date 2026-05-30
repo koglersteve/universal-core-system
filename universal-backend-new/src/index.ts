@@ -24,6 +24,26 @@ app.get("/health", (c) =>
 );
 
 /* -------------------------------------------------------
+   SAFE ENVIRONMENT CHECK (MUST BE BEFORE IMPORTS)
+-------------------------------------------------------- */
+
+app.get("/core/env", (c) => {
+  return c.json({
+    ok: true,
+    environment: {
+      NODE_ENV: process.env.NODE_ENV || "unknown",
+      PORT: process.env.PORT || "unknown",
+      DATABASE_URL: process.env.DATABASE_URL ? "set" : "missing",
+      OS_ENV: process.env.OS_ENV ? "set" : "missing",
+      LAFFLAB_FRONTEND_URL: process.env.LAFFLAB_FRONTEND_URL ? "set" : "missing",
+      SESSION_COOKIE_NAME: process.env.SESSION_COOKIE_NAME ? "set" : "missing",
+      JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ? "set" : "missing"
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+/* -------------------------------------------------------
    ROUTE-SPECIFIC HEALTH CHECKS (SAFE, STATIC)
 -------------------------------------------------------- */
 
