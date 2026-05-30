@@ -1,9 +1,11 @@
 import prisma from "@/shared/prisma.js";
 
 export type AnalyticsEventPayload = {
-  type: string;
-  userId: string;
-  app: string;
+  eventType: string;                     // REQUIRED
+  payload: Record<string, unknown>;      // REQUIRED (Json)
+  type?: string;
+  userId?: string;
+  app?: string;
   postId?: string;
   emoji?: string;
   metadata?: Record<string, unknown>;
@@ -11,16 +13,18 @@ export type AnalyticsEventPayload = {
 
 export class AnalyticsWorker {
   static async recordEvent(payload: AnalyticsEventPayload) {
-    const { type, userId, app, postId, emoji, metadata } = payload;
+    const { eventType, payload: dataPayload, type, userId, app, postId, emoji, metadata } = payload;
 
     await prisma.analyticsEvent.create({
       data: {
-        type,
-        userId,
-        app,
+        eventType,
+        payload: dataPayload,
+        type: type ?? null,
+        userId: userId ?? null,
+        app: app ?? null,
         postId: postId ?? null,
         emoji: emoji ?? null,
-        metadata: metadata ? (metadata as any) : undefined,
+        metadata: metadata ? (metadata as any) : null,
       },
     });
   }
@@ -32,12 +36,14 @@ export class AnalyticsWorker {
       events.map((e) =>
         prisma.analyticsEvent.create({
           data: {
-            type: e.type,
-            userId: e.userId,
-            app: e.app,
+            eventType: e.eventType,
+            payload: e.payload,
+            type: e.type ?? null,
+            userId: e.userId ?? null,
+            app: e.app ?? null,
             postId: e.postId ?? null,
             emoji: e.emoji ?? null,
-            metadata: e.metadata ? (e.metadata as any) : undefined,
+            metadata: e.metadata ? (e.metadata as any) : null,
           },
         })
       )
