@@ -1,5 +1,3 @@
-// src/core/os/personality/kernel/traits.config.ts
-
 import type { PersonalityProfile } from "./traits.types.js";
 
 export const DEFAULT_PERSONALITY_PROFILE: PersonalityProfile = {
@@ -39,3 +37,4 @@ export const DEFAULT_PERSONALITY_PROFILE: PersonalityProfile = {
     },
   },
 };
+

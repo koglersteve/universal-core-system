@@ -1,5 +1,3 @@
-// src/core/os/personality/kernel/creativity.trait.ts
-
 import type { PersonalityProfile } from "./traits.types.js";
 
 export interface CreativityContext {
@@ -51,10 +49,8 @@ export class CreativityEngine {
 
     let shaped = name.trim();
 
-    // Very simple, safe shaping for now: avoid all-caps, add softness, avoid raw emails.
     if (shaped.includes("@")) {
-      const base = shaped.split("@")[0];
-      shaped = base;
+      shaped = shaped.split("@")[0];
     }
 
     if (/^[A-Z_0-9]+$/.test(shaped)) {

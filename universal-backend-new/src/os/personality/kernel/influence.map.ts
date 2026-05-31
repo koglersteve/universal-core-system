@@ -1,5 +1,3 @@
-// src/core/os/personality/kernel/influence.map.ts
-
 import type { PersonalityProfile } from "./traits.types.js";
 
 export interface InfluenceWeights {

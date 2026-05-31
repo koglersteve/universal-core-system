@@ -1,5 +1,3 @@
-// src/core/os/personality/kernel/personality.kernel.ts
-
 import { DEFAULT_PERSONALITY_PROFILE } from "./traits.config.js";
 import type { PersonalityProfile } from "./traits.types.js";
 import { CreativityEngine } from "./creativity.trait.js";

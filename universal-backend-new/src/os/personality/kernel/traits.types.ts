@@ -1,5 +1,3 @@
-// src/core/os/personality/kernel/traits.types.ts
-
 export type PersonalityTraitName =
   | "creativity"
   | "warmth"
@@ -8,7 +6,7 @@ export type PersonalityTraitName =
   | "expressiveness"
   | "symbolicBias";
 
-export type TraitValue = number; // 0.0 - 1.0
+export type TraitValue = number;
 
 export interface PersonalityTrait {
   name: PersonalityTraitName;
