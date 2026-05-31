@@ -1,11 +1,11 @@
 // src/index.ts
 import { Hono } from "hono";
 
-const app = new Hono();
-
 /* -------------------------------------------------------
-   ROOT + GLOBAL HEALTH CHECKS (SAFE, NO IMPORTS)
+   ROOT + GLOBAL HEALTH CHECKS
 -------------------------------------------------------- */
+
+const app = new Hono();
 
 app.get("/", (c) =>
   c.json({
@@ -25,7 +25,7 @@ app.get("/health", (c) =>
 );
 
 /* -------------------------------------------------------
-   SAFE ENVIRONMENT CHECK (MUST BE BEFORE IMPORTS)
+   SAFE ENVIRONMENT CHECK
 -------------------------------------------------------- */
 
 app.get("/core/env", (c) => {
@@ -38,14 +38,14 @@ app.get("/core/env", (c) => {
       OS_ENV: process.env.OS_ENV ? "set" : "missing",
       LAFFLAB_FRONTEND_URL: process.env.LAFFLAB_FRONTEND_URL ? "set" : "missing",
       SESSION_COOKIE_NAME: process.env.SESSION_COOKIE_NAME ? "set" : "missing",
-      JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ? "set" : "missing"
+      JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ? "set" : "missing",
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 /* -------------------------------------------------------
-   ROUTE-SPECIFIC HEALTH CHECKS (SAFE, STATIC)
+   ROUTE-SPECIFIC HEALTH CHECKS
 -------------------------------------------------------- */
 
 app.get("/core/feed/health", (c) => c.json({ ok: true }));
@@ -59,32 +59,40 @@ app.get("/core/impressions/health", (c) => c.json({ ok: true }));
 app.get("/core/os/health", (c) => c.json({ ok: true }));
 
 /* -------------------------------------------------------
-   ROUTE SUMMARY (SAFE)
+   ROUTE SUMMARY
 -------------------------------------------------------- */
 
 app.get("/core/routes", (c) =>
   c.json({
     routes: [
+      "/core/login",
+      "/core/sessions",
+      "/core/user",
       "/core/feed",
       "/core/favorites",
       "/core/history",
       "/core/profile",
       "/core/settings",
       "/core/search",
+      "/core/post",
       "/core/reactions",
       "/core/impressions",
       "/core/os",
-      "/schema/user" // temp
+      "/core/schema",
     ],
   })
 );
 
 /* -------------------------------------------------------
-   NOW IMPORT ROUTES (AFTER HEALTH CHECKS)
+   IMPORT ROUTES
 -------------------------------------------------------- */
 
 import { universeMiddleware } from "@/core/middleware/universe.middleware.js";
 import { emotionalOSLogger } from "@/core/middleware/os-logger.middleware.js";
+
+import loginRoutes from "@/core/routes/login.routes.js";
+import sessionsRoutes from "@/core/routes/sessions.routes.js";
+import userRoutes from "@/core/routes/user.routes.js";
 
 import feedRoutes from "@/core/routes/feed.routes.js";
 import favoritesRoutes from "@/core/routes/favorites.routes.js";
@@ -92,13 +100,12 @@ import historyRoutes from "@/core/routes/history.routes.js";
 import profileRoutes from "@/core/routes/profile.routes.js";
 import settingsRoutes from "@/core/routes/settings.routes.js";
 import searchRoutes from "@/core/routes/search.routes.js";
+import postRoutes from "@/core/routes/post.routes.js";
 
 import reactionsRoutes from "@/core/crossapp/reactions.routes.js";
 import impressionsRoutes from "@/core/crossapp/impressions.routes.js";
 
 import osRoutes from "@/core/routes/os.routes.js";
-
-// ⭐ TEMP SCHEMA ROUTE
 import schemaRoutes from "@/core/routes/schema.routes.js";
 
 /* -------------------------------------------------------
@@ -112,19 +119,22 @@ app.use("*", emotionalOSLogger);
    MOUNT ROUTES
 -------------------------------------------------------- */
 
+app.route("/core/login", loginRoutes);
+app.route("/core/sessions", sessionsRoutes);
+app.route("/core/user", userRoutes);
+
 app.route("/core/feed", feedRoutes);
 app.route("/core/favorites", favoritesRoutes);
 app.route("/core/history", historyRoutes);
 app.route("/core/profile", profileRoutes);
 app.route("/core/settings", settingsRoutes);
 app.route("/core/search", searchRoutes);
+app.route("/core/post", postRoutes);
 
 app.route("/core/reactions", reactionsRoutes);
 app.route("/core/impressions", impressionsRoutes);
 
 app.route("/core/os", osRoutes);
-
-// ⭐ TEMPORARY SCHEMA INSPECTOR (SAFE TO REMOVE LATER)
-app.route("/schema", schemaRoutes);
+app.route("/core/schema", schemaRoutes);
 
 export default app;
