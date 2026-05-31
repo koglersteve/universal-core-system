@@ -1,10 +1,15 @@
 import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+
+/* -------------------------------------------------------
+   APP INIT
+-------------------------------------------------------- */
+
+const app = new Hono();
 
 /* -------------------------------------------------------
    ROOT + GLOBAL HEALTH CHECKS
 -------------------------------------------------------- */
-
-const app = new Hono();
 
 app.get("/", (c) =>
   c.json({
@@ -136,4 +141,15 @@ app.route("/core/impressions", impressionsRoutes);
 app.route("/core/os", osRoutes);
 app.route("/core/schema", schemaRoutes);
 
-export default app;
+/* -------------------------------------------------------
+   START SERVER
+-------------------------------------------------------- */
+
+const port = Number(process.env.PORT) || 3000;
+
+serve({
+  fetch: app.fetch,
+  port,
+});
+
+console.log(`🚀 Universal Backend running on port ${port}`);
