@@ -1,4 +1,3 @@
-// src/core/routes/os.routes.ts
 import { Hono } from "hono";
 import { EmotionalOS } from "@/core/crossapp/os/os-engine.js";
 

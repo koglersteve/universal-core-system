@@ -1,19 +1,19 @@
-// src/core/routes/history.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const history = new Hono();
 
 // TEMP: demo user
-const DEMO_USERNAME = "demo";
+const DEMO_SCREENNAME = "demo";
 
-// Helper to attach displayName
-function attachAuthorDisplayNameToHistoryItem(item: any) {
+function attachAuthorIdentity(item: any) {
   if (item?.post?.author) {
-    const author: any = item.post.author;
+    const author = item.post.author;
     item.post.author = {
-      ...author,
-      displayName: author.displayName ?? author.username,
+      id: author.id,
+      screenName: author.screenName,
+      displayName: author.screenName,
+      avatarUrl: author.avatarUrl,
     };
   }
   return item;
@@ -22,7 +22,7 @@ function attachAuthorDisplayNameToHistoryItem(item: any) {
 // GET /core/history
 history.get("/", async (c) => {
   const user = await prisma.user.findUnique({
-    where: { username: DEMO_USERNAME },
+    where: { screenName: DEMO_SCREENNAME },
   });
 
   if (!user) return c.json({ items: [] });
@@ -35,7 +35,7 @@ history.get("/", async (c) => {
           author: {
             select: {
               id: true,
-              username: true,
+              screenName: true,
               avatarUrl: true,
             },
           },
@@ -45,7 +45,7 @@ history.get("/", async (c) => {
     orderBy: { viewedAt: "desc" },
   });
 
-  const items = itemsRaw.map(attachAuthorDisplayNameToHistoryItem);
+  const items = itemsRaw.map(attachAuthorIdentity);
 
   return c.json({ items });
 });

@@ -1,16 +1,16 @@
-// src/core/routes/feed.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const feed = new Hono();
 
-// Helper: safely attach displayName
-function attachDisplayName(item: any) {
+function attachAuthorIdentity(item: any) {
   if (item?.author) {
     const author = item.author;
     item.author = {
-      ...author,
-      displayName: author.displayName ?? author.username,
+      id: author.id,
+      screenName: author.screenName,
+      displayName: author.screenName,
+      avatarUrl: author.avatarUrl,
     };
   }
   return item;
@@ -36,14 +36,14 @@ feed.get("/", async (c) => {
       author: {
         select: {
           id: true,
-          username: true,
+          screenName: true,
           avatarUrl: true,
         },
       },
     },
   });
 
-  const items = posts.map(attachDisplayName);
+  const items = posts.map(attachAuthorIdentity);
 
   const nextCursor =
     posts.length === limit ? posts[posts.length - 1].id : null;
@@ -61,7 +61,7 @@ feed.get("/:id", async (c) => {
       author: {
         select: {
           id: true,
-          username: true,
+          screenName: true,
           avatarUrl: true,
         },
       },
@@ -70,7 +70,7 @@ feed.get("/:id", async (c) => {
 
   if (!post) return c.json({ error: "Post not found" }, 404);
 
-  const item = attachDisplayName(post);
+  const item = attachAuthorIdentity(post);
 
   return c.json(item);
 });

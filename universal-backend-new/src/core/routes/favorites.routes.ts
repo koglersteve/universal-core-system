@@ -1,18 +1,19 @@
-// src/core/routes/favorites.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const favorites = new Hono();
 
 // TEMP: demo user
-const DEMO_USERNAME = "demo";
+const DEMO_SCREENNAME = "demo";
 
-function attachAuthorDisplayNameToFavorite(fav: any) {
+function attachAuthorIdentity(fav: any) {
   if (fav?.post?.author) {
-    const author: any = fav.post.author;
+    const author = fav.post.author;
     fav.post.author = {
-      ...author,
-      displayName: author.displayName ?? author.username,
+      id: author.id,
+      screenName: author.screenName,
+      displayName: author.screenName,
+      avatarUrl: author.avatarUrl,
     };
   }
   return fav;
@@ -21,7 +22,7 @@ function attachAuthorDisplayNameToFavorite(fav: any) {
 // GET /core/favorites
 favorites.get("/", async (c) => {
   const user = await prisma.user.findUnique({
-    where: { username: DEMO_USERNAME },
+    where: { screenName: DEMO_SCREENNAME },
   });
 
   if (!user) return c.json({ items: [] });
@@ -34,7 +35,7 @@ favorites.get("/", async (c) => {
           author: {
             select: {
               id: true,
-              username: true,
+              screenName: true,
               avatarUrl: true,
             },
           },
@@ -44,7 +45,7 @@ favorites.get("/", async (c) => {
     orderBy: { createdAt: "desc" },
   });
 
-  const items = favs.map(attachAuthorDisplayNameToFavorite);
+  const items = favs.map(attachAuthorIdentity);
 
   return c.json({ items });
 });
@@ -61,7 +62,7 @@ favorites.get("/:id", async (c) => {
           author: {
             select: {
               id: true,
-              username: true,
+              screenName: true,
               avatarUrl: true,
             },
           },
@@ -72,7 +73,7 @@ favorites.get("/:id", async (c) => {
 
   if (!fav) return c.json({ error: "Favorite not found" }, 404);
 
-  const item = attachAuthorDisplayNameToFavorite(fav);
+  const item = attachAuthorIdentity(fav);
 
   return c.json(item);
 });

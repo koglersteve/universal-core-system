@@ -1,15 +1,16 @@
-// src/core/routes/search.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const search = new Hono();
 
-function attachAuthorDisplayNameToPost(post: any) {
+function attachAuthorIdentity(post: any) {
   if (post?.author) {
-    const author: any = post.author;
+    const author = post.author;
     post.author = {
-      ...author,
-      displayName: author.displayName ?? author.username,
+      id: author.id,
+      screenName: author.screenName,
+      displayName: author.screenName,
+      avatarUrl: author.avatarUrl,
     };
   }
   return post;
@@ -34,14 +35,14 @@ search.get("/", async (c) => {
       author: {
         select: {
           id: true,
-          username: true,
+          screenName: true,
           avatarUrl: true,
         },
       },
     },
   });
 
-  const items = itemsRaw.map(attachAuthorDisplayNameToPost);
+  const items = itemsRaw.map(attachAuthorIdentity);
 
   return c.json({ items });
 });

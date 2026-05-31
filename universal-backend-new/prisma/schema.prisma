@@ -9,22 +9,38 @@ generator client {
 
 //
 // ─────────────────────────────────────────────
-//  USER + CORE FEED MODELS
+//  USER + AUTH MODELS
 // ─────────────────────────────────────────────
 //
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  name      String?
-  avatarUrl String?
-  bio       String?
-  createdAt DateTime @default(now())
+  id         String    @id @default(cuid())
+  email      String    @unique
+  screenName String    @unique
+  password   String
+  avatarUrl  String?
+  createdAt  DateTime  @default(now())
 
   posts      Post[]
   favorites  Favorite[]
   histories  History[]
+  sessions   Session[]
 }
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+//
+// ─────────────────────────────────────────────
+//  CORE FEED MODELS
+// ─────────────────────────────────────────────
+//
 
 model Post {
   id        String    @id @default(cuid())
@@ -80,7 +96,7 @@ model Impression {
   id        String   @id @default(cuid())
   userId    String
   postId    String
-  type      String?   // optional because worker does not always send it
+  type      String?
   app       String?
   createdAt DateTime @default(now())
 }
@@ -91,9 +107,9 @@ model AnalyticsEvent {
   payload   Json
   type      String?
   userId    String?
-  postId    String?   // REQUIRED — worker writes this
-  app       String?   // REQUIRED — worker writes this
-  emoji     String?   // REQUIRED
-  metadata  Json?     // REQUIRED
+  postId    String?
+  app       String?
+  emoji     String?
+  metadata  Json?
   createdAt DateTime @default(now())
 }

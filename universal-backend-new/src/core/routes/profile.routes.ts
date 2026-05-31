@@ -1,18 +1,19 @@
-// src/core/routes/profile.routes.ts
 import { Hono } from "hono";
 import { prisma } from "@/shared/prisma/client.js";
 
 const profile = new Hono();
 
 // TEMP: demo user
-const DEMO_USERNAME = "demo";
+const DEMO_SCREENNAME = "demo";
 
-function attachAuthorDisplayNameToPost(post: any) {
+function attachAuthorIdentity(post: any) {
   if (post?.author) {
-    const author: any = post.author;
+    const author = post.author;
     post.author = {
-      ...author,
-      displayName: author.displayName ?? author.username,
+      id: author.id,
+      screenName: author.screenName,
+      displayName: author.screenName,
+      avatarUrl: author.avatarUrl,
     };
   }
   return post;
@@ -21,7 +22,7 @@ function attachAuthorDisplayNameToPost(post: any) {
 // GET /core/profile (current user)
 profile.get("/", async (c) => {
   const user = await prisma.user.findUnique({
-    where: { username: DEMO_USERNAME },
+    where: { screenName: DEMO_SCREENNAME },
   });
 
   if (!user) return c.json({ error: "User not found" }, 404);
@@ -29,12 +30,12 @@ profile.get("/", async (c) => {
   return c.json(user);
 });
 
-// GET /core/profile/:username
-profile.get("/:username", async (c) => {
-  const username = c.req.param("username");
+// GET /core/profile/:screenName
+profile.get("/:screenName", async (c) => {
+  const screenName = c.req.param("screenName");
 
   const user = await prisma.user.findUnique({
-    where: { username },
+    where: { screenName },
   });
 
   if (!user) return c.json({ error: "User not found" }, 404);
@@ -42,12 +43,12 @@ profile.get("/:username", async (c) => {
   return c.json(user);
 });
 
-// GET /core/profile/:username/posts
-profile.get("/:username/posts", async (c) => {
-  const username = c.req.param("username");
+// GET /core/profile/:screenName/posts
+profile.get("/:screenName/posts", async (c) => {
+  const screenName = c.req.param("screenName");
 
   const user = await prisma.user.findUnique({
-    where: { username },
+    where: { screenName },
   });
 
   if (!user) return c.json({ items: [] });
@@ -59,14 +60,14 @@ profile.get("/:username/posts", async (c) => {
       author: {
         select: {
           id: true,
-          username: true,
+          screenName: true,
           avatarUrl: true,
         },
       },
     },
   });
 
-  const items = postsRaw.map(attachAuthorDisplayNameToPost);
+  const items = postsRaw.map(attachAuthorIdentity);
 
   return c.json({ items });
 });

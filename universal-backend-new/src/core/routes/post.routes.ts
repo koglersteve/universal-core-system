@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import prisma from "@/shared/prisma.js";
+import { prisma } from "@/shared/prisma/client.js";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
@@ -18,8 +18,8 @@ router.post("/", async (c) => {
     ok: true,
     created: {
       id: nanoid(),
-      content: data.content
-    }
+      content: data.content,
+    },
   });
 });
 

@@ -2,7 +2,6 @@ import { Hono } from "hono";
 
 const settings = new Hono();
 
-// GET /core/settings
 settings.get("/", (c) => {
   return c.json({
     theme: "light",
