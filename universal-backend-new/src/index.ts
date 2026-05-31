@@ -1,3 +1,4 @@
+// src/index.ts
 import { Hono } from "hono";
 
 const app = new Hono();
@@ -73,6 +74,7 @@ app.get("/core/routes", (c) =>
       "/core/reactions",
       "/core/impressions",
       "/core/os",
+      "/schema/user" // temp
     ],
   })
 );
@@ -96,6 +98,9 @@ import impressionsRoutes from "@/core/crossapp/impressions.routes.js";
 
 import osRoutes from "@/core/routes/os.routes.js";
 
+// ⭐ TEMP SCHEMA ROUTE
+import schemaRoutes from "@/core/routes/schema.routes.js";
+
 /* -------------------------------------------------------
    MIDDLEWARE
 -------------------------------------------------------- */
@@ -118,5 +123,8 @@ app.route("/core/reactions", reactionsRoutes);
 app.route("/core/impressions", impressionsRoutes);
 
 app.route("/core/os", osRoutes);
+
+// ⭐ TEMPORARY SCHEMA INSPECTOR (SAFE TO REMOVE LATER)
+app.route("/schema", schemaRoutes);
 
 export default app;
