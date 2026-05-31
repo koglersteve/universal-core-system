@@ -1,6 +1,7 @@
 import { prisma } from "@/shared/prisma/client.js";
+import type { Context } from "hono";
 
-export async function getCurrentUser(c) {
+export async function getCurrentUser(c: Context) {
   const token = c.req.header("authorization");
   if (!token) return null;
 
