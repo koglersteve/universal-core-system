@@ -88,29 +88,29 @@ app.get("/core/routes", (c) =>
 );
 
 /* -------------------------------------------------------
-   IMPORT ROUTES (RELATIVE PATHS ONLY)
+   IMPORT ROUTES (CORRECTED PATHS)
 -------------------------------------------------------- */
 
-import { universeMiddleware } from "./core/middleware/universe.middleware.js";
-import { emotionalOSLogger } from "./core/middleware/os-logger.middleware.js";
+import { universeMiddleware } from "../core/middleware/universe.middleware.js";
+import { emotionalOSLogger } from "../core/middleware/os-logger.middleware.js";
 
-import loginRoutes from "./core/routes/login.routes.js";
-import sessionsRoutes from "./core/routes/sessions.routes.js";
-import userRoutes from "./core/routes/user.routes.js";
+import loginRoutes from "../core/routes/login.routes.js";
+import sessionsRoutes from "../core/routes/sessions.routes.js";
+import userRoutes from "../core/routes/user.routes.js";
 
-import feedRoutes from "./core/routes/feed.routes.js";
-import favoritesRoutes from "./core/routes/favorites.routes.js";
-import historyRoutes from "./core/routes/history.routes.js";
-import profileRoutes from "./core/routes/profile.routes.js";
-import settingsRoutes from "./core/routes/settings.routes.js";
-import searchRoutes from "./core/routes/search.routes.js";
-import postRoutes from "./core/routes/post.routes.js";
+import feedRoutes from "../core/routes/feed.routes.js";
+import favoritesRoutes from "../core/routes/favorites.routes.js";
+import historyRoutes from "../core/routes/history.routes.js";
+import profileRoutes from "../core/routes/profile.routes.js";
+import settingsRoutes from "../core/routes/settings.routes.js";
+import searchRoutes from "../core/routes/search.routes.js";
+import postRoutes from "../core/routes/post.routes.js";
 
-import reactionsRoutes from "./core/crossapp/reactions.routes.js";
-import impressionsRoutes from "./core/crossapp/impressions.routes.js";
+import reactionsRoutes from "../core/crossapp/reactions.routes.js";
+import impressionsRoutes from "../core/crossapp/impressions.routes.js";
 
-import osRoutes from "./core/routes/os.routes.js";
-import schemaRoutes from "./core/routes/schema.routes.js";
+import osRoutes from "../core/routes/os.routes.js";
+import schemaRoutes from "../core/routes/schema.routes.js";
 
 /* -------------------------------------------------------
    MIDDLEWARE
