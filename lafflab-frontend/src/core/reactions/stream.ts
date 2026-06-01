@@ -1,5 +1,3 @@
-// src/core/reactions/stream.ts
-
 export type ReactionEmojiKey =
   | "laugh"
   | "smile"
@@ -32,4 +30,3 @@ export function getAllEvents(): LocalReactionEvent[] {
 export function clearReactionStream() {
   events = [];
 }
-

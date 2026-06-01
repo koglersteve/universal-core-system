@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/api";
+import { getFavorites } from "@/lib/api/favorites";
 
 export function useFavorites() {
   const [favorites, setFavorites] = useState<any[]>([]);
@@ -7,8 +7,8 @@ export function useFavorites() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await LaffLabApi.getFavorites();
-        setFavorites(Array.isArray(data.favorites) ? data.favorites : []);
+        const data = await getFavorites();
+        setFavorites(Array.isArray(data.items) ? data.items : []);
       } catch (err) {
         console.error("Failed to load favorites:", err);
       }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LaffLabApi } from "@/lib/api";
+import { getFeed } from "@/lib/api/feed";
 
 export function usePosts() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -9,9 +9,9 @@ export function usePosts() {
 
     async function load() {
       try {
-        const data = await LaffLabApi.getPosts();
+        const data = await getFeed(null);
         if (!cancelled) {
-          setPosts(Array.isArray(data.posts) ? data.posts : []);
+          setPosts(Array.isArray(data.items) ? data.items : []);
         }
       } catch (err) {
         console.error("Failed to load posts:", err);

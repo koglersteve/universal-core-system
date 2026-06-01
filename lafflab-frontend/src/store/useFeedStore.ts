@@ -1,14 +1,14 @@
 import { create } from "zustand";
-import { LaffLabApi } from "@/lib/api";
+import { getFeed } from "@/lib/api/feed";
 
 export interface FeedItem {
   id: string;
   content: string;
   createdAt: string;
-  author: {
-    id: string;
-    username: string;
-    avatarUrl: string | null;
+  author?: {
+    id?: string;
+    screenName?: string;
+    avatarUrl?: string | null;
   };
 }
 
@@ -38,10 +38,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
     set({ loading: true });
 
     try {
-      const data: FeedResponse = await LaffLabApi.fetchFeed({
-        cursor,
-        limit: 10,
-      });
+      const data: FeedResponse = await getFeed(cursor);
 
       set({
         posts: [...posts, ...data.items],

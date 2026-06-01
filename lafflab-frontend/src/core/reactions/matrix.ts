@@ -1,5 +1,3 @@
-// src/core/reactions/matrix.ts
-
 export type ReactionEmojiKey =
   | "laugh"
   | "smile"

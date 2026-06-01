@@ -1,8 +1,8 @@
 "use client";
 
-import { LaffLabHome } from "@plugins/lafflab/ui/LaffLabHome";
+import FeedPage from "./(lafflab)/feed/page";
 
-export default function Page() {
-  return <LaffLabHome />;
+export default function Home() {
+  return <FeedPage />;
 }
 

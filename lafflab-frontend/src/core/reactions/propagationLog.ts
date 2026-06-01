@@ -1,5 +1,3 @@
-// src/core/reactions/propagationLog.ts
-
 export type ReactionEmojiKey =
   | "laugh"
   | "smile"
@@ -45,7 +43,6 @@ export function getPropagationLog(options?: { limit?: number }) {
   if (options?.limit != null) {
     return log.slice(-options.limit);
   }
-
   return log;
 }
 

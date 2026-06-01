@@ -1,12 +1,17 @@
-import { LaffLabApi } from "@/lib/api";
-import FeedShell from "./FeedShell";
+import { useFeedStore } from "@/store/useFeedStore";
 
-export const dynamic = "force-dynamic";
+export default function FeedPage() {
+  const { items, loadFeed } = useFeedStore();
 
-export default async function Page() {
-  const data = await LaffLabApi.fetchFeed({
-    limit: 10,
-  });
+  useEffect(() => {
+    loadFeed();
+  }, []);
 
-  return <FeedShell initialFeed={data.items} />;
+  return (
+    <div>
+      {items.map((post) => (
+        <PostView key={post.id} post={post} />
+      ))}
+    </div>
+  );
 }

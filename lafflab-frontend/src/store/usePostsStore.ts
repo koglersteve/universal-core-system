@@ -1,12 +1,15 @@
-// src/store/usePostsStore.ts
 "use client";
 
-import { LaffLabApi } from "@/lib/api";
+import { getFeed } from "@/lib/api/feed";
 
 export async function fetchPosts() {
-  return LaffLabApi.getPosts();
+  const data = await getFeed(null);
+  return data.items;
 }
 
 export async function fetchPost(id: string) {
-  return LaffLabApi.getPost(id);
+  // When backend adds /core/post/:id, update this.
+  // For now, fetch feed and find the post.
+  const data = await getFeed(null);
+  return data.items.find((p) => p.id === id) || null;
 }

@@ -1,48 +1,68 @@
-// src/lib/api/httpClient.ts
+// src/lib/api/httpclient.ts
 
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://universal-core-backend-production.up.railway.app";
 
-interface RequestOptions {
-  method?: HttpMethod;
-  body?: any;
-  headers?: Record<string, string>;
+// -----------------------------
+// AUTH TOKEN MANAGEMENT
+// -----------------------------
+export function setAuthToken(token: string | null) {
+  if (token) localStorage.setItem("authToken", token);
+  else localStorage.removeItem("authToken");
 }
 
-async function request<T>(url: string, options: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, headers = {} } = options;
+export function getAuthToken(): string | null {
+  return localStorage.getItem("authToken");
+}
 
-  const res = await fetch(url, {
-    method,
+// -----------------------------
+// UNIVERSAL API WRAPPER
+// -----------------------------
+export async function http<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const token = getAuthToken();
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
-      ...headers,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
   });
 
   if (!res.ok) {
-    let message = `Request failed with status ${res.status}`;
-    try {
-      const errorJson = await res.json();
-      if (errorJson?.error) message = errorJson.error;
-    } catch {
-      // ignore JSON parse errors
-    }
-    throw new Error(message);
+    const errorText = await res.text();
+    throw new Error(`API Error ${res.status}: ${errorText}`);
   }
 
-  // Allow endpoints that return no content
-  if (res.status === 204) {
-    return undefined as T;
-  }
-
-  return (await res.json()) as T;
+  return res.json() as Promise<T>;
 }
 
-export async function httpGet<T>(url: string): Promise<T> {
-  return request<T>(url, { method: "GET" });
+// -----------------------------
+// SHORTCUT HELPERS
+// -----------------------------
+export function get<T>(path: string) {
+  return http<T>(path, { method: "GET" });
 }
 
-export async function httpPost<T>(url: string, body: any): Promise<T> {
-  return request<T>(url, { method: "POST", body });
+export function post<T>(path: string, body: any) {
+  return http<T>(path, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export function patch<T>(path: string, body: any) {
+  return http<T>(path, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export function del<T>(path: string) {
+  return http<T>(path, { method: "DELETE" });
 }

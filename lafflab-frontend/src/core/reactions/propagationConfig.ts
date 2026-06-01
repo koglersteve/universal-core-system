@@ -3,5 +3,5 @@ export const ReactionSchema = {
   fields: {},
   parse(value: unknown) {
     return value;
-  }
+  },
 };
