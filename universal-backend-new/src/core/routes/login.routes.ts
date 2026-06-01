@@ -1,7 +1,6 @@
 import { Hono } from "hono";
-import { prisma } from "@/shared/prisma/client.js";
-import { verifyPassword } from "@/core/utils/auth.utils.js";
-import { generateSessionToken } from "@/core/utils/auth.utils.js";
+import { prisma } from "../../shared/prisma/client.js";
+import { verifyPassword, generateSessionToken } from "../utils/auth.utils.js";
 
 const login = new Hono();
 
@@ -20,7 +19,7 @@ login.post("/", async (c) => {
   if (!valid) return c.json({ error: "Invalid credentials" }, 401);
 
   const token = generateSessionToken();
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
   await prisma.session.create({
     data: {

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { prisma } from "@/shared/prisma/client.js";
-import { normalizeScreenName } from "@/core/utils/identity.js";
-import { hashPassword } from "@/core/utils/auth.utils.js";
+import { prisma } from "../../shared/prisma/client.js";
+import { normalizeScreenName } from "../utils/identity.js";
+import { hashPassword } from "../utils/auth.utils.js";
 
 const userRoutes = new Hono();
 
