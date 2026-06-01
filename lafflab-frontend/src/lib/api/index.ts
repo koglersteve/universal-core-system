@@ -2,7 +2,7 @@ export * from "./auth";
 export * from "./favorites";
 export * from "./feed";
 export * from "./history";
-export * from "./httpClient";
+export * from "./httpclient";
 export * from "./os";
 export * from "./post";
 export * from "./profile";
