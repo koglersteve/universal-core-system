@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default async function FavoritesPage() {
   const data = await getFavorites();
 
-  const posts = Array.isArray(data.favorites) ? data.favorites : [];
+  const posts = Array.isArray(data.items) ? data.items : [];
 
   return (
     <div style={{ padding: 16 }}>
@@ -15,3 +15,4 @@ export default async function FavoritesPage() {
     </div>
   );
 }
+
