@@ -1,12 +1,26 @@
 "use client";
 
 import React from "react";
-import { LaffLabApi } from "@/lib/api";
+import { sendReaction } from "@/lib/api/reactions";
+
+const REACTIONS = [
+  { key: "laugh", emoji: "😂" },
+  { key: "smile", emoji: "🙂" },
+  { key: "expressionless", emoji: "😐" },
+  { key: "shock", emoji: "😱" },
+  { key: "mindblown", emoji: "🤯" },
+  { key: "angry", emoji: "😡" },
+  { key: "crickets", emoji: "🦗" },
+];
 
 export default function FeedPost({ post }) {
   const handleReaction = async (emoji: string) => {
     try {
-      await LaffLabApi.react(post.id, emoji);
+      await sendReaction({
+        postId: post.id,
+        emoji,
+        surface: "lafflab-feed",
+      });
     } catch (err) {
       console.error("Reaction failed:", err);
     }
@@ -14,10 +28,8 @@ export default function FeedPost({ post }) {
 
   return (
     <div style={{ padding: 16, background: "#fff", borderRadius: 12 }}>
-      {/* Backend uses `text`, not `content` */}
       {post.text && <p>{post.text}</p>}
 
-      {/* Optional media support */}
       {post.mediaUrl && (
         <img
           src={post.mediaUrl}
@@ -27,9 +39,11 @@ export default function FeedPost({ post }) {
       )}
 
       <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-        <button onClick={() => handleReaction("😂")}>😂</button>
-        <button onClick={() => handleReaction("🔥")}>🔥</button>
-        <button onClick={() => handleReaction("❤️")}>❤️</button>
+        {REACTIONS.map((r) => (
+          <button key={r.key} onClick={() => handleReaction(r.emoji)}>
+            {r.emoji}
+          </button>
+        ))}
       </div>
     </div>
   );

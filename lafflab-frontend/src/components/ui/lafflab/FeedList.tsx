@@ -1,4 +1,3 @@
-// src/components/ui/lafflab/FeedList.tsx
 "use client";
 
 import React from "react";
@@ -13,7 +12,7 @@ export default function FeedList({ initialPosts }: FeedListProps) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {posts.map(post => (
+      {posts.map((post) => (
         <FeedPost key={post.id} post={post} />
       ))}
     </div>

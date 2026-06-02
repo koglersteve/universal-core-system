@@ -1,16 +1,12 @@
-import { LaffLabApi } from "@/lib/api";
+import { getProfile, getProfilePosts } from "@/lib/api/profile";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProfilePage({ params }) {
   const username = params.username;
 
-  // Backend endpoints:
-  // /core/profile/{username}
-  // /core/profile/{username}/posts
-
-  const profile = await LaffLabApi.rawGet(`/core/profile/${username}`);
-  const postsData = await LaffLabApi.rawGet(`/core/profile/${username}/posts`);
+  const profile = await getProfile(username);
+  const postsData = await getProfilePosts(username);
 
   const posts = Array.isArray(postsData.posts) ? postsData.posts : [];
 

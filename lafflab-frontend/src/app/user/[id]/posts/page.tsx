@@ -1,13 +1,11 @@
-import { LaffLabApi } from "@/lib/api";
+import { getProfilePosts } from "@/lib/api/profile";
 
 export const dynamic = "force-dynamic";
 
 export default async function UserPostsPage({ params }) {
   const userId = params.id;
 
-  // Backend endpoint: /core/profile/{id}/posts
-  const data = await LaffLabApi.rawGet(`/core/profile/${userId}/posts`);
-
+  const data = await getProfilePosts(userId);
   const posts = Array.isArray(data.posts) ? data.posts : [];
 
   return (

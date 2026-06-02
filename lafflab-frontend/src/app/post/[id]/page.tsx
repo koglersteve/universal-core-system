@@ -1,10 +1,10 @@
-import { LaffLabApi } from "@/lib/api";
+import { getPost } from "@/lib/api/post";
 
 export const dynamic = "force-dynamic";
 
 export default async function PostPage({ params }) {
   const id = params.id;
-  const post = await LaffLabApi.getPost(id);
+  const post = await getPost(id);
 
   return (
     <div style={{ padding: 24 }}>
@@ -13,4 +13,3 @@ export default async function PostPage({ params }) {
     </div>
   );
 }
-

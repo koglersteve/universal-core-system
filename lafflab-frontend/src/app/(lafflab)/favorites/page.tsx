@@ -1,15 +1,12 @@
-// src/app/(lafflab)/favorites/page.tsx
-
-import { LaffLabApi } from "@/lib/api";
+import { getFavorites } from "@/lib/api/favorites";
 import FeedList from "@/components/ui/lafflab/FeedList";
 
 export const dynamic = "force-dynamic";
 
 export default async function FavoritesPage() {
-  // Backend returns { posts: [...] }
-  const data = await LaffLabApi.getFavorites();
+  const data = await getFavorites();
 
-  const posts = Array.isArray(data.posts) ? data.posts : [];
+  const posts = Array.isArray(data.favorites) ? data.favorites : [];
 
   return (
     <div style={{ padding: 16 }}>
@@ -18,4 +15,3 @@ export default async function FavoritesPage() {
     </div>
   );
 }
-
