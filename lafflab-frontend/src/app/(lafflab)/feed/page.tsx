@@ -1,17 +1,20 @@
+"use client";
+
+import { useEffect } from "react";
 import { useFeedStore } from "@/store/useFeedStore";
+import FeedList from "@/components/ui/lafflab/FeedList";
 
 export default function FeedPage() {
-  const { items, loadFeed } = useFeedStore();
+  const { posts, load, loading } = useFeedStore();
 
   useEffect(() => {
-    loadFeed();
-  }, []);
+    load();
+  }, [load]);
 
   return (
-    <div>
-      {items.map((post) => (
-        <PostView key={post.id} post={post} />
-      ))}
+    <div style={{ padding: 16 }}>
+      <FeedList initialPosts={posts} />
+      {loading && <p style={{ opacity: 0.6 }}>Loading…</p>}
     </div>
   );
 }
