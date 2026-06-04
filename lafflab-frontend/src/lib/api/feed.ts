@@ -1,8 +1,29 @@
+// src/lib/api/feed.ts
+
 import { get } from "./httpclient";
 
-export async function getFeed(cursor?: string | null, limit = 10) {
-  const params = new URLSearchParams();
+export interface FeedItem {
+  id: string;
+  content: string;
+  createdAt: string;
+  author?: {
+    id?: string;
+    username?: string;
+    screenName?: string;
+  };
+  reactions?: Record<string, number>;
+}
 
+export interface FeedResponse {
+  items: FeedItem[];
+  nextCursor: string | null;
+}
+
+export async function fetchFeed(
+  cursor: string | null = null,
+  limit: number = 10
+): Promise<FeedResponse> {
+  const params = new URLSearchParams();
   params.set("limit", String(limit));
   params.set("app", "lafflab");
 
@@ -10,7 +31,5 @@ export async function getFeed(cursor?: string | null, limit = 10) {
     params.set("cursor", cursor);
   }
 
-  return get<{ items: any[]; nextCursor: string | null }>(
-    `/core/feed?${params.toString()}`
-  );
+  return get<FeedResponse>(`/core/feed?${params.toString()}`);
 }
