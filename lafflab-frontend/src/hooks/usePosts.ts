@@ -1,30 +1,33 @@
 import { useEffect, useState } from "react";
-import { getFeed } from "@/lib/api/feed";
+import { fetchFeed, type FeedItem, type FeedResponse } from "@/lib/api/feed";
 
 export function usePosts() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<FeedItem[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  async function load() {
+    if (loading || done) return;
 
-    async function load() {
-      try {
-        const data = await getFeed(null);
-        if (!cancelled) {
-          setPosts(Array.isArray(data.items) ? data.items : []);
-        }
-      } catch (err) {
-        console.error("Failed to load posts:", err);
-      }
+    setLoading(true);
+
+    try {
+      const data: FeedResponse = await fetchFeed(cursor, 10);
+
+      setPosts(prev => [...prev, ...data.items]);
+      setCursor(data.nextCursor);
+      setDone(data.nextCursor === null);
+    } catch (err) {
+      console.error("Posts load failed:", err);
     }
 
-    load();
+    setLoading(false);
+  }
 
-    return () => {
-      cancelled = true;
-    };
+  useEffect(() => {
+    load();
   }, []);
 
-  return posts;
+  return { posts, load, loading, done };
 }
-
