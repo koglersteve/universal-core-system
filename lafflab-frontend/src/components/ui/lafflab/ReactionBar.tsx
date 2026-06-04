@@ -21,11 +21,12 @@ const REACTIONS: { key: ReactionEmojiKey; emoji: string }[] = [
   { key: "crickets", emoji: "🦗" },
 ];
 
-export type ReactionBarProps = {
-  onReact: (key: ReactionEmojiKey) => void;
-};
+export default function ReactionBar({ postId }: { postId: string }) {
+  const onReact = (key: ReactionEmojiKey) => {
+    console.log("React:", key, "on post", postId);
+    // TODO: wire to backend: POST /core/reactions/:postId/toggle
+  };
 
-export default function ReactionBar({ onReact }: ReactionBarProps) {
   return (
     <div
       style={{
@@ -35,7 +36,7 @@ export default function ReactionBar({ onReact }: ReactionBarProps) {
         flexWrap: "wrap",
       }}
     >
-      {REACTIONS.map(r => (
+      {REACTIONS.map((r) => (
         <button
           key={r.key}
           onClick={() => onReact(r.key)}
@@ -48,13 +49,13 @@ export default function ReactionBar({ onReact }: ReactionBarProps) {
             cursor: "pointer",
             transition: "transform 0.12s ease",
           }}
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.9)";
           }}
-          onMouseUp={e => {
+          onMouseUp={(e) => {
             (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
           }}
-          onMouseLeave={e => {
+          onMouseLeave={(e) => {
             (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
           }}
         >
@@ -64,3 +65,4 @@ export default function ReactionBar({ onReact }: ReactionBarProps) {
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useCallback } from "react";
-import { ReactionBar } from "./ReactionBar";
+import ReactionBar from "./ReactionBar";
 import { useFeedStore } from "@/store/useFeedStore";
 
 export default function FeedList() {
