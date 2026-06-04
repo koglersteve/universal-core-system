@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import FeedList from "@/components/ui/lafflab/FeedList";
+import FeedList from "@/components/ui/lafflab/FeedList"; // ← THIS is the correct one
 
 export default function FeedShell({ initialFeed }: { initialFeed: any[] }) {
   const [refreshKey, setRefreshKey] = useState(0);
