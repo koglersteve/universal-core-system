@@ -54,7 +54,7 @@ export default function FavoritesList({ posts }: { posts: Post[] }) {
 
           <div style={{ fontSize: 14, lineHeight: 1.5 }}>{post.content}</div>
 
-          <ReactionBar onReact={() => {}} />
+          <ReactionBar postId={post.id} />
         </div>
       ))}
     </div>
