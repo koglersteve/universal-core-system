@@ -1,30 +1,33 @@
 "use client";
 
 import React, { useState } from "react";
-import TopBar from "@/components/ui/lafflab/TopBar";
-import MenuDrawer from "@/components/ui/lafflab/MenuDrawer";
 import FeedList from "@/components/ui/lafflab/FeedList";
 
-type FeedShellProps = {
-  initialFeed: any[];
-};
-
-export default function FeedShell({ initialFeed }: FeedShellProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function FeedShell({ initialFeed }: { initialFeed: any[] }) {
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const refresh = () => {
+    setRefreshKey((k) => k + 1);
+  };
 
   return (
     <>
-      <MenuDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-
-      <div style={{ width: "100%", maxWidth: 600 }}>
-        <TopBar
-          onRefresh={() => setRefreshKey(k => k + 1)}
-          onOpenMenu={() => setMenuOpen(true)}
-        />
+      <div style={{ padding: 16 }}>
+        <button
+          onClick={refresh}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 8,
+            background: "#eee",
+            border: "1px solid #ccc",
+            cursor: "pointer",
+          }}
+        >
+          Refresh Feed
+        </button>
 
         <div style={{ marginTop: 16 }}>
-          <FeedList key={refreshKey} initialPosts={initialFeed} />
+          <FeedList key={refreshKey} />
         </div>
       </div>
     </>
