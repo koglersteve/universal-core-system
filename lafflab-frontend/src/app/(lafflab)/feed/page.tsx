@@ -13,7 +13,7 @@ export default function FeedPage() {
 
   return (
     <div style={{ padding: 16 }}>
-      <FeedList initialPosts={posts} />
+      <FeedList />
       {loading && <p style={{ opacity: 0.6 }}>Loading…</p>}
     </div>
   );
