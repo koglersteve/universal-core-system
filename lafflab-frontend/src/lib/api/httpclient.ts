@@ -8,11 +8,15 @@ const API_BASE =
 // AUTH TOKEN MANAGEMENT
 // -----------------------------
 export function setAuthToken(token: string | null) {
+  if (typeof window === "undefined") return; // SSR guard
+
   if (token) localStorage.setItem("authToken", token);
   else localStorage.removeItem("authToken");
 }
 
 export function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null; // SSR guard
+
   return localStorage.getItem("authToken");
 }
 
@@ -23,7 +27,7 @@ export async function http<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = getAuthToken();
+  const token = getAuthToken(); // now SSR-safe
 
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
