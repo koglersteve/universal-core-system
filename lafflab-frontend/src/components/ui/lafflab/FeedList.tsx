@@ -1,35 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useCallback } from "react";
+import React from "react";
 import ReactionBar from "./ReactionBar";
-import { useFeedStore } from "@/store/useFeedStore";
 
-export default function FeedList() {
-  const { posts, load, loading } = useFeedStore();
-  const loaderRef = useRef<HTMLDivElement | null>(null);
-
-  const handleIntersect = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      if (entries[0].isIntersecting && !loading) {
-        load();
-      }
-    },
-    [loading, load]
-  );
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleIntersect, {
-      root: null,
-      rootMargin: "200px",
-      threshold: 0.1,
-    });
-
-    if (loaderRef.current) observer.observe(loaderRef.current);
-    return () => observer.disconnect();
-  }, [handleIntersect]);
-
+export default function FavoritesList({ posts }: { posts: any[] }) {
   return (
-    <div>
+    <div style={{ padding: 16 }}>
       {posts.map((post) => (
         <div
           key={post.id}
@@ -40,13 +16,17 @@ export default function FeedList() {
             borderRadius: 12,
           }}
         >
-          <pre>{JSON.stringify(post, null, 2)}</pre>
+          <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
+            {post.author?.screenName || "Unknown User"}
+          </div>
+
+          <div style={{ fontSize: 14, lineHeight: 1.5 }}>
+            {post.content}
+          </div>
+
           <ReactionBar postId={post.id} />
         </div>
       ))}
-
-      <div ref={loaderRef} style={{ height: 40 }} />
-      {loading && <p style={{ opacity: 0.6 }}>Loading…</p>}
     </div>
   );
 }
