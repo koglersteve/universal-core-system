@@ -15,9 +15,12 @@ const app = new Hono();
 app.use(
   "*",
   cors({
-    origin: "*",
+    origin:
+      process.env.LAFFLAB_FRONTEND_URL ??
+      "https://lafflab-frontend-production.up.railway.app",
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
