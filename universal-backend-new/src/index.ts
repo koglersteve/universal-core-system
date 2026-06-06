@@ -1,11 +1,25 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
+import { cors } from "hono/cors";
 
 /* -------------------------------------------------------
    APP INIT
 -------------------------------------------------------- */
 
 const app = new Hono();
+
+/* -------------------------------------------------------
+   GLOBAL CORS (CRITICAL)
+-------------------------------------------------------- */
+
+app.use(
+  "*",
+  cors({
+    origin: "*",
+    allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 /* -------------------------------------------------------
    ROOT + GLOBAL HEALTH CHECKS
@@ -88,7 +102,7 @@ app.get("/core/routes", (c) =>
 );
 
 /* -------------------------------------------------------
-   IMPORT ROUTES (CORRECTED PATHS)
+   IMPORT ROUTES
 -------------------------------------------------------- */
 
 import { universeMiddleware } from "./core/middleware/universe.middleware.js";
