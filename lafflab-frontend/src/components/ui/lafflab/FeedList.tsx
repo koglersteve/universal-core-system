@@ -30,23 +30,37 @@ export default function FeedList() {
 
   return (
     <div>
-      {posts.map((post) => (
-        <div
-          key={post.id}
-          style={{
-            padding: 16,
-            marginBottom: 16,
-            background: "#fff",
-            borderRadius: 12,
-          }}
-        >
-          <pre>{JSON.stringify(post, null, 2)}</pre>
-          <ReactionBar postId={post.id} />
-        </div>
-      ))}
+      {Array.isArray(posts) &&
+        posts
+          .filter((p) => p && p.id) // ensure valid posts
+          .map((post) => (
+            <div
+              key={post.id}
+              style={{
+                padding: 16,
+                marginBottom: 16,
+                background: "#fff",
+                borderRadius: 12,
+              }}
+            >
+              <pre>{safeStringify(post)}</pre>
+              <ReactionBar postId={post.id} />
+            </div>
+          ))}
 
       <div ref={loaderRef} style={{ height: 40 }} />
       {loading && <p style={{ opacity: 0.6 }}>Loading…</p>}
     </div>
   );
+}
+
+/* -------------------------------------------------------
+   SAFE JSON STRINGIFY (prevents crashes)
+-------------------------------------------------------- */
+function safeStringify(obj: any) {
+  try {
+    return JSON.stringify(obj, null, 2);
+  } catch {
+    return "Unable to display post (non‑serializable data)";
+  }
 }
