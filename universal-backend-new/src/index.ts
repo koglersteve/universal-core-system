@@ -12,17 +12,36 @@ const app = new Hono();
    GLOBAL CORS (CRITICAL)
 -------------------------------------------------------- */
 
-app.use(
-  "*",
-  cors({
+app.use("*", async (c, next) => {
+  // Run the built-in CORS middleware first
+  const corsHandler = cors({
     origin:
       process.env.LAFFLAB_FRONTEND_URL ??
       "https://lafflab-frontend-production.up.railway.app",
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
-);
+  });
+
+  await corsHandler(c, next);
+
+  // Explicitly set headers to ensure browser sees them
+  c.header(
+    "Access-Control-Allow-Origin",
+    process.env.LAFFLAB_FRONTEND_URL ??
+      "https://lafflab-frontend-production.up.railway.app"
+  );
+  c.header("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
+  c.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  c.header("Access-Control-Allow-Credentials", "true");
+
+  // Handle preflight directly
+  if (c.req.method === "OPTIONS") {
+    return c.text("OK", 204);
+  }
+
+  return await next();
+});
 
 /* -------------------------------------------------------
    ROOT + GLOBAL HEALTH CHECKS
