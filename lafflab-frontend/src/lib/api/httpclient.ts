@@ -8,42 +8,61 @@ const API_BASE =
 // AUTH TOKEN MANAGEMENT
 // -----------------------------
 export function setAuthToken(token: string | null) {
-  if (typeof window === "undefined") return; // SSR guard
-
+  if (typeof window === "undefined") return;
   if (token) localStorage.setItem("authToken", token);
   else localStorage.removeItem("authToken");
 }
 
 export function getAuthToken(): string | null {
-  if (typeof window === "undefined") return null; // SSR guard
-
+  if (typeof window === "undefined") return null;
   return localStorage.getItem("authToken");
 }
 
 // -----------------------------
-// UNIVERSAL API WRAPPER
+// UNIVERSAL API WRAPPER (SAFE)
 // -----------------------------
 export async function http<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = getAuthToken(); // now SSR-safe
+  const token = getAuthToken();
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-  });
+  let res: Response;
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`API Error ${res.status}: ${errorText}`);
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {}),
+      },
+    });
+  } catch (err) {
+    console.error("Network error:", err);
+    return Promise.reject(new Error("Network error"));
   }
 
-  return res.json() as Promise<T>;
+  // Handle non‑OK responses safely
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error("API Error:", res.status, text);
+    return Promise.reject(new Error(`API Error ${res.status}`));
+  }
+
+  // Handle empty body (204, 304, etc.)
+  const raw = await res.text();
+  if (!raw) {
+    return {} as T;
+  }
+
+  // Safe JSON parse
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    console.error("JSON parse error:", err, "Body:", raw);
+    return Promise.reject(new Error("Invalid JSON response"));
+  }
 }
 
 // -----------------------------
