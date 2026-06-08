@@ -12,36 +12,22 @@ const app = new Hono();
    GLOBAL CORS (CRITICAL)
 -------------------------------------------------------- */
 
-app.use("*", async (c, next) => {
-  // Run the built-in CORS middleware first
-  const corsHandler = cors({
-    origin:
-      process.env.LAFFLAB_FRONTEND_URL ??
-      "https://lafflab-frontend-production.up.railway.app",
+const FRONTEND_ORIGIN =
+  process.env.LAFFLAB_FRONTEND_URL ||
+  "https://lafflab-frontend-production.up.railway.app";
+
+app.use(
+  "*",
+  cors({
+    origin: FRONTEND_ORIGIN,
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  });
+  })
+);
 
-  await corsHandler(c, next);
-
-  // Explicitly set headers to ensure browser sees them
-  c.header(
-    "Access-Control-Allow-Origin",
-    process.env.LAFFLAB_FRONTEND_URL ??
-      "https://lafflab-frontend-production.up.railway.app"
-  );
-  c.header("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
-  c.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
-  c.header("Access-Control-Allow-Credentials", "true");
-
-  // Handle preflight directly
-  if (c.req.method === "OPTIONS") {
-    return c.newResponse("", { status: 204 });
-  }
-
-  return await next();
-});
+// Proper OPTIONS handler (Hono requires newResponse for 204)
+app.options("*", (c) => c.newResponse("", { status: 204 }));
 
 /* -------------------------------------------------------
    ROOT + GLOBAL HEALTH CHECKS
