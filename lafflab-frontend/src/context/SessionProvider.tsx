@@ -2,27 +2,55 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-const SessionContext = createContext(null);
+type User = Record<string, any> | null;
 
-export function SessionProvider({ children }) {
-  const [user, setUser] = useState(null);
+type SessionContextValue = {
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+  loading: boolean;
+  isAuthenticated: boolean;
+};
+
+const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+
+export function SessionProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      const res = await fetch("/api/profile/me");
-      const data = await res.json();
-      setUser(data.user ?? null);
+      try {
+        const res = await fetch("/api/profile/me");
+        const data = await res.json();
+        setUser(data?.user ?? null);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     }
+
     load();
   }, []);
 
   return (
-    <SessionContext.Provider value={{ user, setUser }}>
+    <SessionContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        isAuthenticated: Boolean(user),
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );
 }
 
 export function useSession() {
-  return useContext(SessionContext);
+  const ctx = useContext(SessionContext);
+  if (!ctx) {
+    throw new Error("useSession must be used within SessionProvider");
+  }
+  return ctx;
 }
