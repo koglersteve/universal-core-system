@@ -11,7 +11,9 @@ type SessionContextValue = {
   isAuthenticated: boolean;
 };
 
-const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+export const SessionContext = createContext<SessionContextValue | undefined>(
+  undefined
+);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>(null);
