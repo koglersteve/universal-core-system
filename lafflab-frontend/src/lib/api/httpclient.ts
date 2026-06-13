@@ -1,12 +1,19 @@
 // src/lib/api/httpclient.ts
+"use client";
 
 // -----------------------------
-// BASE URL
+// BASE URL (with diagnostics)
 // -----------------------------
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+// Log what the frontend actually received at build time
+console.log("🚀 API_BASE (from env):", API_BASE);
+
+// If missing, DO NOT crash the entire app — fail requests instead
 if (!API_BASE) {
-  throw new Error("NEXT_PUBLIC_BACKEND_URL is not set");
+  console.warn(
+    "⚠️ NEXT_PUBLIC_BACKEND_URL is NOT set. All API calls will fail."
+  );
 }
 
 // -----------------------------
@@ -14,7 +21,6 @@ if (!API_BASE) {
 // -----------------------------
 export function setAuthToken(token: string | null) {
   if (typeof window === "undefined") return;
-
   if (token) localStorage.setItem("authToken", token);
   else localStorage.removeItem("authToken");
 }
@@ -31,14 +37,23 @@ export async function http<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
+  if (!API_BASE) {
+    return Promise.reject(
+      new Error("Backend URL missing: NEXT_PUBLIC_BACKEND_URL is not set")
+    );
+  }
+
   const token = getAuthToken();
   let res: Response;
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
-    res = await fetch(`${API_BASE}${path}`, {
+    const url = `${API_BASE}${path}`;
+    console.log("🌐 Fetching:", url);
+
+    res = await fetch(url, {
       ...options,
       signal: controller.signal,
       headers: {
@@ -50,28 +65,23 @@ export async function http<T>(
 
     clearTimeout(timeout);
   } catch (err) {
-    console.error("Network error:", err, "URL:", `${API_BASE}${path}`);
+    console.error("❌ Network error:", err);
     return Promise.reject(new Error("Network error"));
   }
 
-  // Handle non‑OK responses safely
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    console.error("API Error:", res.status, text);
+    console.error("❌ API Error:", res.status, text);
     return Promise.reject(new Error(`API Error ${res.status}`));
   }
 
-  // Handle empty body (204, 304, etc.)
   const raw = await res.text();
-  if (!raw) {
-    return {} as T;
-  }
+  if (!raw) return {} as T;
 
-  // Safe JSON parse
   try {
     return JSON.parse(raw) as T;
   } catch (err) {
-    console.error("JSON parse error:", err, "Body:", raw);
+    console.error("❌ JSON parse error:", err, "Body:", raw);
     return Promise.reject(new Error("Invalid JSON response"));
   }
 }
@@ -79,24 +89,9 @@ export async function http<T>(
 // -----------------------------
 // SHORTCUT HELPERS
 // -----------------------------
-export function get<T>(path: string) {
-  return http<T>(path, { method: "GET" });
-}
-
-export function post<T>(path: string, body: any) {
-  return http<T>(path, {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-}
-
-export function patch<T>(path: string, body: any) {
-  return http<T>(path, {
-    method: "PATCH",
-    body: JSON.stringify(body),
-  });
-}
-
-export function del<T>(path: string) {
-  return http<T>(path, { method: "DELETE" });
-}
+export const get = <T>(path: string) => http<T>(path, { method: "GET" });
+export const post = <T>(path: string, body: any) =>
+  http<T>(path, { method: "POST", body: JSON.stringify(body) });
+export const patch = <T>(path: string, body: any) =>
+  http<T>(path, { method: "PATCH", body: JSON.stringify(body) });
+export const del = <T>(path: string) => http<T>(path, { method: "DELETE" });
