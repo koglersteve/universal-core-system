@@ -1,12 +1,10 @@
+"use client";
+
 import React from "react";
 
 export const dynamic = "force-dynamic";
 
-export default function FeedLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function FeedLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
